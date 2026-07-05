@@ -1,53 +1,71 @@
-# AoM Retold Civ Creator - Draft
+# AoM Retold Civ Creator - real-format draft
 
-This is a static browser prototype for a future **Age of Mythology: Retold civilization creator**.
+This is a no-build static prototype for GitHub Pages.
 
-It is designed for GitHub Pages:
+It uses data extracted from the supplied vanilla files:
 
-- no backend
-- no build step
-- no database
-- no user accounts
-- ZIP generated locally in the browser
-- optional icon file stays local and is not uploaded
+- `game/data/gameplay/major_gods.xml`
+- `game/data/gameplay/minor_gods.xml`
 
-## How to test locally
+It generates a ZIP with a folder structure based on the supplied example mod:
 
-Open `index.html` in your browser.
+```text
+<MyCiv>/
+  README_INSTALL.txt
+  game/
+    data/
+      gameplay/
+        major_gods_mods.xml
+        minor_gods_mods.xml
+        techtree_mods.xml
+        proto_mods.xml
+        powers_mods.xml
+      strings/
+        English/
+          stringmods.txt
+    ui_myth/
+      content/pregame/godpicker/
+        godpicker_<culture>_<civ>.xaml
+      content/pregame/techtree/
+        TechTree_<Culture>_<Civ>.xaml
+      resources/<civ>/
+        <uploaded icon>
+```
 
-## How to publish on GitHub Pages
+## GitHub Pages deployment
 
-1. Create a new GitHub repository.
+1. Create a repository.
 2. Upload these files to the repository root:
    - `index.html`
    - `style.css`
    - `app.js`
+   - `aomData.js`
    - `README.md`
-3. Go to repository **Settings**.
-4. Open **Pages**.
-5. Under **Build and deployment**, choose:
-   - Source: `Deploy from a branch`
-   - Branch: `main`
-   - Folder: `/root`
+3. Go to **Settings -> Pages**.
+4. Choose **Deploy from a branch**.
+5. Select `main` and `/root`.
 6. Save.
-7. Open the GitHub Pages URL once GitHub finishes publishing.
 
-## Important warning
+## Current behavior
 
-The generated XML is intentionally a placeholder. It proves the website and ZIP export pipeline work, but it is not guaranteed to be a valid AoM Retold mod yet.
+- The app clones the selected vanilla major god's `<civ>` entry.
+- It changes the civ name, string IDs, icon/portrait path, and Archaic age tech.
+- It lets the user select two existing minor gods for Classical, Heroic, and Mythic ages.
+- It generates `techtree_mods.xml` with custom age techs that unlock those chosen minor god techs.
+- It generates simple GodPicker and TechTree XAML files with the chosen god tracks.
 
-Recommended next step:
+## Important limitations
 
-1. Create one tiny manual AoM Retold mod that the game recognizes.
-2. Copy its confirmed folder paths and XML/data schema.
-3. Update the generator functions in `app.js`:
-   - `makeCivXml`
-   - `makeTechTreeXml`
-   - `makeStringModsXml`
-   - `generateZip`
+This is a structural test, not a guaranteed finished playable civ generator yet.
 
-## Why there is no JSZip dependency
+Likely next fixes after in-game testing:
 
-This draft includes a tiny no-compression ZIP writer directly in `app.js`. That keeps the project dependency-free and easy to host on GitHub Pages.
+- Confirm whether `ClassicalAge<Civ>`, `HeroicAge<Civ>`, and `MythicAge<Civ>` need more effects copied from the base culture/major god.
+- Confirm whether GodPicker/TechTree XAML requires detailed technology nodes under each chosen minor god track.
+- Confirm whether custom civ registration requires more UI files or naming conventions.
+- Add preset import.
+- Add a preview of the generated XML before ZIP export.
 
-Later, you may replace it with JSZip if you want compression and more ZIP features.
+## No server
+
+Everything is generated locally in the browser. Uploaded icons are not uploaded anywhere.
