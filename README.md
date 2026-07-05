@@ -1,16 +1,15 @@
-# AoM Retold Civ Creator - real-format draft
+# AoM Retold Major God Creator - real-format draft
 
-This is a no-build static prototype for GitHub Pages.
+Static GitHub Pages prototype. No backend, no build step, no paid hosting.
 
-It uses data extracted from the supplied vanilla files:
+This version is based on the uploaded vanilla files and the example mod folder layout.
 
-- `game/data/gameplay/major_gods.xml`
-- `game/data/gameplay/minor_gods.xml`
+## What it currently generates
 
-It generates a ZIP with a folder structure based on the supplied example mod:
+The app generates a ZIP like:
 
 ```text
-<MyCiv>/
+<MyMajorGod>/
   README_INSTALL.txt
   game/
     data/
@@ -25,47 +24,57 @@ It generates a ZIP with a folder structure based on the supplied example mod:
           stringmods.txt
     ui_myth/
       content/pregame/godpicker/
-        godpicker_<culture>_<civ>.xaml
+        GodPicker_<Culture>_<Name>.xaml
       content/pregame/techtree/
-        TechTree_<Culture>_<Civ>.xaml
-      resources/<civ>/
+        TechTree_<Culture>_<Name>.xaml
+      resources/<name>/
         <uploaded icon>
 ```
 
-## GitHub Pages deployment
-
-1. Create a repository.
-2. Upload these files to the repository root:
-   - `index.html`
-   - `style.css`
-   - `app.js`
-   - `aomData.js`
-   - `README.md`
-3. Go to **Settings -> Pages**.
-4. Choose **Deploy from a branch**.
-5. Select `main` and `/root`.
-6. Save.
-
 ## Current behavior
 
-- The app clones the selected vanilla major god's `<civ>` entry.
-- It changes the civ name, string IDs, icon/portrait path, and Archaic age tech.
-- It lets the user select two existing minor gods for Classical, Heroic, and Mythic ages.
-- It generates `techtree_mods.xml` with custom age techs that unlock those chosen minor god techs.
-- It generates simple GodPicker and TechTree XAML files with the chosen god tracks.
+- Creates a new **major god** by cloning an existing vanilla major god `<civ>` entry.
+- Lets the user choose two existing minor gods per age.
+- Displays minor god names in uppercase in the UI.
+- Lets the user choose one starting god power from a strict major-god → starting-power mapping for the selected pantheon.
+- Adds the selected god power in `techtree_mods.xml` using a `Data / GodPower` effect.
+- Adds age tech effects such as `ClassicalAgeGeneral`, `ClassicalAgeGreek`, etc.
+- Adds `ArchaicAgeWeakenUnits` to the custom Archaic age tech.
+- Builds `GodPicker_<Culture>_<Name>.xaml` from the real uploaded GodPicker XAML blocks.
+- Builds `TechTree_<Culture>_<Name>.xaml` from the real uploaded TechTree XAML blocks.
+- Copies the Archaic TechTree block from the selected starting-power source major god.
+- Copies Classical/Heroic/Mythic TechTree technology layouts from the cloned base major god.
+- Replaces each age's TechTree bonus tracks with the selected minor gods.
 
-## Important limitations
+## GitHub Pages
 
-This is a structural test, not a guaranteed finished playable civ generator yet.
+Upload these files to the root of your GitHub repository:
 
-Likely next fixes after in-game testing:
+```text
+index.html
+style.css
+app.js
+aomData.js
+godPickerTemplates.js
+techTreeTemplates.js
+README.md
+```
 
-- Confirm whether `ClassicalAge<Civ>`, `HeroicAge<Civ>`, and `MythicAge<Civ>` need more effects copied from the base culture/major god.
-- Confirm whether GodPicker/TechTree XAML requires detailed technology nodes under each chosen minor god track.
-- Confirm whether custom civ registration requires more UI files or naming conventions.
-- Add preset import.
-- Add a preview of the generated XML before ZIP export.
+Then enable GitHub Pages:
 
-## No server
+1. Repository Settings
+2. Pages
+3. Deploy from branch
+4. Branch: `main`
+5. Folder: `/root`
 
-Everything is generated locally in the browser. Uploaded icons are not uploaded anywhere.
+## Important limitation
+
+This is still a structural/testing draft. The generated mod format is much closer to AoM Retold, but you should test in-game and compare the generated age techs and pregame UI against the real vanilla definitions if something is missing. The TechTree file now uses real vanilla XAML sections, but custom combinations of minor gods may still require additional gameplay/proto/tech support outside the pregame UI.
+
+The god power picker now uses an explicit mapping from existing major gods to their starting god powers. Review the mapping in `app.js` under `STARTING_GOD_POWER_BY_MAJOR` if a DLC/game update changes a power name.
+
+
+## GodPicker template update
+
+This version includes `godPickerTemplates.js`, generated from the uploaded vanilla GodPicker XAML files. The exported GodPicker file now copies the full ArchaicAge block from the selected starting god-power source major god, and copies full minor-god bonus tracks such as `ClassicalAgeAnubis` from the vanilla files instead of emitting empty placeholder tracks.

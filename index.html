@@ -3,42 +3,47 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AoM Retold Civ Creator Draft</title>
+  <title>AoM Retold Major God Creator Draft</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <main class="shell">
     <header class="hero">
       <p class="eyebrow">Static GitHub Pages prototype</p>
-      <h1>AoM Retold Civ Creator</h1>
-      <p>This draft reads vanilla major/minor god data extracted from your files and generates a mod ZIP using the same high-level mod folder layout as your example mod.</p>
+      <h1>AoM Retold Major God Creator</h1>
+      <p>This draft reads vanilla major/minor god data extracted from your files and generates a mod ZIP for a custom major god using the same high-level mod folder layout as your example mod.</p>
     </header>
 
     <section class="panel warning">
-      <strong>Draft status:</strong> this now outputs <code>major_gods_mods.xml</code>, <code>techtree_mods.xml</code>, <code>stringmods.txt</code>, and GodPicker/TechTree XAML files. It is still a test generator: confirm in-game behavior and adjust the generated age-tech effects as needed.
+      <strong>Draft status:</strong> this now outputs <code>major_gods_mods.xml</code>, <code>techtree_mods.xml</code>, <code>stringmods.txt</code>, and GodPicker/TechTree XAML files. GodPicker output now reuses real vanilla GodPicker XAML blocks for the Archaic age and selected minor gods. It is still a test generator: confirm in-game behavior and adjust the generated age-tech effects as needed.
     </section>
 
     <section class="grid">
-      <form id="civForm" class="panel form-panel">
-        <h2>1. Civilization</h2>
+      <form id="godForm" class="panel form-panel">
+        <h2>1. Major god</h2>
         <label>
-          Civ display name
-          <input id="displayName" value="My Custom Civ" required maxlength="48" />
+          Major god display name
+          <input id="displayName" value="My Custom Major God" required maxlength="48" />
         </label>
         <label>
           Internal name / folder
-          <input id="internalName" value="MyCustomCiv" required maxlength="48" />
+          <input id="internalName" value="MyCustomMajorGod" required maxlength="48" />
           <small>Only letters/numbers are safest. The app will sanitize it.</small>
         </label>
         <label>
-          Base major god to clone
+          Existing major god to clone
           <select id="baseMajor"></select>
-          <small>The generated civ copies this major god's starting units, resources, culture, portraits, background, etc.</small>
+          <small>The generated major god copies this god's starting units, resources, culture, portraits, background, etc.</small>
         </label>
         <label>
-          Optional civ icon PNG/JPG/WebP
+          Optional major god icon PNG/JPG/WebP
           <input id="iconFile" type="file" accept="image/png,image/jpeg,image/webp" />
-          <small>Stored inside the generated ZIP under <code>game/ui_myth/resources/&lt;civ&gt;/</code>.</small>
+          <small>Stored inside the generated ZIP under <code>game/ui_myth/resources/&lt;major-god&gt;/</code>.</small>
+        </label>
+        <label>
+          Starting god power
+          <select id="godPower"></select>
+          <small>Strict list: only starting god powers from existing major gods of the cloned pantheon. It is inserted into the custom Archaic age tech in <code>techtree_mods.xml</code>.</small>
         </label>
 
         <h2>2. Minor gods</h2>
@@ -65,6 +70,8 @@
     </section>
   </main>
   <script src="aomData.js"></script>
+  <script src="godPickerTemplates.js"></script>
+  <script src="techTreeTemplates.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

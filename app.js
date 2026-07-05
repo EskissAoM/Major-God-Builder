@@ -1,13 +1,64 @@
-/* AoM Retold Civ Creator - static GitHub Pages draft
+/* AoM Retold Major God Creator - static GitHub Pages draft
    This is intentionally backend-free. All files are generated locally in the browser. */
 
 const AGES = ["ClassicalAge", "HeroicAge", "MythicAge"];
+
+const STARTING_GOD_POWER_BY_MAJOR = {
+  // Greek
+  Zeus: "Bolt",
+  Poseidon: "Lure",
+  Hades: "Sentinel",
+  Demeter: "Wither",
+
+  // Egyptian
+  Ra: "Rain",
+  Isis: "Prosperity",
+  Set: "Vision",
+
+  // Norse
+  Thor: "DwarvenMine",
+  Odin: "GreatHunt",
+  Loki: "Spy",
+  Freyr: "Gullinbursti",
+
+  // Atlantean
+  Kronos: "Deconstruction",
+  Oranos: "Shockwave",
+  Gaia: "GaiaForest",
+
+  // Chinese
+  Fuxi: "ThePeachBlossomSpring",
+  Nuwa: "Creation",
+  Shennong: "ProsperousSeeds",
+
+  // Japanese
+  Amaterasu: "SolarShield",
+  Susanoo: "Kusanagi",
+  Tsukuyomi: "NewMoon",
+
+  // Aztec
+  Huitzilopochtli: "BloodPact",
+  Quetzalcoatl: "Tailwind",
+  Tezcatlipoca: "ObsidianMirror",
+};
+
+function strictStartingPowerOptionsForCulture(culture) {
+  return window.AOM_DATA.majors
+    .filter((major) => major.culture === culture)
+    .map((major) => ({
+      sourceMajor: major.name,
+      power: STARTING_GOD_POWER_BY_MAJOR[major.name] || "",
+    }))
+    .filter((entry) => entry.power);
+}
+
 const $ = (id) => document.getElementById(id);
 
 const els = {
   displayName: $("displayName"),
   internalName: $("internalName"),
   baseMajor: $("baseMajor"),
+  godPower: $("godPower"),
   iconFile: $("iconFile"),
   sameCultureOnly: $("sameCultureOnly"),
   minorPickers: $("minorPickers"),
@@ -20,7 +71,7 @@ const els = {
   configPreview: $("configPreview"),
 };
 
-function sanitizeId(value, fallback = "CustomCiv") {
+function sanitizeId(value, fallback = "CustomMajorGod") {
   const cleaned = String(value || "")
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, "")
@@ -29,7 +80,7 @@ function sanitizeId(value, fallback = "CustomCiv") {
 }
 
 function sanitizeFolder(value) {
-  return sanitizeId(value).replace(/^\d+/, "") || "CustomCiv";
+  return sanitizeId(value).replace(/^\d+/, "") || "CustomMajorGod";
 }
 
 function escapeXml(value) {
@@ -53,8 +104,12 @@ function selectedBaseMajor() {
   return window.AOM_DATA.majors.find((m) => m.name === els.baseMajor.value) || window.AOM_DATA.majors[0];
 }
 
+function displayGodName(name) {
+  return String(name || "").toUpperCase();
+}
+
 function minorLabel(god) {
-  return `${god.name} (${god.culture})`;
+  return `${displayGodName(god.name)} (${god.culture})`;
 }
 
 function setMessage(text, isError = false) {
@@ -79,6 +134,26 @@ function initMajorSelect() {
       group.appendChild(opt);
     }
     els.baseMajor.appendChild(group);
+  }
+}
+
+
+function initGodPowerSelect(keep = true) {
+  const previous = keep ? els.godPower.value : "";
+  const base = selectedBaseMajor();
+  const options = strictStartingPowerOptionsForCulture(base.culture);
+  els.godPower.innerHTML = "";
+  for (const entry of options) {
+    const opt = document.createElement("option");
+    opt.value = entry.power;
+    opt.dataset.sourceMajor = entry.sourceMajor;
+    opt.textContent = `${entry.sourceMajor} — ${entry.power}`;
+    els.godPower.appendChild(opt);
+  }
+  if (previous && options.some((entry) => entry.power === previous)) els.godPower.value = previous;
+  else {
+    const baseEntry = options.find((entry) => entry.sourceMajor === base.name);
+    els.godPower.value = baseEntry?.power || options[0]?.power || "";
   }
 }
 
@@ -155,12 +230,14 @@ function getConfig() {
   const internal = sanitizeFolder(els.internalName.value || els.displayName.value);
   const minorGods = collectMinorSelectionLoose();
   return {
-    displayName: els.displayName.value.trim() || "Custom Civilization",
+    displayName: els.displayName.value.trim() || "Custom Major God",
     internalName: internal,
     lowerName: lower(internal),
     baseMajorName: base.name,
     baseCulture: base.culture,
     baseMajor: base,
+    godPower: els.godPower.value,
+    godPowerSourceMajor: els.godPower.selectedOptions[0]?.dataset.sourceMajor || "",
     minorGods,
     stringPrefix: `STR_CIV_${internal.toUpperCase()}`,
     ageTechs: {
@@ -174,8 +251,13 @@ function getConfig() {
 
 function validateConfig(config) {
   const errors = [];
-  if (!config.displayName) errors.push("Civ display name is required.");
+  if (!config.displayName) errors.push("Major god display name is required.");
   if (!/^[A-Za-z][A-Za-z0-9]*$/.test(config.internalName)) errors.push("Internal name must start with a letter and use only letters/numbers after sanitizing.");
+  if (!config.godPower) errors.push("Choose a starting god power.");
+  const validStartingPowers = strictStartingPowerOptionsForCulture(config.baseCulture).map((entry) => entry.power);
+  if (config.godPower && !validStartingPowers.includes(config.godPower)) {
+    errors.push("Starting god power must come from an existing major god of the cloned pantheon.");
+  }
   for (const age of AGES) {
     const picks = config.minorGods[age] || [];
     if (picks.length !== 2 || !picks[0] || !picks[1]) errors.push(`${age}: choose two minor gods.`);
@@ -232,58 +314,77 @@ function techStatusEffects(techs, status = "obtainable") {
   return techs.map((tech) => `\t\t\t<effect type="TechStatus" status="${status}">${escapeXml(tech)}</effect>`).join("\n");
 }
 
+function cultureAgeTech(age, culture) {
+  return `${age}${culture}`;
+}
+
+function godPowerEffect(power) {
+  return `			<effect type="Data" subtype="GodPower" power="${escapeXml(power)}" amount="1.0" cooldown="60.0" relativity="Absolute">
+				<target type="Player"></target>
+			</effect>`;
+}
+
 function generateTechTreeMods(config) {
   const c = config.ageTechs;
   const classical = config.minorGods.ClassicalAge;
   const heroic = config.minorGods.HeroicAge;
   const mythic = config.minorGods.MythicAge;
+  const culture = config.baseCulture;
   return `<techtreemods>
-\t<tech name="${escapeXml(c.archaic)}">
-\t\t<status>UNOBTAINABLE</status>
-\t\t<flag>HideAllNotifications</flag>
-\t\t<flag>AgeTech</flag>
-\t\t<effects>
+	<tech name="${escapeXml(c.archaic)}">
+		<status>UNOBTAINABLE</status>
+		<flag>HideAllNotifications</flag>
+		<flag>AgeTech</flag>
+		<effects>
 ${techStatusEffects([...classical, c.classical])}
-\t\t</effects>
-\t</tech>
+			<effect type="TechStatus" status="active">ArchaicAgeWeakenUnits</effect>
+${godPowerEffect(config.godPower)}
+		</effects>
+	</tech>
 
-\t<tech name="${escapeXml(c.classical)}">
-\t\t<status>UNOBTAINABLE</status>
-\t\t<flag>HideAllNotifications</flag>
-\t\t<flag>Volatile</flag>
-\t\t<flag>AgeTech</flag>
-\t\t<prereqs>
-\t\t\t<specificage>ClassicalAge</specificage>
-\t\t</prereqs>
-\t\t<effects>
+	<tech name="${escapeXml(c.classical)}">
+		<status>UNOBTAINABLE</status>
+		<flag>HideAllNotifications</flag>
+		<flag>Volatile</flag>
+		<flag>AgeTech</flag>
+		<prereqs>
+			<specificage>ClassicalAge</specificage>
+		</prereqs>
+		<effects>
+			<effect type="TechStatus" status="active">ClassicalAgeGeneral</effect>
+			<effect type="TechStatus" status="active">${escapeXml(cultureAgeTech("ClassicalAge", culture))}</effect>
 ${techStatusEffects([...heroic, c.heroic])}
-\t\t</effects>
-\t</tech>
+		</effects>
+	</tech>
 
-\t<tech name="${escapeXml(c.heroic)}">
-\t\t<status>UNOBTAINABLE</status>
-\t\t<flag>HideAllNotifications</flag>
-\t\t<flag>Volatile</flag>
-\t\t<flag>AgeTech</flag>
-\t\t<prereqs>
-\t\t\t<specificage>HeroicAge</specificage>
-\t\t</prereqs>
-\t\t<effects>
+	<tech name="${escapeXml(c.heroic)}">
+		<status>UNOBTAINABLE</status>
+		<flag>HideAllNotifications</flag>
+		<flag>Volatile</flag>
+		<flag>AgeTech</flag>
+		<prereqs>
+			<specificage>HeroicAge</specificage>
+		</prereqs>
+		<effects>
+			<effect type="TechStatus" status="active">HeroicAgeGeneral</effect>
+			<effect type="TechStatus" status="active">${escapeXml(cultureAgeTech("HeroicAge", culture))}</effect>
 ${techStatusEffects([...mythic, c.mythic])}
-\t\t</effects>
-\t</tech>
+		</effects>
+	</tech>
 
-\t<tech name="${escapeXml(c.mythic)}">
-\t\t<status>UNOBTAINABLE</status>
-\t\t<flag>HideAllNotifications</flag>
-\t\t<flag>Volatile</flag>
-\t\t<flag>AgeTech</flag>
-\t\t<prereqs>
-\t\t\t<specificage>MythicAge</specificage>
-\t\t</prereqs>
-\t\t<effects>
-\t\t</effects>
-\t</tech>
+	<tech name="${escapeXml(c.mythic)}">
+		<status>UNOBTAINABLE</status>
+		<flag>HideAllNotifications</flag>
+		<flag>Volatile</flag>
+		<flag>AgeTech</flag>
+		<prereqs>
+			<specificage>MythicAge</specificage>
+		</prereqs>
+		<effects>
+			<effect type="TechStatus" status="active">MythicAgeGeneral</effect>
+			<effect type="TechStatus" status="active">${escapeXml(cultureAgeTech("MythicAge", culture))}</effect>
+		</effects>
+	</tech>
 </techtreemods>\n`;
 }
 
@@ -303,6 +404,8 @@ STR_TECH_${config.internalName.toUpperCase()}_MYTHIC_NAME Advance to Mythic Age
 
 function generateGodPickerXaml(config) {
   const className = `GodPicker_${config.baseCulture}_${config.internalName}`;
+  const archaicSource = config.godPowerSourceMajor || config.baseMajorName;
+  const archaicBlock = godPickerArchaicBlock(archaicSource);
   return `﻿<local:GodPickerPageBase
     x:Class="athenswpf.Content.Pregame.GodPicker.${escapeXml(className)}"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -315,23 +418,48 @@ function generateGodPickerXaml(config) {
     mc:Ignorable="d">
 
     <local:GodPickerPageBase.Ages>
-        <techTree:TechTreeAge AgeName="ArchaicAge" />
+${indentBlock(archaicBlock, 2)}
 ${AGES.map((age) => generateGodPickerAge(age, config.minorGods[age])).join("\n")}
     </local:GodPickerPageBase.Ages>
 </local:GodPickerPageBase>
 `;
 }
 
+function godPickerArchaicBlock(sourceMajor) {
+  const templates = window.AOM_GODPICKER || {};
+  const block = templates.archaicByMajor?.[sourceMajor];
+  if (block) return block;
+  return '<techTree:TechTreeAge AgeName="ArchaicAge" />';
+}
+
+function godPickerBonusTrack(tech) {
+  const templates = window.AOM_GODPICKER || {};
+  const block = templates.bonusTrackByGod?.[tech];
+  if (block) return block;
+  return `<techTree:TechTreeBonusTrack God="${escapeXml(tech)}" />`;
+}
+
+function indentBlock(block, level = 0) {
+  const pad = "    ".repeat(level);
+  return String(block || "")
+    .split("\n")
+    .map((line) => line.trim() ? pad + line : line)
+    .join("\n");
+}
+
 function generateGodPickerAge(age, techs) {
   return `        <techTree:TechTreeAge AgeName="${age}">
             <techTree:TechTreeAge.Bonuses>
-${techs.map((tech) => `                <techTree:TechTreeBonusTrack God="${escapeXml(tech)}" />`).join("\n")}
+${techs.map((tech) => indentBlock(godPickerBonusTrack(tech), 4)).join("\n\n")}
             </techTree:TechTreeAge.Bonuses>
         </techTree:TechTreeAge>`;
 }
 
 function generateTechTreeXaml(config) {
   const className = `TechTree_${config.baseCulture}_${config.internalName}`;
+  const archaicSource = config.godPowerSourceMajor || config.baseMajorName;
+  const defaultColor = techTreeDefaultColor(archaicSource);
+  const defaultColorAttr = defaultColor ? `\n      DefaultPlayerColor="${escapeXml(defaultColor)}"` : "";
   return `﻿<local:TechTreePageBase x:Class="athenswpf.Content.Pregame.TechTree.${escapeXml(className)}"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -339,43 +467,77 @@ function generateTechTreeXaml(config) {
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:athenswpf.Content.Pregame.TechTree"
       mc:Ignorable="d" 
-      Style="{StaticResource TechTreePageStyle}">
+      Style="{StaticResource TechTreePageStyle}"${defaultColorAttr}>
 
     <local:TechTreePageBase.Ages>
-        <local:TechTreeAge AgeName="ArchaicAge" />
-${AGES.map((age) => generateTechTreeAge(age, config.minorGods[age])).join("\n")}
+${indentBlock(techTreeArchaicBlock(archaicSource), 2)}
+${AGES.map((age) => generateTechTreeAge(age, config)).join("\n")}
+        <local:TechTreeAge AgeName="TitanAge">
+        </local:TechTreeAge>
     </local:TechTreePageBase.Ages>
 </local:TechTreePageBase>
 `;
 }
 
-function generateTechTreeAge(age, techs) {
+function techTreeDefaultColor(sourceMajor) {
+  return window.AOM_TECHTREE?.defaultPlayerColorByMajor?.[sourceMajor] || "";
+}
+
+function techTreeArchaicBlock(sourceMajor) {
+  const templates = window.AOM_TECHTREE || {};
+  const block = templates.archaicByMajor?.[sourceMajor];
+  if (block) return block;
+  return '<local:TechTreeAge AgeName="ArchaicAge" />';
+}
+
+function techTreeAgeTechnologiesBlock(sourceMajor, age) {
+  const templates = window.AOM_TECHTREE || {};
+  return templates.ageTechnologiesByMajorAge?.[`${sourceMajor}|${age}`] || "";
+}
+
+function techTreeBonusTrack(tech) {
+  const templates = window.AOM_TECHTREE || {};
+  const block = templates.bonusTrackByGod?.[tech];
+  if (block) return block;
+  return `<local:TechTreeBonusTrack God="${escapeXml(tech)}" />`;
+}
+
+function generateTechTreeAge(age, config) {
+  const techs = config.minorGods[age] || [];
+  const sourceMajor = config.baseMajorName;
+  const technologies = techTreeAgeTechnologiesBlock(sourceMajor, age);
   return `        <local:TechTreeAge AgeName="${age}">
+
             <local:TechTreeAge.Bonuses>
-${techs.map((tech) => `                <local:TechTreeBonusTrack God="${escapeXml(tech)}" />`).join("\n")}
+${techs.map((tech) => indentBlock(techTreeBonusTrack(tech), 4)).join("\n\n")}
             </local:TechTreeAge.Bonuses>
+${technologies ? "\n" + indentBlock(technologies, 3) + "\n" : ""}
         </local:TechTreeAge>`;
 }
 
 function generateReadme(config) {
-  return `AoM Retold Civ Creator draft export
+  return `AoM Retold Major God Creator draft export
 
-Civilization: ${config.displayName}
+Major god: ${config.displayName}
 Internal name: ${config.internalName}
 Base major god cloned: ${config.baseMajorName} (${config.baseCulture})
+Starting god power: ${config.godPower}${config.godPowerSourceMajor ? `, copied from ${config.godPowerSourceMajor}` : ""}
+GodPicker Archaic block copied from: ${config.godPowerSourceMajor || config.baseMajorName}
+TechTree Archaic block copied from: ${config.godPowerSourceMajor || config.baseMajorName}
+TechTree age technology layout copied from: ${config.baseMajorName}
 
 Generated files follow this mod shape:
 ${config.internalName}/game/data/gameplay/major_gods_mods.xml
 ${config.internalName}/game/data/gameplay/minor_gods_mods.xml
 ${config.internalName}/game/data/gameplay/techtree_mods.xml
 ${config.internalName}/game/data/strings/English/stringmods.txt
-${config.internalName}/game/ui_myth/content/pregame/godpicker/godpicker_${config.baseCulture.toLowerCase()}_${config.lowerName}.xaml
+${config.internalName}/game/ui_myth/content/pregame/godpicker/GodPicker_${config.baseCulture}_${config.internalName}.xaml
 ${config.internalName}/game/ui_myth/content/pregame/techtree/TechTree_${config.baseCulture}_${config.internalName}.xaml
 
 Install by extracting the folder into your AoM Retold local mods folder.
 
 Known draft limitation:
-This is designed to validate folder structure and selected god wiring. It may still need additional age-tech effects or UI nodes depending on what the game expects for a fully playable custom civ.
+GodPicker and TechTree XAML now reuse full vanilla ArchaicAge blocks and selected minor-god bonus tracks from your uploaded pregame files. TechTree age technology layouts are copied from the cloned/base major god, while the bonus tracks are replaced with the selected minor gods. The remaining likely test points are age-tech effects and whether any selected cross-pantheon minor god requires additional gameplay files.
 `;
 }
 
@@ -400,7 +562,7 @@ async function generateFiles(config) {
   files.push(textFile(`${root}game/data/gameplay/proto_mods.xml`, `<protomods>\n\t<!-- Empty in this draft. -->\n</protomods>\n`));
   files.push(textFile(`${root}game/data/gameplay/powers_mods.xml`, `<powersmod>\n\t<!-- Empty in this draft. -->\n</powersmod>\n`));
   files.push(textFile(`${root}game/data/strings/English/stringmods.txt`, generateStringMods(config)));
-  files.push(textFile(`${root}game/ui_myth/content/pregame/godpicker/godpicker_${config.baseCulture.toLowerCase()}_${config.lowerName}.xaml`, generateGodPickerXaml(config)));
+  files.push(textFile(`${root}game/ui_myth/content/pregame/godpicker/GodPicker_${config.baseCulture}_${config.internalName}.xaml`, generateGodPickerXaml(config)));
   files.push(textFile(`${root}game/ui_myth/content/pregame/techtree/TechTree_${config.baseCulture}_${config.internalName}.xaml`, generateTechTreeXaml(config)));
   if (iconBytes) files.push(binaryFile(`${root}game/ui_myth/resources/${config.lowerName}/${iconName}`, iconBytes));
   return files;
@@ -501,15 +663,19 @@ function presetFromForm() {
     displayName: config.displayName,
     internalName: config.internalName,
     baseMajorName: config.baseMajorName,
+    godPower: config.godPower,
+    godPowerSourceMajor: config.godPowerSourceMajor,
     sameCultureOnly: els.sameCultureOnly.checked,
     minorGods: config.minorGods,
   };
 }
 function applyPreset(preset) {
   if (!preset) return;
-  els.displayName.value = preset.displayName || "My Custom Civ";
+  els.displayName.value = preset.displayName || "My Custom Major God";
   els.internalName.value = preset.internalName || sanitizeFolder(preset.displayName);
   if (preset.baseMajorName) els.baseMajor.value = preset.baseMajorName;
+  initGodPowerSelect(false);
+  if (preset.godPower && Array.from(els.godPower.options).some((o) => o.value === preset.godPower)) els.godPower.value = preset.godPower;
   els.sameCultureOnly.checked = preset.sameCultureOnly !== false;
   refreshMinorOptions(false);
   if (preset.minorGods) {
@@ -541,7 +707,7 @@ function updatePreview() {
           stringmods.txt
     ui_myth/
       content/pregame/godpicker/
-        godpicker_${config.baseCulture.toLowerCase()}_${config.lowerName}.xaml
+        GodPicker_${config.baseCulture}_${config.internalName}.xaml
       content/pregame/techtree/
         TechTree_${config.baseCulture}_${config.internalName}.xaml
       resources/${config.lowerName}/
@@ -550,16 +716,18 @@ function updatePreview() {
     displayName: config.displayName,
     internalName: config.internalName,
     cloneMajorGod: `${config.baseMajorName} (${config.baseCulture})`,
+    startingGodPower: config.godPowerSourceMajor ? `${config.godPowerSourceMajor} — ${config.godPower}` : config.godPower,
+    godPickerArchaicSource: config.godPowerSourceMajor || config.baseMajorName,
     minorGods: Object.fromEntries(AGES.map((age) => [age, config.minorGods[age].map((t) => {
       const g = getMinorByTech(t);
-      return g ? `${g.tech} — ${g.name} (${g.culture})` : t;
+      return g ? `${g.tech} — ${displayGodName(g.name)} (${g.culture})` : t;
     })])),
   };
   els.configPreview.textContent = JSON.stringify(friendly, null, 2);
 }
 
 function wireEvents() {
-  els.baseMajor.addEventListener("change", () => refreshMinorOptions(true));
+  els.baseMajor.addEventListener("change", () => { initGodPowerSelect(true); refreshMinorOptions(true); });
   els.sameCultureOnly.addEventListener("change", () => refreshMinorOptions(true));
   els.displayName.addEventListener("input", () => {
     if (!els.internalName.dataset.touched) els.internalName.value = sanitizeFolder(els.displayName.value);
@@ -567,6 +735,7 @@ function wireEvents() {
   });
   els.internalName.addEventListener("input", () => { els.internalName.dataset.touched = "true"; updatePreview(); });
   els.iconFile.addEventListener("change", updatePreview);
+  els.godPower.addEventListener("change", updatePreview);
   els.minorPickers.addEventListener("change", updatePreview);
   els.downloadZip.addEventListener("click", handleDownload);
   els.savePreset.addEventListener("click", () => { localStorage.setItem("aomCivCreatorPreset", JSON.stringify(presetFromForm())); setMessage("Preset saved in this browser."); });
@@ -578,6 +747,7 @@ function wireEvents() {
 }
 
 initMajorSelect();
+initGodPowerSelect(false);
 initMinorPickers();
 wireEvents();
 updatePreview();
