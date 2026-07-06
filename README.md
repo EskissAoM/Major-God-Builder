@@ -1,8 +1,8 @@
-# AoM Retold Major God Creator - real-format draft
+# AoM Retold Major God Creator - pantheon draft
 
 Static GitHub Pages prototype. No backend, no build step, no paid hosting.
 
-This version is based on the uploaded vanilla files and the example mod folder layout.
+This version is based on the uploaded vanilla files, the example mod folder layout, the GodPicker files, and the TechTree files.
 
 ## What it currently generates
 
@@ -33,18 +33,21 @@ The app generates a ZIP like:
 
 ## Current behavior
 
-- Creates a new **major god** by cloning an existing vanilla major god `<civ>` entry.
+- Creates a new **major god** for a selected pantheon/culture.
+- Does **not** ask the user to clone a major god anymore.
+- Uses a hidden default template major only for basic pantheon data such as starting units/resources until custom rules are added.
+- Lets the user choose any existing Archaic Age god power, labeled by pantheon.
+- Uses that source major's real Archaic GodPicker and TechTree block.
 - Lets the user choose two existing minor gods per age.
 - Displays minor god names in uppercase in the UI.
-- Lets the user choose one starting god power from a strict major-god → starting-power mapping for the selected pantheon.
+- Writes selected minor god tech names with correct casing, for example `ClassicalAgeAthena`.
 - Adds the selected god power in `techtree_mods.xml` using a `Data / GodPower` effect.
 - Adds age tech effects such as `ClassicalAgeGeneral`, `ClassicalAgeGreek`, etc.
 - Adds `ArchaicAgeWeakenUnits` to the custom Archaic age tech.
 - Builds `GodPicker_<Culture>_<Name>.xaml` from the real uploaded GodPicker XAML blocks.
 - Builds `TechTree_<Culture>_<Name>.xaml` from the real uploaded TechTree XAML blocks.
-- Copies the Archaic TechTree block from the selected starting-power source major god.
-- Copies Classical/Heroic/Mythic TechTree technology layouts from the cloned base major god.
-- Replaces each age's TechTree bonus tracks with the selected minor gods.
+- Replaces each age's GodPicker/TechTree bonus tracks with the selected minor gods.
+- Writes `stringmods.txt` using the `ID = "..." ; Str = "..."` format.
 
 ## GitHub Pages
 
@@ -68,13 +71,12 @@ Then enable GitHub Pages:
 4. Branch: `main`
 5. Folder: `/root`
 
+## Size note
+
+The site stays efficient by storing only extracted data/blocks needed for generation, not the full original game assets. The generated ZIP is created locally in the user's browser and is not hosted by GitHub Pages.
+
 ## Important limitation
 
-This is still a structural/testing draft. The generated mod format is much closer to AoM Retold, but you should test in-game and compare the generated age techs and pregame UI against the real vanilla definitions if something is missing. The TechTree file now uses real vanilla XAML sections, but custom combinations of minor gods may still require additional gameplay/proto/tech support outside the pregame UI.
+This is still a structural/testing draft. The generated mod format is much closer to AoM Retold, but you should test in-game and compare the generated age techs and pregame UI against the real vanilla definitions if something is missing.
 
-The god power picker now uses an explicit mapping from existing major gods to their starting god powers. Review the mapping in `app.js` under `STARTING_GOD_POWER_BY_MAJOR` if a DLC/game update changes a power name.
-
-
-## GodPicker template update
-
-This version includes `godPickerTemplates.js`, generated from the uploaded vanilla GodPicker XAML files. The exported GodPicker file now copies the full ArchaicAge block from the selected starting god-power source major god, and copies full minor-god bonus tracks such as `ClassicalAgeAnubis` from the vanilla files instead of emitting empty placeholder tracks.
+Major-god-specific bonuses such as Hades shades, Poseidon militia details, and similar custom rules are intentionally left for the next pass.

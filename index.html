@@ -11,11 +11,11 @@
     <header class="hero">
       <p class="eyebrow">Static GitHub Pages prototype</p>
       <h1>AoM Retold Major God Creator</h1>
-      <p>This draft reads vanilla major/minor god data extracted from your files and generates a mod ZIP for a custom major god using the same high-level mod folder layout as your example mod.</p>
+      <p>This draft lets you choose a pantheon, any existing Archaic Age god power, and two existing minor gods per age, then generates a mod ZIP for a custom major god.</p>
     </header>
 
     <section class="panel warning">
-      <strong>Draft status:</strong> this now outputs <code>major_gods_mods.xml</code>, <code>techtree_mods.xml</code>, <code>stringmods.txt</code>, and GodPicker/TechTree XAML files. GodPicker output now reuses real vanilla GodPicker XAML blocks for the Archaic age and selected minor gods. It is still a test generator: confirm in-game behavior and adjust the generated age-tech effects as needed.
+      <strong>Draft status:</strong> this outputs <code>major_gods_mods.xml</code>, <code>techtree_mods.xml</code>, <code>stringmods.txt</code>, and GodPicker/TechTree XAML files. The pregame GodPicker and TechTree files use compact generated Archaic Age power blocks and real vanilla blocks for the selected minor gods. It is still a test generator: major-god-specific bonuses such as Hades shades will be handled later.
     </section>
 
     <section class="grid">
@@ -31,9 +31,9 @@
           <small>Only letters/numbers are safest. The app will sanitize it.</small>
         </label>
         <label>
-          Existing major god to clone
+          Pantheon
           <select id="baseMajor"></select>
-          <small>The generated major god copies this god's starting units, resources, culture, portraits, background, etc.</small>
+          <small>Choose the pantheon/culture. The draft uses a hidden default template for that pantheon only for basic starting units/resources until we define custom rules.</small>
         </label>
         <label>
           Optional major god icon PNG/JPG/WebP
@@ -41,14 +41,14 @@
           <small>Stored inside the generated ZIP under <code>game/ui_myth/resources/&lt;major-god&gt;/</code>.</small>
         </label>
         <label>
-          Starting god power
+          Archaic Age god power
           <select id="godPower"></select>
-          <small>Strict list: only starting god powers from existing major gods of the cloned pantheon. It is inserted into the custom Archaic age tech in <code>techtree_mods.xml</code>.</small>
+          <small>Choose any existing Archaic Age god power. Each option is labeled by pantheon for easier recognition; only the power name is written into the generated mod.</small>
         </label>
 
         <h2>2. Minor gods</h2>
-        <p class="muted">Choose exactly two existing minor gods for each age. By default the list is filtered to the base culture, but you can unlock all pantheons.</p>
-        <label class="inline"><input id="sameCultureOnly" type="checkbox" checked /> Show only minor gods from the cloned culture</label>
+        <p class="muted">Choose exactly two existing minor gods for each age. By default the list is filtered to the selected pantheon, but you can unlock all pantheons for testing.</p>
+        <label class="inline"><input id="sameCultureOnly" type="checkbox" checked /> Show only minor gods from the selected pantheon</label>
         <div id="minorPickers" class="minor-grid"></div>
 
         <h2>3. Export</h2>
