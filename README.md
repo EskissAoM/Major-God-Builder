@@ -184,3 +184,31 @@ The bonus `Fuxi - Gains access to Nezha in the Classical Age` is now handled as 
   - `ClassicalAge<CustomGod>` activates `Plow`
   - `HeroicAge<CustomGod>` activates `Irrigation`, except Aztec activates `Chinampas`
   - `MythicAge<CustomGod>` activates `FloodControl`, except Aztec receives no Mythic farm-line effect
+
+
+## Latest fix
+
+- Ra — Pharaoh-empowered Monuments empower nearby buildings now also adds `DisplayedRange` 10.00 to `AbstractMonument` in `ArchaicAge<CustomGod>`.
+
+## Latest change
+
+Set bonus `Pharaohs can summon Animals of Set. Priests can convert wild animals.Starts with a Baboon of Set.Gets Animals of Set on age-up` is now handled as a special case:
+- adds `BaboonOfSet` to `startingunits mode="deathmatch"` in `major_gods_mods.xml`
+- adds Pharaoh / PharaohNewKingdom animal summon commands in Archaic
+- adds Hyena/Gazelle age-up units and enables in Classical
+- adds Crocodile/Giraffe age-up units and enables in Heroic
+- adds Rhinoceros/Hippopotamus age-up units and enables Rhinoceros/Hippopotamus/Elephant in Mythic
+
+## Latest fix
+
+Set animal bonus now also adds Priest Convert enablement to `ArchaicAge<CustomGod>`:
+
+```xml
+<effect type="Data" action="Convert" amount="1.00" subtype="ActionEnable" relativity="Absolute">
+  <target type="ProtoUnit">Priest</target>
+</effect>
+```
+
+### Latest fix
+
+Set's Animals of Set bonus now adds `BaboonOfSet` to both normal `<startingunits>` and `<startingunits mode="deathmatch">` in `major_gods_mods.xml`.

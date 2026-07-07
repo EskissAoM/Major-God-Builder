@@ -5,6 +5,16 @@ const AGES = ["ClassicalAge", "HeroicAge", "MythicAge"];
 const MAX_BONUS_CHOICES = 4;
 const EXCLUDED_MINOR_GOD_NAMES = new Set(["malinalxochitldummy"]);
 
+const PANTHEON_KEYS = {
+  Greek: "G",
+  Egyptian: "E",
+  Norse: "N",
+  Atlantean: "A",
+  Chinese: "C",
+  Japanese: "J",
+  Aztec: "Z",
+};
+
 
 const UNIQUE_TECH_GROUPS = [
   { id: "OlympianParentage", techs: ["OlympianParentage"], pantheon: "All", label: "Olympian Parentage" },
@@ -443,6 +453,116 @@ const NUWA_FAVORED_LAND_FARTHER_BONUS_LABEL = "Buildings spread Favored Land far
 const SHENNONG_MYTH_REGEN_FAVORED_LAND_BONUS_LABEL = "Myth units regenerate hit points on Favored Land. Myth-unit regeneration on Favored Land scales by age";
 const SHENNONG_GIFT_OF_BEASTS_BONUS_LABEL = "Gift of Beasts summons myth units from the next age as favor is earned";
 const SHENNONG_FARM_LINE_UPGRADES_BONUS_LABEL = "Farm Line Upgrades are researched free and instantly in their respective ages";
+const SET_ANIMALS_BONUS_LABEL = "Pharaohs can summon Animals of Set. Priests can convert wild animals.Starts with a Baboon of Set.Gets Animals of Set on age-up";
+
+const SET_ANIMALS_ARCHAIC_EFFECTS = `<effect type="Data" amount="1.00" subtype="Enable" relativity="Absolute">
+	<target type="ProtoUnit">BaboonOfSet</target>
+</effect>
+<effect type="Data" action="Convert" amount="1.00" subtype="ActionEnable" relativity="Absolute">
+	<target type="ProtoUnit">Priest</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="BaboonOfSet" row="1" column="1" relativity="Assign">
+	<target type="ProtoUnit">Pharaoh</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="GazelleOfSet" row="1" column="2" relativity="Assign">
+	<target type="ProtoUnit">Pharaoh</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="GiraffeOfSet" row="1" column="3" relativity="Assign">
+	<target type="ProtoUnit">Pharaoh</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="HippopotamusOfSet" row="1" column="4" relativity="Assign">
+	<target type="ProtoUnit">Pharaoh</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="HyenaOfSet" row="2" column="1" relativity="Assign">
+	<target type="ProtoUnit">Pharaoh</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="CrocodileOfSet" row="2" column="2" relativity="Assign">
+	<target type="ProtoUnit">Pharaoh</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="RhinocerosOfSet" row="2" column="3" relativity="Assign">
+	<target type="ProtoUnit">Pharaoh</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="ElephantOfSet" row="2" column="4" relativity="Assign">
+	<target type="ProtoUnit">Pharaoh</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="BaboonOfSet" row="1" column="1" relativity="Assign">
+	<target type="ProtoUnit">PharaohNewKingdom</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="GazelleOfSet" row="1" column="2" relativity="Assign">
+	<target type="ProtoUnit">PharaohNewKingdom</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="GiraffeOfSet" row="1" column="3" relativity="Assign">
+	<target type="ProtoUnit">PharaohNewKingdom</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="HippopotamusOfSet" row="1" column="4" relativity="Assign">
+	<target type="ProtoUnit">PharaohNewKingdom</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="HyenaOfSet" row="2" column="1" relativity="Assign">
+	<target type="ProtoUnit">PharaohNewKingdom</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="CrocodileOfSet" row="2" column="2" relativity="Assign">
+	<target type="ProtoUnit">PharaohNewKingdom</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="RhinocerosOfSet" row="2" column="3" relativity="Assign">
+	<target type="ProtoUnit">PharaohNewKingdom</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="ElephantOfSet" row="2" column="4" relativity="Assign">
+	<target type="ProtoUnit">PharaohNewKingdom</target>
+</effect>`;
+
+const SET_ANIMALS_CLASSICAL_EFFECTS = `<effect type="CreateUnit" unit="HyenaOfSet" generator="AbstractTemple">
+	<pattern type="Scatter" speed="0.00" radius="0.00" quantity="1.00" minradius="0.00">
+		<offset x="0.00" y="0.00" z="0.00"></offset>
+	</pattern>
+</effect>
+<effect type="CreateUnit" unit="GazelleOfSet" generator="AbstractTemple">
+	<pattern type="Scatter" speed="0.00" radius="0.00" quantity="2.00" minradius="0.00">
+		<offset x="0.00" y="0.00" z="0.00"></offset>
+	</pattern>
+</effect>
+<effect type="Data" amount="1.00" subtype="Enable" relativity="Absolute">
+	<target type="ProtoUnit">HyenaOfSet</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="Enable" relativity="Absolute">
+	<target type="ProtoUnit">GazelleOfSet</target>
+</effect>`;
+
+const SET_ANIMALS_HEROIC_EFFECTS = `<effect type="CreateUnit" unit="CrocodileOfSet" generator="AbstractTemple">
+	<pattern type="Scatter" speed="0.00" radius="0.00" quantity="1.00" minradius="0.00">
+		<offset x="0.00" y="0.00" z="0.00"></offset>
+	</pattern>
+</effect>
+<effect type="CreateUnit" unit="GiraffeOfSet" generator="AbstractTemple">
+	<pattern type="Scatter" speed="0.00" radius="0.00" quantity="2.00" minradius="0.00">
+		<offset x="0.00" y="0.00" z="0.00"></offset>
+	</pattern>
+</effect>
+<effect type="Data" amount="1.00" subtype="Enable" relativity="Absolute">
+	<target type="ProtoUnit">CrocodileOfSet</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="Enable" relativity="Absolute">
+	<target type="ProtoUnit">GiraffeOfSet</target>
+</effect>`;
+
+const SET_ANIMALS_MYTHIC_EFFECTS = `<effect type="CreateUnit" unit="RhinocerosOfSet" generator="AbstractTemple">
+	<pattern type="Scatter" speed="0.00" radius="0.00" quantity="1.00" minradius="0.00">
+		<offset x="0.00" y="0.00" z="0.00"></offset>
+	</pattern>
+</effect>
+<effect type="CreateUnit" unit="HippopotamusOfSet" generator="AbstractTemple">
+	<pattern type="Scatter" speed="0.00" radius="0.00" quantity="2.00" minradius="0.00">
+		<offset x="0.00" y="0.00" z="0.00"></offset>
+	</pattern>
+</effect>
+<effect type="Data" amount="1.00" subtype="Enable" relativity="Absolute">
+	<target type="ProtoUnit">RhinocerosOfSet</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="Enable" relativity="Absolute">
+	<target type="ProtoUnit">HippopotamusOfSet</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="Enable" relativity="Absolute">
+	<target type="ProtoUnit">ElephantOfSet</target>
+</effect>`;
 
 const ORANOS_SKY_PASSAGE_ARCHAIC_EFFECTS = `<effect type="Data" amount="1.00" subtype="Enable" relativity="Absolute">
 	<target type="ProtoUnit">SkyPassage</target>
@@ -631,6 +751,7 @@ function bonusTechEffects(config) {
       if (entry.label === FUXI_NEZHA_BONUS_LABEL) return "";
       if (entry.label === SHENNONG_GIFT_OF_BEASTS_BONUS_LABEL) return "";
       if (entry.label === SHENNONG_FARM_LINE_UPGRADES_BONUS_LABEL) return "";
+      if (entry.label === SET_ANIMALS_BONUS_LABEL) return SET_ANIMALS_ARCHAIC_EFFECTS;
       if (entry.label === SHENNONG_MYTH_REGEN_FAVORED_LAND_BONUS_LABEL) return SHENNONG_MYTH_REGEN_FAVORED_LAND_AGE_EFFECTS;
       return sanitizeBonusTechEffects(entry.techEffects || "");
     })
@@ -648,6 +769,7 @@ function bonusClassicalTechEffects(config) {
   if (selectedHasBonusLabel(config, SHENNONG_GIFT_OF_BEASTS_BONUS_LABEL)) effects.push(SHENNONG_GIFT_OF_BEASTS_CLASSICAL_EFFECTS);
   if (selectedHasBonusLabel(config, SHENNONG_FARM_LINE_UPGRADES_BONUS_LABEL)) effects.push(SHENNONG_FARM_LINE_CLASSICAL_EFFECTS);
   if (selectedHasBonusLabel(config, SHENNONG_MYTH_REGEN_FAVORED_LAND_BONUS_LABEL)) effects.push(SHENNONG_MYTH_REGEN_FAVORED_LAND_AGE_EFFECTS);
+  if (selectedHasBonusLabel(config, SET_ANIMALS_BONUS_LABEL)) effects.push(SET_ANIMALS_CLASSICAL_EFFECTS);
   return effects.filter(Boolean).join("\n");
 }
 function bonusHeroicTechEffects(config) {
@@ -662,6 +784,7 @@ function bonusHeroicTechEffects(config) {
   if (selectedHasBonusLabel(config, SHENNONG_GIFT_OF_BEASTS_BONUS_LABEL)) effects.push(SHENNONG_GIFT_OF_BEASTS_HEROIC_EFFECTS);
   if (selectedHasBonusLabel(config, SHENNONG_FARM_LINE_UPGRADES_BONUS_LABEL)) effects.push(shennongFarmLineHeroicEffects(config));
   if (selectedHasBonusLabel(config, SHENNONG_MYTH_REGEN_FAVORED_LAND_BONUS_LABEL)) effects.push(SHENNONG_MYTH_REGEN_FAVORED_LAND_AGE_EFFECTS);
+  if (selectedHasBonusLabel(config, SET_ANIMALS_BONUS_LABEL)) effects.push(SET_ANIMALS_HEROIC_EFFECTS);
   return effects.filter(Boolean).join("\n");
 }
 function bonusMythicTechEffects(config) {
@@ -673,6 +796,7 @@ function bonusMythicTechEffects(config) {
   if (selectedHasBonusLabel(config, FUXI_NEZHA_BONUS_LABEL)) effects.push(FUXI_NEZHA_MYTHIC_EFFECTS);
   if (selectedHasBonusLabel(config, SHENNONG_FARM_LINE_UPGRADES_BONUS_LABEL)) effects.push(shennongFarmLineMythicEffects(config));
   if (selectedHasBonusLabel(config, SHENNONG_MYTH_REGEN_FAVORED_LAND_BONUS_LABEL)) effects.push(SHENNONG_MYTH_REGEN_FAVORED_LAND_AGE_EFFECTS);
+  if (selectedHasBonusLabel(config, SET_ANIMALS_BONUS_LABEL)) effects.push(SET_ANIMALS_MYTHIC_EFFECTS);
   return effects.filter(Boolean).join("\n");
 }
 function hasKronosExtraMythUnitBonus(config) {
@@ -747,7 +871,7 @@ function sanitizeBonusTechEffects(xml) {
 
 function bonusMajorXml(config) {
   return selectedBonusEntries(config)
-    .filter((entry) => ![HUITZ_TONALLI_RESOURCES_BONUS_LABEL, HUITZ_SHORN_TONALLI_BONUS_LABEL, NUWA_FAVORED_LAND_FARTHER_BONUS_LABEL].includes(entry.label))
+    .filter((entry) => ![HUITZ_TONALLI_RESOURCES_BONUS_LABEL, HUITZ_SHORN_TONALLI_BONUS_LABEL, NUWA_FAVORED_LAND_FARTHER_BONUS_LABEL, SET_ANIMALS_BONUS_LABEL].includes(entry.label))
     .map((entry) => entry.majorXml || "")
     .filter(Boolean)
     .join("\n");
@@ -929,7 +1053,7 @@ function generateMajorGodXmlFromPantheonTemplate(config, iconPath) {
   const civ = doc.documentElement;
 
   setText(doc, civ, "name", config.internalName);
-  setText(doc, civ, "key", config.internalName.slice(0, 1).toUpperCase());
+  setText(doc, civ, "key", PANTHEON_KEYS[config.baseCulture] || config.baseCulture.slice(0, 1).toUpperCase());
   setText(doc, civ, "culture", config.baseCulture);
   setText(doc, civ, "displaynameid", config.stringPrefix);
   setText(doc, civ, "rollovernameid", `${config.stringPrefix}_LR`);
@@ -967,6 +1091,9 @@ function applyMajorGodSpecialBonusPatches(doc, civ, config) {
   if (hasSelectedBonus(config, "Huitzilopochtli", HUITZ_SHORN_TONALLI_BONUS_LABEL)) {
     insertIntoBountyResourceEarning(doc, civ, HUITZ_SHORN_TONALLI_MULTIPLIER);
   }
+  if (hasSelectedBonus(config, "Set", SET_ANIMALS_BONUS_LABEL)) {
+    addSetBaboonToStartingUnits(doc, civ);
+  }
 }
 
 const HUITZ_TONALLI_RESOURCE_REWARDS = `<bountyreward unittype="MilitaryUnit" resourcetype="Favor" condition="Destroy" asspawnedunit="Tonalli">0.75</bountyreward>
@@ -975,6 +1102,34 @@ const HUITZ_TONALLI_RESOURCE_REWARDS = `<bountyreward unittype="MilitaryUnit" re
 <bountyreward unittype="MilitaryUnit" resourcetype="Gold" multiplybyunitcost="true" condition="Destroy" asspawnedunit="Tonalli">0.05</bountyreward>`;
 
 const HUITZ_SHORN_TONALLI_MULTIPLIER = `<bountytargetmultiplier relativity="basepercent" unittype="MilitaryUnit" attackertype="ShornOne" condition="Destroy" resourcetype="Favor">1.0</bountytargetmultiplier>`;
+
+
+function addSetBaboonToStartingUnits(doc, civ) {
+  const normal = Array.from(civ.querySelectorAll("startingunits"))
+    .find((node) => !node.hasAttribute("mode"));
+  const deathmatch = Array.from(civ.querySelectorAll("startingunits"))
+    .find((node) => node.getAttribute("mode") === "deathmatch");
+  addSetBaboonToStartingUnitsBlock(doc, normal, "normal");
+  addSetBaboonToStartingUnitsBlock(doc, deathmatch, "deathmatch");
+}
+
+function addSetBaboonToStartingUnitsBlock(doc, startingUnitsNode, label) {
+  if (!startingUnitsNode) {
+    console.warn(`Set animals bonus needs a <startingunits> ${label} block, but this pantheon template does not have one.`);
+    return;
+  }
+  const alreadyExists = Array.from(startingUnitsNode.querySelectorAll("unit"))
+    .some((unit) => (unit.textContent || "").trim() === "BaboonOfSet");
+  if (alreadyExists) return;
+  const unit = doc.createElement("unit");
+  unit.setAttribute("count", "1");
+  unit.setAttribute("delay", "6.00");
+  unit.setAttribute("x", "-11.00");
+  unit.setAttribute("y", "0.00");
+  unit.setAttribute("z", "-4.00");
+  unit.textContent = "BaboonOfSet";
+  startingUnitsNode.appendChild(unit);
+}
 
 function replaceBuildingChainFromSelectedBonus(doc, civ, config, label) {
   const entry = selectedBonusEntries(config).find((bonus) => bonus.label === label);
