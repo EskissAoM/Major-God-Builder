@@ -212,3 +212,44 @@ Set animal bonus now also adds Priest Convert enablement to `ArchaicAge<CustomGo
 ### Latest fix
 
 Set's Animals of Set bonus now adds `BaboonOfSet` to both normal `<startingunits>` and `<startingunits mode="deathmatch">` in `major_gods_mods.xml`.
+
+## Latest change
+
+- Fixed Demeter — Herdables near Temples improve favor-gathering: generated Archaic age tech now uses the explicit TempleFavorBonus, HerdableMagnet, and MoveNearbyLiveStockToUnit effects.
+- Fixed Demeter — Herdables fatten faster and hold more food: generated Archaic age tech now only adds the fatten/carry effects, without leaking the Temple favor-gathering effects.
+
+
+## Latest fix
+
+Demeter — Town Centers and Village Centers spawn herdables on age-up now adds Goat effects to ClassicalAge<CustomGod>, Pig effects to HeroicAge<CustomGod>, and Cow effects to MythicAge<CustomGod>.
+
+
+## Latest fix
+
+- Demeter — Human soldiers and myth units train faster by age: now adds the train-time effects once in each custom age tech from Archaic through Mythic.
+- Hades — Myth units gain bonus hit points by age: now adds the 1.04 MythUnit hitpoint effect once in each custom age tech from Archaic through Mythic.
+
+
+## Latest fix
+
+- Hades — Ranged soldiers and heroes get extra range and line of sight: removed the unintended Building +2 RangedAttack MaximumRange effect from this bonus. The separate fortification range bonus remains unchanged.
+
+
+## Latest fix
+
+- Hades — Ranged-soldier technologies are cheaper now uses the corrected full cost-reduction list, including SunRay and ShaftsOfPlague.
+
+
+## Latest fix
+
+- Poseidon — Cavalry, Caravans, and myth units gain speed by age now adds MythUnit, AbstractCavalry, and TradeUnit +0.10 MaximumVelocity once in each custom age tech from Archaic through Mythic.
+
+
+## Latest fixes
+
+- Poseidon — A free Hippocampus respawns at the first Dock: allowed for all pantheons and removed the direct `CreateUnit` Hippocampus-at-Dock effect.
+- Poseidon — Market exchange rates are improved by 15%: allowed for all pantheons and now adds only BuyFactor/SellFactor effects in ArchaicAge.
+- Poseidon — Stables and Markets are 30% cheaper: confirmed ArchaicAge effects for Market and Stable wood cost at 70%.
+
+## Latest fix
+- Poseidon — Cavalry, Caravans, and myth units gain speed by age now adds the speed block exactly once in Archaic, Classical, Heroic, and Mythic age techs. The accidental triple insertion in Classical was removed.

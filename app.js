@@ -442,7 +442,9 @@ function enforceBonusDifference(changedSelect) {
 const GAIA_ECON_GUILD_BONUS_LABEL = "Economic Guild and upgrades are cheaper and available earlier";
 const KRONOS_EXTRA_MYTH_UNITS_BONUS_LABEL = "Receives 2 free Temple myth units instead of 1 on age-up";
 const ORANOS_SKY_PASSAGE_BONUS_LABEL = "Can build a new Sky Passage each age.Units can travel instantly between Sky Passages";
+const POSEIDON_SPEED_BY_AGE_BONUS_LABEL = "Cavalry, Caravans, and myth units gain speed by age";
 const HUITZ_TONALLI_RESOURCES_BONUS_LABEL = "Collecting Tonalli grants resources in addition to favor";
+const ZEUS_STARTING_FAVOR_BONUS_LABEL = "Starts with 10 favor";
 const HUITZ_SHORN_TONALLI_BONUS_LABEL = "Shorn Ones have more hit points. Shorn Ones generate extra Tonalli in combat";
 const QUETZ_EAGLE_RANGE_LOS_BONUS_LABEL = "Eagle Warriors gain +1 range in the Heroic and Mythic Ages.Eagle Warriors gain +1 line of sight in the Heroic and Mythic Ages";
 const TEZCAT_DEVOTE_FAVOR_BONUS_LABEL = "Devoting Settlers gives higher immediate favor by age";
@@ -454,6 +456,11 @@ const SHENNONG_MYTH_REGEN_FAVORED_LAND_BONUS_LABEL = "Myth units regenerate hit 
 const SHENNONG_GIFT_OF_BEASTS_BONUS_LABEL = "Gift of Beasts summons myth units from the next age as favor is earned";
 const SHENNONG_FARM_LINE_UPGRADES_BONUS_LABEL = "Farm Line Upgrades are researched free and instantly in their respective ages";
 const SET_ANIMALS_BONUS_LABEL = "Pharaohs can summon Animals of Set. Priests can convert wild animals.Starts with a Baboon of Set.Gets Animals of Set on age-up";
+const DEMETER_HERDABLES_TEMPLE_FAVOR_BONUS_LABEL = "Herdables near Temples improve favor-gathering";
+const DEMETER_HERDABLES_FATTEN_BONUS_LABEL = "Herdables fatten faster and hold more food";
+const DEMETER_HERDABLES_SPAWN_ON_AGE_UP_BONUS_LABEL = "Town Centers and Village Centers spawn herdables on age-up";
+const DEMETER_TRAIN_FASTER_BY_AGE_BONUS_LABEL = "Human soldiers and myth units train faster by age";
+const HADES_MYTH_HP_BY_AGE_BONUS_LABEL = "Myth units gain bonus hit points by age";
 
 const SET_ANIMALS_ARCHAIC_EFFECTS = `<effect type="Data" amount="1.00" subtype="Enable" relativity="Absolute">
 	<target type="ProtoUnit">BaboonOfSet</target>
@@ -570,6 +577,16 @@ const ORANOS_SKY_PASSAGE_ARCHAIC_EFFECTS = `<effect type="Data" amount="1.00" su
 
 const ORANOS_SKY_PASSAGE_AGE_EFFECTS = `<effect type="Data" amount="1.00" subtype="BuildLimit" relativity="Absolute">
 	<target type="ProtoUnit">SkyPassage</target>
+</effect>`;
+
+const POSEIDON_SPEED_BY_AGE_EFFECTS = `<effect type="Data" amount="0.10" subtype="MaximumVelocity" relativity="Absolute">
+	<target type="ProtoUnit">MythUnit</target>
+</effect>
+<effect type="Data" amount="0.10" subtype="MaximumVelocity" relativity="Absolute">
+	<target type="ProtoUnit">AbstractCavalry</target>
+</effect>
+<effect type="Data" amount="0.10" subtype="MaximumVelocity" relativity="Absolute">
+	<target type="ProtoUnit">TradeUnit</target>
 </effect>`;
 
 const QUETZ_EAGLE_RANGE_LOS_AGE_EFFECTS = `<effect type="Data" action="RangedAttack" amount="1.0" subtype="MaximumRange" relativity="Absolute">
@@ -734,6 +751,56 @@ const GAIA_ECON_GUILD_HEROIC_EFFECTS = `<effect type="TechStatus" status="obtain
 <effect type="TechStatus" status="obtainable">Quarry</effect>
 <effect type="TechStatus" status="obtainable">FloodControl</effect>`;
 
+const DEMETER_HERDABLES_TEMPLE_FAVOR_ARCHAIC_EFFECTS = `<effect type="Data" protoaction="TempleFavorBonus" amount="1.00" subtype="ProtoActionAdd" unittype="DemeterBonusContainer" relativity="Assign">
+	<target type="ProtoUnit">Herdable</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="SetUnitType" unittype="HerdableMagnet" relativity="Absolute">
+	<target type="ProtoUnit">AbstractTemple</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" command="MoveNearbyLiveStockToUnit" row="3" column="4" relativity="Assign">
+	<target type="ProtoUnit">AbstractTemple</target>
+</effect>`;
+
+const DEMETER_HERDABLES_FATTEN_ARCHAIC_EFFECTS = `<effect type="Data" action="AutoGatherFood" amount="1.40" subtype="WorkRate" unittype="Food" relativity="BasePercent">
+	<target type="ProtoUnit">Herdable</target>
+</effect>
+<effect type="Data" amount="1.20" subtype="CarryCapacity" resource="Food" relativity="BasePercent">
+	<target type="ProtoUnit">Herdable</target>
+</effect>`;
+
+function demeterSpawnHerdableEffects(unit) {
+  return `<effect type="CreateUnit" unit="${unit}" generator="TownCenter" allgenerators="true" ignorerally="">
+	<pattern type="Leaving" speed="0.00" radius="0.00" quantity="3.00" minradius="0.00">
+		<offset x="-5.00" y="0.00" z="0.00"></offset>
+	</pattern>
+</effect>
+<effect type="CreateUnit" unit="${unit}" generator="VillageCenter" allgenerators="true" ignorerally="">
+	<pattern type="Leaving" speed="0.00" radius="0.00" quantity="1.00" minradius="0.00">
+		<offset x="-5.00" y="0.00" z="0.00"></offset>
+	</pattern>
+</effect>
+<effect type="CreateUnit" unit="${unit}" generator="CitadelCenter" allgenerators="true" ignorerally="">
+	<pattern type="Leaving" speed="0.00" radius="0.00" quantity="1.00" minradius="0.00">
+		<offset x="-5.00" y="0.00" z="0.00"></offset>
+	</pattern>
+</effect>`;
+}
+
+const DEMETER_HERDABLES_SPAWN_CLASSICAL_EFFECTS = demeterSpawnHerdableEffects("Goat");
+const DEMETER_HERDABLES_SPAWN_HEROIC_EFFECTS = demeterSpawnHerdableEffects("Pig");
+const DEMETER_HERDABLES_SPAWN_MYTHIC_EFFECTS = demeterSpawnHerdableEffects("Cow");
+
+const DEMETER_TRAIN_FASTER_BY_AGE_EFFECTS = `<effect type="Data" amount="0.90" subtype="TrainPoints" relativity="Percent">
+	<target type="ProtoUnit">HumanSoldier</target>
+</effect>
+<effect type="Data" amount="0.90" subtype="TrainPoints" relativity="Percent">
+	<target type="ProtoUnit">MythUnit</target>
+</effect>`;
+
+const HADES_MYTH_HP_BY_AGE_EFFECTS = `<effect type="Data" amount="1.04" subtype="Hitpoints" relativity="BasePercent">
+	<target type="ProtoUnit">MythUnit</target>
+</effect>`;
+
 function selectedHasBonusLabel(config, label) {
   return selectedBonusEntries(config).some((entry) => entry.label === label);
 }
@@ -742,6 +809,12 @@ function bonusTechEffects(config) {
   return selectedBonusEntries(config)
     .map((entry) => {
       if (entry.label === GAIA_ECON_GUILD_BONUS_LABEL) return GAIA_ECON_GUILD_ARCHAIC_EFFECTS;
+      if (entry.label === DEMETER_HERDABLES_TEMPLE_FAVOR_BONUS_LABEL) return DEMETER_HERDABLES_TEMPLE_FAVOR_ARCHAIC_EFFECTS;
+      if (entry.label === DEMETER_HERDABLES_FATTEN_BONUS_LABEL) return DEMETER_HERDABLES_FATTEN_ARCHAIC_EFFECTS;
+      if (entry.label === DEMETER_HERDABLES_SPAWN_ON_AGE_UP_BONUS_LABEL) return "";
+      if (entry.label === DEMETER_TRAIN_FASTER_BY_AGE_BONUS_LABEL) return DEMETER_TRAIN_FASTER_BY_AGE_EFFECTS;
+      if (entry.label === HADES_MYTH_HP_BY_AGE_BONUS_LABEL) return HADES_MYTH_HP_BY_AGE_EFFECTS;
+      if (entry.label === POSEIDON_SPEED_BY_AGE_BONUS_LABEL) return POSEIDON_SPEED_BY_AGE_EFFECTS;
       if (entry.label === ORANOS_SKY_PASSAGE_BONUS_LABEL) return ORANOS_SKY_PASSAGE_ARCHAIC_EFFECTS;
       if (entry.label === TEZCAT_DEVOTE_FAVOR_BONUS_LABEL) return TEZCAT_DEVOTE_FAVOR_AGE_EFFECTS;
       if (entry.label === KRONOS_EXTRA_MYTH_UNITS_BONUS_LABEL) return "";
@@ -763,6 +836,7 @@ function bonusClassicalTechEffects(config) {
   const effects = [];
   if (selectedHasBonusLabel(config, GAIA_ECON_GUILD_BONUS_LABEL)) effects.push(GAIA_ECON_GUILD_CLASSICAL_EFFECTS);
   if (selectedHasBonusLabel(config, ORANOS_SKY_PASSAGE_BONUS_LABEL)) effects.push(ORANOS_SKY_PASSAGE_AGE_EFFECTS);
+  if (selectedHasBonusLabel(config, POSEIDON_SPEED_BY_AGE_BONUS_LABEL)) effects.push(POSEIDON_SPEED_BY_AGE_EFFECTS);
   if (selectedHasBonusLabel(config, TEZCAT_DEVOTE_FAVOR_BONUS_LABEL)) effects.push(TEZCAT_DEVOTE_FAVOR_AGE_EFFECTS);
   if (selectedHasBonusLabel(config, TEZCAT_OBSIDIAN_SHARD_BONUS_LABEL)) effects.push(TEZCAT_OBSIDIAN_SHARD_CLASSICAL_EFFECTS);
   if (selectedHasBonusLabel(config, FUXI_NEZHA_BONUS_LABEL)) effects.push(FUXI_NEZHA_CLASSICAL_EFFECTS);
@@ -770,12 +844,16 @@ function bonusClassicalTechEffects(config) {
   if (selectedHasBonusLabel(config, SHENNONG_FARM_LINE_UPGRADES_BONUS_LABEL)) effects.push(SHENNONG_FARM_LINE_CLASSICAL_EFFECTS);
   if (selectedHasBonusLabel(config, SHENNONG_MYTH_REGEN_FAVORED_LAND_BONUS_LABEL)) effects.push(SHENNONG_MYTH_REGEN_FAVORED_LAND_AGE_EFFECTS);
   if (selectedHasBonusLabel(config, SET_ANIMALS_BONUS_LABEL)) effects.push(SET_ANIMALS_CLASSICAL_EFFECTS);
+  if (selectedHasBonusLabel(config, DEMETER_HERDABLES_SPAWN_ON_AGE_UP_BONUS_LABEL)) effects.push(DEMETER_HERDABLES_SPAWN_CLASSICAL_EFFECTS);
+  if (selectedHasBonusLabel(config, DEMETER_TRAIN_FASTER_BY_AGE_BONUS_LABEL)) effects.push(DEMETER_TRAIN_FASTER_BY_AGE_EFFECTS);
+  if (selectedHasBonusLabel(config, HADES_MYTH_HP_BY_AGE_BONUS_LABEL)) effects.push(HADES_MYTH_HP_BY_AGE_EFFECTS);
   return effects.filter(Boolean).join("\n");
 }
 function bonusHeroicTechEffects(config) {
   const effects = [];
   if (selectedHasBonusLabel(config, GAIA_ECON_GUILD_BONUS_LABEL)) effects.push(GAIA_ECON_GUILD_HEROIC_EFFECTS);
   if (selectedHasBonusLabel(config, ORANOS_SKY_PASSAGE_BONUS_LABEL)) effects.push(ORANOS_SKY_PASSAGE_AGE_EFFECTS);
+  if (selectedHasBonusLabel(config, POSEIDON_SPEED_BY_AGE_BONUS_LABEL)) effects.push(POSEIDON_SPEED_BY_AGE_EFFECTS);
   if (selectedHasBonusLabel(config, QUETZ_EAGLE_RANGE_LOS_BONUS_LABEL)) effects.push(QUETZ_EAGLE_RANGE_LOS_AGE_EFFECTS);
   if (selectedHasBonusLabel(config, TEZCAT_DEVOTE_FAVOR_BONUS_LABEL)) effects.push(TEZCAT_DEVOTE_FAVOR_AGE_EFFECTS);
   if (selectedHasBonusLabel(config, TEZCAT_JAGUAR_RIDER_BONUS_LABEL)) effects.push(TEZCAT_JAGUAR_RIDER_HEROIC_EFFECTS);
@@ -785,11 +863,15 @@ function bonusHeroicTechEffects(config) {
   if (selectedHasBonusLabel(config, SHENNONG_FARM_LINE_UPGRADES_BONUS_LABEL)) effects.push(shennongFarmLineHeroicEffects(config));
   if (selectedHasBonusLabel(config, SHENNONG_MYTH_REGEN_FAVORED_LAND_BONUS_LABEL)) effects.push(SHENNONG_MYTH_REGEN_FAVORED_LAND_AGE_EFFECTS);
   if (selectedHasBonusLabel(config, SET_ANIMALS_BONUS_LABEL)) effects.push(SET_ANIMALS_HEROIC_EFFECTS);
+  if (selectedHasBonusLabel(config, DEMETER_HERDABLES_SPAWN_ON_AGE_UP_BONUS_LABEL)) effects.push(DEMETER_HERDABLES_SPAWN_HEROIC_EFFECTS);
+  if (selectedHasBonusLabel(config, DEMETER_TRAIN_FASTER_BY_AGE_BONUS_LABEL)) effects.push(DEMETER_TRAIN_FASTER_BY_AGE_EFFECTS);
+  if (selectedHasBonusLabel(config, HADES_MYTH_HP_BY_AGE_BONUS_LABEL)) effects.push(HADES_MYTH_HP_BY_AGE_EFFECTS);
   return effects.filter(Boolean).join("\n");
 }
 function bonusMythicTechEffects(config) {
   const effects = [];
   if (selectedHasBonusLabel(config, ORANOS_SKY_PASSAGE_BONUS_LABEL)) effects.push(ORANOS_SKY_PASSAGE_AGE_EFFECTS);
+  if (selectedHasBonusLabel(config, POSEIDON_SPEED_BY_AGE_BONUS_LABEL)) effects.push(POSEIDON_SPEED_BY_AGE_EFFECTS);
   if (selectedHasBonusLabel(config, QUETZ_EAGLE_RANGE_LOS_BONUS_LABEL)) effects.push(QUETZ_EAGLE_RANGE_LOS_AGE_EFFECTS);
   if (selectedHasBonusLabel(config, TEZCAT_DEVOTE_FAVOR_BONUS_LABEL)) effects.push(TEZCAT_DEVOTE_FAVOR_AGE_EFFECTS);
   if (selectedHasBonusLabel(config, TEZCAT_OBSIDIAN_SHARD_BONUS_LABEL)) effects.push(TEZCAT_OBSIDIAN_SHARD_MYTHIC_EFFECTS);
@@ -797,6 +879,9 @@ function bonusMythicTechEffects(config) {
   if (selectedHasBonusLabel(config, SHENNONG_FARM_LINE_UPGRADES_BONUS_LABEL)) effects.push(shennongFarmLineMythicEffects(config));
   if (selectedHasBonusLabel(config, SHENNONG_MYTH_REGEN_FAVORED_LAND_BONUS_LABEL)) effects.push(SHENNONG_MYTH_REGEN_FAVORED_LAND_AGE_EFFECTS);
   if (selectedHasBonusLabel(config, SET_ANIMALS_BONUS_LABEL)) effects.push(SET_ANIMALS_MYTHIC_EFFECTS);
+  if (selectedHasBonusLabel(config, DEMETER_HERDABLES_SPAWN_ON_AGE_UP_BONUS_LABEL)) effects.push(DEMETER_HERDABLES_SPAWN_MYTHIC_EFFECTS);
+  if (selectedHasBonusLabel(config, DEMETER_TRAIN_FASTER_BY_AGE_BONUS_LABEL)) effects.push(DEMETER_TRAIN_FASTER_BY_AGE_EFFECTS);
+  if (selectedHasBonusLabel(config, HADES_MYTH_HP_BY_AGE_BONUS_LABEL)) effects.push(HADES_MYTH_HP_BY_AGE_EFFECTS);
   return effects.filter(Boolean).join("\n");
 }
 function hasKronosExtraMythUnitBonus(config) {
@@ -871,7 +956,7 @@ function sanitizeBonusTechEffects(xml) {
 
 function bonusMajorXml(config) {
   return selectedBonusEntries(config)
-    .filter((entry) => ![HUITZ_TONALLI_RESOURCES_BONUS_LABEL, HUITZ_SHORN_TONALLI_BONUS_LABEL, NUWA_FAVORED_LAND_FARTHER_BONUS_LABEL, SET_ANIMALS_BONUS_LABEL].includes(entry.label))
+    .filter((entry) => ![ZEUS_STARTING_FAVOR_BONUS_LABEL, HUITZ_TONALLI_RESOURCES_BONUS_LABEL, HUITZ_SHORN_TONALLI_BONUS_LABEL, NUWA_FAVORED_LAND_FARTHER_BONUS_LABEL, SET_ANIMALS_BONUS_LABEL].includes(entry.label))
     .map((entry) => entry.majorXml || "")
     .filter(Boolean)
     .join("\n");
@@ -1079,6 +1164,9 @@ function hasSelectedBonus(config, sourceMajor, label) {
 }
 
 function applyMajorGodSpecialBonusPatches(doc, civ, config) {
+  if (hasSelectedBonus(config, "Zeus", ZEUS_STARTING_FAVOR_BONUS_LABEL)) {
+    addZeusStartingFavor(doc, civ);
+  }
   if (hasSelectedBonus(config, "Gaia", "Starts with 2 Hero Citizens")) {
     replaceAtlanteanStartingCitizensWithHeroes(civ);
   }
@@ -1094,6 +1182,28 @@ function applyMajorGodSpecialBonusPatches(doc, civ, config) {
   if (hasSelectedBonus(config, "Set", SET_ANIMALS_BONUS_LABEL)) {
     addSetBaboonToStartingUnits(doc, civ);
   }
+}
+
+
+function addZeusStartingFavor(doc, civ) {
+  const normal = Array.from(civ.querySelectorAll("startingresources"))
+    .find((node) => !node.hasAttribute("mode"));
+  if (normal) setOrAppendResource(doc, normal, "favor", "10");
+  else console.warn("Zeus starting favor bonus needs a normal <startingresources> block, but this pantheon template does not have one.");
+
+  const deathmatch = Array.from(civ.querySelectorAll("startingresources"))
+    .find((node) => node.getAttribute("mode") === "deathmatch");
+  if (deathmatch) setOrAppendResource(doc, deathmatch, "favor", "110");
+  else console.warn("Zeus starting favor bonus needs a deathmatch <startingresources mode=\"deathmatch\"> block, but this pantheon template does not have one.");
+}
+
+function setOrAppendResource(doc, resourcesNode, tag, value) {
+  let node = resourcesNode.querySelector(tag);
+  if (!node) {
+    node = doc.createElement(tag);
+    resourcesNode.appendChild(node);
+  }
+  node.textContent = value;
 }
 
 const HUITZ_TONALLI_RESOURCE_REWARDS = `<bountyreward unittype="MilitaryUnit" resourcetype="Favor" condition="Destroy" asspawnedunit="Tonalli">0.75</bountyreward>
