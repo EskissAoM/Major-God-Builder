@@ -319,3 +319,16 @@ Update in this build:
 
 
 Update: Thor Dwarven Armory prereq patches are now added only to the selected Heroic-age minor god techs, not Classical or Mythic minor god techs.
+
+Update: Greek pantheon hero and unique-unit choices
+- When the selected pantheon is Greek, the UI now shows Greek-only choices for a hero line and a Mythic-age Fortress unique unit.
+- The hero line enables one hero per age in `techtree_mods.xml`: Archaic, Classical, Heroic, and Mythic.
+- The unique human unit is enabled in Mythic age.
+
+
+## Latest change
+
+Chinese pantheon now has a Mythic Age special hero choice: YangJian, LiJing, or WenZhong. The selected hero is enabled in `MythicAge<CustomGod>`.
+
+
+- Poseidon — Stables and Markets are 30% cheaper: Japanese can now select this bonus; when Japanese is selected, the Stable discount targets StableJapanese instead of Stable.

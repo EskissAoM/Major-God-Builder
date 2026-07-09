@@ -37,10 +37,45 @@
           <small>Choose the pantheon/culture. The draft uses a hidden default template for that pantheon only for basic starting units/resources until we define custom rules.</small>
         </label>
         <label>
-          Optional major god icon PNG/JPG/WebP
-          <input id="iconFile" type="file" accept="image/png,image/jpeg,image/webp" />
+          Optional major god icon PNG/JPEG/TGA/DDS
+          <input id="iconFile" type="file" accept=".png,.jpg,.jpeg,.tga,.dds,image/png,image/jpeg" />
           <small>Stored inside the generated ZIP under <code>game/ui_myth/resources/&lt;major-god&gt;/</code>.</small>
         </label>
+        <div id="greekOptions" class="subpanel" hidden>
+          <h3>Greek-only choices</h3>
+          <p class="muted">Choose one hero for each age from that age's Greek hero pool, plus one Fortress unique unit.</p>
+          <label>
+            Archaic hero
+            <select id="greekHeroArchaic"></select>
+          </label>
+          <label>
+            Classical hero
+            <select id="greekHeroClassical"></select>
+          </label>
+          <label>
+            Heroic hero
+            <select id="greekHeroHeroic"></select>
+          </label>
+          <label>
+            Mythic hero
+            <select id="greekHeroMythic"></select>
+          </label>
+          <label>
+            Mythic-age Fortress unique unit
+            <select id="greekUniqueUnit"></select>
+            <small>Enabled in Mythic Age.</small>
+          </label>
+        </div>
+        <div id="chineseOptions" class="subpanel" hidden>
+          <h3>Chinese-only choices</h3>
+          <p class="muted">Choose one Mythic Age special hero.</p>
+          <label>
+            Mythic special hero
+            <select id="chineseMythicHero"></select>
+            <small>Enabled in Mythic Age.</small>
+          </label>
+        </div>
+
         <label>
           Archaic Age god power
           <select id="godPower"></select>

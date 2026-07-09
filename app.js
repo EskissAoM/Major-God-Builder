@@ -72,6 +72,27 @@ const DEFAULT_TEMPLATE_MAJOR_BY_CULTURE = {
   Aztec: "Huitzilopochtli",
 };
 
+
+const GREEK_HERO_POOLS = {
+  archaic: ["Jason", "Ajax", "Theseus", "Orpheus"],
+  classical: ["Heracles", "Achilles", "Atalanta", "Iolaus"],
+  heroic: ["Odysseus", "Chiron", "Hippolyta", "Icarus"],
+  mythic: ["Bellerophon", "Perseus", "Polyphemus", "Midas"],
+};
+
+const GREEK_UNIQUE_UNITS = {
+  Zeus: "Myrmidon",
+  Hades: "Gastraphetoros",
+  Poseidon: "Hetairos",
+  Demeter: "AmazonArcher",
+};
+
+const CHINESE_MYTHIC_HEROES = {
+  Fuxi: "YangJian",
+  Nüwa: "LiJing",
+  Shennong: "WenZhong",
+};
+
 const STARTING_GOD_POWER_BY_MAJOR = {
   // Greek
   Zeus: "Bolt",
@@ -131,6 +152,14 @@ const els = {
   displayName: $("displayName"),
   majorTitle: $("majorTitle"),
   baseMajor: $("baseMajor"),
+  greekOptions: $("greekOptions"),
+  greekHeroArchaic: $("greekHeroArchaic"),
+  greekHeroClassical: $("greekHeroClassical"),
+  greekHeroHeroic: $("greekHeroHeroic"),
+  greekHeroMythic: $("greekHeroMythic"),
+  greekUniqueUnit: $("greekUniqueUnit"),
+  chineseOptions: $("chineseOptions"),
+  chineseMythicHero: $("chineseMythicHero"),
   godPower: $("godPower"),
   uniqueTech1: $("uniqueTech1"),
   uniqueTech2: $("uniqueTech2"),
@@ -256,6 +285,57 @@ function initMajorSelect() {
   if (cultures.includes("Greek")) els.baseMajor.value = "Greek";
 }
 
+
+function fillGreekHeroSelect(select, ageKey, keep = true) {
+  if (!select) return;
+  const pool = GREEK_HERO_POOLS[ageKey] || [];
+  const previous = keep ? select.value : "";
+  select.innerHTML = "";
+  for (const hero of pool) {
+    const opt = document.createElement("option");
+    opt.value = hero;
+    opt.textContent = hero;
+    select.appendChild(opt);
+  }
+  select.value = previous && pool.includes(previous) ? previous : pool[0] || "";
+}
+
+function initGreekSpecificSelects(keep = true) {
+  if (!els.greekOptions || !els.greekHeroArchaic || !els.greekHeroClassical || !els.greekHeroHeroic || !els.greekHeroMythic || !els.greekUniqueUnit) return;
+  const isGreek = selectedPantheon() === "Greek";
+  els.greekOptions.hidden = !isGreek;
+
+  fillGreekHeroSelect(els.greekHeroArchaic, "archaic", keep);
+  fillGreekHeroSelect(els.greekHeroClassical, "classical", keep);
+  fillGreekHeroSelect(els.greekHeroHeroic, "heroic", keep);
+  fillGreekHeroSelect(els.greekHeroMythic, "mythic", keep);
+
+  const previousUnique = keep ? els.greekUniqueUnit.value : "";
+  els.greekUniqueUnit.innerHTML = "";
+  for (const [major, unit] of Object.entries(GREEK_UNIQUE_UNITS)) {
+    const opt = document.createElement("option");
+    opt.value = unit;
+    opt.textContent = `${major}: ${unit}`;
+    els.greekUniqueUnit.appendChild(opt);
+  }
+  els.greekUniqueUnit.value = previousUnique && Object.values(GREEK_UNIQUE_UNITS).includes(previousUnique) ? previousUnique : GREEK_UNIQUE_UNITS.Zeus;
+}
+
+function initChineseSpecificSelects(keep = true) {
+  if (!els.chineseOptions || !els.chineseMythicHero) return;
+  const isChinese = selectedPantheon() === "Chinese";
+  els.chineseOptions.hidden = !isChinese;
+
+  const previous = keep ? els.chineseMythicHero.value : "";
+  els.chineseMythicHero.innerHTML = "";
+  for (const [major, hero] of Object.entries(CHINESE_MYTHIC_HEROES)) {
+    const opt = document.createElement("option");
+    opt.value = hero;
+    opt.textContent = `${major}: ${hero}`;
+    els.chineseMythicHero.appendChild(opt);
+  }
+  els.chineseMythicHero.value = previous && Object.values(CHINESE_MYTHIC_HEROES).includes(previous) ? previous : CHINESE_MYTHIC_HEROES.Fuxi;
+}
 
 function initGodPowerSelect(keep = true) {
   const previous = keep ? els.godPower.value : "";
@@ -443,6 +523,7 @@ const GAIA_ECON_GUILD_BONUS_LABEL = "Economic Guild and upgrades are cheaper and
 const KRONOS_EXTRA_MYTH_UNITS_BONUS_LABEL = "Receives 2 free Temple myth units instead of 1 on age-up";
 const ORANOS_SKY_PASSAGE_BONUS_LABEL = "Can build a new Sky Passage each age.Units can travel instantly between Sky Passages";
 const POSEIDON_SPEED_BY_AGE_BONUS_LABEL = "Cavalry, Caravans, and myth units gain speed by age";
+const POSEIDON_STABLE_MARKET_DISCOUNT_BONUS_LABEL = "Stables and Markets are 30% cheaper";
 const HUITZ_TONALLI_RESOURCES_BONUS_LABEL = "Collecting Tonalli grants resources in addition to favor";
 const ZEUS_STARTING_FAVOR_BONUS_LABEL = "Starts with 10 favor";
 const HUITZ_SHORN_TONALLI_BONUS_LABEL = "Shorn Ones have more hit points. Shorn Ones generate extra Tonalli in combat";
@@ -588,6 +669,16 @@ const POSEIDON_SPEED_BY_AGE_EFFECTS = `<effect type="Data" amount="0.10" subtype
 <effect type="Data" amount="0.10" subtype="MaximumVelocity" relativity="Absolute">
 	<target type="ProtoUnit">TradeUnit</target>
 </effect>`;
+
+function poseidonStableMarketDiscountEffects(config) {
+  const stableUnit = config.baseCulture === "Japanese" ? "StableJapanese" : "Stable";
+  return `<effect type="Data" amount="0.70" subtype="cost" resource="Wood" relativity="Percent">
+	<target type="ProtoUnit">Market</target>
+</effect>
+<effect type="Data" amount="0.70" subtype="cost" resource="Wood" relativity="Percent">
+	<target type="ProtoUnit">${stableUnit}</target>
+</effect>`;
+}
 
 const QUETZ_EAGLE_RANGE_LOS_AGE_EFFECTS = `<effect type="Data" action="RangedAttack" amount="1.0" subtype="MaximumRange" relativity="Absolute">
 	<target type="ProtoUnit">EagleWarrior</target>
@@ -815,6 +906,7 @@ function bonusTechEffects(config) {
       if (entry.label === DEMETER_TRAIN_FASTER_BY_AGE_BONUS_LABEL) return DEMETER_TRAIN_FASTER_BY_AGE_EFFECTS;
       if (entry.label === HADES_MYTH_HP_BY_AGE_BONUS_LABEL) return HADES_MYTH_HP_BY_AGE_EFFECTS;
       if (entry.label === POSEIDON_SPEED_BY_AGE_BONUS_LABEL) return POSEIDON_SPEED_BY_AGE_EFFECTS;
+      if (entry.label === POSEIDON_STABLE_MARKET_DISCOUNT_BONUS_LABEL) return poseidonStableMarketDiscountEffects(config);
       if (entry.label === ORANOS_SKY_PASSAGE_BONUS_LABEL) return ORANOS_SKY_PASSAGE_ARCHAIC_EFFECTS;
       if (entry.label === TEZCAT_DEVOTE_FAVOR_BONUS_LABEL) return TEZCAT_DEVOTE_FAVOR_AGE_EFFECTS;
       if (entry.label === KRONOS_EXTRA_MYTH_UNITS_BONUS_LABEL) return "";
@@ -1076,6 +1168,30 @@ function getMinorByTech(tech) {
   return window.AOM_DATA.minors.find((g) => !isExcludedMinorGod(g) && (g.tech === tech || canonicalMinorTech(g) === canonical));
 }
 
+function selectedGreekHeroes() {
+  const pick = (select, ageKey) => {
+    const value = select?.value || "";
+    const pool = GREEK_HERO_POOLS[ageKey] || [];
+    return pool.includes(value) ? value : (pool[0] || "");
+  };
+  return {
+    archaic: pick(els.greekHeroArchaic, "archaic"),
+    classical: pick(els.greekHeroClassical, "classical"),
+    heroic: pick(els.greekHeroHeroic, "heroic"),
+    mythic: pick(els.greekHeroMythic, "mythic"),
+  };
+}
+
+function selectedGreekUniqueUnit() {
+  const unit = els.greekUniqueUnit?.value || GREEK_UNIQUE_UNITS.Zeus;
+  return Object.values(GREEK_UNIQUE_UNITS).includes(unit) ? unit : GREEK_UNIQUE_UNITS.Zeus;
+}
+
+function selectedChineseMythicHero() {
+  const hero = els.chineseMythicHero?.value || CHINESE_MYTHIC_HEROES.Fuxi;
+  return Object.values(CHINESE_MYTHIC_HEROES).includes(hero) ? hero : CHINESE_MYTHIC_HEROES.Fuxi;
+}
+
 function getConfig() {
   const base = selectedBaseMajor();
   const internal = sanitizeFolder(els.displayName.value);
@@ -1091,6 +1207,9 @@ function getConfig() {
     uiTemplateMajor: base.name,
     baseCulture: selectedPantheon(),
     baseMajor: base,
+    greekHeroes: selectedGreekHeroes(),
+    greekUniqueUnit: selectedGreekUniqueUnit(),
+    chineseMythicHero: selectedChineseMythicHero(),
     godPower: els.godPower.value,
     godPowerPantheon: els.godPower.selectedOptions[0]?.dataset.pantheon || "",
     uniqueTechs,
@@ -1115,6 +1234,16 @@ function validateConfig(config) {
   if (config.godPower && !validStartingPowers.includes(config.godPower)) {
     errors.push("Starting god power must be one of the existing Archaic Age god powers.");
   }
+  if (config.baseCulture === "Greek") {
+    const heroes = config.greekHeroes || {};
+    for (const [ageKey, pool] of Object.entries(GREEK_HERO_POOLS)) {
+      if (!pool.includes(heroes[ageKey])) errors.push(`Choose a valid Greek ${ageKey} hero.`);
+    }
+    if (!Object.values(GREEK_UNIQUE_UNITS).includes(config.greekUniqueUnit)) errors.push("Choose a valid Greek unique unit.");
+  }
+  if (config.baseCulture === "Chinese") {
+    if (!Object.values(CHINESE_MYTHIC_HEROES).includes(config.chineseMythicHero)) errors.push("Choose a valid Chinese Mythic special hero.");
+  }
   const availableUniqueIds = new Set(availableUniqueTechGroups().map((group) => group.id));
   const uniquePicks = config.uniqueTechs || [];
   if (uniquePicks.length > 2) errors.push("Choose no more than two unique technologies.");
@@ -1136,9 +1265,10 @@ function validateConfig(config) {
   }
   const icon = els.iconFile.files[0];
   if (icon) {
-    const allowed = ["image/png", "image/jpeg", "image/webp"];
-    if (!allowed.includes(icon.type)) errors.push("Icon must be PNG, JPG, or WebP.");
-    if (icon.size > 2 * 1024 * 1024) errors.push("Icon must be 2 MB or smaller for this draft.");
+    const allowedIconExts = new Set(["png", "jpg", "jpeg", "tga", "dds"]);
+    const ext = icon.name.split(".").pop().toLowerCase();
+    if (!allowedIconExts.has(ext)) errors.push("Icon must be PNG, JPEG, TGA, or DDS.");
+    if (icon.size > 5 * 1024 * 1024) errors.push("Icon must be 5 MB or smaller.");
   }
   return errors;
 }
@@ -1611,6 +1741,55 @@ function cultureAgeTech(age, culture) {
 }
 
 
+function enableProtoUnitEffect(unit) {
+  return `<effect type="Data" amount="1.00" subtype="Enable" relativity="Absolute">
+	<target type="ProtoUnit">${escapeXml(unit)}</target>
+</effect>`;
+}
+
+function greekHeroes(config) {
+  if (!config || config.baseCulture !== "Greek") return null;
+  const heroes = config.greekHeroes || {};
+  return {
+    archaic: GREEK_HERO_POOLS.archaic.includes(heroes.archaic) ? heroes.archaic : GREEK_HERO_POOLS.archaic[0],
+    classical: GREEK_HERO_POOLS.classical.includes(heroes.classical) ? heroes.classical : GREEK_HERO_POOLS.classical[0],
+    heroic: GREEK_HERO_POOLS.heroic.includes(heroes.heroic) ? heroes.heroic : GREEK_HERO_POOLS.heroic[0],
+    mythic: GREEK_HERO_POOLS.mythic.includes(heroes.mythic) ? heroes.mythic : GREEK_HERO_POOLS.mythic[0],
+  };
+}
+
+function greekArchaicExtraEffects(config) {
+  const heroes = greekHeroes(config);
+  if (!heroes) return "";
+  return enableProtoUnitEffect(heroes.archaic);
+}
+
+function greekClassicalExtraEffects(config) {
+  const heroes = greekHeroes(config);
+  if (!heroes) return "";
+  return enableProtoUnitEffect(heroes.classical);
+}
+
+function greekHeroicExtraEffects(config) {
+  const heroes = greekHeroes(config);
+  if (!heroes) return "";
+  return enableProtoUnitEffect(heroes.heroic);
+}
+
+function greekMythicExtraEffects(config) {
+  const heroes = greekHeroes(config);
+  if (!heroes) return "";
+  const effects = [enableProtoUnitEffect(heroes.mythic)];
+  if (config.greekUniqueUnit) effects.push(enableProtoUnitEffect(config.greekUniqueUnit));
+  return effects.join("\n");
+}
+
+function chineseMythicExtraEffects(config) {
+  if (!config || config.baseCulture !== "Chinese") return "";
+  const hero = Object.values(CHINESE_MYTHIC_HEROES).includes(config.chineseMythicHero) ? config.chineseMythicHero : CHINESE_MYTHIC_HEROES.Fuxi;
+  return enableProtoUnitEffect(hero);
+}
+
 function norseClassicalExtraEffects(config) {
   if (!config || config.baseCulture !== "Norse") return "";
   return `			<effect type="Data" amount="1.00" subtype="Enable" relativity="Absolute">
@@ -1674,6 +1853,7 @@ function generateTechTreeMods(config) {
 		<effects>
 			<effect type="TechStatus" status="active">${escapeXml(cultureAgeTech("ArchaicAge", culture))}</effect>
 ${techStatusEffects([...classical, c.classical])}
+${indentTabBlock(greekArchaicExtraEffects(config), 3)}
 ${kronosExtraMythUnitStatusEffects(config, "ArchaicAge")}
 ${techStatusEffects(uniqueTechNames(config), "obtainable")}
 ${indentTabBlock(bonusTechEffects(config), 3)}
@@ -1695,6 +1875,7 @@ ${uniqueTechEntries(config).some((group) => group.extraArchaicEffect === "FreyrT
 			<effect type="TechStatus" status="active">ClassicalAgeGeneral</effect>
 			<effect type="TechStatus" status="active">${escapeXml(cultureAgeTech("ClassicalAge", culture))}</effect>
 ${norseClassicalExtraEffects(config)}
+${indentTabBlock(greekClassicalExtraEffects(config), 3)}
 ${techStatusEffects([...heroic, c.heroic])}
 ${kronosExtraMythUnitStatusEffects(config, "ClassicalAge")}
 ${indentTabBlock(bonusClassicalTechEffects(config), 3)}
@@ -1714,6 +1895,7 @@ ${indentTabBlock(bonusClassicalTechEffects(config), 3)}
 			<effect type="TechStatus" status="active">${escapeXml(cultureAgeTech("HeroicAge", culture))}</effect>
 ${techStatusEffects([...mythic, c.mythic])}
 ${norseHeroicExtraEffects(config)}
+${indentTabBlock(greekHeroicExtraEffects(config), 3)}
 ${kronosExtraMythUnitStatusEffects(config, "HeroicAge")}
 ${indentTabBlock(bonusHeroicTechEffects(config), 3)}
 		</effects>
@@ -1731,6 +1913,8 @@ ${indentTabBlock(bonusHeroicTechEffects(config), 3)}
 			<effect type="TechStatus" status="active">MythicAgeGeneral</effect>
 			<effect type="TechStatus" status="active">${escapeXml(cultureAgeTech("MythicAge", culture))}</effect>
 ${norseMythicExtraEffects(config)}
+${indentTabBlock(greekMythicExtraEffects(config), 3)}
+${indentTabBlock(chineseMythicExtraEffects(config), 3)}
 ${indentTabBlock(bonusMythicTechEffects(config), 3)}
 		</effects>
 	</tech>
@@ -1939,7 +2123,7 @@ async function generateFiles(config) {
   let iconBytes = null;
   let iconName = "";
   if (icon) {
-    const ext = icon.type === "image/jpeg" ? "jpg" : icon.type === "image/webp" ? "webp" : "png";
+    const ext = icon.name.split(".").pop().toLowerCase();
     iconName = `${config.internalName}_icon.${ext}`;
     iconPath = `resources\\${config.lowerName}\\${iconName}`;
     iconBytes = await icon.arrayBuffer();
@@ -2056,6 +2240,9 @@ function presetFromForm() {
     majorTitle: config.majorTitle,
     baseCulture: config.baseCulture,
     godPower: config.godPower,
+    greekHeroes: config.greekHeroes,
+    greekUniqueUnit: config.greekUniqueUnit,
+    chineseMythicHero: config.chineseMythicHero,
     godPowerPantheon: config.godPowerPantheon,
     uniqueTechs: config.uniqueTechs,
     bonuses: config.bonuses,
@@ -2072,6 +2259,38 @@ function applyPreset(preset) {
     const oldMajor = window.AOM_DATA.majors.find((m) => m.name === preset.baseMajorName);
     if (oldMajor) els.baseMajor.value = oldMajor.culture;
   }
+  initGreekSpecificSelects(false);
+  initChineseSpecificSelects(false);
+  if (preset.greekHeroes) {
+    const pairs = [
+      [els.greekHeroArchaic, "archaic"],
+      [els.greekHeroClassical, "classical"],
+      [els.greekHeroHeroic, "heroic"],
+      [els.greekHeroMythic, "mythic"],
+    ];
+    for (const [select, ageKey] of pairs) {
+      const value = preset.greekHeroes[ageKey];
+      if (select && GREEK_HERO_POOLS[ageKey]?.includes(value)) select.value = value;
+    }
+  }
+  if (preset.greekHeroLine) {
+    // Backward compatibility with presets saved before Greek heroes became per-age choices.
+    const legacyLines = {
+      Zeus: { archaic: "Jason", classical: "Heracles", heroic: "Odysseus", mythic: "Bellerophon" },
+      Hades: { archaic: "Ajax", classical: "Achilles", heroic: "Chiron", mythic: "Perseus" },
+      Poseidon: { archaic: "Theseus", classical: "Atalanta", heroic: "Hippolyta", mythic: "Polyphemus" },
+      Demeter: { archaic: "Orpheus", classical: "Iolaus", heroic: "Icarus", mythic: "Midas" },
+    };
+    const legacy = legacyLines[preset.greekHeroLine];
+    if (legacy) {
+      if (els.greekHeroArchaic) els.greekHeroArchaic.value = legacy.archaic;
+      if (els.greekHeroClassical) els.greekHeroClassical.value = legacy.classical;
+      if (els.greekHeroHeroic) els.greekHeroHeroic.value = legacy.heroic;
+      if (els.greekHeroMythic) els.greekHeroMythic.value = legacy.mythic;
+    }
+  }
+  if (preset.greekUniqueUnit && els.greekUniqueUnit && Object.values(GREEK_UNIQUE_UNITS).includes(preset.greekUniqueUnit)) els.greekUniqueUnit.value = preset.greekUniqueUnit;
+  if (preset.chineseMythicHero && els.chineseMythicHero && Object.values(CHINESE_MYTHIC_HEROES).includes(preset.chineseMythicHero)) els.chineseMythicHero.value = preset.chineseMythicHero;
   initGodPowerSelect(false);
   if (preset.godPower && Array.from(els.godPower.options).some((o) => o.value === preset.godPower)) els.godPower.value = preset.godPower;
   initUniqueTechSelects(false);
@@ -2137,6 +2356,8 @@ function updatePreview() {
     pregameUiLayoutFallback: config.uiTemplateMajor,
     startingGodPower: config.godPower,
     godPowerPantheon: config.godPowerPantheon,
+    greekChoices: config.baseCulture === "Greek" ? { heroes: config.greekHeroes, mythicUniqueUnit: config.greekUniqueUnit } : undefined,
+    chineseChoices: config.baseCulture === "Chinese" ? { mythicSpecialHero: config.chineseMythicHero } : undefined,
     uniqueTechs: uniqueTechEntries(config).map((group) => ({ choice: displayTechName(group.label || group.id), grants: group.techs.map(displayTechName), internal: group.techs })),
     godBonuses: selectedBonusEntries(config).map((entry) => ({ source: `${entry.sourcePantheon} / ${entry.sourceMajor}`, bonus: entry.label, files: entry.files })),
     minorGods: Object.fromEntries(AGES.map((age) => [age, config.minorGods[age].map((t) => {
@@ -2148,11 +2369,14 @@ function updatePreview() {
 }
 
 function wireEvents() {
-  els.baseMajor.addEventListener("change", () => { initGodPowerSelect(true); initUniqueTechSelects(true); initBonusSelects(true); refreshMinorOptions(true); });
+  els.baseMajor.addEventListener("change", () => { initGreekSpecificSelects(true); initChineseSpecificSelects(true); initGodPowerSelect(true); initUniqueTechSelects(true); initBonusSelects(true); refreshMinorOptions(true); });
   els.sameCultureOnly.addEventListener("change", () => refreshMinorOptions(true));
   els.displayName.addEventListener("input", updatePreview);
   els.iconFile.addEventListener("change", updatePreview);
   els.godPower.addEventListener("change", () => { initUniqueTechSelects(true); updatePreview(); });
+  for (const select of [els.greekHeroArchaic, els.greekHeroClassical, els.greekHeroHeroic, els.greekHeroMythic, els.greekUniqueUnit, els.chineseMythicHero]) {
+    if (select) select.addEventListener("change", updatePreview);
+  }
   els.uniqueTech1.addEventListener("change", (event) => { enforceUniqueTechDifference(event.target); updatePreview(); });
   els.uniqueTech2.addEventListener("change", (event) => { enforceUniqueTechDifference(event.target); updatePreview(); });
   if (els.bonusPickers) els.bonusPickers.addEventListener("change", (event) => { enforceBonusDifference(event.target); updatePreview(); });
@@ -2167,6 +2391,8 @@ function wireEvents() {
 }
 
 initMajorSelect();
+initGreekSpecificSelects(false);
+initChineseSpecificSelects(false);
 initGodPowerSelect(false);
 initUniqueTechSelects(false);
 initBonusSelects(false);
