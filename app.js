@@ -828,6 +828,11 @@ function bonusTechEffects(config) {
       if (entry.label === SHENNONG_MYTH_REGEN_FAVORED_LAND_BONUS_LABEL) return SHENNONG_MYTH_REGEN_FAVORED_LAND_AGE_EFFECTS;
       if (entry.label === SUSANOO_BUSHIDO_MYTH_XP_BONUS_LABEL) return SUSANOO_BUSHIDO_MYTH_XP_ARCHAIC_EFFECTS;
       if (entry.label === TSUKUYOMI_FREE_KITSUNE_BONUS_LABEL) return TSUKUYOMI_FREE_KITSUNE_EFFECT;
+      if (entry.label === THOR_DWARVEN_ARMORY_BONUS_LABEL) return THOR_DWARVEN_ARMORY_ARCHAIC_EFFECTS;
+      if (entry.label === THOR_DWARF_SPAWN_BONUS_LABEL) return thorDwarfSpawnArchaicEffects(config);
+      if (entry.label === "Building repair is free. Gatherers and Dwarves can repair") {
+        return config.baseCulture === "Norse" ? sanitizeBonusTechEffects(entry.techEffects || "") : "";
+      }
       return sanitizeBonusTechEffects(entry.techEffects || "");
     })
     .filter(Boolean)
@@ -850,6 +855,8 @@ function bonusClassicalTechEffects(config) {
   if (selectedHasBonusLabel(config, DEMETER_TRAIN_FASTER_BY_AGE_BONUS_LABEL)) effects.push(DEMETER_TRAIN_FASTER_BY_AGE_EFFECTS);
   if (selectedHasBonusLabel(config, HADES_MYTH_HP_BY_AGE_BONUS_LABEL)) effects.push(HADES_MYTH_HP_BY_AGE_EFFECTS);
   if (selectedHasBonusLabel(config, TSUKUYOMI_FREE_KITSUNE_BONUS_LABEL)) effects.push(TSUKUYOMI_FREE_KITSUNE_EFFECT);
+  if (selectedHasBonusLabel(config, ODIN_RAVEN_SCOUTS_BONUS_LABEL)) effects.push(ODIN_RAVEN_LOS_AGE_EFFECT);
+  if (selectedHasBonusLabel(config, THOR_DWARVEN_ARMORY_BONUS_LABEL)) effects.push(thorDwarvenArmoryClassicalEffects(config));
   return effects.filter(Boolean).join("\n");
 }
 function bonusHeroicTechEffects(config) {
@@ -870,6 +877,8 @@ function bonusHeroicTechEffects(config) {
   if (selectedHasBonusLabel(config, DEMETER_TRAIN_FASTER_BY_AGE_BONUS_LABEL)) effects.push(DEMETER_TRAIN_FASTER_BY_AGE_EFFECTS);
   if (selectedHasBonusLabel(config, HADES_MYTH_HP_BY_AGE_BONUS_LABEL)) effects.push(HADES_MYTH_HP_BY_AGE_EFFECTS);
   if (selectedHasBonusLabel(config, TSUKUYOMI_FREE_KITSUNE_BONUS_LABEL)) effects.push(TSUKUYOMI_FREE_KITSUNE_EFFECT);
+  if (selectedHasBonusLabel(config, ODIN_RAVEN_SCOUTS_BONUS_LABEL)) effects.push(ODIN_RAVEN_LOS_AGE_EFFECT);
+  if (selectedHasBonusLabel(config, THOR_DWARVEN_ARMORY_BONUS_LABEL)) effects.push(THOR_DWARVEN_ARMORY_HEROIC_EFFECTS);
   return effects.filter(Boolean).join("\n");
 }
 function bonusMythicTechEffects(config) {
@@ -887,6 +896,8 @@ function bonusMythicTechEffects(config) {
   if (selectedHasBonusLabel(config, DEMETER_TRAIN_FASTER_BY_AGE_BONUS_LABEL)) effects.push(DEMETER_TRAIN_FASTER_BY_AGE_EFFECTS);
   if (selectedHasBonusLabel(config, HADES_MYTH_HP_BY_AGE_BONUS_LABEL)) effects.push(HADES_MYTH_HP_BY_AGE_EFFECTS);
   if (selectedHasBonusLabel(config, TSUKUYOMI_FREE_KITSUNE_BONUS_LABEL)) effects.push(TSUKUYOMI_FREE_KITSUNE_EFFECT);
+  if (selectedHasBonusLabel(config, ODIN_RAVEN_SCOUTS_BONUS_LABEL)) effects.push(ODIN_RAVEN_LOS_AGE_EFFECT);
+  if (selectedHasBonusLabel(config, THOR_DWARVEN_ARMORY_BONUS_LABEL)) effects.push(THOR_DWARVEN_ARMORY_MYTHIC_EFFECTS);
   return effects.filter(Boolean).join("\n");
 }
 function hasKronosExtraMythUnitBonus(config) {
@@ -961,7 +972,7 @@ function sanitizeBonusTechEffects(xml) {
 
 function bonusMajorXml(config) {
   return selectedBonusEntries(config)
-    .filter((entry) => ![ZEUS_STARTING_FAVOR_BONUS_LABEL, HUITZ_TONALLI_RESOURCES_BONUS_LABEL, HUITZ_SHORN_TONALLI_BONUS_LABEL, NUWA_FAVORED_LAND_FARTHER_BONUS_LABEL, SET_ANIMALS_BONUS_LABEL, SUSANOO_POWER_COST_FACTOR_BONUS_LABEL, SUSANOO_BUSHIDO_MYTH_XP_BONUS_LABEL, TSUKUYOMI_RESEARCH_BUSHIDO_XP_BONUS_LABEL].includes(entry.label))
+    .filter((entry) => ![ZEUS_STARTING_FAVOR_BONUS_LABEL, HUITZ_TONALLI_RESOURCES_BONUS_LABEL, HUITZ_SHORN_TONALLI_BONUS_LABEL, NUWA_FAVORED_LAND_FARTHER_BONUS_LABEL, SET_ANIMALS_BONUS_LABEL, SUSANOO_POWER_COST_FACTOR_BONUS_LABEL, SUSANOO_BUSHIDO_MYTH_XP_BONUS_LABEL, TSUKUYOMI_RESEARCH_BUSHIDO_XP_BONUS_LABEL, ODIN_GREAT_HALL_FAVOR_BONUS_LABEL].includes(entry.label))
     .map((entry) => entry.majorXml || "")
     .filter(Boolean)
     .join("\n");
@@ -1196,6 +1207,9 @@ function applyMajorGodSpecialBonusPatches(doc, civ, config) {
   if (hasSelectedBonus(config, "Tsukuyomi", TSUKUYOMI_RESEARCH_BUSHIDO_XP_BONUS_LABEL)) {
     insertIntoBountyResourceEarning(doc, civ, TSUKUYOMI_RESEARCH_BUSHIDO_XP_BOUNTY);
   }
+  if (hasSelectedBonus(config, "Odin", ODIN_GREAT_HALL_FAVOR_BONUS_LABEL)) {
+    insertIntoBountyResourceEarning(doc, civ, ODIN_GREAT_HALL_FAVOR_BOUNTY);
+  }
 }
 
 
@@ -1242,6 +1256,81 @@ const TSUKUYOMI_RESEARCH_BUSHIDO_XP_BOUNTY = `<researchreward techtype="all" com
 <researchcostmultiplier techtype="all" resourcetype="Favor">10.0</researchcostmultiplier>
 <excludedtechflag>AgeUpgrade</excludedtechflag>
 <excludedtechflag>DynamicCost</excludedtechflag>`;
+const ODIN_GREAT_HALL_FAVOR_BONUS_LABEL = "Great Hall units generate +25% favor in battle";
+const ODIN_GREAT_HALL_FAVOR_BOUNTY = `<bountyreward protounit="Hersir" condition="Damage" resourcetype="Favor">1.25</bountyreward>
+<bountyreward protounit="Jarl" condition="Damage" resourcetype="Favor">1.25</bountyreward>
+<bountyreward protounit="Godi" condition="Damage" resourcetype="Favor">1.25</bountyreward>
+<bountyreward protounit="RaidingCavalry" condition="Damage" resourcetype="Favor">1.25</bountyreward>`;
+const ODIN_RAVEN_SCOUTS_BONUS_LABEL = "Two Raven scouts spawn after the first Temple and respawn when killed";
+const ODIN_RAVEN_LOS_AGE_EFFECT = `<effect type="Data" amount="2" subtype="LOS" relativity="Absolute">
+	<target type="ProtoUnit">Raven</target>
+</effect>`;
+
+const THOR_DWARVEN_ARMORY_BONUS_LABEL = "Dwarven Armory can be built and researched in any age.Dwarven Armory has extra upgrades";
+const THOR_DWARVEN_ARMORY_ARCHAIC_EFFECTS = `<effect type="TechStatus" status="obtainable">CopperWeapons</effect>
+<effect type="TechStatus" status="obtainable">CopperArmor</effect>
+<effect type="TechStatus" status="obtainable">CopperShields</effect>
+<effect type="TechStatus" status="obtainable">BronzeWeapons</effect>
+<effect type="TechStatus" status="obtainable">BronzeArmor</effect>
+<effect type="TechStatus" status="obtainable">BronzeShields</effect>
+<effect type="TechStatus" status="obtainable">IronWeapons</effect>
+<effect type="TechStatus" status="obtainable">IronArmor</effect>
+<effect type="TechStatus" status="obtainable">IronShields</effect>
+<effect type="TechStatus" status="obtainable">Ballistics</effect>
+<effect type="TechStatus" status="obtainable">BurningPitch</effect>
+<effect type="TechStatus" status="obtainable">DwarvenWeapons</effect>
+<effect type="TechStatus" status="obtainable">MeteoricIronArmor</effect>
+<effect type="TechStatus" status="obtainable">DragonscaleShields</effect>
+<effect type="Data" amount="1.00" subtype="Enable" relativity="Absolute">
+	<target type="ProtoUnit">DwarvenArmory</target>
+</effect>`;
+
+function thorDwarvenArmoryClassicalEffects(config) {
+  return `<effect type="TechStatus" status="active">DisableStandardArmory${escapeXml(config.internalName)}</effect>
+<effect type="Data" amount="0.67" subtype="ResearchRate" relativity="Absolute">
+	<target type="ProtoUnit">DwarvenArmory</target>
+</effect>`;
+}
+
+const THOR_DWARVEN_ARMORY_HEROIC_EFFECTS = `<effect type="Data" amount="0.5" subtype="ResearchRate" relativity="Absolute">
+	<target type="ProtoUnit">DwarvenArmory</target>
+</effect>`;
+
+const THOR_DWARVEN_ARMORY_MYTHIC_EFFECTS = `<effect type="Data" amount="0.5" subtype="ResearchRate" relativity="Absolute">
+	<target type="ProtoUnit">DwarvenArmory</target>
+</effect>`;
+
+const THOR_DWARF_SPAWN_BONUS_LABEL = "Each Dwarven Armory upgrade grants a free Dwarf";
+
+function thorDwarfSpawnTechName(config) {
+  return `${config.internalName}DwarfSpawn`;
+}
+
+function thorDwarfSpawnArchaicEffects(config) {
+  const effects = [`<effect type="SetOnTechResearchedTech" amount="1.00" techtype="ArmoryTechnology">${escapeXml(thorDwarfSpawnTechName(config))}</effect>`];
+  if (config.baseCulture === "Atlantean") {
+    effects.push(`<effect type="Data" amount="1.00" subtype="Enable" relativity="Absolute">
+	<target type="ProtoUnit">OxCartBuilding</target>
+</effect>`);
+  }
+  return effects.join("\n");
+}
+
+function thorDwarfSpawnExtraTech(config) {
+  if (!selectedHasBonusLabel(config, THOR_DWARF_SPAWN_BONUS_LABEL)) return "";
+  return `	<tech name="${escapeXml(thorDwarfSpawnTechName(config))}">
+		<status>UNOBTAINABLE</status>
+		<flag>InfiniteTech</flag>
+		<flag>IgnoreIfAutoActivated</flag>
+		<effects>
+			<effect type="CreateUnit" unit="VillagerDwarf" generator="AbstractArmory">
+				<pattern type="Leaving" speed="0.00" radius="0.00" quantity="1.00" minradius="0.00">
+					<offset x="-5.00" y="0.00" z="0.00"></offset>
+				</pattern>
+			</effect>
+		</effects>
+	</tech>`;
+}
 const TSUKUYOMI_FREE_KITSUNE_EFFECT = `<effect type="CreateUnit" unit="Kitsune" generator="Temple">
 	<pattern type="Leaving" speed="0.00" radius="0.00" quantity="1.00" minradius="0.00">
 		<offset x="0.00" y="0.00" z="0.00" />
@@ -1453,6 +1542,33 @@ function cultureAgeTech(age, culture) {
   return `${age}${culture}`;
 }
 
+
+function norseClassicalExtraEffects(config) {
+  if (!config || config.baseCulture !== "Norse") return "";
+  return `			<effect type="Data" amount="1.00" subtype="Enable" relativity="Absolute">
+				<target type="ProtoUnit">Armory</target>
+			</effect>
+			<effect type="TechStatus" status="obtainable">CopperWeapons</effect>
+			<effect type="TechStatus" status="obtainable">CopperArmor</effect>
+			<effect type="TechStatus" status="obtainable">CopperShields</effect>
+			<effect type="TechStatus" status="obtainable">Ballistics</effect>`;
+}
+
+function norseHeroicExtraEffects(config) {
+  if (!config || config.baseCulture !== "Norse") return "";
+  return `			<effect type="TechStatus" status="obtainable">BronzeWeapons</effect>
+			<effect type="TechStatus" status="obtainable">BronzeArmor</effect>
+			<effect type="TechStatus" status="obtainable">BronzeShields</effect>`;
+}
+
+function norseMythicExtraEffects(config) {
+  if (!config || config.baseCulture !== "Norse") return "";
+  return `			<effect type="TechStatus" status="obtainable">IronWeapons</effect>
+			<effect type="TechStatus" status="obtainable">IronArmor</effect>
+			<effect type="TechStatus" status="obtainable">IronShields</effect>
+			<effect type="TechStatus" status="obtainable">BurningPitch</effect>`;
+}
+
 function godPowerEffect(power) {
   return `			<effect type="Data" subtype="GodPower" power="${escapeXml(power)}" amount="1.0" cooldown="60.0" relativity="Absolute">
 				<target type="Player"></target>
@@ -1463,6 +1579,32 @@ function indentTabBlock(block, level = 0) {
   if (!block || !block.trim()) return "";
   const pad = "	".repeat(level);
   return String(block).split("\n").map((line) => line.trim() ? pad + line : line).join("\n");
+}
+
+function thorDwarvenArmoryExtraTech(config) {
+  if (!selectedHasBonusLabel(config, THOR_DWARVEN_ARMORY_BONUS_LABEL)) return "";
+  const techName = `DisableStandardArmory${config.internalName}`;
+  return `	<tech name="${escapeXml(techName)}">
+		<status>UNOBTAINABLE</status>
+		<flag>HideAllNotifications</flag>
+		<delay>0.2000</delay>
+		<effects>
+			<effect type="Data" amount="0.00" subtype="Enable" relativity="Absolute">
+				<target type="ProtoUnit">Armory</target>
+			</effect>
+		</effects>
+	</tech>`;
+}
+
+function extraGeneratedTechs(config) {
+  const extras = [];
+  const kronosTechs = kronosExtraMythUnitTechs(config);
+  if (kronosTechs) extras.push(`	${kronosTechs}`);
+  const thorArmoryTech = thorDwarvenArmoryExtraTech(config);
+  if (thorArmoryTech) extras.push(thorArmoryTech);
+  const thorDwarfTech = thorDwarfSpawnExtraTech(config);
+  if (thorDwarfTech) extras.push(thorDwarfTech);
+  return extras.join("\n\n");
 }
 
 function generateTechTreeMods(config) {
@@ -1498,6 +1640,7 @@ ${uniqueTechEntries(config).some((group) => group.extraArchaicEffect === "FreyrT
 		<effects>
 			<effect type="TechStatus" status="active">ClassicalAgeGeneral</effect>
 			<effect type="TechStatus" status="active">${escapeXml(cultureAgeTech("ClassicalAge", culture))}</effect>
+${norseClassicalExtraEffects(config)}
 ${techStatusEffects([...heroic, c.heroic])}
 ${kronosExtraMythUnitStatusEffects(config, "ClassicalAge")}
 ${indentTabBlock(bonusClassicalTechEffects(config), 3)}
@@ -1516,6 +1659,7 @@ ${indentTabBlock(bonusClassicalTechEffects(config), 3)}
 			<effect type="TechStatus" status="active">HeroicAgeGeneral</effect>
 			<effect type="TechStatus" status="active">${escapeXml(cultureAgeTech("HeroicAge", culture))}</effect>
 ${techStatusEffects([...mythic, c.mythic])}
+${norseHeroicExtraEffects(config)}
 ${kronosExtraMythUnitStatusEffects(config, "HeroicAge")}
 ${indentTabBlock(bonusHeroicTechEffects(config), 3)}
 		</effects>
@@ -1532,13 +1676,63 @@ ${indentTabBlock(bonusHeroicTechEffects(config), 3)}
 		<effects>
 			<effect type="TechStatus" status="active">MythicAgeGeneral</effect>
 			<effect type="TechStatus" status="active">${escapeXml(cultureAgeTech("MythicAge", culture))}</effect>
+${norseMythicExtraEffects(config)}
 ${indentTabBlock(bonusMythicTechEffects(config), 3)}
 		</effects>
 	</tech>
-${kronosExtraMythUnitTechs(config) ? `
+${extraGeneratedTechs(config) ? `
 
-	${kronosExtraMythUnitTechs(config)}` : ""}
+${extraGeneratedTechs(config)}` : ""}
 </techtreemods>\n`;
+}
+
+function generateProtoMods(config) {
+  if (!selectedHasBonusLabel(config, THOR_DWARVEN_ARMORY_BONUS_LABEL)) {
+    return `<protomods>
+	<!-- Empty in this draft. -->
+</protomods>
+`;
+  }
+  const buildersByPantheon = {
+    Greek: [
+      { name: "VillagerGreek" },
+      { name: "LykaonVillager", orderhint: "3" },
+    ],
+    Egyptian: [
+      { name: "VillagerEgyptian" },
+    ],
+    Atlantean: [
+      { name: "VillagerAtlantean" },
+      { name: "VillagerAtlanteanHero" },
+    ],
+    Chinese: [
+      { name: "VillagerChinese" },
+      { name: "VillagerChineseClay" },
+    ],
+    Japanese: [
+      { name: "VillagerJapanese" },
+    ],
+    Aztec: [
+      { name: "VillagerAztec", orderhint: "5" },
+    ],
+  };
+  const builders = buildersByPantheon[config.baseCulture] || [];
+  if (!builders.length) {
+    return `<protomods>
+	<!-- Thor Dwarven Armory builder proto edits are not needed for ${escapeXml(config.baseCulture)}. -->
+</protomods>
+`;
+  }
+  const unitBlocks = builders.map((builder) => {
+    const orderhint = builder.orderhint ? ` orderhint="${escapeXml(builder.orderhint)}"` : "";
+    return `	<unit name="${escapeXml(builder.name)}"${orderhint}>
+		<train row="1" column="5" mergemode="add">DwarvenArmory</train>
+	</unit>`;
+  }).join("\n\n");
+  return `<protomods>
+${unitBlocks}
+</protomods>
+`;
 }
 
 function generateMinorGodsMods() {
@@ -1746,7 +1940,7 @@ async function generateFiles(config) {
   files.push(textFile(`${root}game/data/gameplay/major_gods_mods.xml`, generateMajorGodXmlFromPantheonTemplate(config, iconPath)));
   files.push(textFile(`${root}game/data/gameplay/minor_gods_mods.xml`, generateMinorGodsMods(config)));
   files.push(textFile(`${root}game/data/gameplay/techtree_mods.xml`, generateTechTreeMods(config)));
-  files.push(textFile(`${root}game/data/gameplay/proto_mods.xml`, `<protomods>\n\t<!-- Empty in this draft. -->\n</protomods>\n`));
+  files.push(textFile(`${root}game/data/gameplay/proto_mods.xml`, generateProtoMods(config)));
   files.push(textFile(`${root}game/data/gameplay/powers_mods.xml`, `<powersmod>\n\t<!-- Empty in this draft. -->\n</powersmod>\n`));
   files.push(textFile(`${root}game/data/strings/English/stringmods.txt`, generateStringMods(config)));
   files.push(textFile(`${root}game/ui_myth/content/pregame/godpicker/GodPicker_${config.baseCulture}_${config.internalName}.xaml`, generateGodPickerXaml(config)));

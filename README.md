@@ -270,3 +270,31 @@ Demeter — Town Centers and Village Centers spawn herdables on age-up now adds 
   - Adds one Kitsune CreateUnit effect to Archaic, Classical, Heroic, and Mythic custom age techs.
 - Tsukuyomi — Researching technologies grants Bushidō XP:
   - Inserts only the research reward/cost multiplier entries into the existing bountyresourceearning block.
+
+
+## Latest fix
+
+- Added Norse Classical Age special case: Armory enabled and CopperWeapons, CopperArmor, CopperShields, and Ballistics become obtainable in ClassicalAge<CustomGod>.
+
+
+## Latest change
+
+Norse custom major gods now receive the special Armory upgrade unlocks by age:
+
+- Classical: Armory, CopperWeapons, CopperArmor, CopperShields, Ballistics
+- Heroic: BronzeWeapons, BronzeArmor, BronzeShields
+- Mythic: IronWeapons, IronArmor, IronShields, BurningPitch
+
+
+## Latest fix
+
+- Odin — Two Raven scouts spawn after the first Temple and respawn when killed: Classical, Heroic, and Mythic age techs now each add +2 LOS to Raven, while the Archaic tech keeps the existing RavenRespawn/RavenFirstSpawn unlocks.
+
+## Latest fix
+
+- Removed the two `OxCartBuilding` cost effects from Loki — Military-built buildings are constructed faster.
+- The Ox Cart cost effects remain only on the separate Loki — Ox Carts are cheaper bonus.
+
+## Latest fix
+
+- Thor — Dwarves cost less gold and gather food and wood faster: removed the unintended `<effect type="SetOnTechResearchedTech" amount="1.00" techtype="ArmoryTechnology">ThorDwarfSpawn</effect>` entry. The free-Dwarf-on-Armory-upgrade trigger remains only on the separate Thor bonus.
