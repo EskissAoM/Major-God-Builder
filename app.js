@@ -826,6 +826,8 @@ function bonusTechEffects(config) {
       if (entry.label === SHENNONG_FARM_LINE_UPGRADES_BONUS_LABEL) return "";
       if (entry.label === SET_ANIMALS_BONUS_LABEL) return SET_ANIMALS_ARCHAIC_EFFECTS;
       if (entry.label === SHENNONG_MYTH_REGEN_FAVORED_LAND_BONUS_LABEL) return SHENNONG_MYTH_REGEN_FAVORED_LAND_AGE_EFFECTS;
+      if (entry.label === SUSANOO_BUSHIDO_MYTH_XP_BONUS_LABEL) return SUSANOO_BUSHIDO_MYTH_XP_ARCHAIC_EFFECTS;
+      if (entry.label === TSUKUYOMI_FREE_KITSUNE_BONUS_LABEL) return TSUKUYOMI_FREE_KITSUNE_EFFECT;
       return sanitizeBonusTechEffects(entry.techEffects || "");
     })
     .filter(Boolean)
@@ -847,6 +849,7 @@ function bonusClassicalTechEffects(config) {
   if (selectedHasBonusLabel(config, DEMETER_HERDABLES_SPAWN_ON_AGE_UP_BONUS_LABEL)) effects.push(DEMETER_HERDABLES_SPAWN_CLASSICAL_EFFECTS);
   if (selectedHasBonusLabel(config, DEMETER_TRAIN_FASTER_BY_AGE_BONUS_LABEL)) effects.push(DEMETER_TRAIN_FASTER_BY_AGE_EFFECTS);
   if (selectedHasBonusLabel(config, HADES_MYTH_HP_BY_AGE_BONUS_LABEL)) effects.push(HADES_MYTH_HP_BY_AGE_EFFECTS);
+  if (selectedHasBonusLabel(config, TSUKUYOMI_FREE_KITSUNE_BONUS_LABEL)) effects.push(TSUKUYOMI_FREE_KITSUNE_EFFECT);
   return effects.filter(Boolean).join("\n");
 }
 function bonusHeroicTechEffects(config) {
@@ -866,6 +869,7 @@ function bonusHeroicTechEffects(config) {
   if (selectedHasBonusLabel(config, DEMETER_HERDABLES_SPAWN_ON_AGE_UP_BONUS_LABEL)) effects.push(DEMETER_HERDABLES_SPAWN_HEROIC_EFFECTS);
   if (selectedHasBonusLabel(config, DEMETER_TRAIN_FASTER_BY_AGE_BONUS_LABEL)) effects.push(DEMETER_TRAIN_FASTER_BY_AGE_EFFECTS);
   if (selectedHasBonusLabel(config, HADES_MYTH_HP_BY_AGE_BONUS_LABEL)) effects.push(HADES_MYTH_HP_BY_AGE_EFFECTS);
+  if (selectedHasBonusLabel(config, TSUKUYOMI_FREE_KITSUNE_BONUS_LABEL)) effects.push(TSUKUYOMI_FREE_KITSUNE_EFFECT);
   return effects.filter(Boolean).join("\n");
 }
 function bonusMythicTechEffects(config) {
@@ -882,6 +886,7 @@ function bonusMythicTechEffects(config) {
   if (selectedHasBonusLabel(config, DEMETER_HERDABLES_SPAWN_ON_AGE_UP_BONUS_LABEL)) effects.push(DEMETER_HERDABLES_SPAWN_MYTHIC_EFFECTS);
   if (selectedHasBonusLabel(config, DEMETER_TRAIN_FASTER_BY_AGE_BONUS_LABEL)) effects.push(DEMETER_TRAIN_FASTER_BY_AGE_EFFECTS);
   if (selectedHasBonusLabel(config, HADES_MYTH_HP_BY_AGE_BONUS_LABEL)) effects.push(HADES_MYTH_HP_BY_AGE_EFFECTS);
+  if (selectedHasBonusLabel(config, TSUKUYOMI_FREE_KITSUNE_BONUS_LABEL)) effects.push(TSUKUYOMI_FREE_KITSUNE_EFFECT);
   return effects.filter(Boolean).join("\n");
 }
 function hasKronosExtraMythUnitBonus(config) {
@@ -956,7 +961,7 @@ function sanitizeBonusTechEffects(xml) {
 
 function bonusMajorXml(config) {
   return selectedBonusEntries(config)
-    .filter((entry) => ![ZEUS_STARTING_FAVOR_BONUS_LABEL, HUITZ_TONALLI_RESOURCES_BONUS_LABEL, HUITZ_SHORN_TONALLI_BONUS_LABEL, NUWA_FAVORED_LAND_FARTHER_BONUS_LABEL, SET_ANIMALS_BONUS_LABEL].includes(entry.label))
+    .filter((entry) => ![ZEUS_STARTING_FAVOR_BONUS_LABEL, HUITZ_TONALLI_RESOURCES_BONUS_LABEL, HUITZ_SHORN_TONALLI_BONUS_LABEL, NUWA_FAVORED_LAND_FARTHER_BONUS_LABEL, SET_ANIMALS_BONUS_LABEL, SUSANOO_POWER_COST_FACTOR_BONUS_LABEL, SUSANOO_BUSHIDO_MYTH_XP_BONUS_LABEL, TSUKUYOMI_RESEARCH_BUSHIDO_XP_BONUS_LABEL].includes(entry.label))
     .map((entry) => entry.majorXml || "")
     .filter(Boolean)
     .join("\n");
@@ -1154,8 +1159,8 @@ function generateMajorGodXmlFromPantheonTemplate(config, iconPath) {
   applyMajorGodBonusFragments(doc, civ, bonusMajorXml(config));
   applyMajorGodSpecialBonusPatches(doc, civ, config);
 
-  const xml = new XMLSerializer().serializeToString(civ);
-  return `<civmods>\n${indent(xml, 1)}\n</civmods>\n`;
+  const xml = serializeMajorGodElement(civ, 1);
+  return `<civmods>\n${xml}\n</civmods>\n`;
 }
 
 
@@ -1182,6 +1187,15 @@ function applyMajorGodSpecialBonusPatches(doc, civ, config) {
   if (hasSelectedBonus(config, "Set", SET_ANIMALS_BONUS_LABEL)) {
     addSetBaboonToStartingUnits(doc, civ);
   }
+  if (hasSelectedBonus(config, "Susanoo", SUSANOO_POWER_COST_FACTOR_BONUS_LABEL)) {
+    setOnCastPowerCostFactor(doc, civ, "0.80");
+  }
+  if (hasSelectedBonus(config, "Susanoo", SUSANOO_BUSHIDO_MYTH_XP_BONUS_LABEL)) {
+    insertIntoBountyResourceEarning(doc, civ, SUSANOO_BUSHIDO_MYTH_XP_BOUNTY);
+  }
+  if (hasSelectedBonus(config, "Tsukuyomi", TSUKUYOMI_RESEARCH_BUSHIDO_XP_BONUS_LABEL)) {
+    insertIntoBountyResourceEarning(doc, civ, TSUKUYOMI_RESEARCH_BUSHIDO_XP_BOUNTY);
+  }
 }
 
 
@@ -1206,12 +1220,62 @@ function setOrAppendResource(doc, resourcesNode, tag, value) {
   node.textContent = value;
 }
 
+function setOnCastPowerCostFactor(doc, civ, value) {
+  let node = civ.querySelector("oncastpowercostfactor");
+  if (!node) {
+    node = doc.createElement("oncastpowercostfactor");
+    civ.appendChild(node);
+  }
+  node.textContent = value;
+}
+
+const SUSANOO_POWER_COST_FACTOR_BONUS_LABEL = "Invoking a god power makes other god powers cheaper to reinvoke";
+const SUSANOO_BUSHIDO_MYTH_XP_BONUS_LABEL = "Myth units generate Bushidō XP passively. Myth units generate Bushidō XP in combat";
+const SUSANOO_BUSHIDO_MYTH_XP_BOUNTY = `<bountyreward unittype="MythUnit" condition="Damage" combatxp="">2.0</bountyreward>`;
+
+const TSUKUYOMI_FREE_KITSUNE_BONUS_LABEL = "A free Kitsune appears at the Temple on each age-up except Wonder Age";
+const TSUKUYOMI_RESEARCH_BUSHIDO_XP_BONUS_LABEL = "Researching technologies grants Bushidō XP";
+const TSUKUYOMI_RESEARCH_BUSHIDO_XP_BOUNTY = `<researchreward techtype="all" combatxp="">1.0</researchreward>
+<researchcostmultiplier techtype="all" resourcetype="Food">1.0</researchcostmultiplier>
+<researchcostmultiplier techtype="all" resourcetype="Wood">1.0</researchcostmultiplier>
+<researchcostmultiplier techtype="all" resourcetype="Gold">1.0</researchcostmultiplier>
+<researchcostmultiplier techtype="all" resourcetype="Favor">10.0</researchcostmultiplier>
+<excludedtechflag>AgeUpgrade</excludedtechflag>
+<excludedtechflag>DynamicCost</excludedtechflag>`;
+const TSUKUYOMI_FREE_KITSUNE_EFFECT = `<effect type="CreateUnit" unit="Kitsune" generator="Temple">
+	<pattern type="Leaving" speed="0.00" radius="0.00" quantity="1.00" minradius="0.00">
+		<offset x="0.00" y="0.00" z="0.00" />
+	</pattern>
+</effect>`;
+
 const HUITZ_TONALLI_RESOURCE_REWARDS = `<bountyreward unittype="MilitaryUnit" resourcetype="Favor" condition="Destroy" asspawnedunit="Tonalli">0.75</bountyreward>
 <bountyreward unittype="MilitaryUnit" resourcetype="Food" multiplybyunitcost="true" condition="Destroy" asspawnedunit="Tonalli">0.05</bountyreward>
 <bountyreward unittype="MilitaryUnit" resourcetype="Wood" multiplybyunitcost="true" condition="Destroy" asspawnedunit="Tonalli">0.05</bountyreward>
 <bountyreward unittype="MilitaryUnit" resourcetype="Gold" multiplybyunitcost="true" condition="Destroy" asspawnedunit="Tonalli">0.05</bountyreward>`;
 
 const HUITZ_SHORN_TONALLI_MULTIPLIER = `<bountytargetmultiplier relativity="basepercent" unittype="MilitaryUnit" attackertype="ShornOne" condition="Destroy" resourcetype="Favor">1.0</bountytargetmultiplier>`;
+
+const SUSANOO_BUSHIDO_MYTH_XP_ARCHAIC_EFFECTS = `<effect type="Data" action="Autogather" amount="1.00" subtype="ActionEnable" relativity="Absolute">
+	<target type="ProtoUnit">MythUnit</target>
+</effect>
+<effect type="Data" action="Autogather" amount="1.00" subtype="ActionEnable" relativity="Absolute">
+	<target type="ProtoUnit">LogicalTypeDependentMyth</target>
+</effect>
+<effect type="Data" action="Autogather" amount="0.75" subtype="WorkRate" unittype="CombatXP" relativity="Absolute">
+	<target type="ProtoUnit">LogicalTypeArchaicMythUnit</target>
+</effect>
+<effect type="Data" action="Autogather" amount="-0.25" subtype="WorkRate" unittype="CombatXP" relativity="Absolute">
+	<target type="ProtoUnit">Kitsune</target>
+</effect>
+<effect type="Data" action="Autogather" amount="1.5" subtype="WorkRate" unittype="CombatXP" relativity="Absolute">
+	<target type="ProtoUnit">LogicalTypeClassicalMythUnit</target>
+</effect>
+<effect type="Data" action="Autogather" amount="2.25" subtype="WorkRate" unittype="CombatXP" relativity="Absolute">
+	<target type="ProtoUnit">LogicalTypeHeroicMythUnit</target>
+</effect>
+<effect type="Data" action="Autogather" amount="3.0" subtype="WorkRate" unittype="CombatXP" relativity="Absolute">
+	<target type="ProtoUnit">LogicalTypeMythicMythUnit</target>
+</effect>`;
 
 
 function addSetBaboonToStartingUnits(doc, civ) {
@@ -1341,6 +1405,39 @@ function applyMajorGodBonusFragments(doc, civ, fragmentXml) {
       civ.appendChild(imported);
     }
   }
+}
+
+function serializeMajorGodElement(node, level = 0) {
+  const pad = "\t".repeat(level);
+  const attrs = Array.from(node.attributes || [])
+    .map((attr) => ` ${attr.name}="${escapeXmlAttribute(attr.value)}"`)
+    .join("");
+  const childElements = Array.from(node.childNodes || []).filter((child) => child.nodeType === Node.ELEMENT_NODE);
+  const text = Array.from(node.childNodes || [])
+    .filter((child) => child.nodeType === Node.TEXT_NODE)
+    .map((child) => child.nodeValue || "")
+    .join("")
+    .trim();
+
+  if (!childElements.length) {
+    if (text) return `${pad}<${node.tagName}${attrs}>${escapeXml(text)}</${node.tagName}>`;
+    return `${pad}<${node.tagName}${attrs}></${node.tagName}>`;
+  }
+
+  const lines = [`${pad}<${node.tagName}${attrs}>`];
+  for (const child of childElements) {
+    lines.push(serializeMajorGodElement(child, level + 1));
+  }
+  lines.push(`${pad}</${node.tagName}>`);
+  return lines.join("\n");
+}
+
+function escapeXmlAttribute(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
 }
 
 function indent(xml, level = 1) {

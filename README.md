@@ -253,3 +253,20 @@ Demeter — Town Centers and Village Centers spawn herdables on age-up now adds 
 
 ## Latest fix
 - Poseidon — Cavalry, Caravans, and myth units gain speed by age now adds the speed block exactly once in Archaic, Classical, Heroic, and Mythic age techs. The accidental triple insertion in Classical was removed.
+
+
+## Latest fix
+
+- Susanoo — Invoking a god power makes other god powers cheaper to reinvoke now adds `<oncastpowercostfactor>0.80</oncastpowercostfactor>` as a clean separate line before `</civ>` in `major_gods_mods.xml`.
+
+
+## Latest fix
+
+- Susanoo — Myth units generate Bushidō XP passively / in combat now inserts the MythUnit combat XP bounty into existing bountyresourceearning and adds the exact Archaic-age Autogather CombatXP effects.
+
+## Latest fixes
+
+- Tsukuyomi — A free Kitsune appears at the Temple on each age-up except Wonder Age:
+  - Adds one Kitsune CreateUnit effect to Archaic, Classical, Heroic, and Mythic custom age techs.
+- Tsukuyomi — Researching technologies grants Bushidō XP:
+  - Inserts only the research reward/cost multiplier entries into the existing bountyresourceearning block.
