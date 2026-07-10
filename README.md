@@ -332,3 +332,21 @@ Chinese pantheon now has a Mythic Age special hero choice: YangJian, LiJing, or 
 
 
 - Poseidon — Stables and Markets are 30% cheaper: Japanese can now select this bonus; when Japanese is selected, the Stable discount targets StableJapanese instead of Stable.
+
+
+## Latest fix
+
+- Renamed Aztec-only UI labels to `Classical : Teixiptla Form` and `Mythic : Incarnate`.
+- Simplified both Aztec dropdowns so each option displays only the major god name: Quetzalcoatl, Huitzilopochtli, or Tezcatlipoca.
+
+Update: Hades "Ranged-soldier technologies are cheaper" is now pantheon-aware. Ballistics and BurningPitch apply to all pantheons; other ranged-soldier technologies apply only to the selected pantheon's relevant tech list.
+
+
+Update: Freyr Hill Fort damage bonus renamed to "Fortress-type building units deal +10% damage" and now uses pantheon-specific fortress-unit targets while keeping AbstractFortress.
+
+## Latest fix
+
+- Renamed Ra “Camel Riders, Chariot Archers, and War Elephants get +15% hit points” to “Fortress-type building units get +15% hit points”.
+- The bonus is now available to all pantheons.
+- It uses the same pantheon-specific fortress-type unit list as the Freyr fortress damage bonus.
+

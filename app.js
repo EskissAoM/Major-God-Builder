@@ -93,6 +93,18 @@ const CHINESE_MYTHIC_HEROES = {
   Shennong: "WenZhong",
 };
 
+const AZTEC_CLASSICAL_FORMS = {
+  Quetzalcoatl: { tech: "WarriorPriestToTeixiptlaQuetz", unit: "TeixiptlaQuetz" },
+  Huitzilopochtli: { tech: "WarriorPriestToTeixiptlaHuitz", unit: "TeixiptlaHuitz" },
+  Tezcatlipoca: { tech: "WarriorPriestToTeixiptlaTezca", unit: "TeixiptlaTezca" },
+};
+
+const AZTEC_MYTHIC_ARRIVALS = {
+  Quetzalcoatl: "GreatTempleArrivalOfTheGodsQuetzalcoatl",
+  Huitzilopochtli: "GreatTempleArrivalOfTheGodsHuitzilopochtli",
+  Tezcatlipoca: "GreatTempleArrivalOfTheGodsTezcatlipoca",
+};
+
 const STARTING_GOD_POWER_BY_MAJOR = {
   // Greek
   Zeus: "Bolt",
@@ -160,6 +172,9 @@ const els = {
   greekUniqueUnit: $("greekUniqueUnit"),
   chineseOptions: $("chineseOptions"),
   chineseMythicHero: $("chineseMythicHero"),
+  aztecOptions: $("aztecOptions"),
+  aztecClassicalForm: $("aztecClassicalForm"),
+  aztecMythicArrival: $("aztecMythicArrival"),
   godPower: $("godPower"),
   uniqueTech1: $("uniqueTech1"),
   uniqueTech2: $("uniqueTech2"),
@@ -335,6 +350,35 @@ function initChineseSpecificSelects(keep = true) {
     els.chineseMythicHero.appendChild(opt);
   }
   els.chineseMythicHero.value = previous && Object.values(CHINESE_MYTHIC_HEROES).includes(previous) ? previous : CHINESE_MYTHIC_HEROES.Fuxi;
+}
+
+
+function initAztecSpecificSelects(keep = true) {
+  if (!els.aztecOptions || !els.aztecClassicalForm || !els.aztecMythicArrival) return;
+  const isAztec = selectedPantheon() === "Aztec";
+  els.aztecOptions.hidden = !isAztec;
+
+  const previousForm = keep ? els.aztecClassicalForm.value : "";
+  els.aztecClassicalForm.innerHTML = "";
+  for (const [major, data] of Object.entries(AZTEC_CLASSICAL_FORMS)) {
+    const opt = document.createElement("option");
+    opt.value = data.tech;
+    opt.textContent = major;
+    els.aztecClassicalForm.appendChild(opt);
+  }
+  const formValues = Object.values(AZTEC_CLASSICAL_FORMS).map((entry) => entry.tech);
+  els.aztecClassicalForm.value = previousForm && formValues.includes(previousForm) ? previousForm : AZTEC_CLASSICAL_FORMS.Quetzalcoatl.tech;
+
+  const previousArrival = keep ? els.aztecMythicArrival.value : "";
+  els.aztecMythicArrival.innerHTML = "";
+  for (const [major, tech] of Object.entries(AZTEC_MYTHIC_ARRIVALS)) {
+    const opt = document.createElement("option");
+    opt.value = tech;
+    opt.textContent = major;
+    els.aztecMythicArrival.appendChild(opt);
+  }
+  const arrivalValues = Object.values(AZTEC_MYTHIC_ARRIVALS);
+  els.aztecMythicArrival.value = previousArrival && arrivalValues.includes(previousArrival) ? previousArrival : AZTEC_MYTHIC_ARRIVALS.Quetzalcoatl;
 }
 
 function initGodPowerSelect(keep = true) {
@@ -526,6 +570,7 @@ const POSEIDON_SPEED_BY_AGE_BONUS_LABEL = "Cavalry, Caravans, and myth units gai
 const POSEIDON_STABLE_MARKET_DISCOUNT_BONUS_LABEL = "Stables and Markets are 30% cheaper";
 const HUITZ_TONALLI_RESOURCES_BONUS_LABEL = "Collecting Tonalli grants resources in addition to favor";
 const ZEUS_STARTING_FAVOR_BONUS_LABEL = "Starts with 10 favor";
+const ZEUS_COUNTER_CAV_INFANTRY_SPEED_BONUS_LABEL = "Hoplite and other counter-cavalry infantry move 15% faster";
 const HUITZ_SHORN_TONALLI_BONUS_LABEL = "Shorn Ones have more hit points. Shorn Ones generate extra Tonalli in combat";
 const QUETZ_EAGLE_RANGE_LOS_BONUS_LABEL = "Eagle Warriors gain +1 range in the Heroic and Mythic Ages.Eagle Warriors gain +1 line of sight in the Heroic and Mythic Ages";
 const TEZCAT_DEVOTE_FAVOR_BONUS_LABEL = "Devoting Settlers gives higher immediate favor by age";
@@ -542,6 +587,9 @@ const DEMETER_HERDABLES_FATTEN_BONUS_LABEL = "Herdables fatten faster and hold m
 const DEMETER_HERDABLES_SPAWN_ON_AGE_UP_BONUS_LABEL = "Town Centers and Village Centers spawn herdables on age-up";
 const DEMETER_TRAIN_FASTER_BY_AGE_BONUS_LABEL = "Human soldiers and myth units train faster by age";
 const HADES_MYTH_HP_BY_AGE_BONUS_LABEL = "Myth units gain bonus hit points by age";
+const HADES_RANGED_TECH_DISCOUNT_BONUS_LABEL = "Ranged-soldier technologies are cheaper";
+const FREYR_FORTRESS_DAMAGE_BONUS_LABEL = "Fortress-type building units deal +10% damage";
+const RA_FORTRESS_HP_BONUS_LABEL = "Fortress-type building units get +15% hit points";
 
 const SET_ANIMALS_ARCHAIC_EFFECTS = `<effect type="Data" amount="1.00" subtype="Enable" relativity="Absolute">
 	<target type="ProtoUnit">BaboonOfSet</target>
@@ -677,6 +725,68 @@ function poseidonStableMarketDiscountEffects(config) {
 </effect>
 <effect type="Data" amount="0.70" subtype="cost" resource="Wood" relativity="Percent">
 	<target type="ProtoUnit">${stableUnit}</target>
+</effect>`;
+}
+
+
+function freyrFortressDamageEffects(config) {
+  const unitsByPantheon = {
+    Greek: ["Petrobolos", "Helepolis", config.greekUniqueUnit || "Myrmidon"],
+    Egyptian: ["CamelRider", "ChariotArcher", "WarElephant"],
+    Norse: ["Huskarl", "AbstractSiegeWeapon"],
+    Atlantean: ["Destroyer", "Fanatic", "FireSiphon"],
+    Chinese: ["WhiteHorseCavalry", "TigerCavalry"],
+    Japanese: ["Oyumi", "Onmyoji"],
+    Aztec: ["Otontin", "ShornOne", "JaguarRider", "Quinametzin"],
+  };
+  const seen = new Set();
+  const unitTargets = (unitsByPantheon[config.baseCulture] || unitsByPantheon.Norse).filter((unit) => {
+    if (!unit || seen.has(unit)) return false;
+    seen.add(unit);
+    return true;
+  });
+  const effects = unitTargets.map((unit) => `<effect type="Data" allactions="1" amount="1.10" subtype="Damage" relativity="BasePercent">\n\t<target type="ProtoUnit">${unit}</target>\n</effect>`);
+  effects.push(`<effect type="Data" allactions="1" amount="1.10" subtype="Damage" relativity="BasePercent">\n\t<target type="ProtoUnit">AbstractFortress</target>\n</effect>`);
+  return effects.join("\n");
+}
+
+function fortressTypeBuildingUnitsForCulture(config) {
+  const unitsByPantheon = {
+    Greek: ["Petrobolos", "Helepolis", config.greekUniqueUnit || "Myrmidon"],
+    Egyptian: ["CamelRider", "ChariotArcher", "WarElephant"],
+    Norse: ["Huskarl", "AbstractSiegeWeapon"],
+    Atlantean: ["Destroyer", "Fanatic", "FireSiphon"],
+    Chinese: ["WhiteHorseCavalry", "TigerCavalry"],
+    Japanese: ["Oyumi", "Onmyoji"],
+    Aztec: ["Otontin", "ShornOne", "JaguarRider", "Quinametzin"],
+  };
+  const seen = new Set();
+  return (unitsByPantheon[config.baseCulture] || unitsByPantheon.Norse).filter((unit) => {
+    if (!unit || seen.has(unit)) return false;
+    seen.add(unit);
+    return true;
+  });
+}
+
+function raFortressHitpointsEffects(config) {
+  return fortressTypeBuildingUnitsForCulture(config)
+    .map((unit) => `<effect type="Data" amount="1.15" subtype="Hitpoints" relativity="BasePercent">\n\t<target type="ProtoUnit">${unit}</target>\n</effect>`)
+    .join("\n");
+}
+
+function zeusCounterCavalryInfantrySpeedEffects(config) {
+  const targetByPantheon = {
+    Greek: "Hoplite",
+    Egyptian: "Spearman",
+    Norse: "Hirdman",
+    Atlantean: "Katapeltes",
+    Chinese: "GeHalberdier",
+    Japanese: "YariSpearman",
+    Aztec: "TlamanihSpearman",
+  };
+  const target = targetByPantheon[config.baseCulture] || "Hoplite";
+  return `<effect type="Data" amount="1.15" subtype="MaximumVelocity" relativity="BasePercent">
+	<target type="ProtoUnit">${target}</target>
 </effect>`;
 }
 
@@ -892,6 +1002,43 @@ const HADES_MYTH_HP_BY_AGE_EFFECTS = `<effect type="Data" amount="1.04" subtype=
 	<target type="ProtoUnit">MythUnit</target>
 </effect>`;
 
+const HADES_RANGED_TECH_DISCOUNT_RULES = [
+  { pantheons: ["All"], tech: "Ballistics", resources: ["Wood", "Gold"] },
+  { pantheons: ["All"], tech: "BurningPitch", resources: ["Wood", "Gold"] },
+  { pantheons: ["Greek", "Atlantean", "Chinese"], tech: "MediumArchers", resources: ["Wood", "Gold"] },
+  { pantheons: ["Greek", "Atlantean", "Chinese"], tech: "HeavyArchers", resources: ["Wood", "Gold"] },
+  { pantheons: ["Greek", "Atlantean", "Chinese"], tech: "ChampionArchers", resources: ["Wood", "Gold"] },
+  { pantheons: ["Greek"], tech: "EnyosBowOfHorror", resources: ["Wood", "Favor"] },
+  { pantheons: ["Greek"], tech: "SunRay", resources: ["Food", "Favor"] },
+  { pantheons: ["Greek"], tech: "ShaftsOfPlague", resources: ["Gold", "Favor"] },
+  { pantheons: ["Greek"], tech: "FatedArrows", resources: ["Food", "Favor"] },
+  { pantheons: ["Norse"], tech: "HuntressAxe", resources: ["Gold", "Favor"] },
+  { pantheons: ["Egyptian"], tech: "MediumSlingers", resources: ["Wood", "Gold"] },
+  { pantheons: ["Egyptian"], tech: "HeavySlingers", resources: ["Wood", "Gold"] },
+  { pantheons: ["Egyptian"], tech: "ChampionSlingers", resources: ["Wood", "Gold"] },
+  { pantheons: ["Egyptian"], tech: "HeavyChariotArchers", resources: ["Wood", "Gold"] },
+  { pantheons: ["Egyptian"], tech: "ChampionChariotArchers", resources: ["Wood", "Gold"] },
+  { pantheons: ["Egyptian"], tech: "ElectrumBullets", resources: ["Gold", "Favor"] },
+  { pantheons: ["Egyptian"], tech: "BoneBow", resources: ["Wood", "Favor"] },
+  { pantheons: ["Egyptian"], tech: "SlingsOfTheSun", resources: ["Gold", "Favor"] },
+  { pantheons: ["Atlantean"], tech: "HaloOfTheSun", resources: ["Gold", "Favor"] },
+  { pantheons: ["Chinese"], tech: "SouthernFire", resources: ["Food", "Wood", "Favor"] },
+  { pantheons: ["Japanese"], tech: "HuntersStrength", resources: ["Wood", "Favor"] },
+  { pantheons: ["Chinese"], tech: "ScorchingFeathers", resources: ["Wood", "Favor"] },
+  { pantheons: ["Japanese"], tech: "Kumiki", resources: ["Wood", "Gold", "Favor"] },
+  { pantheons: ["Japanese"], tech: "GoldenKite", resources: ["Wood", "Favor"] },
+  { pantheons: ["Japanese"], tech: "AsymmetricalBows", resources: ["Wood", "Favor"] },
+  { pantheons: ["Aztec"], tech: "PreciousBones", resources: ["Gold", "Favor"] },
+];
+
+function hadesRangedTechDiscountEffects(config) {
+  const culture = config.baseCulture;
+  return HADES_RANGED_TECH_DISCOUNT_RULES
+    .filter((rule) => rule.pantheons.includes("All") || rule.pantheons.includes(culture))
+    .flatMap((rule) => rule.resources.map((resource) => `<effect type="Data" amount="0.666" subtype="Cost" resource="${resource}" relativity="Percent">\n\t<target type="Tech">${rule.tech}</target>\n</effect>`))
+    .join("\n");
+}
+
 function selectedHasBonusLabel(config, label) {
   return selectedBonusEntries(config).some((entry) => entry.label === label);
 }
@@ -900,11 +1047,15 @@ function bonusTechEffects(config) {
   return selectedBonusEntries(config)
     .map((entry) => {
       if (entry.label === GAIA_ECON_GUILD_BONUS_LABEL) return GAIA_ECON_GUILD_ARCHAIC_EFFECTS;
+      if (entry.label === ZEUS_COUNTER_CAV_INFANTRY_SPEED_BONUS_LABEL) return zeusCounterCavalryInfantrySpeedEffects(config);
       if (entry.label === DEMETER_HERDABLES_TEMPLE_FAVOR_BONUS_LABEL) return DEMETER_HERDABLES_TEMPLE_FAVOR_ARCHAIC_EFFECTS;
       if (entry.label === DEMETER_HERDABLES_FATTEN_BONUS_LABEL) return DEMETER_HERDABLES_FATTEN_ARCHAIC_EFFECTS;
       if (entry.label === DEMETER_HERDABLES_SPAWN_ON_AGE_UP_BONUS_LABEL) return "";
       if (entry.label === DEMETER_TRAIN_FASTER_BY_AGE_BONUS_LABEL) return DEMETER_TRAIN_FASTER_BY_AGE_EFFECTS;
       if (entry.label === HADES_MYTH_HP_BY_AGE_BONUS_LABEL) return HADES_MYTH_HP_BY_AGE_EFFECTS;
+      if (entry.label === HADES_RANGED_TECH_DISCOUNT_BONUS_LABEL) return hadesRangedTechDiscountEffects(config);
+      if (entry.label === FREYR_FORTRESS_DAMAGE_BONUS_LABEL) return freyrFortressDamageEffects(config);
+      if (entry.label === RA_FORTRESS_HP_BONUS_LABEL) return raFortressHitpointsEffects(config);
       if (entry.label === POSEIDON_SPEED_BY_AGE_BONUS_LABEL) return POSEIDON_SPEED_BY_AGE_EFFECTS;
       if (entry.label === POSEIDON_STABLE_MARKET_DISCOUNT_BONUS_LABEL) return poseidonStableMarketDiscountEffects(config);
       if (entry.label === ORANOS_SKY_PASSAGE_BONUS_LABEL) return ORANOS_SKY_PASSAGE_ARCHAIC_EFFECTS;
@@ -1192,6 +1343,18 @@ function selectedChineseMythicHero() {
   return Object.values(CHINESE_MYTHIC_HEROES).includes(hero) ? hero : CHINESE_MYTHIC_HEROES.Fuxi;
 }
 
+
+function selectedAztecClassicalForm() {
+  const tech = els.aztecClassicalForm?.value || AZTEC_CLASSICAL_FORMS.Quetzalcoatl.tech;
+  const valid = Object.values(AZTEC_CLASSICAL_FORMS).map((entry) => entry.tech);
+  return valid.includes(tech) ? tech : AZTEC_CLASSICAL_FORMS.Quetzalcoatl.tech;
+}
+
+function selectedAztecMythicArrival() {
+  const tech = els.aztecMythicArrival?.value || AZTEC_MYTHIC_ARRIVALS.Quetzalcoatl;
+  return Object.values(AZTEC_MYTHIC_ARRIVALS).includes(tech) ? tech : AZTEC_MYTHIC_ARRIVALS.Quetzalcoatl;
+}
+
 function getConfig() {
   const base = selectedBaseMajor();
   const internal = sanitizeFolder(els.displayName.value);
@@ -1210,6 +1373,8 @@ function getConfig() {
     greekHeroes: selectedGreekHeroes(),
     greekUniqueUnit: selectedGreekUniqueUnit(),
     chineseMythicHero: selectedChineseMythicHero(),
+    aztecClassicalForm: selectedAztecClassicalForm(),
+    aztecMythicArrival: selectedAztecMythicArrival(),
     godPower: els.godPower.value,
     godPowerPantheon: els.godPower.selectedOptions[0]?.dataset.pantheon || "",
     uniqueTechs,
@@ -1243,6 +1408,10 @@ function validateConfig(config) {
   }
   if (config.baseCulture === "Chinese") {
     if (!Object.values(CHINESE_MYTHIC_HEROES).includes(config.chineseMythicHero)) errors.push("Choose a valid Chinese Mythic special hero.");
+  }
+  if (config.baseCulture === "Aztec") {
+    if (!Object.values(AZTEC_CLASSICAL_FORMS).map((entry) => entry.tech).includes(config.aztecClassicalForm)) errors.push("Choose a valid Aztec Classical Teixiptla Form.");
+    if (!Object.values(AZTEC_MYTHIC_ARRIVALS).includes(config.aztecMythicArrival)) errors.push("Choose a valid Aztec Mythic Incarnate choice.");
   }
   const availableUniqueIds = new Set(availableUniqueTechGroups().map((group) => group.id));
   const uniquePicks = config.uniqueTechs || [];
@@ -1790,6 +1959,22 @@ function chineseMythicExtraEffects(config) {
   return enableProtoUnitEffect(hero);
 }
 
+
+function aztecClassicalExtraEffects(config) {
+  if (!config || config.baseCulture !== "Aztec") return "";
+  const selectedTech = Object.values(AZTEC_CLASSICAL_FORMS).map((entry) => entry.tech).includes(config.aztecClassicalForm) ? config.aztecClassicalForm : AZTEC_CLASSICAL_FORMS.Quetzalcoatl.tech;
+  const form = Object.values(AZTEC_CLASSICAL_FORMS).find((entry) => entry.tech === selectedTech) || AZTEC_CLASSICAL_FORMS.Quetzalcoatl;
+  return `<effect type="ModifyProtoUnit" proto="WarriorPriest" resetquickactioncommandindex="true">WarriorPriest</effect>
+<effect type="TechStatus" status="active">${escapeXml(form.tech)}</effect>
+${enableProtoUnitEffect(form.unit)}`;
+}
+
+function aztecMythicExtraEffects(config) {
+  if (!config || config.baseCulture !== "Aztec") return "";
+  const tech = Object.values(AZTEC_MYTHIC_ARRIVALS).includes(config.aztecMythicArrival) ? config.aztecMythicArrival : AZTEC_MYTHIC_ARRIVALS.Quetzalcoatl;
+  return `<effect type="TechStatus" status="obtainable">${escapeXml(tech)}</effect>`;
+}
+
 function norseClassicalExtraEffects(config) {
   if (!config || config.baseCulture !== "Norse") return "";
   return `			<effect type="Data" amount="1.00" subtype="Enable" relativity="Absolute">
@@ -1876,6 +2061,7 @@ ${uniqueTechEntries(config).some((group) => group.extraArchaicEffect === "FreyrT
 			<effect type="TechStatus" status="active">${escapeXml(cultureAgeTech("ClassicalAge", culture))}</effect>
 ${norseClassicalExtraEffects(config)}
 ${indentTabBlock(greekClassicalExtraEffects(config), 3)}
+${indentTabBlock(aztecClassicalExtraEffects(config), 3)}
 ${techStatusEffects([...heroic, c.heroic])}
 ${kronosExtraMythUnitStatusEffects(config, "ClassicalAge")}
 ${indentTabBlock(bonusClassicalTechEffects(config), 3)}
@@ -1915,6 +2101,7 @@ ${indentTabBlock(bonusHeroicTechEffects(config), 3)}
 ${norseMythicExtraEffects(config)}
 ${indentTabBlock(greekMythicExtraEffects(config), 3)}
 ${indentTabBlock(chineseMythicExtraEffects(config), 3)}
+${indentTabBlock(aztecMythicExtraEffects(config), 3)}
 ${indentTabBlock(bonusMythicTechEffects(config), 3)}
 		</effects>
 	</tech>
@@ -2243,6 +2430,8 @@ function presetFromForm() {
     greekHeroes: config.greekHeroes,
     greekUniqueUnit: config.greekUniqueUnit,
     chineseMythicHero: config.chineseMythicHero,
+    aztecClassicalForm: config.aztecClassicalForm,
+    aztecMythicArrival: config.aztecMythicArrival,
     godPowerPantheon: config.godPowerPantheon,
     uniqueTechs: config.uniqueTechs,
     bonuses: config.bonuses,
@@ -2261,6 +2450,7 @@ function applyPreset(preset) {
   }
   initGreekSpecificSelects(false);
   initChineseSpecificSelects(false);
+  initAztecSpecificSelects(false);
   if (preset.greekHeroes) {
     const pairs = [
       [els.greekHeroArchaic, "archaic"],
@@ -2291,6 +2481,8 @@ function applyPreset(preset) {
   }
   if (preset.greekUniqueUnit && els.greekUniqueUnit && Object.values(GREEK_UNIQUE_UNITS).includes(preset.greekUniqueUnit)) els.greekUniqueUnit.value = preset.greekUniqueUnit;
   if (preset.chineseMythicHero && els.chineseMythicHero && Object.values(CHINESE_MYTHIC_HEROES).includes(preset.chineseMythicHero)) els.chineseMythicHero.value = preset.chineseMythicHero;
+  if (preset.aztecClassicalForm && els.aztecClassicalForm && Object.values(AZTEC_CLASSICAL_FORMS).map((entry) => entry.tech).includes(preset.aztecClassicalForm)) els.aztecClassicalForm.value = preset.aztecClassicalForm;
+  if (preset.aztecMythicArrival && els.aztecMythicArrival && Object.values(AZTEC_MYTHIC_ARRIVALS).includes(preset.aztecMythicArrival)) els.aztecMythicArrival.value = preset.aztecMythicArrival;
   initGodPowerSelect(false);
   if (preset.godPower && Array.from(els.godPower.options).some((o) => o.value === preset.godPower)) els.godPower.value = preset.godPower;
   initUniqueTechSelects(false);
@@ -2358,6 +2550,7 @@ function updatePreview() {
     godPowerPantheon: config.godPowerPantheon,
     greekChoices: config.baseCulture === "Greek" ? { heroes: config.greekHeroes, mythicUniqueUnit: config.greekUniqueUnit } : undefined,
     chineseChoices: config.baseCulture === "Chinese" ? { mythicSpecialHero: config.chineseMythicHero } : undefined,
+    aztecChoices: config.baseCulture === "Aztec" ? { classicalFormTech: config.aztecClassicalForm, mythicArrivalTech: config.aztecMythicArrival } : undefined,
     uniqueTechs: uniqueTechEntries(config).map((group) => ({ choice: displayTechName(group.label || group.id), grants: group.techs.map(displayTechName), internal: group.techs })),
     godBonuses: selectedBonusEntries(config).map((entry) => ({ source: `${entry.sourcePantheon} / ${entry.sourceMajor}`, bonus: entry.label, files: entry.files })),
     minorGods: Object.fromEntries(AGES.map((age) => [age, config.minorGods[age].map((t) => {
@@ -2369,12 +2562,12 @@ function updatePreview() {
 }
 
 function wireEvents() {
-  els.baseMajor.addEventListener("change", () => { initGreekSpecificSelects(true); initChineseSpecificSelects(true); initGodPowerSelect(true); initUniqueTechSelects(true); initBonusSelects(true); refreshMinorOptions(true); });
+  els.baseMajor.addEventListener("change", () => { initGreekSpecificSelects(true); initChineseSpecificSelects(true); initAztecSpecificSelects(true); initGodPowerSelect(true); initUniqueTechSelects(true); initBonusSelects(true); refreshMinorOptions(true); });
   els.sameCultureOnly.addEventListener("change", () => refreshMinorOptions(true));
   els.displayName.addEventListener("input", updatePreview);
   els.iconFile.addEventListener("change", updatePreview);
   els.godPower.addEventListener("change", () => { initUniqueTechSelects(true); updatePreview(); });
-  for (const select of [els.greekHeroArchaic, els.greekHeroClassical, els.greekHeroHeroic, els.greekHeroMythic, els.greekUniqueUnit, els.chineseMythicHero]) {
+  for (const select of [els.greekHeroArchaic, els.greekHeroClassical, els.greekHeroHeroic, els.greekHeroMythic, els.greekUniqueUnit, els.chineseMythicHero, els.aztecClassicalForm, els.aztecMythicArrival]) {
     if (select) select.addEventListener("change", updatePreview);
   }
   els.uniqueTech1.addEventListener("change", (event) => { enforceUniqueTechDifference(event.target); updatePreview(); });
@@ -2393,6 +2586,7 @@ function wireEvents() {
 initMajorSelect();
 initGreekSpecificSelects(false);
 initChineseSpecificSelects(false);
+initAztecSpecificSelects(false);
 initGodPowerSelect(false);
 initUniqueTechSelects(false);
 initBonusSelects(false);
