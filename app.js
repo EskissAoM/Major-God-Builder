@@ -21,16 +21,16 @@ const UNIQUE_TECH_GROUPS = [
   { id: "VaultsOfErebus", techs: ["VaultsOfErebus"], pantheon: "All", label: "Vaults Of Erebus" },
   { id: "LordOfHorses", techs: ["LordOfHorses"], pantheon: "All", label: "Lord Of Horses" },
   { id: "DivineLabor", techs: ["DivineLabor"], pantheon: "All", label: "Divine Labor" },
-  { id: "SkinOfTheRhino", techs: ["SkinOfTheRhino"], pantheon: "Egyptian", label: "Skin Of The Rhino" },
+  { id: "SkinOfTheRhino", techs: ["SkinOfTheRhino"], pantheon: "All", label: "Skin Of The Rhino" },
   { id: "FloodOfTheNile", techs: ["FloodOfTheNile"], pantheon: "All", label: "Flood Of The Nile" },
   { id: "Clairvoyance", techs: ["Clairvoyance"], pantheon: "All", label: "Clairvoyance", requiresGodPower: "Vision" },
   { id: "HammerOfThunder", techs: ["HammerOfThunder"], pantheon: "Norse", label: "Hammer Of Thunder" },
   { id: "Hamask", techs: ["Hamask"], pantheon: "Norse", label: "Hamask" },
   { id: "EyesInTheForest", techs: ["EyesInTheForest"], pantheon: "All", label: "Eyes In The Forest" },
   { id: "FreyrsGift", techs: ["FreyrsGift"], pantheon: "All", label: "Freyr's Gift", extraArchaicEffect: "FreyrTechCostBonus" },
-  { id: "TemporalChaos", techs: ["TemporalChaos"], pantheon: "Atlantean", label: "Temporal Chaos" },
+  { id: "TemporalChaos", techs: ["TemporalChaos"], pantheon: "All", label: "Temporal Chaos", autoBonusLabel: "Can Time-Shift buildings. Most Time-Shifts are free. Towers and Fortress-type buildings cost part of their price to Time-Shift" },
   { id: "EmpyreanSpeed", techs: ["EmpyreanSpeed"], pantheon: "All", label: "Empyrean Speed" },
-  { id: "Channels", techs: ["Channels"], pantheon: "Atlantean" },
+  { id: "Channels", techs: ["Channels"], pantheon: "All", label: "Channels", autoBonusLabel: "Economic buildings grow Lush. Lush heals friendly units and buildings" },
   { id: "CelestialWeapons", techs: ["CelestialWeapons"], pantheon: "All", label: "Celestial Weapons" },
   { id: "TaiChi", techs: ["TaiChi"], pantheon: "All", label: "TaiChi" },
   { id: "MountainousMight", techs: ["MountainousMight"], pantheon: "Chinese", label: "Mountainous Might" },
@@ -45,10 +45,76 @@ const UNIQUE_TECH_GROUPS = [
   { id: "FeastOfTlaxochimaco", techs: ["FeastOfTlaxochimaco"], pantheon: "All", label: "Feast Of Tlaxochimaco" },
 ];
 
+const UNIQUE_TECH_SOURCE_PANTHEON = {
+  OlympianParentage: "Greek",
+  VaultsOfErebus: "Greek",
+  LordOfHorses: "Greek",
+  DivineLabor: "Greek",
+  SkinOfTheRhino: "Egyptian",
+  FloodOfTheNile: "Egyptian",
+  Clairvoyance: "Egyptian",
+  HammerOfThunder: "Norse",
+  Hamask: "Norse",
+  EyesInTheForest: "Norse",
+  FreyrsGift: "Norse",
+  TemporalChaos: "Atlantean",
+  EmpyreanSpeed: "Atlantean",
+  Channels: "Atlantean",
+  CelestialWeapons: "Chinese",
+  TaiChi: "Chinese",
+  MountainousMight: "Chinese",
+  KuafuChieftain: "Chinese",
+  PeachOfImmortality: "Chinese",
+  HerbalMedicine: "Chinese",
+  Kagura: "Japanese",
+  Tenshu: "Japanese",
+  CrushingWaves: "Japanese",
+  WingsOfTheSouth: "Aztec",
+  TepeyollotlsReach: "Aztec",
+  FeastOfTlaxochimaco: "Aztec",
+};
+
+const UNIQUE_TECH_PANTHEON_ORDER = ["Greek", "Egyptian", "Norse", "Atlantean", "Chinese", "Japanese", "Aztec"];
+
+const UNIQUE_TECH_CUSTOM_ROLLOVERS = {
+  OlympianParentage: "The blood of CustomGod increases the hitpoints of heroes and causes them to regenerate hitpoints.",
+  VaultsOfErebus: "CustomGod's vaults provides a steady, endless income of Gold.",
+  LordOfHorses: "CustomGod improves the line of sight of cavalry and scouts, and causes them to regenerate hitpoints.",
+  DivineLabor: "CustomGod blessing increases Villager Farm and Herdable gathering rates and heals them when dropping Resources.",
+  SkinOfTheRhino: "CustomGod improves the armor of Villagers, making them more resistant to attacks.",
+  FloodOfTheNile: "CustomGod ensures the continued fertility of your lands, granting a steady trickle of Food.",
+  Clairvoyance: "CustomGod makes additional charges of the Vision God Power be cast with no Favor cost and be granted more quickly.",
+  HammerOfThunder: "CustomGod causes your Hersirs to inflict additional damage and generate favor faster.",
+  Hamask: "CustomGod inspires Berserks to move faster and deal additional damage to myth units.",
+  EyesInTheForest: "CustomGod causes units of Mother Nature, such as trees and animals, to temporarily grant you vision when nearby one of your units, and increase the speed of your heroes.",
+  FreyrsGift: "CustomGod increases the hitpoints of all units. This upgrade's Favor cost decreases with each technology researched.",
+  TemporalChaos: "CustomGod increases the number of buildings that can be simultaneously time-shifted, and reduces the cost and shifting time of time-shifting defensive buildings.",
+  EmpyreanSpeed: "CustomGod increases the speed of infantry units.",
+  Channels: "CustomGod increases the speed of units traversing their lush.",
+  CelestialWeapons: "CustomGod grants heroes celestial weapons, causing them to inflict extra divine damage.",
+  TaiChi: "CustomGod's philosophy causes heroes to train faster, and improves their hack and pierce armor.",
+  MountainousMight: "CustomGod imbues Kuafus with the power of the mountains, making them much stronger.",
+  KuafuChieftain: "CustomGod creates a Kuafu chieftain, a powerful hero Kuafu who respawns when lost.",
+  PeachOfImmortality: "CustomGod ripens the Peach of Immortality, which grants heroes and myth units more hitpoints.",
+  HerbalMedicine: "CustomGod teaches Sages to heal faster and restore the hitpoints of multiple friendly units at once.",
+  Kagura: "CustomGod summons a new Miko, and allows your Mikos to train and heal faster.",
+  Tenshu: "CustomGod improves the damage and line of sight of your Towers and Castles.",
+  CrushingWaves: "CustomGod increases the movement speed of myth units and causes their attacks to deal additional divine damage.",
+  WingsOfTheSouth: "CustomGod increases the movement speed and training rate of all War Hut units.",
+  TepeyollotlsReach: "CustomGod increases the damage and jump distance of Ocelotl Warriors and Jaguar Riders.",
+  FeastOfTlaxochimaco: "CustomGod enables livestock to be devoted at the Temple to temporarily increase the gather rate of all villagers.",
+};
+
+
+function uniqueTechSourcePantheon(group) {
+  return group?.sourcePantheon || UNIQUE_TECH_SOURCE_PANTHEON[group?.id] || group?.pantheon || "Other";
+}
+
 
 
 const TECH_DISPLAY_NAME_OVERRIDES = {
   FreyrsGift: "Freyr's Gift",
+  SkinOfTheRhino: "Skin Of The Rhino",
   TaiChi: "Tai Chi",
   TepeyollotlsReach: "Tepeyollotl's Reach",
 };
@@ -163,6 +229,7 @@ const $ = (id) => document.getElementById(id);
 const els = {
   displayName: $("displayName"),
   majorTitle: $("majorTitle"),
+  majorFocus: $("majorFocus"),
   baseMajor: $("baseMajor"),
   greekOptions: $("greekOptions"),
   greekHeroArchaic: $("greekHeroArchaic"),
@@ -407,9 +474,18 @@ function initGodPowerSelect(keep = true) {
   }
 }
 
+function rawSelectedBonusEntries() {
+  return selectedBonusIds().map(getBonusById).filter(Boolean);
+}
+
+function rawSelectedHasBonusLabel(label) {
+  return rawSelectedBonusEntries().some((entry) => entry.label === label);
+}
+
 function availableUniqueTechGroups() {
   const pantheon = selectedPantheon();
   const godPower = els.godPower.value;
+  const currentUniqueIds = [els.uniqueTech1?.value || "", els.uniqueTech2?.value || ""];
   return UNIQUE_TECH_GROUPS.filter((group) => {
     if (group.pantheon !== "All" && group.pantheon !== pantheon) return false;
     if (group.requiresGodPower && group.requiresGodPower !== godPower) return false;
@@ -430,11 +506,77 @@ function uniqueTechEntries(configOrIds) {
   return ids.map(getUniqueTechGroup).filter(Boolean);
 }
 
+function skinOfTheRhinoCustomTechName(config) {
+  return `SkinOfTheRhino${sanitizeId(config.internalName)}`;
+}
+
+function temporalChaosCustomTechName(config) {
+  return `TemporalChaos${sanitizeId(config.internalName)}`;
+}
+
+function techStringKey(techId) {
+  return sanitizeId(techId)
+    .replace(/([a-z0-9])([A-Z])/g, "$1_$2")
+    .replace(/([A-Z]+)([A-Z][a-z])/g, "$1_$2")
+    .toUpperCase();
+}
+
+function uniqueTechOriginalTechId(group) {
+  return group?.id || group?.techs?.[0] || "";
+}
+
+function uniqueTechDisplayNameStringId(group) {
+  return `STR_TECH_${techStringKey(uniqueTechOriginalTechId(group))}_NAME`;
+}
+
+function uniqueTechCustomRolloverStringId(group, config) {
+  return `STR_TECH_${techStringKey(uniqueTechOriginalTechId(group))}_${sanitizeId(config.internalName).toUpperCase()}_LR`;
+}
+
+function uniqueTechCustomDescription(group, config) {
+  const source = UNIQUE_TECH_CUSTOM_ROLLOVERS[uniqueTechOriginalTechId(group)] || "CustomGod improves this technology.";
+  return source.replaceAll("CustomGod", config.displayName || config.internalName);
+}
+
+function currentCustomGodDisplayNameForUi() {
+  return (els.displayName?.value || "Custom God").trim() || "Custom God";
+}
+
+function uniqueTechUiDescription(group) {
+  const source = UNIQUE_TECH_CUSTOM_ROLLOVERS[uniqueTechOriginalTechId(group)] || "CustomGod improves this technology.";
+  return source.replaceAll("CustomGod", currentCustomGodDisplayNameForUi());
+}
+
+function uniqueTechSetNameEffects(config) {
+  return uniqueTechEntries(config).map((group) => {
+    const actualTech = uniqueTechNames([group.id])[0];
+    const techName = group.id === "SkinOfTheRhino"
+      ? skinOfTheRhinoCustomTechName(config)
+      : group.id === "TemporalChaos"
+        ? temporalChaosCustomTechName(config)
+        : actualTech;
+    return `<effect type="SetName" tech="${escapeXml(techName)}" newname="${escapeXml(uniqueTechDisplayNameStringId(group))}" newRollover="${escapeXml(uniqueTechCustomRolloverStringId(group, config))}" ></effect>`;
+  }).join("\n");
+}
+
+function uniqueTechCustomStringMods(config) {
+  return uniqueTechEntries(config).map((group) => {
+    return `ID = "${uniqueTechCustomRolloverStringId(group, config)}"   ;   Str = "${escapeStringMod(uniqueTechCustomDescription(group, config))}"`;
+  }).join("\n");
+}
+
+
 function uniqueTechNames(configOrIds) {
   const seen = new Set();
   const names = [];
+  const hasConfig = !Array.isArray(configOrIds) && configOrIds && configOrIds.internalName;
   for (const group of uniqueTechEntries(configOrIds)) {
-    for (const tech of group.techs) {
+    const techs = group.id === "SkinOfTheRhino" && hasConfig
+      ? [skinOfTheRhinoCustomTechName(configOrIds)]
+      : group.id === "TemporalChaos" && hasConfig
+        ? [temporalChaosCustomTechName(configOrIds)]
+        : group.techs;
+    for (const tech of techs) {
       if (!seen.has(tech)) {
         seen.add(tech);
         names.push(tech);
@@ -444,41 +586,370 @@ function uniqueTechNames(configOrIds) {
   return names;
 }
 
+
+function normalizeSearchText(value) {
+  return String(value || "")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
+
+function searchMatchesText(haystack, query) {
+  const terms = normalizeSearchText(query).split(/\s+/).filter(Boolean);
+  if (!terms.length) return true;
+  const text = normalizeSearchText(haystack);
+  return terms.every((term) => text.includes(term));
+}
+
+
+function ensureSelectFilterInput(select, kind, placeholder) {
+  if (!select) return null;
+  if (select.dataset.inlineSearchReady === "true") {
+    return document.getElementById(select.dataset.filterInputId) || select;
+  }
+  select.dataset.inlineSearchReady = "true";
+  select.dataset.searchQuery = "";
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "search-combo-wrap";
+
+  const input = document.createElement("input");
+  input.type = "text";
+  input.className = "combo-select-input";
+  input.placeholder = placeholder || "Type to search...";
+  input.autocomplete = "off";
+  input.spellcheck = false;
+  input.title = "Type to search, then choose a suggestion. Clear the field to select None.";
+
+  const panel = document.createElement("div");
+  panel.className = "combo-suggestion-panel";
+
+  const baseId = select.id || `${kind}-select-${Math.random().toString(36).slice(2)}`;
+  wrapper.appendChild(input);
+  wrapper.appendChild(panel);
+  select.parentNode.insertBefore(wrapper, select);
+  select.classList.add("native-select-hidden");
+  select.tabIndex = -1;
+  select.setAttribute("aria-hidden", "true");
+
+  input.id = `${baseId}-search-input`;
+  panel.id = `${baseId}-suggestions-panel`;
+  select.dataset.filterInputId = input.id;
+  select.dataset.panelId = panel.id;
+  select.dataset.comboMap = "{}";
+  select.dataset.comboSuggestions = "[]";
+
+  const refresh = () => {
+    if (kind === "unique") initUniqueTechSelects(true);
+    else if (kind === "bonus") initBonusSelects(true);
+    updatePreview();
+  };
+
+  const closePanel = () => panel.classList.remove("open");
+  const openPanel = () => {
+    if (!input.disabled) panel.classList.add("open");
+  };
+
+  const chooseExactMatch = () => {
+    const raw = input.value || "";
+    if (!raw.trim()) {
+      select.value = "";
+      select.dataset.searchQuery = "";
+      return true;
+    }
+    const map = JSON.parse(select.dataset.comboMap || "{}");
+    const value = map[raw] || map[normalizeSearchText(raw)];
+    if (value !== undefined) {
+      select.value = value;
+      select.dataset.searchQuery = "";
+      return true;
+    }
+    select.value = "";
+    select.dataset.searchQuery = raw;
+    return false;
+  };
+
+  const chooseValue = (value, label) => {
+    select.value = value || "";
+    input.value = label || "";
+    select.dataset.searchQuery = "";
+    closePanel();
+    refresh();
+  };
+
+  input.addEventListener("input", () => {
+    chooseExactMatch();
+    refresh();
+    openPanel();
+  });
+
+  input.addEventListener("focus", () => {
+    if (!select.value) select.dataset.searchQuery = input.value || "";
+    renderComboSuggestions(select);
+    openPanel();
+  });
+
+  input.addEventListener("keydown", (event) => {
+    const items = Array.from(panel.querySelectorAll(".combo-suggestion-option:not(.disabled)"));
+    const currentIndex = items.findIndex((item) => item.classList.contains("active"));
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      openPanel();
+      const next = items[Math.min(items.length - 1, currentIndex + 1)] || items[0];
+      items.forEach((item) => item.classList.remove("active"));
+      if (next) { next.classList.add("active"); next.scrollIntoView({ block: "nearest" }); }
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      openPanel();
+      const next = items[Math.max(0, currentIndex - 1)] || items[items.length - 1];
+      items.forEach((item) => item.classList.remove("active"));
+      if (next) { next.classList.add("active"); next.scrollIntoView({ block: "nearest" }); }
+    } else if (event.key === "Enter") {
+      const active = items[currentIndex];
+      if (active) {
+        event.preventDefault();
+        chooseValue(active.dataset.value, active.dataset.label);
+      }
+    } else if (event.key === "Escape") {
+      closePanel();
+      input.value = select.value ? (select.dataset.displayLabel || input.value) : "";
+      select.dataset.searchQuery = "";
+      refresh();
+    }
+  });
+
+  input.addEventListener("blur", () => {
+    setTimeout(() => {
+      if (!wrapper.contains(document.activeElement)) {
+        if (!select.value && input.value.trim()) input.value = "";
+        select.dataset.searchQuery = "";
+        closePanel();
+        refresh();
+      }
+    }, 140);
+  });
+
+  select.addEventListener("change", () => {
+    select.dataset.searchQuery = "";
+    const selectedOption = select.selectedOptions && select.selectedOptions[0];
+    input.value = selectedOption && select.value ? (select.dataset.displayLabel || selectedOption.textContent || "") : "";
+    refresh();
+  });
+
+  return input;
+}
+
+function selectFilterQuery(select) {
+  const input = select?.dataset?.filterInputId ? document.getElementById(select.dataset.filterInputId) : null;
+  if (!input) return select?.dataset?.searchQuery || "";
+  if (document.activeElement === input && !select.value) return input.value || "";
+  return select?.dataset?.searchQuery || "";
+}
+
+function comboPanel(select) {
+  return select?.dataset?.panelId ? document.getElementById(select.dataset.panelId) : null;
+}
+
+function renderComboSuggestions(select) {
+  const panel = comboPanel(select);
+  if (!panel) return;
+  const suggestions = JSON.parse(select.dataset.comboSuggestions || "[]");
+  const selectedValue = select.value || "";
+  panel.innerHTML = "";
+
+  const none = document.createElement("div");
+  none.className = "combo-suggestion-option";
+  none.textContent = "None";
+  none.dataset.value = "";
+  none.dataset.label = "";
+  if (!selectedValue) none.classList.add("active");
+  none.addEventListener("mousedown", (event) => {
+    event.preventDefault();
+    const input = document.getElementById(select.dataset.filterInputId);
+    select.value = "";
+    if (input) input.value = "";
+    select.dataset.searchQuery = "";
+    panel.classList.remove("open");
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+  panel.appendChild(none);
+
+  if (!suggestions.length) {
+    const empty = document.createElement("div");
+    empty.className = "combo-suggestion-empty";
+    empty.textContent = "No matches";
+    panel.appendChild(empty);
+    return;
+  }
+
+  for (const suggestion of suggestions) {
+    const item = document.createElement("div");
+    item.className = "combo-suggestion-option";
+    if (suggestion.description) {
+      const titleLine = document.createElement("div");
+      titleLine.className = "combo-suggestion-title";
+      titleLine.textContent = suggestion.label;
+      const descLine = document.createElement("div");
+      descLine.className = "combo-suggestion-description";
+      descLine.textContent = suggestion.description;
+      item.appendChild(titleLine);
+      item.appendChild(descLine);
+    } else {
+      item.textContent = suggestion.label;
+    }
+    item.title = suggestion.disabled
+      ? (suggestion.disabledReason || "Already selected")
+      : (suggestion.title || suggestion.label);
+    item.dataset.value = suggestion.value;
+    item.dataset.label = suggestion.label;
+    if (suggestion.disabled) {
+      item.classList.add("disabled");
+      item.setAttribute("aria-disabled", "true");
+    }
+    if (!suggestion.disabled && suggestion.value === selectedValue) item.classList.add("active");
+    item.addEventListener("mousedown", (event) => {
+      event.preventDefault();
+      if (suggestion.disabled) return;
+      const input = document.getElementById(select.dataset.filterInputId);
+      select.value = suggestion.value;
+      select.dataset.searchQuery = "";
+      select.dataset.displayLabel = suggestion.label;
+      if (input) input.value = suggestion.label;
+      panel.classList.remove("open");
+      select.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    panel.appendChild(item);
+  }
+}
+
+function setComboSuggestions(select, suggestions) {
+  const map = { "None": "", "none": "" };
+  for (const suggestion of suggestions || []) {
+    map[suggestion.label] = suggestion.value;
+    map[normalizeSearchText(suggestion.label)] = suggestion.value;
+  }
+  select.dataset.comboMap = JSON.stringify(map);
+  select.dataset.comboSuggestions = JSON.stringify(suggestions || []);
+  renderComboSuggestions(select);
+}
+
+function setComboDisplay(select, label) {
+  const input = select?.dataset?.filterInputId ? document.getElementById(select.dataset.filterInputId) : null;
+  if (!input) return;
+  select.dataset.displayLabel = label || "";
+  if (!(document.activeElement === input && !select.value)) {
+    input.value = label || "";
+  }
+  input.disabled = Boolean(select.disabled);
+  input.title = select.title || input.title || "Type to search, then choose a suggestion.";
+}
+
+function uniqueTechSearchText(group) {
+  const sourcePantheon = uniqueTechSourcePantheon(group);
+  const allowedText = group.pantheon === "All" ? "All pantheons" : `${group.pantheon} only`;
+  return [
+    group.id,
+    group.label,
+    sourcePantheon,
+    allowedText,
+    ...(group.techs || []).map(displayTechName),
+    ...(group.techs || []),
+    uniqueTechUiDescription(group),
+    group.requiresGodPower ? `requires ${group.requiresGodPower}` : "",
+  ].join(" ");
+}
+
+function bonusSearchText(entry, pantheon = selectedPantheon()) {
+  return [
+    entry.id,
+    entry.sourcePantheon,
+    entry.sourceMajor,
+    entry.label,
+    dynamicBonusLabel(entry, pantheon),
+    ...(entry.allowedPantheons || []),
+    entry.files || "",
+  ].join(" ");
+}
+
+function includeCurrentOption(options, current, getById) {
+  if (!current || options.some((entry) => entry.id === current)) return options;
+  const selected = getById(current);
+  return selected ? [selected, ...options] : options;
+}
+
+function uniqueTechComboLabel(group) {
+  const sourcePantheon = uniqueTechSourcePantheon(group);
+  let label = `${sourcePantheon} — ${displayTechName(group.label || group.id)}`;
+  if (group.requiresGodPower) label += ` (requires ${group.requiresGodPower})`;
+  return label;
+}
+
 function initUniqueTechSelects(keep = true) {
   const previous = keep ? selectedUniqueTechGroups() : [];
-  const options = availableUniqueTechGroups();
+  const allOptions = availableUniqueTechGroups();
   for (const [index, select] of [els.uniqueTech1, els.uniqueTech2].entries()) {
     if (!select) continue;
+    const filterInput = ensureSelectFilterInput(select, "unique", "Type to search unique technologies...");
+    const rawQuery = selectFilterQuery(select);
+    const query = rawQuery;
     const current = previous[index] || "";
+    let options = allOptions.filter((group) => searchMatchesText(uniqueTechSearchText(group), query));
+    options = includeCurrentOption(options, current, getUniqueTechGroup);
+
     select.innerHTML = "";
     const none = document.createElement("option");
     none.value = "";
     none.textContent = "None";
     select.appendChild(none);
 
-    const allGroup = document.createElement("optgroup");
-    allGroup.label = "Available to all pantheons";
-    const pantheonGroup = document.createElement("optgroup");
-    pantheonGroup.label = `${selectedPantheon()} only`;
-
+    const groupedOptions = new Map();
     for (const group of options) {
-      const opt = document.createElement("option");
-      opt.value = group.id;
-      opt.textContent = displayTechName(group.label || group.id);
-      opt.title = group.techs.map(displayTechName).join(", ");
-      if (group.requiresGodPower) opt.textContent += ` (requires ${group.requiresGodPower})`;
-      if (group.pantheon === "All") allGroup.appendChild(opt);
-      else pantheonGroup.appendChild(opt);
+      const sourcePantheon = uniqueTechSourcePantheon(group);
+      if (!groupedOptions.has(sourcePantheon)) groupedOptions.set(sourcePantheon, []);
+      groupedOptions.get(sourcePantheon).push(group);
     }
-    if (allGroup.children.length) select.appendChild(allGroup);
-    if (pantheonGroup.children.length) select.appendChild(pantheonGroup);
 
+    const orderedSourcePantheons = [
+      ...UNIQUE_TECH_PANTHEON_ORDER.filter((pantheonName) => groupedOptions.has(pantheonName)),
+      ...Array.from(groupedOptions.keys()).filter((pantheonName) => !UNIQUE_TECH_PANTHEON_ORDER.includes(pantheonName)).sort(),
+    ];
+
+    const suggestions = [];
+    for (const sourcePantheon of orderedSourcePantheons) {
+      const optGroup = document.createElement("optgroup");
+      optGroup.label = sourcePantheon;
+      for (const group of groupedOptions.get(sourcePantheon).sort((a, b) => displayTechName(a.label || a.id).localeCompare(displayTechName(b.label || b.id)))) {
+        const opt = document.createElement("option");
+        opt.value = group.id;
+        opt.textContent = displayTechName(group.label || group.id);
+        const allowedText = group.pantheon === "All" ? "All pantheons" : `${group.pantheon} only`;
+        opt.title = `Source: ${sourcePantheon} | Allowed: ${allowedText} | Grants: ${group.techs.map(displayTechName).join(", ")}`;
+        if (group.requiresGodPower) opt.textContent += ` (requires ${group.requiresGodPower})`;
+        if (current && group.id === current && query && !searchMatchesText(uniqueTechSearchText(group), query)) {
+          opt.textContent += " (selected; outside filter)";
+        }
+        optGroup.appendChild(opt);
+        const otherUniqueSelected = previous.some((selectedId, selectedIndex) => selectedIndex !== index && selectedId === group.id);
+        suggestions.push({
+          value: group.id,
+          label: uniqueTechComboLabel(group),
+          description: uniqueTechUiDescription(group),
+          title: `${opt.title} | ${uniqueTechUiDescription(group)}`,
+          disabled: otherUniqueSelected,
+          disabledReason: otherUniqueSelected ? "Already selected in another unique technology slot" : "",
+        });
+      }
+      if (optGroup.children.length) select.appendChild(optGroup);
+    }
+
+    setComboSuggestions(select, suggestions);
     if (current && options.some((group) => group.id === current)) select.value = current;
     else select.value = "";
+    const selectedGroup = select.value ? getUniqueTechGroup(select.value) : null;
+    setComboDisplay(select, selectedGroup ? uniqueTechComboLabel(selectedGroup) : (document.activeElement === filterInput ? rawQuery : ""));
   }
   enforceUniqueTechDifference();
 }
-
 function enforceUniqueTechDifference(changedSelect) {
   if (!els.uniqueTech1 || !els.uniqueTech2) return;
   if (els.uniqueTech1.value && els.uniqueTech1.value === els.uniqueTech2.value) {
@@ -489,6 +960,8 @@ function enforceUniqueTechDifference(changedSelect) {
   const two = els.uniqueTech2.value;
   for (const opt of els.uniqueTech1.options) opt.disabled = Boolean(two && opt.value === two);
   for (const opt of els.uniqueTech2.options) opt.disabled = Boolean(one && opt.value === one);
+  setComboDisplay(els.uniqueTech1, els.uniqueTech1.value ? uniqueTechComboLabel(getUniqueTechGroup(els.uniqueTech1.value)) : "");
+  setComboDisplay(els.uniqueTech2, els.uniqueTech2.value ? uniqueTechComboLabel(getUniqueTechGroup(els.uniqueTech2.value)) : "");
 }
 
 function bonusSelects() {
@@ -515,41 +988,143 @@ function getBonusById(id) {
   return (window.AOM_BONUS_DATA || []).find((entry) => entry.id === id);
 }
 
+function bonusByLabel(label) {
+  return (window.AOM_BONUS_DATA || []).find((entry) => entry.label === label);
+}
+
+function selectedAutoBonusLocks() {
+  return selectedUniqueTechGroups()
+    .map(getUniqueTechGroup)
+    .filter((group) => group && group.autoBonusLabel)
+    .map((group) => ({ group, bonus: bonusByLabel(group.autoBonusLabel) }))
+    .filter((entry) => entry.bonus);
+}
+
+function requiredAutoBonusIssues(configOrIds) {
+  const groups = Array.isArray(configOrIds)
+    ? configOrIds.map(getUniqueTechGroup).filter(Boolean)
+    : uniqueTechEntries(configOrIds);
+  const bonusIds = new Set(Array.isArray(configOrIds) ? selectedBonusIds() : (configOrIds.bonuses || []));
+  const issues = [];
+  for (const group of groups) {
+    if (!group.autoBonusLabel) continue;
+    const bonus = bonusByLabel(group.autoBonusLabel);
+    if (bonus && !bonusIds.has(bonus.id)) {
+      issues.push({ group, bonus });
+    }
+  }
+  return issues;
+}
+
+function formatRequiredAutoBonusIssue(issue) {
+  return `${issue.group.label} requires the god bonus "${issue.bonus.label}". Free a bonus slot or choose that bonus before export.`;
+}
+
+function enforceChannelsGaiaLushBonusLock() {
+  const locks = selectedAutoBonusLocks();
+  const selects = bonusSelects();
+
+  for (const select of selects) {
+    select.disabled = false;
+    select.title = "";
+    delete select.dataset.lockedByUniqueTech;
+    const entry = select.value ? getBonusById(select.value) : null;
+    setComboDisplay(select, entry ? bonusComboLabel(entry) : "");
+  }
+
+  const lockedSelects = [];
+  for (const { group, bonus } of locks) {
+    let targetSelect = selects.find((select) => select.value === bonus.id);
+    if (!targetSelect) {
+      targetSelect = selects.find((select) => !select.value && !lockedSelects.includes(select));
+      if (targetSelect) targetSelect.value = bonus.id;
+    }
+    if (targetSelect && targetSelect.value === bonus.id) {
+      lockedSelects.push(targetSelect);
+      targetSelect.dataset.lockedByUniqueTech = group.id;
+    }
+  }
+
+  enforceBonusDifference();
+
+  for (const select of lockedSelects) {
+    const group = getUniqueTechGroup(select.dataset.lockedByUniqueTech);
+    select.disabled = true;
+    select.title = `Locked while ${group?.label || "the linked unique technology"} is selected as a unique technology.`;
+    const entry = select.value ? getBonusById(select.value) : null;
+    setComboDisplay(select, entry ? bonusComboLabel(entry) : "");
+  }
+
+  const issues = requiredAutoBonusIssues(selectedUniqueTechGroups());
+  if (issues.length) {
+    setMessage(issues.map(formatRequiredAutoBonusIssue).join(" "), true);
+  }
+}
+
+function effectiveBonusIds(configOrIds) {
+  return Array.isArray(configOrIds) ? [...configOrIds] : [...(configOrIds.bonuses || [])];
+}
+
 function selectedBonusEntries(configOrIds) {
-  const ids = Array.isArray(configOrIds) ? configOrIds : (configOrIds.bonuses || []);
-  return ids.map(getBonusById).filter(Boolean);
+  return effectiveBonusIds(configOrIds).map(getBonusById).filter(Boolean);
+}
+
+function bonusComboLabel(entry, pantheon = selectedPantheon()) {
+  return `${entry.sourcePantheon} — ${entry.sourceMajor}: ${dynamicBonusLabel(entry, pantheon)}`;
 }
 
 function initBonusSelects(keep = true) {
   const previous = keep ? selectedBonusIds() : [];
-  const options = availableBonuses();
+  const pantheon = selectedPantheon();
+  const allOptions = availableBonuses();
   for (const [index, select] of bonusSelects().entries()) {
+    const filterInput = ensureSelectFilterInput(select, "bonus", "Type to search bonuses...");
+    const rawQuery = selectFilterQuery(select);
+    const query = rawQuery;
     const current = previous[index] || "";
+    let options = allOptions.filter((entry) => searchMatchesText(bonusSearchText(entry, pantheon), query));
+    options = includeCurrentOption(options, current, getBonusById);
+
     select.innerHTML = "";
     const none = document.createElement("option");
     none.value = "";
     none.textContent = "None";
     select.appendChild(none);
 
+    const suggestions = [];
     for (const sourcePantheon of Array.from(new Set(options.map((entry) => entry.sourcePantheon)))) {
       const group = document.createElement("optgroup");
       group.label = sourcePantheon;
       for (const entry of options.filter((item) => item.sourcePantheon === sourcePantheon)) {
         const opt = document.createElement("option");
         opt.value = entry.id;
-        opt.textContent = `${entry.sourceMajor}: ${entry.label}`;
+        opt.textContent = `${entry.sourceMajor}: ${dynamicBonusLabel(entry, pantheon)}`;
+        if (current && entry.id === current && query && !searchMatchesText(bonusSearchText(entry, pantheon), query)) {
+          opt.textContent += " (selected; outside filter)";
+        }
         opt.title = `Allowed: ${(entry.allowedPantheons || []).join(", ")} | Files: ${entry.files}`;
         group.appendChild(opt);
+        const otherBonusSelected = previous.some((selectedId, selectedIndex) => selectedIndex !== index && selectedId === entry.id);
+        suggestions.push({
+          value: entry.id,
+          label: bonusComboLabel(entry, pantheon),
+          title: opt.title,
+          disabled: otherBonusSelected,
+          disabledReason: otherBonusSelected ? "Already selected in another bonus slot" : "",
+        });
       }
       if (group.children.length) select.appendChild(group);
     }
 
+    setComboSuggestions(select, suggestions);
     if (current && options.some((entry) => entry.id === current)) select.value = current;
     else select.value = "";
+    const selectedEntry = select.value ? getBonusById(select.value) : null;
+    setComboDisplay(select, selectedEntry ? bonusComboLabel(selectedEntry, pantheon) : (document.activeElement === filterInput ? rawQuery : ""));
   }
   enforceBonusDifference();
+  enforceChannelsGaiaLushBonusLock();
 }
-
 function enforceBonusDifference(changedSelect) {
   const selected = selectedBonusIds();
   if (changedSelect && changedSelect.value && selected.filter((id) => id === changedSelect.value).length > 1) {
@@ -560,12 +1135,20 @@ function enforceBonusDifference(changedSelect) {
     for (const opt of select.options) {
       opt.disabled = Boolean(opt.value && active.has(opt.value) && opt.value !== select.value);
     }
+    const entry = select.value ? getBonusById(select.value) : null;
+    setComboDisplay(select, entry ? bonusComboLabel(entry) : "");
   }
 }
 
 const GAIA_ECON_GUILD_BONUS_LABEL = "Economic Guild and upgrades are cheaper and available earlier";
 const KRONOS_EXTRA_MYTH_UNITS_BONUS_LABEL = "Receives 2 free Temple myth units instead of 1 on age-up";
-const ORANOS_SKY_PASSAGE_BONUS_LABEL = "Can build a new Sky Passage each age.Units can travel instantly between Sky Passages";
+const KRONOS_TIMESHIFT_BONUS_LABEL = "Can Time-Shift buildings. Most Time-Shifts are free. Towers and Fortress-type buildings cost part of their price to Time-Shift";
+const KRONOS_TEMPORAL_SCAFFOLDING_BONUS_LABEL = "Buildings construct faster near Manors and Houses (at half-rate)";
+
+const ORANOS_SKY_PASSAGE_BONUS_LABEL = "Villagers/Infantry(Norse)/Priest(Egyptian) can build a new Sky Passage each age, enabling instant travel between them.";
+const LOKI_SPAWN_MYTH_UNITS_BONUS_LABEL = "Damaging enemies can spawn myth units";
+const LOKI_MILITARY_BUILD_BONUS_LABEL = "Military-built buildings are constructed faster";
+const LOKI_COUNTER_DAMAGE_BONUS_LABEL = "Human soldiers and heroes get bonus counter damage";
 const POSEIDON_SPEED_BY_AGE_BONUS_LABEL = "Cavalry, Caravans, and myth units gain speed by age";
 const POSEIDON_STABLE_MARKET_DISCOUNT_BONUS_LABEL = "Stables and Markets are 30% cheaper";
 const HUITZ_TONALLI_RESOURCES_BONUS_LABEL = "Collecting Tonalli grants resources in addition to favor";
@@ -573,11 +1156,13 @@ const HUITZ_CONSTRUCTION_REFUND_BONUS_LABEL = "Temples, Fortress-type building, 
 const ZEUS_STARTING_FAVOR_BONUS_LABEL = "Starts with 10 favor";
 const ZEUS_COUNTER_CAV_INFANTRY_SPEED_BONUS_LABEL = "Hoplite and other counter-cavalry infantry move 15% faster";
 const HUITZ_SHORN_TONALLI_BONUS_LABEL = "Shorn Ones have more hit points. Shorn Ones generate extra Tonalli in combat";
+const QUETZ_DROPSITE_DISCOUNT_BONUS_LABEL = "Dropsite and their additions cost 33% less";
 const QUETZ_EAGLE_RANGE_LOS_BONUS_LABEL = "Eagle Warriors gain +1 range in the Heroic and Mythic Ages.Eagle Warriors gain +1 line of sight in the Heroic and Mythic Ages";
 const TEZCAT_DEVOTE_FAVOR_BONUS_LABEL = "Devoting Settlers gives higher immediate favor by age";
 const TEZCAT_JAGUAR_RIDER_BONUS_LABEL = "Jaguar Riders are available from the Heroic Age";
 const TEZCAT_OBSIDIAN_SHARD_BONUS_LABEL = "Every 2 lost trainable myth units can create an Obsidian Shard. Obsidian Shards may summon a free myth unit";
 const FUXI_NEZHA_BONUS_LABEL = "Gains access to Nezha in the Classical Age";
+const NUWA_CREATORS_AUSPICE_BONUS_LABEL = "Creator’s Auspice improves as favor is earned. It reduces standard Villager cost and increases building hit points";
 const NUWA_FAVORED_LAND_FARTHER_BONUS_LABEL = "Buildings spread Favored Land farther";
 const SHENNONG_MYTH_REGEN_FAVORED_LAND_BONUS_LABEL = "Myth units regenerate hit points on Favored Land. Myth-unit regeneration on Favored Land scales by age";
 const SHENNONG_GIFT_OF_BEASTS_BONUS_LABEL = "Gift of Beasts summons myth units from the next age as favor is earned";
@@ -592,6 +1177,29 @@ const HADES_RANGED_TECH_DISCOUNT_BONUS_LABEL = "Ranged-soldier technologies are 
 const FREYR_FORTRESS_DAMAGE_BONUS_LABEL = "Fortress-type building units deal +10% damage";
 const RA_FORTRESS_HP_BONUS_LABEL = "Fortress-type building units get +15% hit points";
 const SET_MILITARY_BUILDING_DISCOUNT_BONUS_LABEL = "Military production buildings including Fortress-type cost 25% less resources excluding favor";
+
+function dynamicBonusLabel(entry, pantheonOrConfig) {
+  if (!entry) return "";
+  const pantheon = typeof pantheonOrConfig === "string"
+    ? pantheonOrConfig
+    : (pantheonOrConfig?.baseCulture || selectedPantheon());
+  if (entry.id === "bonus_45" || entry.label === LOKI_MILITARY_BUILD_BONUS_LABEL) {
+    return pantheon === "Norse"
+      ? "Infantry units construct buildings faster"
+      : "Villagers construct buildings faster";
+  }
+  if (entry.id === "bonus_56" || entry.label === ORANOS_SKY_PASSAGE_BONUS_LABEL) {
+    if (pantheon === "Norse") return "Infantry units can build a new Sky Passage each age, enabling instant travel between them.";
+    if (pantheon === "Egyptian") return "Priests can build a new Sky Passage each age, enabling instant travel between them.";
+    return "Villagers can build a new Sky Passage each age, enabling instant travel between them.";
+  }
+  if (entry.id === "bonus_66" || entry.label === FUXI_NEZHA_BONUS_LABEL) {
+    return pantheon === "Chinese"
+      ? "Gains access to Nezha in the Classical Age"
+      : "Gains access to Nezha in the Classical Age in the Temple";
+  }
+  return entry.label;
+}
 
 const SET_ANIMALS_ARCHAIC_EFFECTS = `<effect type="Data" amount="1.00" subtype="Enable" relativity="Absolute">
 	<target type="ProtoUnit">BaboonOfSet</target>
@@ -706,6 +1314,27 @@ const ORANOS_SKY_PASSAGE_ARCHAIC_EFFECTS = `<effect type="Data" amount="1.00" su
 	<target type="ProtoUnit">SkyPassage</target>
 </effect>`;
 
+const ORANOS_SKY_PASSAGE_BUILDERS_BY_PANTHEON = {
+  Greek: ["VillagerGreek", "LykaonVillager"],
+  Egyptian: ["Priest"],
+  Norse: ["Berserk", "Hirdman", "ThrowingAxeman", "Huskarl", "Hersir", "Godi"],
+  Chinese: ["VillagerChinese", "VillagerChineseClay", "Kuafu"],
+  Japanese: ["VillagerJapanese"],
+  Aztec: ["VillagerAztec"],
+};
+
+function oranosSkyPassageArchaicEffects(config) {
+  const effects = [ORANOS_SKY_PASSAGE_ARCHAIC_EFFECTS];
+  const builders = ORANOS_SKY_PASSAGE_BUILDERS_BY_PANTHEON[config.baseCulture] || [];
+  for (const builder of builders) {
+    const row = builder === "Priest" ? "0" : "2";
+    effects.push(`<effect type="Data" amount="1.00" subtype="CommandAdd" proto="SkyPassage" row="${row}" column="4" relativity="Assign">
+	<target type="ProtoUnit">${builder}</target>
+</effect>`);
+  }
+  return effects.join("\n");
+}
+
 const ORANOS_SKY_PASSAGE_AGE_EFFECTS = `<effect type="Data" amount="1.00" subtype="BuildLimit" relativity="Absolute">
 	<target type="ProtoUnit">SkyPassage</target>
 </effect>`;
@@ -807,23 +1436,133 @@ const TEZCAT_JAGUAR_RIDER_HEROIC_EFFECTS = `<effect type="Data" amount="1.00" su
 	<target type="ProtoUnit">JaguarRider</target>
 </effect>`;
 
-const TEZCAT_OBSIDIAN_SHARD_CLASSICAL_EFFECTS = `<effect type="Data" action="MaintainTrainClassical" amount="1.00" subtype="ActionEnable" relativity="Absolute">
-	<target type="ProtoUnit">ObsidianShard</target>
-</effect>`;
+const OBSIDIAN_SHARD_MYTH_UNITS_BY_PANTHEON = {
+  Greek: {
+    Classical: ["Minotaur", "Centaur", "Cyclops", "LykaonVillager"],
+    Heroic: ["Manticore", "Hydra", "NemeanLion", "Hamadryad"],
+    Mythic: ["Medusa", "Chimera", "Colossus", "Siren"],
+  },
+  Egyptian: {
+    Classical: ["Sphinx", "Wadjet", "Anubite"],
+    Heroic: ["Petsuchos", "ScorpionMan", "Scarab"],
+    Mythic: ["Mummy", "Phoenix", "Avenger"],
+  },
+  Norse: {
+    Classical: ["Valkyrie", "Troll", "Einheri", "Draugr"],
+    Heroic: ["BattleBoar", "MountainGiant", "FrostGiant", "RockGiant"],
+    Mythic: ["FireGiant", "FenrisWolfBrood", "Fafnir"],
+  },
+  Atlantean: {
+    Classical: ["Promethean", "Automaton", "Caladria"],
+    Heroic: ["Satyr", "Behemoth", "StymphalianBird"],
+    Mythic: ["Lampades", "Argus", "Centimanus"],
+  },
+  Chinese: {
+    Classical: ["YaZi", "QiongQi", "QiLin"],
+    Heroic: ["TaoWu", "TaoTie", "BaiHu"],
+    Mythic: ["QingLong", "HunDun", "ZhuQue"],
+  },
+  Japanese: {
+    Classical: ["Jorogumo", "Kamaitachi", "Wanyudo"],
+    Heroic: ["Tengu", "Raiju", "Oni"],
+    Mythic: ["Asura", "Shinigami", "Onmoraki"],
+  },
+  Aztec: {
+    Classical: ["Chaneque", "CentzonTotochtin", "Maquizcoatl"],
+    Heroic: ["ObsidianButterfly", "Ayotochtli", "Tzitzimitl"],
+    Mythic: ["Tunkuluchu", "Ahuizotl", "SoulGuide"],
+  },
+};
 
-const TEZCAT_OBSIDIAN_SHARD_HEROIC_EFFECTS = `<effect type="Data" action="MaintainTrainHeroic" amount="1.00" subtype="ActionEnable" relativity="Absolute">
-	<target type="ProtoUnit">ObsidianShard</target>
-</effect>
-<effect type="Data" action="MaintainTrainClassical" amount="0.00" subtype="ActionEnable" relativity="Assign">
-	<target type="ProtoUnit">ObsidianShard</target>
-</effect>`;
+function obsidianShardProtoName(config) {
+  return `ObsidianShard${config.baseCulture || "Aztec"}`;
+}
 
-const TEZCAT_OBSIDIAN_SHARD_MYTHIC_EFFECTS = `<effect type="Data" action="MaintainTrainMythic" amount="1.00" subtype="ActionEnable" relativity="Absolute">
-	<target type="ProtoUnit">ObsidianShard</target>
-</effect>
-<effect type="Data" action="MaintainTrainHeroic" amount="0.00" subtype="ActionEnable" relativity="Assign">
-	<target type="ProtoUnit">ObsidianShard</target>
+function tezcatObsidianShardAgeTargetEffect(config, action, amount = "1.00", relativity = "Absolute") {
+  return `<effect type="Data" action="${action}" amount="${amount}" subtype="ActionEnable" relativity="${relativity}">
+	<target type="ProtoUnit">${escapeXml(obsidianShardProtoName(config))}</target>
 </effect>`;
+}
+
+function tezcatObsidianShardClassicalEffects(config) {
+  return tezcatObsidianShardAgeTargetEffect(config, "MaintainTrainClassical");
+}
+
+function tezcatObsidianShardHeroicEffects(config) {
+  return `${tezcatObsidianShardAgeTargetEffect(config, "MaintainTrainHeroic")}
+${tezcatObsidianShardAgeTargetEffect(config, "MaintainTrainClassical", "0.00", "Assign")}`;
+}
+
+function tezcatObsidianShardMythicEffects(config) {
+  return `${tezcatObsidianShardAgeTargetEffect(config, "MaintainTrainMythic")}
+${tezcatObsidianShardAgeTargetEffect(config, "MaintainTrainHeroic", "0.00", "Assign")}`;
+}
+
+function obsidianShardProtoAction(age, units) {
+  const rates = (units || []).map((unit) => `			<rate type="${escapeXml(unit)}">1.000000</rate>`).join("\n");
+  return `		<protoaction>
+			<name>MaintainTrain${age}</name>
+${rates}
+			<minrate type="Unit">1.000000</minrate>
+			<maintaintrainpoints>40.0000</maintaintrainpoints>
+			<killontrain>1</killontrain>
+			<pausable>0</pausable>
+			<randomtrainunit>1</randomtrainunit>
+		</protoaction>`;
+}
+
+function tezcatObsidianShardProtoXml(config) {
+  if (!selectedHasBonusLabel(config, TEZCAT_OBSIDIAN_SHARD_BONUS_LABEL)) return "";
+  const units = OBSIDIAN_SHARD_MYTH_UNITS_BY_PANTHEON[config.baseCulture] || OBSIDIAN_SHARD_MYTH_UNITS_BY_PANTHEON.Aztec;
+  return `	<unit name="${escapeXml(obsidianShardProtoName(config))}">
+		<displaynameid>STR_BLD_OBSIDIAN_SHARD_NAME</displaynameid>
+		<rollovertextid>STR_BLD_OBSIDIAN_SHARD_LR</rollovertextid>
+		<shortrollovertextid>STR_BLD_OBSIDIAN_SHARD_SR</shortrollovertextid>
+		<icon>resources\\aztec\\static_color\\buildings\\obsidian_shard_icon.png</icon>
+		<animfile>aztec\\buildings\\props\\obsidian_shard\\obsidian_shard.xml</animfile>
+		<soundsetfile>aztec\\sfx\\buildings\\obsidianshard.xml</soundsetfile>
+		<obstructionradiusx>1.0000</obstructionradiusx>
+		<obstructionradiusz>1.0000</obstructionradiusz>
+		<movementtype>land</movementtype>
+		<initialhitpoints>500.0000</initialhitpoints>
+		<maxhitpoints>500.0000</maxhitpoints>
+		<los>5.0000</los>
+		<armor type="Hack" value="0.2500"></armor>
+		<armor type="Pierce" value="0.6000"></armor>
+		<armor type="Crush" value="0.1000"></armor>
+		<unittype>LogicalTypeBuildingsNotWalls</unittype>
+		<unittype>LogicalTypeVillagersAttack</unittype>
+		<unittype>LogicalTypeHandUnitsAttack</unittype>
+		<unittype>LogicalTypeHandUnitsAutoAttack</unittype>
+		<unittype>LogicalTypeRangedUnitsAttack</unittype>
+		<unittype>LogicalTypeRangedUnitsAutoAttack</unittype>
+		<unittype>Building</unittype>
+		<unittype>BuildingClass</unittype>
+		<unittype>LogicalTypeEarthquakeAttack</unittype>
+		<unittype>LogicalTypeAffectedByRestoration</unittype>
+		<unittype>CountsTowardMilitaryScore</unittype>
+		<unittype>LogicalTypeValidMeteorTarget</unittype>
+		<unittype>LogicalTypeValidTornadoAttack</unittype>
+		<unittype>LogicalTypeTartarianGateValidOverlapPlacement</unittype>
+		<unittype>LogicalTypeBuildingNotWonderOrTitan</unittype>
+		<flag>CollidesWithProjectiles</flag>
+		<flag>NonAutoFormedUnit</flag>
+		<flag>ObscuresUnits</flag>
+		<flag>Immoveable</flag>
+		<flag>SelectWithObstruction</flag>
+		<flag>Doppled</flag>
+		<flag>PlaceAnywhere</flag>
+		<flag>NoIdleActions</flag>
+		<flag>NotDeathTracked</flag>
+		<flag>NonSolid</flag>
+		<flag>ForceNormalDeathAnim</flag>
+		<flag>NotRepairable</flag>
+		<tactics>maintain_train.tactics</tactics>
+${obsidianShardProtoAction("Classical", units.Classical)}
+${obsidianShardProtoAction("Heroic", units.Heroic)}
+${obsidianShardProtoAction("Mythic", units.Mythic)}
+	</unit>`;
+}
 
 const FUXI_NEZHA_CLASSICAL_EFFECTS = `<effect type="Data" amount="1.00" subtype="Enable" relativity="Absolute">
 	<target type="ProtoUnit">NezhaChild</target>
@@ -844,6 +1583,14 @@ const FUXI_NEZHA_MYTHIC_EFFECTS = `<effect type="Data" amount="0.00" subtype="En
 	<target type="ProtoUnit">Nezha</target>
 </effect>
 <effect type="TransformUnit" toprotoid="Nezha" fromprotoid="NezhaYouth" includequeued="true"></effect>`;
+
+function fuxiNezhaTempleCommandEffects(config) {
+  if (config.baseCulture === "Chinese") return "";
+  const row = config.baseCulture === "Norse" ? "1" : "0";
+  return ["NezhaChild", "NezhaYouth", "Nezha"].map((proto) => `<effect type="Data" amount="1.00" subtype="CommandAdd" proto="${proto}" row="${row}" column="5" relativity="Assign">
+	<target type="ProtoUnit">Temple</target>
+</effect>`).join("\n");
+}
 
 const SHENNONG_MYTH_REGEN_FAVORED_LAND_AGE_EFFECTS = `<effect type="Data" subtype="BuildingChainEffect" unittype="LogicalTypeMythUnitNotTitan" effecttype="InRange" modifytype="HealRate" amount="1.5" relativity="Absolute">
 	<target type="Player"></target>
@@ -1089,6 +1836,71 @@ const HADES_MYTH_HP_BY_AGE_EFFECTS = `<effect type="Data" amount="1.04" subtype=
 	<target type="ProtoUnit">MythUnit</target>
 </effect>`;
 
+
+function kronosTemporalScaffoldingTarget(config) {
+  return config.baseCulture === "Atlantean" ? "Manor" : "House";
+}
+
+function kronosTemporalScaffoldingEffects(config) {
+  const target = kronosTemporalScaffoldingTarget(config);
+  return `<effect type="Data" action="TemporalScaffoldingSmall" amount="1.00" subtype="ActionEnable" relativity="Absolute">
+	<target type="ProtoUnit">${target}</target>
+</effect>
+<effect type="Data" action="TemporalScaffoldingLarge" amount="1.00" subtype="ActionEnable" relativity="Absolute">
+	<target type="ProtoUnit">${target}</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="ProtoUnitFlag" flag="DisplayRange" relativity="Absolute">
+	<target type="ProtoUnit">${target}</target>
+</effect>`;
+}
+
+function hasKronosTemporalScaffoldingBonus(config) {
+  return selectedHasBonusLabel(config, KRONOS_TEMPORAL_SCAFFOLDING_BONUS_LABEL);
+}
+
+function oranosEgyptianPriestSkyPassageProtoXml(config) {
+  if (!selectedHasBonusLabel(config, ORANOS_SKY_PASSAGE_BONUS_LABEL) || config.baseCulture !== "Egyptian") return "";
+  return `	<unit name="Priest">
+		<protoaction>
+			<name>Build</name>
+			<rate type="SkyPassage">1.000000</rate>
+		</protoaction>
+	</unit>`;
+}
+
+function kronosHouseTemporalProtoXml(config) {
+  if (!hasKronosTemporalScaffoldingBonus(config) || config.baseCulture === "Atlantean") return "";
+  return `	<unit name="House">
+		<tactics>default.tactics</tactics>
+		<protoaction>
+			<name>TemporalScaffoldingSmall</name>
+			<type>AutoRangedModify</type>
+			<active>0</active>
+			<modifyabstracttype>LogicalTypeBuildingSmall</modifyabstracttype>
+			<maxrange>20</maxrange>
+			<persistent>1</persistent>
+			<modifytype>BuildRate</modifytype>
+			<modifymultiplier>1.125</modifymultiplier>
+			<targetunbuilt>1</targetunbuilt>
+			<modelattachment>vfx\\glow\\temporal_scaffolding_small.xml</modelattachment>
+			<modelattachmentbone>bonethatdoesntexist</modelattachmentbone>
+		</protoaction>
+		<protoaction>
+			<name>TemporalScaffoldingLarge</name>
+			<type>AutoRangedModify</type>
+			<active>0</active>
+			<modifyabstracttype>LogicalTypeBuildingLarge</modifyabstracttype>
+			<maxrange>20</maxrange>
+			<persistent>1</persistent>
+			<modifytype>BuildRate</modifytype>
+			<modifymultiplier>1.125</modifymultiplier>
+			<targetunbuilt>1</targetunbuilt>
+			<modelattachment>vfx\\glow\\temporal_scaffolding_large.xml</modelattachment>
+			<modelattachmentbone>bonethatdoesntexist</modelattachmentbone>
+		</protoaction>
+	</unit>`;
+}
+
 const HADES_RANGED_TECH_DISCOUNT_RULES = [
   { pantheons: ["All"], tech: "Ballistics", resources: ["Wood", "Gold"] },
   { pantheons: ["All"], tech: "BurningPitch", resources: ["Wood", "Gold"] },
@@ -1124,6 +1936,28 @@ function hadesRangedTechDiscountEffects(config) {
     .filter((rule) => rule.pantheons.includes("All") || rule.pantheons.includes(culture))
     .flatMap((rule) => rule.resources.map((resource) => `<effect type="Data" amount="0.666" subtype="Cost" resource="${resource}" relativity="Percent">\n\t<target type="Tech">${rule.tech}</target>\n</effect>`))
     .join("\n");
+}
+
+
+const QUETZ_DROPSITE_DISCOUNT_TARGETS = {
+  Greek: ["Granary", "Storehouse"],
+  Chinese: ["Silo"],
+  Japanese: ["Watermill", "MiningCampJapanese"],
+};
+
+function quetzDropsiteDiscountEffects(config) {
+  if (config.baseCulture === "Aztec") {
+    return `<effect type="Data" amount="-25.0" subtype="Cost" resource="Wood" relativity="Absolute">
+	<target type="ProtoUnit">AbstractCalpulli</target>
+</effect>
+<effect type="Data" amount="-50.0" subtype="Cost" resource="Wood" relativity="Absolute">
+	<target type="TechType">SocketTechnology</target>
+</effect>`;
+  }
+  const targets = QUETZ_DROPSITE_DISCOUNT_TARGETS[config.baseCulture] || [];
+  return targets.map((target) => `<effect type="Data" amount="0.666" subtype="Cost" resource="wood" relativity="Percent">
+	<target type="ProtoUnit">${target}</target>
+</effect>`).join("\n");
 }
 
 const HUITZ_FORTRESS_REFUND_TARGETS = {
@@ -1204,6 +2038,678 @@ function setMilitaryBuildingDiscountEffects(config) {
   return effects.join("\n");
 }
 
+
+const LOKI_COUNTER_DAMAGE_RULES_BY_PANTHEON = {
+  "Greek": [
+    {
+      "counteredType": "AbstractInfantry",
+      "targetType": "ProtoUnit",
+      "target": "Toxotes",
+      "actions": [
+        "RangedAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractInfantry",
+      "targetType": "ProtoUnit",
+      "target": "Hypaspist",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractArcher",
+      "targetType": "ProtoUnit",
+      "target": "Hippeus",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractArcher",
+      "targetType": "ProtoUnit",
+      "target": "Peltast",
+      "actions": [
+        "RangedAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractArcher",
+      "targetType": "ProtoUnit",
+      "target": "Hetairos",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractCavalry",
+      "targetType": "ProtoUnit",
+      "target": "Hoplite",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractCavalry",
+      "targetType": "ProtoUnit",
+      "target": "Prodromos",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractCavalry",
+      "targetType": "ProtoUnit",
+      "target": "Militia",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "Building",
+      "targetType": "ProtoUnit",
+      "target": "Gastraphetoros",
+      "actions": [
+        "RangedAttack"
+      ]
+    },
+    {
+      "counteredType": "MythUnit",
+      "targetType": "ProtoUnit",
+      "target": "Hero",
+      "actions": [
+        "HandAttack",
+        "RangedAttack",
+        "RangedAttackFlying",
+        "JumpAttack",
+        "Gore"
+      ]
+    }
+  ],
+  "Egyptian": [
+    {
+      "counteredType": "AbstractInfantry",
+      "targetType": "ProtoUnit",
+      "target": "Axeman",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractInfantry",
+      "targetType": "ProtoUnit",
+      "target": "ChariotArcher",
+      "actions": [
+        "RangedAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractArcher",
+      "targetType": "ProtoUnit",
+      "target": "Slinger",
+      "actions": [
+        "RangedAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractArcher",
+      "targetType": "ProtoUnit",
+      "target": "MercenaryCavalry",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractArcher",
+      "targetType": "ProtoUnit",
+      "target": "CamelRider",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractArcher",
+      "targetType": "ProtoUnit",
+      "target": "WarElephant",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractCavalry",
+      "targetType": "ProtoUnit",
+      "target": "Mercenary",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractCavalry",
+      "targetType": "ProtoUnit",
+      "target": "Spearman",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractCavalry",
+      "targetType": "ProtoUnit",
+      "target": "CamelRider",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "Building",
+      "targetType": "ProtoUnit",
+      "target": "WarElephant",
+      "actions": [
+        "HandAttack"
+      ]
+    }
+  ],
+  "Norse": [
+    {
+      "counteredType": "AbstractInfantry",
+      "targetType": "ProtoUnit",
+      "target": "ThrowingAxeman",
+      "actions": [
+        "RangedAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractArcher",
+      "targetType": "ProtoUnit",
+      "target": "RaidingCavalry",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractArcher",
+      "targetType": "ProtoUnit",
+      "target": "Huskarl",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractCavalry",
+      "targetType": "ProtoUnit",
+      "target": "Hirdman",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "MythUnit",
+      "targetType": "ProtoUnit",
+      "target": "Hero",
+      "actions": [
+        "HandAttack",
+        "RangedAttack",
+        "RangedAttackFlying"
+      ]
+    }
+  ],
+  "Atlantean": [
+    {
+      "counteredType": "AbstractInfantry",
+      "targetType": "ProtoUnit",
+      "target": "Arcus",
+      "actions": [
+        "RangedAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractInfantry",
+      "targetType": "ProtoUnit",
+      "target": "ArcusHero",
+      "actions": [
+        "RangedAttack",
+        "RangedAttackFlying"
+      ]
+    },
+    {
+      "counteredType": "AbstractInfantry",
+      "targetType": "ProtoUnit",
+      "target": "Fanatic",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractInfantry",
+      "targetType": "ProtoUnit",
+      "target": "FanaticHero",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractArcher",
+      "targetType": "ProtoUnit",
+      "target": "Turma",
+      "actions": [
+        "RangedAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractArcher",
+      "targetType": "ProtoUnit",
+      "target": "TurmaHero",
+      "actions": [
+        "RangedAttack",
+        "RangedAttackFlying"
+      ]
+    },
+    {
+      "counteredType": "AbstractArcher",
+      "targetType": "ProtoUnit",
+      "target": "Contarius",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractArcher",
+      "targetType": "ProtoUnit",
+      "target": "ContariusHero",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractCavalry",
+      "targetType": "ProtoUnit",
+      "target": "Katapeltes",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractCavalry",
+      "targetType": "ProtoUnit",
+      "target": "KatapeltesHero",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractCavalry",
+      "targetType": "ProtoUnit",
+      "target": "Fanatic",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractCavalry",
+      "targetType": "ProtoUnit",
+      "target": "FanaticHero",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "Building",
+      "targetType": "ProtoUnit",
+      "target": "Destroyer",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "Building",
+      "targetType": "ProtoUnit",
+      "target": "DestroyerHero",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "MythUnit",
+      "targetType": "ProtoUnit",
+      "target": "Hero",
+      "actions": [
+        "HandAttack",
+        "RangedAttack",
+        "RangedAttackFlying"
+      ]
+    }
+  ],
+  "Chinese": [
+    {
+      "counteredType": "AbstractInfantry",
+      "targetType": "ProtoUnit",
+      "target": "FireArcher",
+      "actions": [
+        "RangedAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractArcher",
+      "targetType": "ProtoUnit",
+      "target": "WuzuJavelineer",
+      "actions": [
+        "RangedAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractArcher",
+      "targetType": "ProtoUnit",
+      "target": "WhiteHorseCavalry",
+      "actions": [
+        "HandAttack",
+        "RangedAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractArcher",
+      "targetType": "ProtoUnit",
+      "target": "TigerCavalry",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractCavalry",
+      "targetType": "ProtoUnit",
+      "target": "GeHalberdier",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractCavalry",
+      "targetType": "ProtoUnit",
+      "target": "TigerCavalry",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractCavalry",
+      "targetType": "ProtoUnit",
+      "target": "TigerCavalryDismounted",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "Building",
+      "targetType": "ProtoUnit",
+      "target": "FireArcher",
+      "actions": [
+        "RangedAttack"
+      ]
+    },
+    {
+      "counteredType": "MythUnit",
+      "targetType": "ProtoUnit",
+      "target": "Hero",
+      "actions": [
+        "HandAttack",
+        "RangedAttack",
+        "RangedAttackFlying"
+      ]
+    }
+  ],
+  "Japanese": [
+    {
+      "counteredType": "AbstractInfantry",
+      "targetType": "ProtoUnit",
+      "target": "YumiArcher",
+      "actions": [
+        "RangedAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractInfantry",
+      "targetType": "ProtoUnit",
+      "target": "Samurai",
+      "actions": [
+        "HandAttack",
+        "ChargedHandAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractArcher",
+      "targetType": "ProtoUnit",
+      "target": "NaginataRider",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractArcher",
+      "targetType": "ProtoUnit",
+      "target": "Shinobi",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractCavalry",
+      "targetType": "ProtoUnit",
+      "target": "YariSpearman",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "MythUnit",
+      "targetType": "ProtoUnit",
+      "target": "Hero",
+      "actions": [
+        "HandAttack",
+        "ChargedHandAttack",
+        "RangedAttack",
+        "RangedAttackFlying"
+      ]
+    }
+  ],
+  "Aztec": [
+    {
+      "counteredType": "AbstractInfantry",
+      "targetType": "ProtoUnit",
+      "target": "TequihuaArcher",
+      "actions": [
+        "RangedAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractInfantry",
+      "targetType": "ProtoUnit",
+      "target": "ShornOne",
+      "actions": [
+        "HandAttack",
+        "ChargedHandAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractArcher",
+      "targetType": "ProtoUnit",
+      "target": "CoyoteWarrior",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractArcher",
+      "targetType": "ProtoUnit",
+      "target": "EagleWarrior",
+      "actions": [
+        "RangedAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractArcher",
+      "targetType": "ProtoUnit",
+      "target": "JaguarRider",
+      "actions": [
+        "HandAttack",
+        "JumpAttackStealth",
+        "JumpAttack"
+      ]
+    },
+    {
+      "counteredType": "AbstractCavalry",
+      "targetType": "ProtoUnit",
+      "target": "TlamanihSpearman",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "Building",
+      "targetType": "ProtoUnit",
+      "target": "Otontin",
+      "actions": [
+        "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "MythUnit",
+      "targetType": "ProtoUnit",
+      "target": "Hero",
+      "actions": [
+        "HandAttack",
+        "RangedAttack"
+      ]
+    }
+  ]
+};
+
+function lokiCounterDamageEffects(config) {
+  const records = LOKI_COUNTER_DAMAGE_RULES_BY_PANTHEON[config.baseCulture] || LOKI_COUNTER_DAMAGE_RULES_BY_PANTHEON.Norse || [];
+  const effects = [];
+  const seen = new Set();
+  for (const record of records) {
+    for (const action of record.actions || []) {
+      const key = `${record.counteredType}::${record.targetType || "ProtoUnit"}::${record.target}::${action}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      effects.push(`<effect type="Data" action="${action}" amount="1.10" subtype="Damagebonus" unittype="${record.counteredType}" relativity="BasePercent">
+	<target type="${record.targetType || "ProtoUnit"}">${record.target}</target>
+</effect>`);
+    }
+  }
+  return effects.join("\n");
+}
+
+function lokiMilitaryBuildEffects(config) {
+  const target = config.baseCulture === "Norse" ? "AbstractInfantry" : "AbstractVillager";
+  const effects = [
+    `<effect type="Data" action="Build" amount="1.1" subtype="WorkRate" unittype="Building" relativity="BasePercent">\n\t<target type="ProtoUnit">${target}</target>\n</effect>`
+  ];
+  if (config.baseCulture === "Norse") {
+    effects.push(`<effect type="Data" action="Build" amount="1.1" subtype="WorkRate" unittype="Building" relativity="BasePercent">\n\t<target type="ProtoUnit">Godi</target>\n</effect>`);
+  }
+  return effects.join("\n");
+}
+
+
+const NUWA_AUSPICE_VILLAGER_BY_PANTHEON = {
+  Greek: "VillagerGreek",
+  Egyptian: "VillagerEgyptian",
+  Norse: "VillagerNorse",
+  Atlantean: "VillagerAtlantean",
+  Chinese: "VillagerChinese",
+  Japanese: "VillagerJapanese",
+  Aztec: "VillagerAztec",
+};
+
+function nuwaAuspicePowerName(config) {
+  return `ShieldBlessing${config.baseCulture}`;
+}
+
+function nuwaAuspiceNotificationStringId(config) {
+  return `STR_ABILITY_SHIELD_BLESSING_${sanitizeId(config.internalName).toUpperCase()}_NOTIFICATION`;
+}
+
+function nuwaAuspiceVillager(config) {
+  return NUWA_AUSPICE_VILLAGER_BY_PANTHEON[config.baseCulture] || "Villager";
+}
+
+function nuwaCreatorsAuspiceCreatePowerEffect(config) {
+  return `<effect type="CreatePower" protopower="${escapeXml(nuwaAuspicePowerName(config))}" />`;
+}
+
+function nuwaCreatorsAuspicePowerXml(config) {
+  if (!selectedHasBonusLabel(config, NUWA_CREATORS_AUSPICE_BONUS_LABEL) && !selectedBonusEntries(config).some((entry) => entry.id === "bonus_67")) return "";
+  const powerName = escapeXml(nuwaAuspicePowerName(config));
+  const villager = escapeXml(nuwaAuspiceVillager(config));
+  const notificationId = escapeXml(nuwaAuspiceNotificationStringId(config));
+  return `	<power name="${powerName}" type="SwitchingEffects">
+		<placement>Skip</placement>
+		<minimapeventtime sendalertto="None">0.0</minimapeventtime>
+		<activetime>-1</activetime>
+		<timerrolloverid>STR_ABILITY_SHIELD_BLESSING_PROG</timerrolloverid>
+		<powerplayerrelation>Player</powerplayerrelation>
+		<hideonactivegplist></hideonactivegplist>
+		<tiertype>TotalResources</tiertype>
+		<progresstype>SpawnReward</progresstype>
+		<effects>
+			<effect type="Cost" amount="1.00" resource="Food" relativity="BasePercent">
+				<target type="ProtoUnit">${villager}</target>
+			</effect>
+			<effect type="HitPoints" amount="1.00" relativity="BasePercent">
+				<target type="ProtoUnit">Building</target>
+			</effect>
+			<icon>chinese\\static_color\\technologies\\shield_blessing.png</icon>
+			<displaynameid>STR_ABILITY_SHIELD_BLESSING_1</displaynameid>
+		</effects>
+		<effects>
+			<effect type="Cost" amount="0.75" resource="Food" relativity="BasePercent">
+				<target type="ProtoUnit">${villager}</target>
+			</effect>
+			<effect type="HitPoints" amount="1.10" relativity="BasePercent">
+				<target type="ProtoUnit">Building</target>
+			</effect>
+			<resourcetierreq type="Favor">75.00</resourcetierreq>
+			<icon>chinese\\static_color\\technologies\\shield_blessing.png</icon>
+			<displaynameid>STR_ABILITY_SHIELD_BLESSING_2</displaynameid>
+			<notificationsound>GodBlessingCircleComplete</notificationsound>
+			<notificationmessageid>${notificationId}</notificationmessageid>
+		</effects>
+		<effects>
+			<effect type="Cost" amount="0.5" resource="Food" relativity="BasePercent">
+				<target type="ProtoUnit">${villager}</target>
+			</effect>
+			<effect type="HitPoints" amount="1.20" relativity="BasePercent">
+				<target type="ProtoUnit">Building</target>
+			</effect>
+			<resourcetierreq type="Favor">250.00</resourcetierreq>
+			<icon>chinese\\static_color\\technologies\\shield_blessing.png</icon>
+			<displaynameid>STR_ABILITY_SHIELD_BLESSING_3</displaynameid>
+			<notificationsound>GodBlessingCircleComplete</notificationsound>
+			<notificationmessageid>${notificationId}</notificationmessageid>
+		</effects>
+		<effects>
+			<effect type="Cost" amount="0.25" resource="Food" relativity="BasePercent">
+				<target type="ProtoUnit">${villager}</target>
+			</effect>
+			<effect type="HitPoints" amount="1.30" relativity="BasePercent">
+				<target type="ProtoUnit">Building</target>
+			</effect>
+			<resourcetierreq type="Favor">750.00</resourcetierreq>
+			<icon>chinese\\static_color\\technologies\\shield_blessing.png</icon>
+			<displaynameid>STR_ABILITY_SHIELD_BLESSING_4</displaynameid>
+			<notificationsound>GodBlessingCircleComplete</notificationsound>
+			<notificationmessageid>${notificationId}</notificationmessageid>
+		</effects>
+	</power>`;
+}
+
+function generatePowersMods(config) {
+  const powers = [nuwaCreatorsAuspicePowerXml(config)].filter(Boolean);
+  if (!powers.length) {
+    return `<powersmod>\n\t<!-- Empty in this draft. -->\n</powersmod>\n`;
+  }
+  return `<powersmod>\n${powers.join("\n")}\n</powersmod>\n`;
+}
+
 function selectedHasBonusLabel(config, label) {
   return selectedBonusEntries(config).some((entry) => entry.label === label);
 }
@@ -1219,19 +2725,24 @@ function bonusTechEffects(config) {
       if (entry.label === DEMETER_TRAIN_FASTER_BY_AGE_BONUS_LABEL) return DEMETER_TRAIN_FASTER_BY_AGE_EFFECTS;
       if (entry.label === HADES_MYTH_HP_BY_AGE_BONUS_LABEL) return HADES_MYTH_HP_BY_AGE_EFFECTS;
       if (entry.label === HADES_RANGED_TECH_DISCOUNT_BONUS_LABEL) return hadesRangedTechDiscountEffects(config);
+      if (entry.label === LOKI_COUNTER_DAMAGE_BONUS_LABEL || entry.id === "bonus_44") return lokiCounterDamageEffects(config);
+      if (entry.label === LOKI_MILITARY_BUILD_BONUS_LABEL || entry.id === "bonus_45") return lokiMilitaryBuildEffects(config);
+      if (entry.label === KRONOS_TEMPORAL_SCAFFOLDING_BONUS_LABEL || entry.id === "bonus_53") return kronosTemporalScaffoldingEffects(config);
       if (entry.label === HUITZ_CONSTRUCTION_REFUND_BONUS_LABEL || entry.id === "bonus_87") return huitzConstructionRefundEffects(config);
+      if (entry.label === QUETZ_DROPSITE_DISCOUNT_BONUS_LABEL || entry.id === "bonus_95") return quetzDropsiteDiscountEffects(config);
       if (entry.label === SET_MILITARY_BUILDING_DISCOUNT_BONUS_LABEL || entry.id === "bonus_33") return setMilitaryBuildingDiscountEffects(config);
       if (entry.label === FREYR_FORTRESS_DAMAGE_BONUS_LABEL) return freyrFortressDamageEffects(config);
       if (entry.label === RA_FORTRESS_HP_BONUS_LABEL) return raFortressHitpointsEffects(config);
       if (entry.label === POSEIDON_SPEED_BY_AGE_BONUS_LABEL) return POSEIDON_SPEED_BY_AGE_EFFECTS;
       if (entry.label === POSEIDON_STABLE_MARKET_DISCOUNT_BONUS_LABEL) return poseidonStableMarketDiscountEffects(config);
-      if (entry.label === ORANOS_SKY_PASSAGE_BONUS_LABEL) return ORANOS_SKY_PASSAGE_ARCHAIC_EFFECTS;
+      if (entry.label === ORANOS_SKY_PASSAGE_BONUS_LABEL) return oranosSkyPassageArchaicEffects(config);
       if (entry.label === TEZCAT_DEVOTE_FAVOR_BONUS_LABEL) return TEZCAT_DEVOTE_FAVOR_AGE_EFFECTS;
       if (entry.label === KRONOS_EXTRA_MYTH_UNITS_BONUS_LABEL) return "";
       if (entry.label === QUETZ_EAGLE_RANGE_LOS_BONUS_LABEL) return "";
       if (entry.label === TEZCAT_JAGUAR_RIDER_BONUS_LABEL) return "";
       if (entry.label === TEZCAT_OBSIDIAN_SHARD_BONUS_LABEL) return "";
-      if (entry.label === FUXI_NEZHA_BONUS_LABEL) return "";
+      if (entry.label === FUXI_NEZHA_BONUS_LABEL) return fuxiNezhaTempleCommandEffects(config);
+      if (entry.label === NUWA_CREATORS_AUSPICE_BONUS_LABEL || entry.id === "bonus_67") return nuwaCreatorsAuspiceCreatePowerEffect(config);
       if (entry.label === SHENNONG_GIFT_OF_BEASTS_BONUS_LABEL) return "";
       if (entry.label === SHENNONG_FARM_LINE_UPGRADES_BONUS_LABEL) return "";
       if (entry.label === SET_ANIMALS_BONUS_LABEL) return SET_ANIMALS_ARCHAIC_EFFECTS;
@@ -1255,7 +2766,7 @@ function bonusClassicalTechEffects(config) {
   if (selectedHasBonusLabel(config, ORANOS_SKY_PASSAGE_BONUS_LABEL)) effects.push(ORANOS_SKY_PASSAGE_AGE_EFFECTS);
   if (selectedHasBonusLabel(config, POSEIDON_SPEED_BY_AGE_BONUS_LABEL)) effects.push(POSEIDON_SPEED_BY_AGE_EFFECTS);
   if (selectedHasBonusLabel(config, TEZCAT_DEVOTE_FAVOR_BONUS_LABEL)) effects.push(TEZCAT_DEVOTE_FAVOR_AGE_EFFECTS);
-  if (selectedHasBonusLabel(config, TEZCAT_OBSIDIAN_SHARD_BONUS_LABEL)) effects.push(TEZCAT_OBSIDIAN_SHARD_CLASSICAL_EFFECTS);
+  if (selectedHasBonusLabel(config, TEZCAT_OBSIDIAN_SHARD_BONUS_LABEL)) effects.push(tezcatObsidianShardClassicalEffects(config));
   if (selectedHasBonusLabel(config, FUXI_NEZHA_BONUS_LABEL)) effects.push(FUXI_NEZHA_CLASSICAL_EFFECTS);
   if (selectedHasBonusLabel(config, SHENNONG_GIFT_OF_BEASTS_BONUS_LABEL)) effects.push(SHENNONG_GIFT_OF_BEASTS_CLASSICAL_EFFECTS);
   if (selectedHasBonusLabel(config, SHENNONG_FARM_LINE_UPGRADES_BONUS_LABEL)) effects.push(SHENNONG_FARM_LINE_CLASSICAL_EFFECTS);
@@ -1277,7 +2788,7 @@ function bonusHeroicTechEffects(config) {
   if (selectedHasBonusLabel(config, QUETZ_EAGLE_RANGE_LOS_BONUS_LABEL)) effects.push(QUETZ_EAGLE_RANGE_LOS_AGE_EFFECTS);
   if (selectedHasBonusLabel(config, TEZCAT_DEVOTE_FAVOR_BONUS_LABEL)) effects.push(TEZCAT_DEVOTE_FAVOR_AGE_EFFECTS);
   if (selectedHasBonusLabel(config, TEZCAT_JAGUAR_RIDER_BONUS_LABEL)) effects.push(TEZCAT_JAGUAR_RIDER_HEROIC_EFFECTS);
-  if (selectedHasBonusLabel(config, TEZCAT_OBSIDIAN_SHARD_BONUS_LABEL)) effects.push(TEZCAT_OBSIDIAN_SHARD_HEROIC_EFFECTS);
+  if (selectedHasBonusLabel(config, TEZCAT_OBSIDIAN_SHARD_BONUS_LABEL)) effects.push(tezcatObsidianShardHeroicEffects(config));
   if (selectedHasBonusLabel(config, FUXI_NEZHA_BONUS_LABEL)) effects.push(FUXI_NEZHA_HEROIC_EFFECTS);
   if (selectedHasBonusLabel(config, SHENNONG_GIFT_OF_BEASTS_BONUS_LABEL)) effects.push(SHENNONG_GIFT_OF_BEASTS_HEROIC_EFFECTS);
   if (selectedHasBonusLabel(config, SHENNONG_FARM_LINE_UPGRADES_BONUS_LABEL)) effects.push(shennongFarmLineHeroicEffects(config));
@@ -1297,7 +2808,7 @@ function bonusMythicTechEffects(config) {
   if (selectedHasBonusLabel(config, POSEIDON_SPEED_BY_AGE_BONUS_LABEL)) effects.push(POSEIDON_SPEED_BY_AGE_EFFECTS);
   if (selectedHasBonusLabel(config, QUETZ_EAGLE_RANGE_LOS_BONUS_LABEL)) effects.push(QUETZ_EAGLE_RANGE_LOS_AGE_EFFECTS);
   if (selectedHasBonusLabel(config, TEZCAT_DEVOTE_FAVOR_BONUS_LABEL)) effects.push(TEZCAT_DEVOTE_FAVOR_AGE_EFFECTS);
-  if (selectedHasBonusLabel(config, TEZCAT_OBSIDIAN_SHARD_BONUS_LABEL)) effects.push(TEZCAT_OBSIDIAN_SHARD_MYTHIC_EFFECTS);
+  if (selectedHasBonusLabel(config, TEZCAT_OBSIDIAN_SHARD_BONUS_LABEL)) effects.push(tezcatObsidianShardMythicEffects(config));
   if (selectedHasBonusLabel(config, FUXI_NEZHA_BONUS_LABEL)) effects.push(FUXI_NEZHA_MYTHIC_EFFECTS);
   if (selectedHasBonusLabel(config, SHENNONG_FARM_LINE_UPGRADES_BONUS_LABEL)) effects.push(shennongFarmLineMythicEffects(config));
   if (selectedHasBonusLabel(config, SHENNONG_MYTH_REGEN_FAVORED_LAND_BONUS_LABEL)) effects.push(SHENNONG_MYTH_REGEN_FAVORED_LAND_AGE_EFFECTS);
@@ -1382,7 +2893,7 @@ function sanitizeBonusTechEffects(xml) {
 
 function bonusMajorXml(config) {
   return selectedBonusEntries(config)
-    .filter((entry) => ![ZEUS_STARTING_FAVOR_BONUS_LABEL, HUITZ_TONALLI_RESOURCES_BONUS_LABEL, HUITZ_SHORN_TONALLI_BONUS_LABEL, NUWA_FAVORED_LAND_FARTHER_BONUS_LABEL, SET_ANIMALS_BONUS_LABEL, SUSANOO_POWER_COST_FACTOR_BONUS_LABEL, SUSANOO_BUSHIDO_MYTH_XP_BONUS_LABEL, TSUKUYOMI_RESEARCH_BUSHIDO_XP_BONUS_LABEL, ODIN_GREAT_HALL_FAVOR_BONUS_LABEL].includes(entry.label))
+    .filter((entry) => ![ZEUS_STARTING_FAVOR_BONUS_LABEL, KRONOS_TIMESHIFT_BONUS_LABEL, HUITZ_TONALLI_RESOURCES_BONUS_LABEL, HUITZ_SHORN_TONALLI_BONUS_LABEL, NUWA_FAVORED_LAND_FARTHER_BONUS_LABEL, SET_ANIMALS_BONUS_LABEL, SUSANOO_POWER_COST_FACTOR_BONUS_LABEL, SUSANOO_BUSHIDO_MYTH_XP_BONUS_LABEL, TSUKUYOMI_RESEARCH_BUSHIDO_XP_BONUS_LABEL, ODIN_GREAT_HALL_FAVOR_BONUS_LABEL].includes(entry.label))
     .map((entry) => entry.majorXml || "")
     .filter(Boolean)
     .join("\n");
@@ -1531,6 +3042,7 @@ function getConfig() {
   return {
     displayName: els.displayName.value.trim() || "Custom Major God",
     majorTitle: els.majorTitle.value.trim() || `${els.displayName.value.trim() || "Custom Major God"} followers`,
+    majorFocus: els.majorFocus?.value.trim() || "",
     internalName: internal,
     lowerName: lower(internal),
     templateSource: `${selectedPantheon()}Template`,
@@ -1594,6 +3106,9 @@ function validateConfig(config) {
   for (const id of bonusPicks) {
     if (!availableBonusIds.has(id)) errors.push(`God bonus ${id} is not available for this pantheon.`);
   }
+  for (const issue of requiredAutoBonusIssues(config)) {
+    errors.push(formatRequiredAutoBonusIssue(issue));
+  }
   for (const age of AGES) {
     const picks = config.minorGods[age] || [];
     if (picks.length !== 2 || !picks[0] || !picks[1]) errors.push(`${age}: choose two minor gods.`);
@@ -1645,6 +3160,41 @@ function hasSelectedBonus(config, sourceMajor, label) {
   return selectedBonusEntries(config).some((entry) => entry.sourceMajor === sourceMajor && entry.label === label);
 }
 
+function patchLokiSpawnContributorsForPantheon(doc, civ, config) {
+  if (config.baseCulture === "Norse") return;
+  const damageGoal = Array.from(civ.querySelectorAll("bonusunitspawning damagegoal"))
+    .find((node) => node.getAttribute("name") === "LokiSpawn");
+  if (!damageGoal) return;
+
+  const contributors = Array.from(damageGoal.querySelectorAll("contributor"));
+  let insertionPoint = null;
+  for (const contributor of contributors) {
+    const unit = contributor.getAttribute("unit");
+    if (unit === "Hersir" || unit === "Godi") {
+      if (!insertionPoint) insertionPoint = contributor;
+      contributor.parentNode.removeChild(contributor);
+    }
+  }
+
+  const alreadyHasHero = Array.from(damageGoal.querySelectorAll("contributor"))
+    .some((node) => node.getAttribute("type") === "Hero" && (node.textContent || "").trim() === "0.15");
+  if (alreadyHasHero) return;
+
+  const heroContributor = doc.createElement("contributor");
+  heroContributor.setAttribute("type", "Hero");
+  heroContributor.textContent = "0.15";
+
+  const humanSoldierContributor = Array.from(damageGoal.querySelectorAll("contributor"))
+    .find((node) => node.getAttribute("type") === "HumanSoldier");
+  if (humanSoldierContributor) {
+    damageGoal.insertBefore(heroContributor, humanSoldierContributor);
+  } else if (insertionPoint && insertionPoint.parentNode === damageGoal) {
+    damageGoal.insertBefore(heroContributor, insertionPoint);
+  } else {
+    damageGoal.appendChild(heroContributor);
+  }
+}
+
 function applyMajorGodSpecialBonusPatches(doc, civ, config) {
   if (hasSelectedBonus(config, "Zeus", ZEUS_STARTING_FAVOR_BONUS_LABEL)) {
     addZeusStartingFavor(doc, civ);
@@ -1675,6 +3225,77 @@ function applyMajorGodSpecialBonusPatches(doc, civ, config) {
   }
   if (hasSelectedBonus(config, "Odin", ODIN_GREAT_HALL_FAVOR_BONUS_LABEL)) {
     insertIntoBountyResourceEarning(doc, civ, ODIN_GREAT_HALL_FAVOR_BOUNTY);
+  }
+  if (selectedHasBonusLabel(config, LOKI_SPAWN_MYTH_UNITS_BONUS_LABEL)) {
+    patchLokiSpawnContributorsForPantheon(doc, civ, config);
+  }
+  if (selectedHasBonusLabel(config, TEZCAT_OBSIDIAN_SHARD_BONUS_LABEL)) {
+    replaceObsidianShardReward(civ, obsidianShardProtoName(config));
+  }
+  if (selectedHasBonusLabel(config, KRONOS_TIMESHIFT_BONUS_LABEL)) {
+    replaceTimeShiftingBlock(doc, civ, config);
+  }
+}
+
+
+const KRONOS_TIMESHIFT_FREE_BUILDINGS = {
+  shared: ["Farm", "FarmShennong", "Dock", "Temple", "Armory", "Market"],
+  Greek: ["Storehouse", "Granary", "MilitaryAcademy", "Stable", "ArcheryRange"],
+  Egyptian: ["LumberCamp", "MiningCamp", "Granary", "Barracks", "SiegeWorks", "Lighthouse", "MonumentToVillagers", "MonumentToSoldiers", "MonumentToPriests", "MonumentToPharaohs", "MonumentToGods"],
+  Norse: ["Longhouse", "GreatHall", "DwarvenArmory"],
+  Atlantean: ["Manor", "EconomicGuild", "MilitaryBarracks", "CounterBarracks", "SkyPassage"],
+  Chinese: ["Silo", "MachineWorkshop", "MachineWorkshopTrainingYard", "MilitaryCamp", "MilitaryCampTrainingYard", "ImperialAcademy"],
+  Japanese: ["Watermill", "MiningCampJapanese", "ShrineJapanese", "Guardhouse", "Dojo", "StableJapanese"],
+  Aztec: ["Calpulli", "CalpulliLivestockPen", "CalpulliCraftWorkshop", "WarHut", "NoblesHut"],
+};
+
+const KRONOS_TIMESHIFT_PAID_BUILDINGS = {
+  shared: ["SentryTower"],
+  Greek: ["Fortress"],
+  Egyptian: ["MigdolStronghold"],
+  Norse: ["HillFort", "AsgardianHillFort"],
+  Atlantean: ["Palace", "MirrorTower"],
+  Chinese: ["MachineWorkshopTower", "MilitaryCampTower", "Baolei"],
+  Japanese: ["Castle"],
+  Aztec: ["CalpulliLumberOutpost", "GreatTemple"],
+};
+
+function kronosTimeshiftEntries(config) {
+  const free = [
+    ...KRONOS_TIMESHIFT_FREE_BUILDINGS.shared,
+    ...(config.baseCulture === "Atlantean" ? [] : ["House"]),
+    ...(KRONOS_TIMESHIFT_FREE_BUILDINGS[config.baseCulture] || []),
+  ];
+  const paid = [
+    ...KRONOS_TIMESHIFT_PAID_BUILDINGS.shared,
+    ...(KRONOS_TIMESHIFT_PAID_BUILDINGS[config.baseCulture] || []),
+  ];
+  return [
+    ...Array.from(new Set(free)).map((unit) => ({ unit, costratio: "0.0" })),
+    ...Array.from(new Set(paid)).map((unit) => ({ unit, costratio: "0.50" })),
+  ];
+}
+
+function replaceTimeShiftingBlock(doc, civ, config) {
+  const existing = civ.querySelector("timeshifting");
+  if (existing) existing.remove();
+  const block = doc.createElement("timeshifting");
+  block.setAttribute("maxconcurrenttimeshifts", "2");
+  for (const entry of kronosTimeshiftEntries(config)) {
+    const node = doc.createElement("protounit");
+    node.setAttribute("costratio", entry.costratio);
+    node.setAttribute("timeratio", "1.0");
+    node.textContent = entry.unit;
+    block.appendChild(node);
+  }
+  civ.appendChild(block);
+}
+
+function replaceObsidianShardReward(civ, rewardName) {
+  for (const reward of Array.from(civ.querySelectorAll("bonusunitspawning reward"))) {
+    if ((reward.textContent || "").trim() === "ObsidianShard") {
+      reward.textContent = rewardName;
+    }
   }
 }
 
@@ -1802,6 +3423,8 @@ function thorDwarvenArmoryArchaicEffects(config) {
 <effect type="TechStatus" status="obtainable">DwarvenWeapons</effect>
 <effect type="TechStatus" status="obtainable">MeteoricIronArmor</effect>
 <effect type="TechStatus" status="obtainable">DragonscaleShields</effect>`);
+  const armoryTechCommandEffects = thorDwarvenArmoryCommandAddArchaicEffects(config);
+  if (armoryTechCommandEffects) effects.push(armoryTechCommandEffects);
   return effects.join("\n");
 }
 
@@ -1810,9 +3433,68 @@ function thorDwarvenArmoryMinorGodPrereqTechs(config) {
   const heroicMinorTechs = (config.minorGods.HeroicAge || []).filter(Boolean);
   return Array.from(new Set(heroicMinorTechs)).map((techName) => `	<tech name="${escapeXml(techName)}">
 		<prereqs>
-			<typecount unit="DwarvenArmory" count="1.00" state="aliveState" operator="gte" mergemode="add"></typecount>
+			<typecount unit="DwarvenArmory" count="1.00" state="aliveState" operator="gte"></typecount>
 		</prereqs>
 	</tech>`).join("\n\n");
+}
+
+
+const THOR_DWARVEN_ARMORY_COMMANDADD_RULES = {
+  Atlantean: [
+    { enabledBy: "ClassicalAgeOceanus", row: 1, column: 0, tech: "WeightlessMace" },
+    { enabledBy: "ClassicalAgeLeto", row: 1, column: 0, tech: "VolcanicForge" },
+    { enabledBy: "ClassicalAgeOceanus", row: 1, column: 1, tech: "BiteOfTheShark" },
+    { enabledBy: "HeroicAgeRheia", row: 2, column: 1, tech: "OrichalcumMail" },
+  ],
+  Aztec: [
+    { enabledBy: "HeroicAgeCoatlicue", row: 1, column: 0, tech: "StringOfHearts" },
+    { enabledBy: "ClassicalAgeAztec", row: 0, column: 0, tech: "FlintWeapons" },
+    { enabledBy: "HeroicAgeAztec", row: 0, column: 0, tech: "JadeWeapons" },
+    { enabledBy: "MythicAgeAztec", row: 0, column: 0, tech: "ObsidianWeapons" },
+    { enabledBy: "ClassicalAgeAztec", row: 0, column: 1, tech: "FeatheredArmor" },
+    { enabledBy: "HeroicAgeAztec", row: 0, column: 1, tech: "CeremonialArmor" },
+    { enabledBy: "MythicAgeAztec", row: 0, column: 1, tech: "SacredArmor" },
+    { enabledBy: "ClassicalAgeAztec", row: 0, column: 2, tech: "FeatheredShields" },
+    { enabledBy: "HeroicAgeAztec", row: 0, column: 2, tech: "CeremonialShields" },
+    { enabledBy: "MythicAgeAztec", row: 0, column: 2, tech: "SacredShields" },
+  ],
+  Chinese: [
+    { enabledBy: "ClassicalAgeChiyou", row: 1, column: 0, tech: "MasterOfWeaponry" },
+    { enabledBy: "HeroicAgeNuba", row: 1, column: 1, tech: "ScorchingFeathers" },
+    { enabledBy: "HeroicAgeRushou", row: 1, column: 1, tech: "DivineJudgement" },
+    { enabledBy: "HeroicAgeRushou", row: 1, column: 2, tech: "GildedShields" },
+    { enabledBy: "MythicAgeHuangdi", row: 1, column: 3, tech: "LeizusSilk" },
+  ],
+  Egyptian: [
+    { enabledBy: "ClassicalAgePtah", row: 1, column: 0, tech: "ScallopedAxe" },
+    { enabledBy: "ClassicalAgePtah", row: 1, column: 1, tech: "ElectrumBullets" },
+    { enabledBy: "ClassicalAgePtah", row: 1, column: 2, tech: "LeatherFrameShield" },
+    { enabledBy: "HeroicAgeSekhmet", row: 2, column: 0, tech: "BoneBow" },
+    { enabledBy: "HeroicAgeSekhmet", row: 2, column: 1, tech: "SlingsOfTheSun" },
+  ],
+  Greek: [
+    { enabledBy: "ClassicalAgeAres", row: 1, column: 0, tech: "PhobosSpearOfPanic" },
+    { enabledBy: "ClassicalAgeAthena", row: 1, column: 0, tech: "Sarissa" },
+    { enabledBy: "ClassicalAgeAres", row: 1, column: 1, tech: "DeimosSwordOfDread" },
+    { enabledBy: "ClassicalAgeAthena", row: 1, column: 1, tech: "AegisShield" },
+    { enabledBy: "ClassicalAgeAres", row: 1, column: 2, tech: "EnyosBowOfHorror" },
+    { enabledBy: "HeroicAgeApollo", row: 2, column: 0, tech: "SunRay" },
+    { enabledBy: "MythicAgePersephone", row: 2, column: 0, tech: "HarvestOfSouls" },
+    { enabledBy: "MythicAgeArtemis", row: 2, column: 1, tech: "ShaftsOfPlague" },
+    { enabledBy: "MythicAgeHephaestus", row: 2, column: 1, tech: "OlympianWeapons" },
+    { enabledBy: "MythicAgeHephaestus", row: 2, column: 2, tech: "ForgeOfOlympus" },
+  ],
+  Japanese: [
+    { enabledBy: "ClassicalAgeMinakatatomi", row: 1, column: 0, tech: "HuntersStrength" },
+    { enabledBy: "HeroicAgeHachiman", row: 2, column: 0, tech: "GoldenKite" },
+  ],
+};
+
+function thorDwarvenArmoryCommandAddArchaicEffects(config) {
+  const rules = THOR_DWARVEN_ARMORY_COMMANDADD_RULES[config.baseCulture] || [];
+  return rules.map((rule) => `<effect type="Data" amount="1.00" subtype="CommandAdd" tech="${escapeXml(rule.tech)}" row="${rule.row}" column="${rule.column}" relativity="Assign">
+	<target type="ProtoUnit">DwarvenArmory</target>
+</effect>`).join("\n");
 }
 
 const THOR_DWARF_SPAWN_BONUS_LABEL = "Each Dwarven Armory upgrade grants a free Dwarf";
@@ -2180,15 +3862,85 @@ function indentTabBlock(block, level = 0) {
   return String(block).split("\n").map((line) => line.trim() ? pad + line : line).join("\n");
 }
 
+
+function selectedHasUniqueTechId(config, id) {
+  return (config.uniqueTechs || []).includes(id);
+}
+
+function skinOfTheRhinoSharedTech(config) {
+  if (!selectedHasUniqueTechId(config, "SkinOfTheRhino")) return "";
+  return `<tech name="${escapeXml(skinOfTheRhinoCustomTechName(config))}">
+		<displaynameid>STR_TECH_SKIN_OF_THE_RHINO_NAME</displaynameid>
+		<rollovertextid>STR_TECH_SKIN_OF_THE_RHINO_LR</rollovertextid>
+		<cost resourcetype="Food">50.0000</cost>
+		<cost resourcetype="Favor">5.0000</cost>
+		<researchpoints>15.0000</researchpoints>
+		<status>UNOBTAINABLE</status>
+		<icon>resources\\egyptian\\static_color\\technologies\\skin_of_the_rhino_icon.png</icon>
+		<flag>CountsTowardMilitaryScore</flag>
+		<flag>MythTech</flag>
+		<effects>
+			<effect type="Data" amount="-0.25" subtype="ArmorVulnerability" armortype="Hack" relativity="Percent">
+				<target type="ProtoUnit">AbstractVillager</target>
+			</effect>
+			<effect type="Data" amount="-0.25" subtype="ArmorVulnerability" armortype="Pierce" relativity="Percent">
+				<target type="ProtoUnit">AbstractVillager</target>
+			</effect>
+		</effects>
+	</tech>`;
+}
+
+
+function temporalChaosCustomTech(config) {
+  if (!selectedHasUniqueTechId(config, "TemporalChaos")) return "";
+  const techName = temporalChaosCustomTechName(config);
+  const entries = kronosTimeshiftEntries(config);
+  const costEffects = entries
+    .filter((entry) => Number.parseFloat(entry.costratio) > 0)
+    .map((entry) => `			<effect type="Data" subtype="TimeShiftingCost" amount="0.50" unittype="${escapeXml(entry.unit)}" relativity="BasePercent">
+				<target type="Player"></target>
+			</effect>`);
+  const timeEffects = entries
+    .map((entry) => `			<effect type="Data" subtype="TimeShiftingTimeRatio" amount="0.5" unittype="${escapeXml(entry.unit)}" relativity="Percent">
+				<target type="Player"></target>
+			</effect>`);
+  const effects = [
+    `			<effect type="Data" subtype="TimeShiftingConcurrentShifts" amount="1" relativity="Absolute">
+				<target type="Player"></target>
+			</effect>`,
+    ...costEffects,
+    ...timeEffects,
+  ].join("\n");
+  return `<tech name="${escapeXml(techName)}">
+		<displaynameid>STR_TECH_TEMPORAL_CHAOS_NAME</displaynameid>
+		<rollovertextid>STR_TECH_TEMPORAL_CHAOS_LR</rollovertextid>
+		<cost resourcetype="Wood">100.0000</cost>
+		<cost resourcetype="Gold">50.0000</cost>
+		<cost resourcetype="Favor">10.0000</cost>
+		<researchpoints>20.0000</researchpoints>
+		<status>UNOBTAINABLE</status>
+		<icon>resources\\atlantean\\static_color\\technologies\\temporal_chaos_icon.png</icon>
+		<flag>CountsTowardMilitaryScore</flag>
+		<flag>MythTech</flag>
+		<effects>
+${effects}
+		</effects>
+	</tech>`;
+}
+
 function extraGeneratedTechs(config) {
   const extras = [];
   const kronosTechs = kronosExtraMythUnitTechs(config);
-  if (kronosTechs) extras.push(`	${kronosTechs}`);
+  if (kronosTechs) extras.push(kronosTechs);
   const thorArmoryPrereqs = thorDwarvenArmoryMinorGodPrereqTechs(config);
   if (thorArmoryPrereqs) extras.push(thorArmoryPrereqs);
   const thorDwarfTech = thorDwarfSpawnExtraTech(config);
   if (thorDwarfTech) extras.push(thorDwarfTech);
-  return extras.join("\n\n");
+  const skinRhinoTech = skinOfTheRhinoSharedTech(config);
+  if (skinRhinoTech) extras.push(skinRhinoTech);
+  const temporalChaosTech = temporalChaosCustomTech(config);
+  if (temporalChaosTech) extras.push(temporalChaosTech);
+  return indentTabBlock(extras.join("\n\n"), 1);
 }
 
 function generateTechTreeMods(config) {
@@ -2208,6 +3960,7 @@ ${techStatusEffects([...classical, c.classical])}
 ${indentTabBlock(greekArchaicExtraEffects(config), 3)}
 ${kronosExtraMythUnitStatusEffects(config, "ArchaicAge")}
 ${techStatusEffects(uniqueTechNames(config), "obtainable")}
+${indentTabBlock(uniqueTechSetNameEffects(config), 3)}
 ${indentTabBlock(bonusTechEffects(config), 3)}
 			<effect type="TechStatus" status="active">ArchaicAgeWeakenUnits</effect>
 ${uniqueTechEntries(config).some((group) => group.extraArchaicEffect === "FreyrTechCostBonus") ? `			<effect type="SetOnTechResearchedTech" amount="1.00">FreyrTechCostBonus</effect>
@@ -2279,8 +4032,15 @@ ${extraGeneratedTechs(config)}` : ""}
 }
 
 function generateProtoMods(config) {
-  return `<protomods>
+  const entries = [tezcatObsidianShardProtoXml(config), kronosHouseTemporalProtoXml(config), oranosEgyptianPriestSkyPassageProtoXml(config)].filter(Boolean);
+  if (!entries.length) {
+    return `<protomods>
 	<!-- Empty in this draft. -->
+</protomods>
+`;
+  }
+  return `<protomods>
+${entries.join("\n")}
 </protomods>
 `;
 }
@@ -2292,18 +4052,36 @@ function techStringBase(techName) {
   return `STR_TECH_${sanitizeId(techName).toUpperCase()}`;
 }
 
+function generateGodRolloverString(config) {
+  const lines = [];
+  if (config.majorFocus) {
+    lines.push(`Focus: ${config.majorFocus}`);
+  }
+  for (const entry of selectedBonusEntries(config)) {
+    lines.push(`• ${dynamicBonusLabel(entry, config)}`);
+  }
+  return lines.join("\n");
+}
+
 function generateStringMods(config) {
+  const rollover = generateGodRolloverString(config);
   return `Language = "English"
 
 // GENERATED BY AOM RETOLD MAJOR GOD CREATOR DRAFT
-// Only the mandatory General strings used by major_gods_mods.xml are generated.
+// General strings used by major_gods_mods.xml.
+// Rollover includes the optional custom focus and selected bonus summary.
 // Existing minor-god and age-tech strings remain vanilla.
 
 // GENERAL
 
 ID = "${config.stringPrefix}"   ;   Str = "${escapeStringMod(config.displayName)}"
-ID = "${config.stringPrefix}_LR"   ;   Str = "${escapeStringMod(config.displayName)}"
-ID = "${config.stringPrefix}_T"   ;   Str = "${escapeStringMod(config.majorTitle)}"
+ID = "${config.stringPrefix}_LR"   ;   Str = "${escapeStringMod(rollover)}"
+ID = "${config.stringPrefix}_T"   ;   Str = "${escapeStringMod(config.majorTitle)}"${selectedHasBonusLabel(config, NUWA_CREATORS_AUSPICE_BONUS_LABEL) || selectedBonusEntries(config).some((entry) => entry.id === "bonus_67") ? `
+ID = "${nuwaAuspiceNotificationStringId(config)}"   ;   Str = "${escapeStringMod(config.displayName)} has enhanced their blessing!"` : ""}${uniqueTechCustomStringMods(config) ? `
+
+// UNIQUE TECHNOLOGY ROLLOVERS
+
+${uniqueTechCustomStringMods(config)}` : ""}
 `;
 }
 
@@ -2451,7 +4229,7 @@ Pantheon: ${config.baseCulture}
 major_gods pantheon template: ${config.templateSource}
 Starting god power: ${config.godPower}${config.godPowerPantheon ? ` (${config.godPowerPantheon})` : ""}
 Unique technologies: ${uniqueTechNames(config).map(displayTechName).join(", ") || "None"}
-God bonuses: ${selectedBonusEntries(config).map((entry) => `${entry.sourceMajor}: ${entry.label}`).join("; ") || "None"}
+God bonuses: ${selectedBonusEntries(config).map((entry) => `${entry.sourceMajor}: ${dynamicBonusLabel(entry, config)}`).join("; ") || "None"}
 GodPicker Archaic block generated from the selected god power and unique technologies.
 TechTree Archaic block generated from the selected god power and unique technologies.
 TechTree age technology layout fallback: ${config.uiTemplateMajor} pregame layout
@@ -2490,7 +4268,7 @@ async function generateFiles(config) {
   files.push(textFile(`${root}game/data/gameplay/minor_gods_mods.xml`, generateMinorGodsMods(config)));
   files.push(textFile(`${root}game/data/gameplay/techtree_mods.xml`, generateTechTreeMods(config)));
   files.push(textFile(`${root}game/data/gameplay/proto_mods.xml`, generateProtoMods(config)));
-  files.push(textFile(`${root}game/data/gameplay/powers_mods.xml`, `<powersmod>\n\t<!-- Empty in this draft. -->\n</powersmod>\n`));
+  files.push(textFile(`${root}game/data/gameplay/powers_mods.xml`, generatePowersMods(config)));
   files.push(textFile(`${root}game/data/strings/English/stringmods.txt`, generateStringMods(config)));
   files.push(textFile(`${root}game/ui_myth/content/pregame/godpicker/GodPicker_${config.baseCulture}_${config.internalName}.xaml`, generateGodPickerXaml(config)));
   files.push(textFile(`${root}game/ui_myth/content/pregame/techtree/TechTree_${config.baseCulture}_${config.internalName}.xaml`, generateTechTreeXaml(config)));
@@ -2592,6 +4370,7 @@ function presetFromForm() {
   return {
     displayName: config.displayName,
     majorTitle: config.majorTitle,
+    majorFocus: config.majorFocus,
     baseCulture: config.baseCulture,
     godPower: config.godPower,
     greekHeroes: config.greekHeroes,
@@ -2610,6 +4389,7 @@ function applyPreset(preset) {
   if (!preset) return;
   els.displayName.value = preset.displayName || "My Custom Major God";
   els.majorTitle.value = preset.majorTitle || `${els.displayName.value} followers`;
+  if (els.majorFocus) els.majorFocus.value = preset.majorFocus || "";
   if (preset.baseCulture) els.baseMajor.value = preset.baseCulture;
   else if (preset.baseMajorName) {
     const oldMajor = window.AOM_DATA.majors.find((m) => m.name === preset.baseMajorName);
@@ -2710,6 +4490,7 @@ function updatePreview() {
   const friendly = {
     displayName: config.displayName,
     majorTitle: config.majorTitle,
+    majorFocus: config.majorFocus || undefined,
     pantheon: config.baseCulture,
     majorGodTemplate: config.templateSource,
     pregameUiLayoutFallback: config.uiTemplateMajor,
@@ -2719,7 +4500,8 @@ function updatePreview() {
     chineseChoices: config.baseCulture === "Chinese" ? { mythicSpecialHero: config.chineseMythicHero } : undefined,
     aztecChoices: config.baseCulture === "Aztec" ? { classicalFormTech: config.aztecClassicalForm, mythicArrivalTech: config.aztecMythicArrival } : undefined,
     uniqueTechs: uniqueTechEntries(config).map((group) => ({ choice: displayTechName(group.label || group.id), grants: group.techs.map(displayTechName), internal: group.techs })),
-    godBonuses: selectedBonusEntries(config).map((entry) => ({ source: `${entry.sourcePantheon} / ${entry.sourceMajor}`, bonus: entry.label, files: entry.files })),
+    godBonuses: selectedBonusEntries(config).map((entry) => ({ source: `${entry.sourcePantheon} / ${entry.sourceMajor}`, bonus: dynamicBonusLabel(entry, config), internalBonusLabel: entry.label, files: entry.files })),
+    requiredBonusWarnings: requiredAutoBonusIssues(config).map(formatRequiredAutoBonusIssue),
     minorGods: Object.fromEntries(AGES.map((age) => [age, config.minorGods[age].map((t) => {
       const g = getMinorByTech(t);
       return g ? `${canonicalMinorTech(g)} — ${displayGodName(g.name)} (${g.culture})` : canonicalMinorTech(t);
@@ -2737,9 +4519,9 @@ function wireEvents() {
   for (const select of [els.greekHeroArchaic, els.greekHeroClassical, els.greekHeroHeroic, els.greekHeroMythic, els.greekUniqueUnit, els.chineseMythicHero, els.aztecClassicalForm, els.aztecMythicArrival]) {
     if (select) select.addEventListener("change", updatePreview);
   }
-  els.uniqueTech1.addEventListener("change", (event) => { enforceUniqueTechDifference(event.target); updatePreview(); });
-  els.uniqueTech2.addEventListener("change", (event) => { enforceUniqueTechDifference(event.target); updatePreview(); });
-  if (els.bonusPickers) els.bonusPickers.addEventListener("change", (event) => { enforceBonusDifference(event.target); updatePreview(); });
+  els.uniqueTech1.addEventListener("change", (event) => { enforceUniqueTechDifference(event.target); enforceChannelsGaiaLushBonusLock(); updatePreview(); });
+  els.uniqueTech2.addEventListener("change", (event) => { enforceUniqueTechDifference(event.target); enforceChannelsGaiaLushBonusLock(); updatePreview(); });
+  if (els.bonusPickers) els.bonusPickers.addEventListener("change", (event) => { enforceBonusDifference(event.target); enforceChannelsGaiaLushBonusLock(); updatePreview(); });
   els.minorPickers.addEventListener("change", (event) => { enforceMinorDifference(event.target); updatePreview(); });
   els.downloadZip.addEventListener("click", handleDownload);
   els.savePreset.addEventListener("click", () => { localStorage.setItem("aomCivCreatorPreset", JSON.stringify(presetFromForm())); setMessage("Preset saved in this browser."); });

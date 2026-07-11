@@ -85,7 +85,7 @@ The generator no longer clones Zeus/Ra/Kronos/etc. for `major_gods_mods.xml`. It
 
 ## Latest fix
 
-- Kronos bonus `Buildings construct faster near Manors` now also adds `ProtoUnitFlag DisplayRange` to `Manor` in the generated Archaic age tech.
+- Kronos bonus `Buildings construct faster near Manors and Houses (at half-rate)` now also adds `ProtoUnitFlag DisplayRange` to `Manor` in the generated Archaic age tech.
 
 - Fixed Oranos bonus “All units gain +4 line of sight” to also add the AbstractOracle AutoGatherFavor ModifyRateCap effect to the generated Archaic age tech.
 
@@ -350,3 +350,64 @@ Update: Freyr Hill Fort damage bonus renamed to "Fortress-type building units de
 - The bonus is now available to all pantheons.
 - It uses the same pantheon-specific fortress-type unit list as the Freyr fortress damage bonus.
 
+
+
+## Rollover focus note
+
+`STR_CIV_<CUSTOM>_LR` now starts with `Focus: <text>` only when the optional Major god focus field is filled. It no longer includes `God Blessing: <title>`. Selected bonuses are listed underneath as bullet points.
+
+## Latest fix
+
+- Tezcatlipoca Obsidian Shard spawning now creates a pantheon-specific proto unit (`ObsidianShardGreek`, `ObsidianShardEgyptian`, etc.).
+- The `bonusunitspawning` reward is changed to the pantheon-specific Obsidian Shard proto.
+- The Shard's maintain-train actions use the selected pantheon's Classical, Heroic, and Mythic myth-unit pools.
+- Techtree action-enable effects now target the pantheon-specific Obsidian Shard proto.
+
+## Latest fix
+
+- Kronos "Buildings construct faster near Manors and Houses (at half-rate)" is now selectable by all pantheons.
+- Atlantean keeps the existing Manor target.
+- Other pantheons use House as the Temporal Scaffolding source.
+- When a non-Atlantean pantheon selects it, `proto_mods.xml` adds TemporalScaffoldingSmall and TemporalScaffoldingLarge protoactions to House.
+
+
+Update: Loki “Military-built buildings are constructed faster” is now available to all pantheons. Norse keeps AbstractInfantry + Godi; non-Norse pantheons use AbstractVillager for the Building Build WorkRate effect.
+
+## Latest fix
+
+- Added dynamic display labels for the Loki construction-speed bonus:
+  - Norse: Infantry units construct buildings faster
+  - Other pantheons: Villagers construct buildings faster
+- Added dynamic display labels for the Oranos Sky Passage builder bonus:
+  - Norse: Infantry units can build a new Sky Passage each age, enabling instant travel between them.
+  - Egyptian: Priests can build a new Sky Passage each age, enabling instant travel between them.
+  - Other pantheons: Villagers can build a new Sky Passage each age, enabling instant travel between them.
+- Dynamic labels are used in the bonus dropdowns, preview, README export summary, and STR_CIV_<CUSTOM>_LR rollover bonus summary.
+
+
+### Loki counter-damage bonus generalized
+- `Human soldiers and heroes get bonus counter damage` is available for all pantheons.
+- It uses pantheon-specific counter-damage rules and applies the shared Hero vs MythUnit rule.
+
+
+## Latest fix
+- Fixed Nüwa Creator’s Auspice export routing: the selected bonus now adds the CreatePower effect to ArchaicAge and writes the generated ShieldBlessing pantheon power to powers_mods.xml.
+
+### Update: Thor Dwarven Armory command-add tech slots
+
+The Thor Dwarven Armory bonus now also patches the selected pantheon's relevant age/minor-god techs so Dwarven Armory receives additional technology command buttons at the requested row/column slots.
+
+
+## Latest fix: Channels unique tech dependency
+
+- Channels is now available to all pantheons.
+- Channels appears in the unique-tech dropdown only when the Gaia bonus "Economic buildings grow Lush. Lush heals friendly units and buildings" is selected, or when Channels is already selected.
+- If Channels is selected and the Gaia Lush bonus is not manually selected, the exporter automatically applies the Gaia Lush bonus effects during generation.
+- The Gaia Lush bonus can still be selected normally without choosing Channels.
+
+## Latest fix: Channels dropdown visibility
+
+- Channels is always visible in the unique-tech dropdown for all pantheons.
+- Selecting Channels automatically inserts the Gaia Lush bonus into an available bonus slot.
+- The Gaia Lush bonus slot is locked while Channels remains selected, then unlocks if Channels is removed or changed.
+- Export still guarantees the Gaia Lush effects if Channels is selected.
