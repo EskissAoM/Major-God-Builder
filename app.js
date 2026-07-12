@@ -1248,6 +1248,7 @@ const LOKI_MILITARY_BUILD_BONUS_LABEL = "Military-built buildings are constructe
 const LOKI_COUNTER_DAMAGE_BONUS_LABEL = "Human soldiers and heroes get bonus counter damage";
 const POSEIDON_SPEED_BY_AGE_BONUS_LABEL = "Cavalry, Caravans, and myth units gain speed by age";
 const POSEIDON_STABLE_MARKET_DISCOUNT_BONUS_LABEL = "Stables and Markets are 30% cheaper";
+const POSEIDON_MILITIA_BONUS_LABEL = "Militia spawn from razed buildings";
 const HUITZ_TONALLI_RESOURCES_BONUS_LABEL = "Collecting Tonalli grants resources in addition to favor";
 const HUITZ_CONSTRUCTION_REFUND_BONUS_LABEL = "Temples, Fortress-type building, Village Centers, and Town Centers refund part of their wood/gold cost on completion";
 const ZEUS_STARTING_FAVOR_BONUS_LABEL = "Starts with 10 favor";
@@ -1427,6 +1428,14 @@ function oranosSkyPassageArchaicEffects(config) {
     const row = builder === "Priest" ? "0" : "2";
     effects.push(`<effect type="Data" amount="1.00" subtype="CommandAdd" proto="SkyPassage" row="${row}" column="4" relativity="Assign">
 	<target type="ProtoUnit">${builder}</target>
+</effect>`);
+  }
+  if (config.baseCulture === "Egyptian") {
+    effects.push(`<effect type="Data" amount="0.00" subtype="cost" resource="Wood" relativity="Override">
+	<target type="ProtoUnit">DwarvenArmory</target>
+</effect>
+<effect type="Data" amount="25.00" subtype="cost" resource="Gold" relativity="Override">
+	<target type="ProtoUnit">DwarvenArmory</target>
 </effect>`);
   }
   return effects.join("\n");
@@ -3468,6 +3477,139 @@ function thorArmoryTechDiscountEffects(config) {
 </effect>`).join("\n");
 }
 
+
+function thorDwarvenArmoryEgyptianCostEffects(config) {
+  if (config.baseCulture !== "Egyptian") return "";
+  return `<effect type="Data" amount="0.00" subtype="cost" resource="Wood" relativity="Override">
+	<target type="ProtoUnit">DwarvenArmory</target>
+</effect>`;
+}
+
+function thorDwarvenArmoryPoseidonMilitiaEffects(config) {
+  if (config.baseCulture !== "Greek") return "";
+  if (!selectedHasBonusLabel(config, POSEIDON_MILITIA_BONUS_LABEL)) return "";
+  return `<effect type="Data" amount="4" subtype="PartisanUnit" unitType="Militia" relativity="Absolute">
+	<target type="ProtoUnit">DwarvenArmory</target>
+</effect>`;
+}
+
+function thorDwarvenArmoryForgeOfOlympusTech(config) {
+  if (!selectedHasBonusLabel(config, THOR_DWARVEN_ARMORY_BONUS_LABEL)) return "";
+  if (config.baseCulture !== "Greek") return "";
+  const selectedMinorGods = Object.values(config.minorGods || {}).flat().filter(Boolean);
+  if (!selectedMinorGods.includes("MythicAgeHephaestus")) return "";
+  return `	<tech name="ForgeOfOlympus">
+		<effects mergemode="replace">
+			<effect type="Data" amount="0.25" subtype="CostBuildingTechs" resource="Food" relativity="Percent">
+				<target type="ProtoUnit">Armory</target>
+			</effect>
+			<effect type="Data" amount="0.25" subtype="CostBuildingTechs" resource="Wood" relativity="Percent">
+				<target type="ProtoUnit">Armory</target>
+			</effect>
+			<effect type="Data" amount="0.25" subtype="CostBuildingTechs" resource="Gold" relativity="Percent">
+				<target type="ProtoUnit">Armory</target>
+			</effect>
+			<effect type="Data" amount="1.5" subtype="ResearchRate" relativity="BasePercent">
+				<target type="ProtoUnit">Armory</target>
+			</effect>
+			<effect type="Data" amount="4.0" subtype="CostBuildingTechs" resource="Food" relativity="Percent" hidetooltip="">
+				<target type="ProtoUnit">Armory</target>
+			</effect>
+			<effect type="Data" amount="4.0" subtype="CostBuildingTechs" resource="Wood" relativity="Percent" hidetooltip="">
+				<target type="ProtoUnit">Armory</target>
+			</effect>
+			<effect type="Data" amount="4.0" subtype="CostBuildingTechs" resource="Gold" relativity="Percent" hidetooltip="">
+				<target type="ProtoUnit">Armory</target>
+			</effect>
+			<effect type="Data" amount="0.25" subtype="CostBuildingTechs" resource="Food" relativity="Percent">
+				<target type="ProtoUnit">DwarvenArmory</target>
+			</effect>
+			<effect type="Data" amount="0.25" subtype="CostBuildingTechs" resource="Wood" relativity="Percent">
+				<target type="ProtoUnit">DwarvenArmory</target>
+			</effect>
+			<effect type="Data" amount="0.25" subtype="CostBuildingTechs" resource="Gold" relativity="Percent">
+				<target type="ProtoUnit">DwarvenArmory</target>
+			</effect>
+			<effect type="Data" amount="1.5" subtype="ResearchRate" relativity="BasePercent">
+				<target type="ProtoUnit">DwarvenArmory</target>
+			</effect>
+		</effects>
+	</tech>`;
+}
+
+function thorDwarvenArmoryCoatepecShrinesTech(config) {
+  if (!selectedHasBonusLabel(config, THOR_DWARVEN_ARMORY_BONUS_LABEL)) return "";
+  if (config.baseCulture !== "Aztec") return "";
+  const selectedMinorGods = Object.values(config.minorGods || {}).flat().filter(Boolean);
+  if (!selectedMinorGods.includes("HeroicAgeCoatlicue")) return "";
+  return `	<tech name="CoatepecShrines" orderhint="8">
+		<effects mergemode="replace">
+			<effect type="Data" amount="2.5" subtype="UnitRegenRate" relativity="Absolute">
+				<target type="ProtoUnit">Building</target>
+			</effect>
+			<effect type="Data" amount="0.00" subtype="RepairCostFactor" relativity="BasePercent" tooltipid="STR_TECH_COATEPEC_SHRINES_OVERRIDE">
+				<target type="Player"></target>
+			</effect>
+			<effect type="Data" amount="0.00" subtype="ProtoUnitFlag" flag="DynamicUpdate" relativity="Absolute">
+				<target type="ProtoUnit">House</target>
+			</effect>
+			<effect type="Data" amount="0.00" subtype="ProtoUnitFlag" flag="DynamicUpdate" relativity="Absolute">
+				<target type="ProtoUnit">Market</target>
+			</effect>
+			<effect type="Data" amount="0.00" subtype="ProtoUnitFlag" flag="DynamicUpdate" relativity="Absolute">
+				<target type="ProtoUnit">AbstractArmory</target>
+			</effect>
+			<effect type="Data" amount="0.00" subtype="ProtoUnitFlag" flag="DynamicUpdate" relativity="Absolute">
+				<target type="ProtoUnit">WarHut</target>
+			</effect>
+			<effect type="Data" amount="0.00" subtype="ProtoUnitFlag" flag="DynamicUpdate" relativity="Absolute">
+				<target type="ProtoUnit">NoblesHut</target>
+			</effect>
+			<effect type="Data" amount="0.00" subtype="ProtoUnitFlag" flag="DynamicUpdate" relativity="Absolute">
+				<target type="ProtoUnit">AbstractFarm</target>
+			</effect>
+		</effects>
+	</tech>`;
+}
+
+
+function relicNineCauldronsAllPantheonsTech() {
+  const units = [
+    "Myrmidon",
+    "Gastraphetoros",
+    "Hetairos",
+    "ChariotArcher",
+    "CamelRider",
+    "WarElephant",
+    "Huskarl",
+    "Destroyer",
+    "DestroyerHero",
+    "Fanatic",
+    "FanaticHero",
+    "WhiteHorseCavalry",
+    "TigerCavalry",
+    "TigerCavalryDismounted",
+    "Otontin",
+    "ShornOne",
+    "JaguarRider",
+    "AmazonArcher",
+    "Onmyoji",
+  ];
+  const armorEffects = units.flatMap((unit) => ["Hack", "Pierce"].map((armorType) => `			<effect type="Data" amount="-0.05" subtype="ArmorVulnerability" armortype="${armorType}" relativity="Percent">
+				<target type="ProtoUnit">${unit}</target>
+			</effect>`)).join("\n");
+  return `	<tech name="RelicNineCauldrons" type="Normal" orderhint="0">
+		<effects mergemode="replace">
+${armorEffects}
+			<effect type="Data" amount="0.01" subtype="ResourceTrickleRate" resource="Favor" relativity="Absolute">
+				<target type="Player"></target>
+			</effect>
+			<effect type="TextOutput">STR_RLC_TECH_NINE_CAULDRONS_SELF</effect>
+			<effect all="true" type="TextOutput">STR_RLC_TECH_NINE_CAULDRONS_OTHER</effect>
+		</effects>
+	</tech>`;
+}
+
 function thorDwarvenArmoryBuilderTarget(config) {
   return config.baseCulture === "Norse" ? "AbstractInfantry" : "AbstractVillager";
 }
@@ -3489,6 +3631,10 @@ function thorDwarvenArmoryArchaicEffects(config) {
   effects.push(`<effect type="Data" amount="1.00" subtype="Enable" relativity="Absolute">
 	<target type="ProtoUnit">DwarvenArmory</target>
 </effect>`);
+  const egyptianCostEffects = thorDwarvenArmoryEgyptianCostEffects(config);
+  if (egyptianCostEffects) effects.push(egyptianCostEffects);
+  const poseidonMilitiaEffects = thorDwarvenArmoryPoseidonMilitiaEffects(config);
+  if (poseidonMilitiaEffects) effects.push(poseidonMilitiaEffects);
   effects.push(`<effect type="TechStatus" status="obtainable">CopperWeapons</effect>
 <effect type="TechStatus" status="obtainable">CopperArmor</effect>
 <effect type="TechStatus" status="obtainable">CopperShields</effect>
@@ -3978,6 +4124,164 @@ function skinOfTheRhinoSharedTech(config) {
 }
 
 
+
+
+function hasGreekHermesAndHestiaMinorGods(config) {
+  if (!config || config.baseCulture !== "Greek") return false;
+  const selectedMinorGods = Object.values(config.minorGods || {}).flat();
+  return selectedMinorGods.includes("ClassicalAgeHermes") && selectedMinorGods.includes("HeroicAgeHestia");
+}
+
+function fatedArrowsHestiaCentaurTech(config) {
+  if (!hasGreekHermesAndHestiaMinorGods(config)) return "";
+  return `\t<tech name="FatedArrows">
+\t\t<effects mergemode="replace">
+\t\t\t<effect type="Data" amount="2.00" subtype="NumberBounces" action="RangedAttack" relativity="Absolute">
+\t\t\t\t<target type="ProtoUnit">AbstractArcher</target>
+\t\t\t</effect>
+\t\t\t<effect type="Data" amount="2.00" subtype="NumberBounces" action="RangedAttack" relativity="Absolute">
+\t\t\t\t<target type="ProtoUnit">Medusa</target>
+\t\t\t</effect>
+\t\t\t<effect type="Data" amount="2.00" subtype="NumberBounces" action="RangedAttack" relativity="Absolute">
+\t\t\t\t<target type="ProtoUnit">Centaur</target>
+\t\t\t</effect>
+\t\t</effects>
+\t</tech>`;
+}
+
+function fatedArrowsCentaurProtoXml(config) {
+  if (!hasGreekHermesAndHestiaMinorGods(config)) return "";
+  return `\t<unit name="Centaur">
+\t\t<protoaction>
+\t\t\t<name>RangedAttack</name>
+\t\t\t<projectilechainbounce>1</projectilechainbounce>
+\t\t\t<projectilechainbouncereduction>0.800</projectilechainbouncereduction>
+\t\t\t<projectilechainbouncerange>5</projectilechainbouncerange>
+\t\t</protoaction>
+\t</unit>`;
+}
+
+
+function olympianWeaponsAmazonArcherTech(config) {
+  if (!config || config.baseCulture !== "Greek" || config.greekUniqueUnit !== "AmazonArcher") return "";
+  return `	<tech name="OlympianWeapons">
+		<effects mergemode="replace">
+			<effect type="Data" amount="1.20" subtype="Damage" action="HandAttack" relativity="BasePercent">
+				<target type="ProtoUnit">Hetairos</target>
+			</effect>
+			<effect type="Data" amount="1.20" subtype="Damage" action="HandAttack" relativity="BasePercent">
+				<target type="ProtoUnit">Myrmidon</target>
+			</effect>
+			<effect type="Data" amount="1.20" subtype="Damage" action="RangedAttack" relativity="BasePercent">
+				<target type="ProtoUnit">Gastraphetoros</target>
+			</effect>
+			<effect type="Data" action="HandAttack" amount="1.0" subtype="DamageBonus" unittype="MythUnit" relativity="Absolute">
+				<target type="ProtoUnit">Hetairos</target>
+			</effect>
+			<effect type="Data" action="HandAttack" amount="1.0" subtype="DamageBonus" unittype="MythUnit" relativity="Absolute">
+				<target type="ProtoUnit">Myrmidon</target>
+			</effect>
+			<effect type="Data" action="RangedAttack" amount="1.0" subtype="DamageBonus" unittype="MythUnit" relativity="Absolute">
+				<target type="ProtoUnit">Gastraphetoros</target>
+			</effect>
+			<effect type="Data" amount="1.20" subtype="Damage" action="RangedAttack" relativity="BasePercent">
+				<target type="ProtoUnit">AmazonArcher</target>
+			</effect>
+			<effect type="Data" action="RangedAttack" amount="1.0" subtype="DamageBonus" unittype="MythUnit" relativity="Absolute">
+				<target type="ProtoUnit">AmazonArcher</target>
+			</effect>
+		</effects>
+	</tech>`;
+}
+
+function argivePatronageCustomTechName(config) {
+  return `ArgivePatronage${config.internalName}`;
+}
+
+function argivePatronageCustomRolloverStringId(config) {
+  return `STR_TECH_ARGIVE_PATRONAGE_${sanitizeId(config.internalName).toUpperCase()}_LR`;
+}
+
+function argivePatronageCustomOverrideStringId(config) {
+  return `STR_TECH_ARGIVE_PATRONAGE_${sanitizeId(config.internalName).toUpperCase()}_OVERRIDE`;
+}
+
+function hasGreekHeraMinorGod(config) {
+  if (!config || config.baseCulture !== "Greek") return false;
+  return (config.minorGods?.MythicAge || []).includes("MythicAgeHera");
+}
+
+function argivePatronageUniqueUnit(config) {
+  return config.greekUniqueUnit || GREEK_UNIQUE_UNITS.Zeus;
+}
+
+function argivePatronageUniqueUnitDisplayName(config) {
+  return displayTechName(argivePatronageUniqueUnit(config));
+}
+
+function argivePatronageMythicAgeHeraTech(config) {
+  if (!hasGreekHeraMinorGod(config)) return "";
+  const techName = argivePatronageCustomTechName(config);
+  return `	<tech name="MythicAgeHera">
+		<effects>
+			<effect type="TechStatus" status="obtainable" uishowifmajorgod="${escapeXml(config.internalName)}">${escapeXml(techName)}</effect>
+			<effect type="Data" amount="1.00" subtype="CommandAdd" tech="${escapeXml(techName)}" row="2" column="3" relativity="Assign">
+				<target type="ProtoUnit">Fortress</target>
+			</effect>
+		</effects>
+	</tech>`;
+}
+
+function argivePatronageCustomTech(config) {
+  if (!hasGreekHeraMinorGod(config)) return "";
+  const techName = argivePatronageCustomTechName(config);
+  const actionName = techName;
+  return `<tech name="${escapeXml(techName)}">
+		<displaynameid>STR_TECH_ARGIVE_PATRONAGE_NAME</displaynameid>
+		<rollovertextid>${escapeXml(argivePatronageCustomRolloverStringId(config))}</rollovertextid>
+		<cost resourcetype="Food">200.0000</cost>
+		<cost resourcetype="Gold">300.0000</cost>
+		<cost resourcetype="Favor">30.0000</cost>
+		<researchpoints>40.0000</researchpoints>
+		<status>UNOBTAINABLE</status>
+		<icon>resources\\greek\\static_color\\technologies\\argive_patronage_icon.png</icon>
+		<flag>CountsTowardMilitaryScore</flag>
+		<flag>HideAdvancedRollover</flag>
+		<flag>MythTech</flag>
+		<prereqs>
+			<techstatus status="Active">${escapeXml(config.ageTechs.mythic)}</techstatus>
+		</prereqs>
+		<effects>
+			<effect type="Data" action="${escapeXml(actionName)}" amount="1.00" subtype="ActionEnable" relativity="Absolute" tooltipid="${escapeXml(argivePatronageCustomOverrideStringId(config))}">
+				<target type="ProtoUnit">Fortress</target>
+			</effect>
+		</effects>
+	</tech>`;
+}
+
+function argivePatronageStringMods(config) {
+  if (!hasGreekHeraMinorGod(config)) return "";
+  const unit = argivePatronageUniqueUnitDisplayName(config);
+  return `ID = "${argivePatronageCustomRolloverStringId(config)}"   ;   Str = "Hera’s favor causes your Fortresses to periodically spawn ${escapeStringMod(unit)} for free."
+ID = "${argivePatronageCustomOverrideStringId(config)}"   ;   Str = "Fortress: Summon a ${escapeStringMod(unit)} every 60 seconds"`;
+}
+
+function argivePatronageFortressProtoXml(config) {
+  if (!hasGreekHeraMinorGod(config)) return "";
+  const actionName = argivePatronageCustomTechName(config);
+  const unit = argivePatronageUniqueUnit(config);
+  return `	<unit name="Fortress">
+		<protoaction>
+			<name>${escapeXml(actionName)}</name>
+			<type>Maintain</type>
+			<rate type="${escapeXml(unit)}">1.0</rate>
+			<active>0</active>
+			<persistent>1</persistent>
+			<maintaintrainpoints>60.0</maintaintrainpoints>
+		</protoaction>
+	</unit>`;
+}
+
 function temporalChaosCustomTech(config) {
   if (!selectedHasUniqueTechId(config, "TemporalChaos")) return "";
   const techName = temporalChaosCustomTechName(config);
@@ -4023,10 +4327,23 @@ function extraGeneratedTechs(config) {
   if (thorArmoryPrereqs) extras.push(thorArmoryPrereqs);
   const thorDwarfTech = thorDwarfSpawnExtraTech(config);
   if (thorDwarfTech) extras.push(thorDwarfTech);
+  const thorForgeOlympusTech = thorDwarvenArmoryForgeOfOlympusTech(config);
+  if (thorForgeOlympusTech) extras.push(thorForgeOlympusTech);
+  const thorCoatepecShrinesTech = thorDwarvenArmoryCoatepecShrinesTech(config);
+  if (thorCoatepecShrinesTech) extras.push(thorCoatepecShrinesTech);
+  extras.push(relicNineCauldronsAllPantheonsTech());
   const skinRhinoTech = skinOfTheRhinoSharedTech(config);
   if (skinRhinoTech) extras.push(skinRhinoTech);
   const temporalChaosTech = temporalChaosCustomTech(config);
   if (temporalChaosTech) extras.push(temporalChaosTech);
+  const argiveHeraTech = argivePatronageMythicAgeHeraTech(config);
+  if (argiveHeraTech) extras.push(argiveHeraTech);
+  const argiveTech = argivePatronageCustomTech(config);
+  if (argiveTech) extras.push(argiveTech);
+  const olympianWeaponsAmazonTech = olympianWeaponsAmazonArcherTech(config);
+  if (olympianWeaponsAmazonTech) extras.push(olympianWeaponsAmazonTech);
+  const fatedArrowsHestiaTech = fatedArrowsHestiaCentaurTech(config);
+  if (fatedArrowsHestiaTech) extras.push(fatedArrowsHestiaTech);
   if (!selectedHasBonusLabel(config, THOR_DWARVEN_ARMORY_BONUS_LABEL)) {
     const aegirUniqueTechPatch = uniqueTechAegirTempleRepositionTechs(config);
     if (aegirUniqueTechPatch) extras.push(aegirUniqueTechPatch);
@@ -4124,7 +4441,7 @@ ${extraGeneratedTechs(config)}` : ""}
 }
 
 function generateProtoMods(config) {
-  const entries = [tezcatObsidianShardProtoXml(config), kronosHouseTemporalProtoXml(config), oranosEgyptianPriestSkyPassageProtoXml(config)].filter(Boolean);
+  const entries = [tezcatObsidianShardProtoXml(config), kronosHouseTemporalProtoXml(config), oranosEgyptianPriestSkyPassageProtoXml(config), argivePatronageFortressProtoXml(config), fatedArrowsCentaurProtoXml(config)].filter(Boolean);
   if (!entries.length) {
     return `<protomods>
 	<!-- Empty in this draft. -->
@@ -4173,7 +4490,11 @@ ID = "${nuwaAuspiceNotificationStringId(config)}"   ;   Str = "${escapeStringMod
 
 // UNIQUE TECHNOLOGY ROLLOVERS
 
-${uniqueTechCustomStringMods(config)}` : ""}
+${uniqueTechCustomStringMods(config)}` : ""}${argivePatronageStringMods(config) ? `
+
+// HERA ARGIVE PATRONAGE
+
+${argivePatronageStringMods(config)}` : ""}
 `;
 }
 
