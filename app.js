@@ -4548,7 +4548,12 @@ function escapeStringMod(value) {
 
 function generateGodPickerXaml(config) {
   const className = `GodPicker_${config.baseCulture}_${config.internalName}`;
-  const archaicBlock = godPickerArchaicPowerBlock(config.godPower, uniqueTechNames(config));
+  const archaicUnits = uniqueList([
+    ...(config.baseCulture === "Greek" && config.greekUniqueUnit ? [config.greekUniqueUnit] : []),
+    ...godPickerArchaicBonusUnits(config)
+  ]);
+  const archaicPowers = godPickerArchaicBonusPowers(config);
+  const archaicBlock = godPickerArchaicPowerBlock(config.godPower, uniqueTechNames(config), archaicUnits, archaicPowers);
   return `﻿<local:GodPickerPageBase
     x:Class="athenswpf.Content.Pregame.GodPicker.${escapeXml(className)}"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -4568,13 +4573,48 @@ ${AGES.map((age) => generateGodPickerAge(age, config.minorGods[age])).join("\n")
 `;
 }
 
-function godPickerArchaicPowerBlock(power, uniqueTechs = []) {
+function godPickerArchaicPowerBlock(power, uniqueTechs = [], units = [], powers = []) {
+  const unitNodes = units.map((unit) => `        <techTree:TechTreeNode Unit="${escapeXml(unit)}" />`).join("\n");
+  const powerNodes = powers.map((bonusPower) => `        <techTree:TechTreeNode Power="${escapeXml(bonusPower)}" />`).join("\n");
   const techNodes = uniqueTechs.map((tech) => `        <techTree:TechTreeNode Tech="${escapeXml(tech)}" />`).join("\n");
+  const extraNodes = [powerNodes, unitNodes, techNodes].filter(Boolean).join("\n");
   return `<techTree:TechTreeAge AgeName="ArchaicAge">
     <techTree:TechTreeAge.Technologies>
-        <techTree:TechTreeNode Power="${escapeXml(power)}" />${techNodes ? "\n" + techNodes : ""}
+        <techTree:TechTreeNode Power="${escapeXml(power)}" />${extraNodes ? "\n" + extraNodes : ""}
     </techTree:TechTreeAge.Technologies>
 </techTree:TechTreeAge>`;
+}
+
+
+function uniqueList(items) {
+  return Array.from(new Set((items || []).filter(Boolean)));
+}
+
+function selectedHasBonusId(config, id) {
+  return selectedBonusEntries(config).some((entry) => entry.id === id);
+}
+
+function godPickerArchaicBonusUnits(config) {
+  const units = [];
+  if (selectedHasBonusId(config, "bonus_6")) units.push("HadesShade");
+  if (selectedHasBonusId(config, "bonus_56") || selectedHasBonusLabel(config, ORANOS_SKY_PASSAGE_BONUS_LABEL)) units.push("SkyPassage");
+  if (selectedHasBonusId(config, "bonus_31") || selectedHasBonusLabel(config, SET_ANIMALS_BONUS_LABEL)) units.push("BaboonOfSet");
+  if (selectedHasBonusId(config, "bonus_15")) units.push("Hippocampus");
+  if (selectedHasBonusId(config, "bonus_11") || selectedHasBonusLabel(config, POSEIDON_MILITIA_BONUS_LABEL)) units.push("Militia");
+  if (selectedHasBonusId(config, "bonus_42") || selectedHasBonusLabel(config, ODIN_RAVEN_SCOUTS_BONUS_LABEL)) units.push("Raven");
+  if (selectedHasBonusId(config, "bonus_36") || selectedHasBonusLabel(config, THOR_DWARVEN_ARMORY_BONUS_LABEL)) units.push("DwarvenArmory");
+  return units;
+}
+
+function godPickerArchaicBonusPowers(config) {
+  const powers = [];
+  if (selectedHasBonusId(config, "bonus_63")) powers.push("YinAndYangTechree");
+  if (selectedHasBonusId(config, "bonus_67") || selectedHasBonusLabel(config, NUWA_CREATORS_AUSPICE_BONUS_LABEL)) powers.push("ShieldBlessingTechree");
+  if (selectedHasBonusId(config, "bonus_71") || selectedHasBonusLabel(config, SHENNONG_GIFT_OF_BEASTS_BONUS_LABEL)) powers.push("SpawnRewardTechree");
+  if (selectedHasBonusId(config, "bonus_75")) powers.push("BushidoAmaterasu");
+  if (selectedHasBonusId(config, "bonus_83")) powers.push("BushidoSusanoo");
+  if (selectedHasBonusId(config, "bonus_79")) powers.push("BushidoTsukuyomi");
+  return uniqueList(powers);
 }
 
 function lookupTemplateBlock(map, key) {
