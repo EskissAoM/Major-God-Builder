@@ -12,7 +12,7 @@
   <main class="shell">
     <div class="top-meta" aria-label="Project information">
       <span>Made by Eskiss</span>
-      <span>Version 0.9</span>
+      <span>Version 0.9.1</span>
       <a href="#contact">Contact / Social</a>
     </div>
     <header class="hero">
@@ -25,6 +25,9 @@
 
     <section class="grid">
       <form id="godForm" class="panel form-panel">
+        <div class="form-top-actions">
+          <button type="button" id="loadPresetTop" class="secondary compact">Load preset JSON</button>
+        </div>
         <h2>1. Major god</h2>
         <label>
           Major god display name
@@ -36,7 +39,7 @@
         </label>
         <label>
           Major god focus <span class="muted">(optional)</span>
-          <input id="majorFocus" placeholder="Example: Infantry and Heroes." maxlength="120" />
+          <input id="majorFocus" placeholder="Example: Infantry and heroes." maxlength="120" />
         </label>
         <label>
           Pantheon
@@ -113,7 +116,7 @@
 
 
         <h2>3. God bonuses</h2>
-        <p class="muted">Choose up to four major-god bonuses. The list is filtered by the selected pantheon using the compatibility column from the spreadsheet.</p>
+        <p class="muted">Choose up to four major-god bonuses.</p>
         <div id="bonusPickers" class="minor-grid">
           <label>
             God bonus 1

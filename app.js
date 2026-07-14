@@ -277,6 +277,7 @@ const els = {
   minorPickers: $("minorPickers"),
   downloadZip: $("downloadZip"),
   loadPreset: $("loadPreset"),
+  loadPresetTop: $("loadPresetTop"),
   presetFile: $("presetFile"),
   exportPreset: $("exportPreset"),
   messages: $("messages"),
@@ -13544,6 +13545,14 @@ function drawLeftText(ctx, text, x, y, maxWidth, font, fillStyle, baseline = "mi
   ctx.fillText(String(text || ""), x, y, maxWidth);
 }
 
+function drawRightText(ctx, text, x, y, maxWidth, font, fillStyle, baseline = "middle") {
+  ctx.font = font;
+  ctx.fillStyle = fillStyle;
+  ctx.textAlign = "right";
+  ctx.textBaseline = baseline;
+  ctx.fillText(String(text || ""), x, y, maxWidth);
+}
+
 function wrapCanvasText(ctx, text, maxWidth) {
   const words = String(text || "").split(/\s+/).filter(Boolean);
   const lines = [];
@@ -13646,20 +13655,36 @@ async function exportGodPreviewImage() {
     const majorIcon = majorIconDataUrl ? await waitForCanvasImage(majorIconDataUrl) : null;
 
     const measure = document.createElement("canvas").getContext("2d");
-    const bonusesHeight = bonuses.length
-      ? bonuses.reduce((sum, bonus) => {
-          measure.font = canvasFont(18, 750);
-          return sum + Math.max(32, wrapCanvasText(measure, bonus, innerWidth - 78).length * 24 + 10);
-        }, 62)
-      : 98;
-    const ageRowHeights = ages.map((entry) => {
-      const extras = entry.extras || [];
-      const extraHeight = extras.length ? (extras.length * 44 + 10) : 0;
-      return Math.max(132, 116 + extraHeight);
+    const overviewRowHeight = 42;
+    const overviewRowGap = 10;
+    const overviewTopPad = 58;
+    const overviewBottomPad = 18;
+    // Keep the exported picture layout in sync with the browser preview. The
+    // previous export used a fixed 180px overview section, but three rows at
+    // 42px high with 10px gaps actually need 204px before bottom padding; that
+    // undercount made the God bonuses panel overlap the Overview panel.
+    const overviewHeight = overviewTopPad + rows.length * overviewRowHeight + Math.max(0, rows.length - 1) * overviewRowGap + overviewBottomPad;
+
+    const bonusBoxHeights = bonuses.map((bonus) => {
+      measure.font = canvasFont(18, 750);
+      return Math.max(34, wrapCanvasText(measure, bonus, innerWidth - 86).length * 24 + 10);
     });
-    const agesHeight = ages.length ? 58 + ageRowHeights.reduce((a, b) => a + b, 0) + Math.max(0, ages.length - 1) * 12 + 18 : 0;
+    const bonusesHeight = bonuses.length
+      ? 58 + bonusBoxHeights.reduce((sum, boxH) => sum + boxH, 0) + Math.max(0, bonusBoxHeights.length - 1) * 8 + 18
+      : 58 + 42 + 18;
+    const ageRowHeights = ages.map((entry) => {
+      const minors = entry.minors || [];
+      const extras = entry.extras || [];
+      const extraHeight = extras.length ? extras.length * 48 : 0;
+      // Rows with minor-god tiles need room for the two tiles plus the extra
+      // choice rows underneath. Archaic Greek has no minor gods, so it should
+      // stay compact and center its hero row vertically instead of reserving
+      // the empty tile area used by later ages.
+      if (!minors.length) return Math.max(108, 28 + extraHeight);
+      return Math.max(132, 116 + extraHeight + (extras.length ? 10 : 0));
+    });
+    const agesHeight = ages.length ? 62 + ageRowHeights.reduce((a, b) => a + b, 0) + Math.max(0, ages.length - 1) * 12 + 20 : 0;
     const headerHeight = config.majorFocus ? 198 : 176;
-    const overviewHeight = 180;
     const height = pad + headerHeight + gap + overviewHeight + gap + bonusesHeight + (agesHeight ? gap + agesHeight : 0) + pad;
 
     const scale = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
@@ -13723,8 +13748,10 @@ async function exportGodPreviewImage() {
       const rowX = pad + 86;
       const rowW = innerWidth - 172;
       fillRoundRect(ctx, rowX, rowY, rowW, 42, 12, colors.row, colors.softStroke);
-      drawLeftText(ctx, row.label.toUpperCase(), rowX + 18, rowY + 21, 150, canvasFont(14, 900), colors.label);
-      drawLeftText(ctx, row.value, rowX + 188, rowY + 21, rowW - 206, canvasFont(18, 800), colors.text);
+      const splitX = rowX + rowW / 2;
+      const splitGap = 14;
+      drawRightText(ctx, row.label.toUpperCase(), splitX - splitGap, rowY + 21, rowW / 2 - 34, canvasFont(14, 900), colors.label);
+      drawLeftText(ctx, row.value, splitX + splitGap, rowY + 21, rowW / 2 - 34, canvasFont(18, 800), colors.text);
       rowY += 52;
     }
     y += overviewHeight + gap;
@@ -13736,14 +13763,12 @@ async function exportGodPreviewImage() {
       fillRoundRect(ctx, pad + 24, bonusY, innerWidth - 48, 42, 12, colors.row, colors.softStroke);
       drawCenteredText(ctx, "No bonuses selected", width / 2, bonusY + 21, innerWidth - 80, canvasFont(17, 750), colors.label);
     } else {
-      for (const bonus of bonuses) {
-        measure.font = canvasFont(18, 750);
-        const lines = wrapCanvasText(measure, bonus, innerWidth - 86);
-        const boxH = Math.max(34, lines.length * 24 + 10);
+      bonuses.forEach((bonus, index) => {
+        const boxH = bonusBoxHeights[index] || 34;
         fillRoundRect(ctx, pad + 24, bonusY, innerWidth - 48, boxH, 12, colors.row, colors.softStroke);
         drawWrappedText(ctx, `• ${bonus}`, pad + 42, bonusY + 8, innerWidth - 86, 24, canvasFont(18, 750), colors.text);
         bonusY += boxH + 8;
-      }
+      });
     }
     y += bonusesHeight + gap;
 
@@ -13768,16 +13793,20 @@ async function exportGodPreviewImage() {
           minors.slice(0, 2).forEach((minor, i) => {
             const tx = bodyX + i * (tileW + tileGap);
             fillRoundRect(ctx, tx, ageY + 16, tileW, 82, 14, colors.row, colors.softStroke);
-            drawCircleImage(ctx, minorIcons.get(minor.icon), tx + tileW / 2, ageY + 42, 48);
-            drawCenteredText(ctx, minor.name, tx + tileW / 2, ageY + 76, tileW - 14, canvasFont(18, 850), colors.text);
+            // Match the browser preview tile balance: icon sits a little lower
+            // in the tile, with the name centered underneath it.
+            drawCircleImage(ctx, minorIcons.get(minor.icon), tx + tileW / 2, ageY + 52, 48);
+            drawCenteredText(ctx, minor.name, tx + tileW / 2, ageY + 86, tileW - 14, canvasFont(18, 850), colors.text);
           });
         }
-        let extraY = minors.length ? ageY + 110 : ageY + 24;
-        for (const extra of entry.extras || []) {
+        const extras = entry.extras || [];
+        const extraBlockHeight = extras.length ? (extras.length * 42 + Math.max(0, extras.length - 1) * 6) : 0;
+        let extraY = minors.length ? ageY + 110 : ageY + Math.max(18, (rowH - extraBlockHeight) / 2);
+        for (const extra of extras) {
           const parts = previewExportSplitExtra(extra);
           fillRoundRect(ctx, bodyX, extraY, bodyW, 42, 12, colors.row, colors.softStroke);
           drawLeftText(ctx, parts.label.toUpperCase(), bodyX + 16, extraY + 21, 150, canvasFont(14, 900), colors.label);
-          drawLeftText(ctx, parts.value, bodyX + 176, extraY + 21, bodyW - 196, canvasFont(22, 800), colors.text);
+          drawLeftText(ctx, parts.value, bodyX + 176, extraY + 21, bodyW - 196, canvasFont(18, 800), colors.text);
           extraY += 48;
         }
         ageY += rowH + 12;
@@ -13868,11 +13897,13 @@ function wireEvents() {
   if (els.bonusPickers) els.bonusPickers.addEventListener("change", (event) => { enforceBonusDifference(event.target); enforceChannelsGaiaLushBonusLock(); updatePreview(); });
   els.minorPickers.addEventListener("change", (event) => { enforceMinorDifference(event.target); updatePreview(); });
   els.downloadZip.addEventListener("click", handleDownload);
-  els.loadPreset.addEventListener("click", () => {
+  const openPresetFilePicker = () => {
     if (!els.presetFile) return setMessage("Preset file input is unavailable.", true);
     els.presetFile.value = "";
     els.presetFile.click();
-  });
+  };
+  els.loadPreset.addEventListener("click", openPresetFilePicker);
+  if (els.loadPresetTop) els.loadPresetTop.addEventListener("click", openPresetFilePicker);
   if (els.presetFile) {
     els.presetFile.addEventListener("change", async () => {
       const file = els.presetFile.files && els.presetFile.files[0];
