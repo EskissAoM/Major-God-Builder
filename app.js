@@ -16,6 +16,58 @@ const PANTHEON_KEYS = {
   Aztec: "Z",
 };
 
+const BONUS_IDS = Object.freeze({
+  ZEUS_STARTING_FAVOR: "bonus_1",
+  ZEUS_COUNTER_CAV_INFANTRY_SPEED: "bonus_5",
+  HADES_MYTH_HP_BY_AGE: "bonus_7",
+  HADES_RANGED_TECH_DISCOUNT: "bonus_9",
+  POSEIDON_MILITIA: "bonus_11",
+  POSEIDON_SPEED_BY_AGE: "bonus_12",
+  POSEIDON_STABLE_MARKET_DISCOUNT: "bonus_13",
+  DEMETER_HERDABLES_TEMPLE_FAVOR: "bonus_16",
+  DEMETER_HERDABLES_SPAWN_ON_AGE_UP: "bonus_17",
+  DEMETER_HERDABLES_FATTEN: "bonus_19",
+  DEMETER_TRAIN_FASTER_BY_AGE: "bonus_20",
+  RA_FORTRESS_HP: "bonus_22",
+  SET_ANIMALS: "bonus_31",
+  SET_MILITARY_BUILDING_DISCOUNT: "bonus_33",
+  THOR_DWARVEN_ARMORY: "bonus_36",
+  THOR_DWARF_SPAWN: "bonus_37",
+  THOR_ARMORY_TECH_DISCOUNT: "bonus_38",
+  ODIN_GREAT_HALL_FAVOR: "bonus_40",
+  ODIN_RAVEN_SCOUTS: "bonus_42",
+  LOKI_SPAWN_MYTH_UNITS: "bonus_43",
+  LOKI_COUNTER_DAMAGE: "bonus_44",
+  LOKI_MILITARY_BUILD: "bonus_45",
+  FREYR_FORTRESS_DAMAGE: "bonus_49",
+  KRONOS_TIMESHIFT: "bonus_52",
+  KRONOS_TEMPORAL_SCAFFOLDING: "bonus_53",
+  KRONOS_EXTRA_MYTH_UNITS: "bonus_54",
+  ORANOS_SKY_PASSAGE: "bonus_56",
+  GAIA_LUSH: "bonus_59",
+  GAIA_HERO_CITIZENS: "bonus_60",
+  GAIA_ECON_GUILD: "bonus_62",
+  FUXI_NEZHA: "bonus_66",
+  NUWA_CREATORS_AUSPICE: "bonus_67",
+  NUWA_FAVORED_LAND_FARTHER: "bonus_69",
+  SHENNONG_GIFT_OF_BEASTS: "bonus_71",
+  SHENNONG_MYTH_REGEN_FAVORED_LAND: "bonus_72",
+  SHENNONG_FARM_ARCHAIC: "bonus_73",
+  SHENNONG_FARM_LINE_UPGRADES: "bonus_74",
+  TSUKUYOMI_RESEARCH_BUSHIDO_XP: "bonus_80",
+  TSUKUYOMI_FREE_KITSUNE: "bonus_82",
+  SUSANOO_BUSHIDO_MYTH_XP: "bonus_84",
+  SUSANOO_POWER_COST_FACTOR: "bonus_85",
+  HUITZ_CONSTRUCTION_REFUND: "bonus_87",
+  HUITZ_TONALLI_RESOURCES: "bonus_88",
+  HUITZ_SHORN_TONALLI: "bonus_89",
+  TEZCAT_OBSIDIAN_SHARD: "bonus_90",
+  TEZCAT_DEVOTE_FAVOR: "bonus_92",
+  TEZCAT_JAGUAR_RIDER: "bonus_93",
+  QUETZ_DROPSITE_DISCOUNT: "bonus_95",
+  QUETZ_EAGLE_RANGE_LOS: "bonus_97",
+});
+
 
 const UNIQUE_TECH_GROUPS = [
   { id: "OlympianParentage", techs: ["OlympianParentage"], pantheon: "All", label: "Olympian Parentage" },
@@ -29,9 +81,9 @@ const UNIQUE_TECH_GROUPS = [
   { id: "Hamask", techs: ["Hamask"], pantheon: "Norse", label: "Hamask" },
   { id: "EyesInTheForest", techs: ["EyesInTheForest"], pantheon: "All", label: "Eyes In The Forest" },
   { id: "FreyrsGift", techs: ["FreyrsGift"], pantheon: "All", label: "Freyr's Gift", extraArchaicEffect: "FreyrTechCostBonus" },
-  { id: "TemporalChaos", techs: ["TemporalChaos"], pantheon: "All", label: "Temporal Chaos", autoBonusLabel: "Can Time-Shift buildings. Most are free, except Towers and Fortress-type buildings costing half their price." },
+  { id: "TemporalChaos", techs: ["TemporalChaos"], pantheon: "All", label: "Temporal Chaos", autoBonusId: "bonus_52" },
   { id: "EmpyreanSpeed", techs: ["EmpyreanSpeed"], pantheon: "All", label: "Empyrean Speed" },
-  { id: "Channels", techs: ["Channels"], pantheon: "All", label: "Channels", autoBonusLabel: "Economic buildings grow Lush that heals friendly units and buildings." },
+  { id: "Channels", techs: ["Channels"], pantheon: "All", label: "Channels", autoBonusId: "bonus_59" },
   { id: "CelestialWeapons", techs: ["CelestialWeapons"], pantheon: "All", label: "Celestial Weapons" },
   { id: "TaiChi", techs: ["TaiChi"], pantheon: "All", label: "TaiChi" },
   { id: "MountainousMight", techs: ["MountainousMight"], pantheon: "Chinese", label: "Mountainous Might" },
@@ -1108,12 +1160,19 @@ function bonusByLabel(label) {
   return (window.AOM_BONUS_DATA || []).find((entry) => entry.label === label);
 }
 
+function autoBonusForUniqueTechGroup(group) {
+  if (!group) return null;
+  if (group.autoBonusId) return getBonusById(group.autoBonusId);
+  // Backward-compatible fallback for older local builds or manually edited data.
+  if (group.autoBonusLabel) return bonusByLabel(group.autoBonusLabel);
+  return null;
+}
+
 function selectedAutoBonusLocks() {
   return selectedUniqueTechGroups()
     .map(getUniqueTechGroup)
-    .filter((group) => group && group.autoBonusLabel)
-    .map((group) => ({ group, bonus: bonusByLabel(group.autoBonusLabel) }))
-    .filter((entry) => entry.bonus);
+    .map((group) => ({ group, bonus: autoBonusForUniqueTechGroup(group) }))
+    .filter((entry) => entry.group && entry.bonus);
 }
 
 function requiredAutoBonusIssues(configOrIds) {
@@ -1123,8 +1182,7 @@ function requiredAutoBonusIssues(configOrIds) {
   const bonusIds = new Set(Array.isArray(configOrIds) ? selectedBonusIds() : (configOrIds.bonuses || []));
   const issues = [];
   for (const group of groups) {
-    if (!group.autoBonusLabel) continue;
-    const bonus = bonusByLabel(group.autoBonusLabel);
+    const bonus = autoBonusForUniqueTechGroup(group);
     if (bonus && !bonusIds.has(bonus.id)) {
       issues.push({ group, bonus });
     }
@@ -1256,89 +1314,52 @@ function enforceBonusDifference(changedSelect) {
   }
 }
 
-const GAIA_ECON_GUILD_BONUS_LABEL = "Economic Guild and upgrades are 35% cheaper and available earlier.";
-const KRONOS_EXTRA_MYTH_UNITS_BONUS_LABEL = "Receives 2 free Temple myth units instead of 1 on age-up.";
-const KRONOS_TIMESHIFT_BONUS_LABEL = "Can Time-Shift buildings. Most are free, except Towers and Fortress-type buildings costing half their price.";
-const KRONOS_TEMPORAL_SCAFFOLDING_BONUS_LABEL = "Buildings construct 25% faster near Manors.";
+const GAIA_ECON_GUILD_BONUS_ID = BONUS_IDS.GAIA_ECON_GUILD;
+const KRONOS_EXTRA_MYTH_UNITS_BONUS_ID = BONUS_IDS.KRONOS_EXTRA_MYTH_UNITS;
+const KRONOS_TIMESHIFT_BONUS_ID = BONUS_IDS.KRONOS_TIMESHIFT;
+const KRONOS_TEMPORAL_SCAFFOLDING_BONUS_ID = BONUS_IDS.KRONOS_TEMPORAL_SCAFFOLDING;
 
-const ORANOS_SKY_PASSAGE_BONUS_LABEL = "Villagers/Infantry(Norse)/Priest(Egyptian) can build a new Sky Passage each age, enabling instant travel between them.";
-const LOKI_SPAWN_MYTH_UNITS_BONUS_LABEL = "Damaging enemies can spawn myth units.";
-const LOKI_MILITARY_BUILD_BONUS_LABEL = "Military-built buildings are constructed 10% faster";
-const LOKI_COUNTER_DAMAGE_BONUS_LABEL = "Human soldiers and heroes get 10% bonus counter damage.";
-const POSEIDON_SPEED_BY_AGE_BONUS_LABEL = "Cavalry, Caravans, and myth units gain +0.1 speed by age.";
-const POSEIDON_STABLE_MARKET_DISCOUNT_BONUS_LABEL = "Stables and Markets are 30% cheaper.";
-const POSEIDON_MILITIA_BONUS_LABEL = "Militia spawn from razed buildings.";
-const HUITZ_TONALLI_RESOURCES_BONUS_LABEL = "Collecting Tonalli grants 5% resources in addition to favor.";
-const HUITZ_CONSTRUCTION_REFUND_BONUS_LABEL = "Temples, Fortress-type building, Village Centers, and Town Centers refund 25% of their wood/gold cost on completion.";
-const ZEUS_STARTING_FAVOR_BONUS_LABEL = "Starts with 10 favor.";
-const ZEUS_COUNTER_CAV_INFANTRY_SPEED_BONUS_LABEL = "Hoplite and other counter-cavalry infantry move 15% faster.";
-const HUITZ_SHORN_TONALLI_BONUS_LABEL = "Shorn Ones have 10% more hit points and generate 100% more Tonalli in combat.";
-const QUETZ_DROPSITE_DISCOUNT_BONUS_LABEL = "Dropsite and their additions cost 33% less.";
-const QUETZ_EAGLE_RANGE_LOS_BONUS_LABEL = "Eagle Warriors gain +1 range and +1 line of sight in the Heroic and Mythic Ages.";
-const TEZCAT_DEVOTE_FAVOR_BONUS_LABEL = "Devoting Settlers gives +10% immediate favor by age.";
-const TEZCAT_JAGUAR_RIDER_BONUS_LABEL = "Jaguar Riders are available from the Heroic Age.";
-const TEZCAT_OBSIDIAN_SHARD_BONUS_LABEL = "Every 2 lost trainable myth units can create an Obsidian Shard that may summons a free myth unit.";
-const FUXI_NEZHA_BONUS_LABEL = "Gains access to Nezha in the Classical Age.";
-const NUWA_CREATORS_AUSPICE_BONUS_LABEL = "Creator’s Auspice improves as favor is earned, reducing standard Villager cost and increasing building hit points by 10%.";
-const NUWA_FAVORED_LAND_FARTHER_BONUS_LABEL = "Buildings spread Favored Land farther.";
-const SHENNONG_MYTH_REGEN_FAVORED_LAND_BONUS_LABEL = "Myth units regenerate +1.5 hit points on Favored Land by age.";
-const SHENNONG_GIFT_OF_BEASTS_BONUS_LABEL = "Gift of Beasts summons myth units from the next age as favor is earned.";
-const SHENNONG_FARM_LINE_UPGRADES_BONUS_LABEL = "Farm Line Upgrades are researched for free and instantly in their respective ages.";
-const SET_ANIMALS_BONUS_LABEL = "Starts with a Baboon of Set and gets Animals of Set on age-up.Pharaohs can summon Animals of Set and Priests can convert wild animals.";
-const DEMETER_HERDABLES_TEMPLE_FAVOR_BONUS_LABEL = "Herdables near Temples improve favor-gathering by 3% (max 30%).";
-const DEMETER_HERDABLES_FATTEN_BONUS_LABEL = "Herdables fatten 40% faster and hold 20% more food.";
-const DEMETER_HERDABLES_SPAWN_ON_AGE_UP_BONUS_LABEL = "Town Centers and Village Centers spawn herdables on age-up.";
-const DEMETER_TRAIN_FASTER_BY_AGE_BONUS_LABEL = "Human soldiers and myth units train 10% faster by age.";
-const HADES_MYTH_HP_BY_AGE_BONUS_LABEL = "Myth units gain 4% bonus hit points by age.";
-const HADES_RANGED_TECH_DISCOUNT_BONUS_LABEL = "Ranged-soldier technologies are 33% cheaper.";
-const FREYR_FORTRESS_DAMAGE_BONUS_LABEL = "Fortress-type building units deal +10% damage.";
-const RA_FORTRESS_HP_BONUS_LABEL = "Fortress-type building units get +15% hit points.";
-const SET_MILITARY_BUILDING_DISCOUNT_BONUS_LABEL = "Military production buildings including Fortress-type cost 25% less resources excluding favor.";
+const ORANOS_SKY_PASSAGE_BONUS_ID = BONUS_IDS.ORANOS_SKY_PASSAGE;
+const LOKI_SPAWN_MYTH_UNITS_BONUS_ID = BONUS_IDS.LOKI_SPAWN_MYTH_UNITS;
+const LOKI_MILITARY_BUILD_BONUS_ID = BONUS_IDS.LOKI_MILITARY_BUILD;
+const LOKI_COUNTER_DAMAGE_BONUS_ID = BONUS_IDS.LOKI_COUNTER_DAMAGE;
+const POSEIDON_SPEED_BY_AGE_BONUS_ID = BONUS_IDS.POSEIDON_SPEED_BY_AGE;
+const POSEIDON_STABLE_MARKET_DISCOUNT_BONUS_ID = BONUS_IDS.POSEIDON_STABLE_MARKET_DISCOUNT;
+const POSEIDON_MILITIA_BONUS_ID = BONUS_IDS.POSEIDON_MILITIA;
+const HUITZ_TONALLI_RESOURCES_BONUS_ID = BONUS_IDS.HUITZ_TONALLI_RESOURCES;
+const HUITZ_CONSTRUCTION_REFUND_BONUS_ID = BONUS_IDS.HUITZ_CONSTRUCTION_REFUND;
+const ZEUS_STARTING_FAVOR_BONUS_ID = BONUS_IDS.ZEUS_STARTING_FAVOR;
+const ZEUS_COUNTER_CAV_INFANTRY_SPEED_BONUS_ID = BONUS_IDS.ZEUS_COUNTER_CAV_INFANTRY_SPEED;
+const HUITZ_SHORN_TONALLI_BONUS_ID = BONUS_IDS.HUITZ_SHORN_TONALLI;
+const QUETZ_DROPSITE_DISCOUNT_BONUS_ID = BONUS_IDS.QUETZ_DROPSITE_DISCOUNT;
+const QUETZ_EAGLE_RANGE_LOS_BONUS_ID = BONUS_IDS.QUETZ_EAGLE_RANGE_LOS;
+const TEZCAT_DEVOTE_FAVOR_BONUS_ID = BONUS_IDS.TEZCAT_DEVOTE_FAVOR;
+const TEZCAT_JAGUAR_RIDER_BONUS_ID = BONUS_IDS.TEZCAT_JAGUAR_RIDER;
+const TEZCAT_OBSIDIAN_SHARD_BONUS_ID = BONUS_IDS.TEZCAT_OBSIDIAN_SHARD;
+const FUXI_NEZHA_BONUS_ID = BONUS_IDS.FUXI_NEZHA;
+const NUWA_CREATORS_AUSPICE_BONUS_ID = BONUS_IDS.NUWA_CREATORS_AUSPICE;
+const NUWA_FAVORED_LAND_FARTHER_BONUS_ID = BONUS_IDS.NUWA_FAVORED_LAND_FARTHER;
+const SHENNONG_MYTH_REGEN_FAVORED_LAND_BONUS_ID = BONUS_IDS.SHENNONG_MYTH_REGEN_FAVORED_LAND;
+const SHENNONG_GIFT_OF_BEASTS_BONUS_ID = BONUS_IDS.SHENNONG_GIFT_OF_BEASTS;
+const SHENNONG_FARM_LINE_UPGRADES_BONUS_ID = BONUS_IDS.SHENNONG_FARM_LINE_UPGRADES;
+const SET_ANIMALS_BONUS_ID = BONUS_IDS.SET_ANIMALS;
+const DEMETER_HERDABLES_TEMPLE_FAVOR_BONUS_ID = BONUS_IDS.DEMETER_HERDABLES_TEMPLE_FAVOR;
+const DEMETER_HERDABLES_FATTEN_BONUS_ID = BONUS_IDS.DEMETER_HERDABLES_FATTEN;
+const DEMETER_HERDABLES_SPAWN_ON_AGE_UP_BONUS_ID = BONUS_IDS.DEMETER_HERDABLES_SPAWN_ON_AGE_UP;
+const DEMETER_TRAIN_FASTER_BY_AGE_BONUS_ID = BONUS_IDS.DEMETER_TRAIN_FASTER_BY_AGE;
+const HADES_MYTH_HP_BY_AGE_BONUS_ID = BONUS_IDS.HADES_MYTH_HP_BY_AGE;
+const HADES_RANGED_TECH_DISCOUNT_BONUS_ID = BONUS_IDS.HADES_RANGED_TECH_DISCOUNT;
+const FREYR_FORTRESS_DAMAGE_BONUS_ID = BONUS_IDS.FREYR_FORTRESS_DAMAGE;
+const RA_FORTRESS_HP_BONUS_ID = BONUS_IDS.RA_FORTRESS_HP;
+const SET_MILITARY_BUILDING_DISCOUNT_BONUS_ID = BONUS_IDS.SET_MILITARY_BUILDING_DISCOUNT;
 
 function dynamicBonusLabel(entry, pantheonOrConfig) {
   if (!entry) return "";
   const pantheon = typeof pantheonOrConfig === "string"
     ? pantheonOrConfig
     : (pantheonOrConfig?.baseCulture || selectedPantheon());
-  if (entry.id === "bonus_45" || entry.label === LOKI_MILITARY_BUILD_BONUS_LABEL) {
-    return pantheon === "Norse"
-      ? "Infantry units construct buildings 10% faster."
-      : "Villagers construct buildings 10% faster.";
-  }
-  if (entry.id === "bonus_56" || entry.label === ORANOS_SKY_PASSAGE_BONUS_LABEL) {
-    if (pantheon === "Norse") return "Infantry units can build a new Sky Passage each age, enabling instant travel between them.";
-    if (pantheon === "Egyptian") return "Priests can build a new Sky Passage each age, enabling instant travel between them.";
-    return "Villagers can build a new Sky Passage each age, enabling instant travel between them.";
-  }
-  if (entry.id === "bonus_50") {
-    return pantheon === "Norse"
-      ? "Building repair is free. Gatherers and Dwarves can repair."
-      : "Building repair is free.";
-  }
-  if (entry.id === "bonus_53") {
-    return pantheon === "Atlantean"
-      ? "Buildings construct 25% faster near Manors."
-      : "Buildings construct 12.5% faster near Houses.";
-  }
-  if (entry.id === "bonus_62") {
-    return pantheon === "Atlantean"
-      ? "Economic Guild and upgrades are 35% cheaper and available earlier."
-      : "Standard economic upgrades are 35 % cheaper and available earlier.";
-  }
-  if (entry.id === "bonus_66" || entry.label === FUXI_NEZHA_BONUS_LABEL) {
-    return "Gains access to Nezha in the Classical Age.";
-  }
-  if (entry.id === "bonus_73") {
-    return pantheon === "Chinese"
-      ? "Farms are available in the Archaic Age and auto-build on Favored Land."
-      : "Farms are available in the Archaic Age.";
-  }
-  if (entry.id === "bonus_91") {
-    return pantheon === "Aztec"
-      ? "Sentry Towers, Spike Traps, and Smoke Traps build 25% faster and deal 25% more damage."
-      : "Sentry Towers build 25% faster and deal 25% more damage.";
-  }
-  return entry.label;
+  const displayLabels = entry.displayLabels || entry.labelsByPantheon || {};
+  return displayLabels[pantheon] || displayLabels.default || entry.label || "";
 }
 
 const SET_ANIMALS_ARCHAIC_EFFECTS = `<effect type="Data" amount="1.00" subtype="Enable" relativity="Absolute">
@@ -1660,7 +1681,7 @@ ${rates}
 }
 
 function tezcatObsidianShardProtoXml(config) {
-  if (!selectedHasBonusLabel(config, TEZCAT_OBSIDIAN_SHARD_BONUS_LABEL)) return "";
+  if (!selectedHasBonusId(config, TEZCAT_OBSIDIAN_SHARD_BONUS_ID)) return "";
   const units = OBSIDIAN_SHARD_MYTH_UNITS_BY_PANTHEON[config.baseCulture] || OBSIDIAN_SHARD_MYTH_UNITS_BY_PANTHEON.Aztec;
   return `	<unit name="${escapeXml(obsidianShardProtoName(config))}">
 		<displaynameid>STR_BLD_OBSIDIAN_SHARD_NAME</displaynameid>
@@ -1738,6 +1759,31 @@ function fuxiNezhaTempleCommandEffects(config) {
   return ["NezhaChild", "NezhaYouth", "Nezha"].map((proto) => `<effect type="Data" amount="1.00" subtype="CommandAdd" proto="${proto}" row="${row}" column="5" relativity="Assign">
 	<target type="ProtoUnit">Temple</target>
 </effect>`).join("\n");
+}
+
+
+const FUXI_NEZHA_AREA_HEAL_PROTOACTION = `<protoaction>
+			<name>AreaHeal</name>
+			<type>AutoRangedModify</type>
+			<active>0</active>
+			<modifyamount>0.75</modifyamount>
+			<maxrange>5</maxrange>
+			<slowhealmultiplier>0.50</slowhealmultiplier>
+			<modifyabstracttype>LogicalTypeHealed</modifyabstracttype>
+			<persistent>1</persistent>
+			<modifytype>HealRate</modifytype>
+			<modifyflyingunits>1</modifyflyingunits>
+			<includeally>1</includeally>
+			<modelattachment>greek\\godpowers\\restoration\\healing_vfx.xml</modelattachment>
+			<modelattachmentbone>bonethatdoesntexist</modelattachmentbone>
+			<modifyupdateinterval>1750</modifyupdateinterval>
+		</protoaction>`;
+
+function fuxiNezhaProtoModsXml(config) {
+  if (!selectedHasBonusId(config, FUXI_NEZHA_BONUS_ID)) return "";
+  return ["NezhaChild", "NezhaYouth", "Nezha"].map((proto) => `	<unit name="${proto}">
+		${FUXI_NEZHA_AREA_HEAL_PROTOACTION}
+	</unit>`).join("\n");
 }
 
 const SHENNONG_MYTH_REGEN_FAVORED_LAND_AGE_EFFECTS = `<effect type="Data" subtype="BuildingChainEffect" unittype="LogicalTypeMythUnitNotTitan" effecttype="InRange" modifytype="HealRate" amount="1.5" relativity="Absolute">
@@ -2003,11 +2049,11 @@ function kronosTemporalScaffoldingEffects(config) {
 }
 
 function hasKronosTemporalScaffoldingBonus(config) {
-  return selectedHasBonusLabel(config, KRONOS_TEMPORAL_SCAFFOLDING_BONUS_LABEL);
+  return selectedHasBonusId(config, KRONOS_TEMPORAL_SCAFFOLDING_BONUS_ID);
 }
 
 function oranosEgyptianPriestSkyPassageProtoXml(config) {
-  if (!selectedHasBonusLabel(config, ORANOS_SKY_PASSAGE_BONUS_LABEL) || config.baseCulture !== "Egyptian") return "";
+  if (!selectedHasBonusId(config, ORANOS_SKY_PASSAGE_BONUS_ID) || config.baseCulture !== "Egyptian") return "";
   return `	<unit name="Priest">
 		<protoaction>
 			<name>Build</name>
@@ -2785,7 +2831,7 @@ function nuwaCreatorsAuspiceCreatePowerEffect(config) {
 }
 
 function nuwaCreatorsAuspicePowerXml(config) {
-  if (!selectedHasBonusLabel(config, NUWA_CREATORS_AUSPICE_BONUS_LABEL) && !selectedBonusEntries(config).some((entry) => entry.id === "bonus_67")) return "";
+  if (!selectedHasBonusId(config, BONUS_IDS.NUWA_CREATORS_AUSPICE)) return "";
   const powerName = escapeXml(nuwaAuspicePowerName(config));
   const villager = escapeXml(nuwaAuspiceVillager(config));
   const notificationId = escapeXml(nuwaAuspiceNotificationStringId(config));
@@ -2859,48 +2905,52 @@ function generatePowersMods(config) {
 }
 
 function selectedHasBonusLabel(config, label) {
-  return selectedBonusEntries(config).some((entry) => entry.label === label);
+  // Legacy helper only. New code should use selectedHasBonusId so bonus text can
+  // be edited freely in bonusData.js without breaking export behavior.
+  const currentEntry = bonusByLabel(label);
+  if (!currentEntry) return false;
+  return selectedHasBonusId(config, currentEntry.id);
 }
 
 function bonusTechEffects(config) {
   return selectedBonusEntries(config)
     .map((entry) => {
-      if (entry.label === GAIA_ECON_GUILD_BONUS_LABEL) return gaiaEconGuildArchaicEffects(config);
-      if (entry.label === ZEUS_COUNTER_CAV_INFANTRY_SPEED_BONUS_LABEL) return zeusCounterCavalryInfantrySpeedEffects(config);
-      if (entry.label === DEMETER_HERDABLES_TEMPLE_FAVOR_BONUS_LABEL) return DEMETER_HERDABLES_TEMPLE_FAVOR_ARCHAIC_EFFECTS;
-      if (entry.label === DEMETER_HERDABLES_FATTEN_BONUS_LABEL) return DEMETER_HERDABLES_FATTEN_ARCHAIC_EFFECTS;
-      if (entry.label === DEMETER_HERDABLES_SPAWN_ON_AGE_UP_BONUS_LABEL) return "";
-      if (entry.label === DEMETER_TRAIN_FASTER_BY_AGE_BONUS_LABEL) return DEMETER_TRAIN_FASTER_BY_AGE_EFFECTS;
-      if (entry.label === HADES_MYTH_HP_BY_AGE_BONUS_LABEL) return HADES_MYTH_HP_BY_AGE_EFFECTS;
-      if (entry.label === HADES_RANGED_TECH_DISCOUNT_BONUS_LABEL) return hadesRangedTechDiscountEffects(config);
-      if (entry.label === LOKI_COUNTER_DAMAGE_BONUS_LABEL || entry.id === "bonus_44") return lokiCounterDamageEffects(config);
-      if (entry.label === LOKI_MILITARY_BUILD_BONUS_LABEL || entry.id === "bonus_45") return lokiMilitaryBuildEffects(config);
-      if (entry.label === KRONOS_TEMPORAL_SCAFFOLDING_BONUS_LABEL || entry.id === "bonus_53") return kronosTemporalScaffoldingEffects(config);
-      if (entry.label === HUITZ_CONSTRUCTION_REFUND_BONUS_LABEL || entry.id === "bonus_87") return huitzConstructionRefundEffects(config);
-      if (entry.label === QUETZ_DROPSITE_DISCOUNT_BONUS_LABEL || entry.id === "bonus_95") return quetzDropsiteDiscountEffects(config);
-      if (entry.label === SET_MILITARY_BUILDING_DISCOUNT_BONUS_LABEL || entry.id === "bonus_33") return setMilitaryBuildingDiscountEffects(config);
-      if (entry.label === FREYR_FORTRESS_DAMAGE_BONUS_LABEL) return freyrFortressDamageEffects(config);
-      if (entry.label === RA_FORTRESS_HP_BONUS_LABEL) return raFortressHitpointsEffects(config);
-      if (entry.label === POSEIDON_SPEED_BY_AGE_BONUS_LABEL) return POSEIDON_SPEED_BY_AGE_EFFECTS;
-      if (entry.label === POSEIDON_STABLE_MARKET_DISCOUNT_BONUS_LABEL) return poseidonStableMarketDiscountEffects(config);
-      if (entry.label === ORANOS_SKY_PASSAGE_BONUS_LABEL) return oranosSkyPassageArchaicEffects(config);
-      if (entry.label === TEZCAT_DEVOTE_FAVOR_BONUS_LABEL) return TEZCAT_DEVOTE_FAVOR_AGE_EFFECTS;
-      if (entry.label === KRONOS_EXTRA_MYTH_UNITS_BONUS_LABEL) return "";
-      if (entry.label === QUETZ_EAGLE_RANGE_LOS_BONUS_LABEL) return "";
-      if (entry.label === TEZCAT_JAGUAR_RIDER_BONUS_LABEL) return "";
-      if (entry.label === TEZCAT_OBSIDIAN_SHARD_BONUS_LABEL) return "";
-      if (entry.label === FUXI_NEZHA_BONUS_LABEL) return fuxiNezhaTempleCommandEffects(config);
-      if (entry.label === NUWA_CREATORS_AUSPICE_BONUS_LABEL || entry.id === "bonus_67") return nuwaCreatorsAuspiceCreatePowerEffect(config);
-      if (entry.label === SHENNONG_GIFT_OF_BEASTS_BONUS_LABEL) return "";
-      if (entry.label === SHENNONG_FARM_LINE_UPGRADES_BONUS_LABEL) return "";
-      if (entry.label === SET_ANIMALS_BONUS_LABEL) return SET_ANIMALS_ARCHAIC_EFFECTS;
-      if (entry.label === SHENNONG_MYTH_REGEN_FAVORED_LAND_BONUS_LABEL) return SHENNONG_MYTH_REGEN_FAVORED_LAND_AGE_EFFECTS;
-      if (entry.label === SUSANOO_BUSHIDO_MYTH_XP_BONUS_LABEL) return SUSANOO_BUSHIDO_MYTH_XP_ARCHAIC_EFFECTS;
-      if (entry.label === TSUKUYOMI_FREE_KITSUNE_BONUS_LABEL) return TSUKUYOMI_FREE_KITSUNE_EFFECT;
-      if (entry.label === THOR_ARMORY_TECH_DISCOUNT_BONUS_LABEL || entry.id === "bonus_38") return thorArmoryTechDiscountEffects(config);
-      if (entry.label === THOR_DWARVEN_ARMORY_BONUS_LABEL) return thorDwarvenArmoryArchaicEffects(config);
-      if (entry.label === THOR_DWARF_SPAWN_BONUS_LABEL) return thorDwarfSpawnArchaicEffects(config);
-      if (entry.id === "bonus_50" || entry.label === "Building repair is free. Gatherers and Dwarves can repair.") {
+      if (entry.id === BONUS_IDS.GAIA_ECON_GUILD) return gaiaEconGuildArchaicEffects(config);
+      if (entry.id === BONUS_IDS.ZEUS_COUNTER_CAV_INFANTRY_SPEED) return zeusCounterCavalryInfantrySpeedEffects(config);
+      if (entry.id === BONUS_IDS.DEMETER_HERDABLES_TEMPLE_FAVOR) return DEMETER_HERDABLES_TEMPLE_FAVOR_ARCHAIC_EFFECTS;
+      if (entry.id === BONUS_IDS.DEMETER_HERDABLES_FATTEN) return DEMETER_HERDABLES_FATTEN_ARCHAIC_EFFECTS;
+      if (entry.id === BONUS_IDS.DEMETER_HERDABLES_SPAWN_ON_AGE_UP) return "";
+      if (entry.id === BONUS_IDS.DEMETER_TRAIN_FASTER_BY_AGE) return DEMETER_TRAIN_FASTER_BY_AGE_EFFECTS;
+      if (entry.id === BONUS_IDS.HADES_MYTH_HP_BY_AGE) return HADES_MYTH_HP_BY_AGE_EFFECTS;
+      if (entry.id === BONUS_IDS.HADES_RANGED_TECH_DISCOUNT) return hadesRangedTechDiscountEffects(config);
+      if (entry.id === BONUS_IDS.LOKI_COUNTER_DAMAGE || entry.id === "bonus_44") return lokiCounterDamageEffects(config);
+      if (entry.id === BONUS_IDS.LOKI_MILITARY_BUILD || entry.id === "bonus_45") return lokiMilitaryBuildEffects(config);
+      if (entry.id === BONUS_IDS.KRONOS_TEMPORAL_SCAFFOLDING || entry.id === "bonus_53") return kronosTemporalScaffoldingEffects(config);
+      if (entry.id === BONUS_IDS.HUITZ_CONSTRUCTION_REFUND || entry.id === "bonus_87") return huitzConstructionRefundEffects(config);
+      if (entry.id === BONUS_IDS.QUETZ_DROPSITE_DISCOUNT || entry.id === "bonus_95") return quetzDropsiteDiscountEffects(config);
+      if (entry.id === BONUS_IDS.SET_MILITARY_BUILDING_DISCOUNT || entry.id === "bonus_33") return setMilitaryBuildingDiscountEffects(config);
+      if (entry.id === BONUS_IDS.FREYR_FORTRESS_DAMAGE) return freyrFortressDamageEffects(config);
+      if (entry.id === BONUS_IDS.RA_FORTRESS_HP) return raFortressHitpointsEffects(config);
+      if (entry.id === BONUS_IDS.POSEIDON_SPEED_BY_AGE) return POSEIDON_SPEED_BY_AGE_EFFECTS;
+      if (entry.id === BONUS_IDS.POSEIDON_STABLE_MARKET_DISCOUNT) return poseidonStableMarketDiscountEffects(config);
+      if (entry.id === BONUS_IDS.ORANOS_SKY_PASSAGE) return oranosSkyPassageArchaicEffects(config);
+      if (entry.id === BONUS_IDS.TEZCAT_DEVOTE_FAVOR) return TEZCAT_DEVOTE_FAVOR_AGE_EFFECTS;
+      if (entry.id === BONUS_IDS.KRONOS_EXTRA_MYTH_UNITS) return "";
+      if (entry.id === BONUS_IDS.QUETZ_EAGLE_RANGE_LOS) return "";
+      if (entry.id === BONUS_IDS.TEZCAT_JAGUAR_RIDER) return "";
+      if (entry.id === BONUS_IDS.TEZCAT_OBSIDIAN_SHARD) return "";
+      if (entry.id === BONUS_IDS.FUXI_NEZHA) return fuxiNezhaTempleCommandEffects(config);
+      if (entry.id === BONUS_IDS.NUWA_CREATORS_AUSPICE || entry.id === "bonus_67") return nuwaCreatorsAuspiceCreatePowerEffect(config);
+      if (entry.id === BONUS_IDS.SHENNONG_GIFT_OF_BEASTS) return "";
+      if (entry.id === BONUS_IDS.SHENNONG_FARM_LINE_UPGRADES) return "";
+      if (entry.id === BONUS_IDS.SET_ANIMALS) return SET_ANIMALS_ARCHAIC_EFFECTS;
+      if (entry.id === BONUS_IDS.SHENNONG_MYTH_REGEN_FAVORED_LAND) return SHENNONG_MYTH_REGEN_FAVORED_LAND_AGE_EFFECTS;
+      if (entry.id === BONUS_IDS.SUSANOO_BUSHIDO_MYTH_XP) return SUSANOO_BUSHIDO_MYTH_XP_ARCHAIC_EFFECTS;
+      if (entry.id === BONUS_IDS.TSUKUYOMI_FREE_KITSUNE) return TSUKUYOMI_FREE_KITSUNE_EFFECT;
+      if (entry.id === BONUS_IDS.THOR_ARMORY_TECH_DISCOUNT || entry.id === "bonus_38") return thorArmoryTechDiscountEffects(config);
+      if (entry.id === BONUS_IDS.THOR_DWARVEN_ARMORY) return thorDwarvenArmoryArchaicEffects(config);
+      if (entry.id === BONUS_IDS.THOR_DWARF_SPAWN) return thorDwarfSpawnArchaicEffects(config);
+      if (entry.id === "bonus_50") {
         return config.baseCulture === "Norse" ? sanitizeBonusTechEffects(entry.techEffects || "") : "";
       }
       return sanitizeBonusTechEffects(entry.techEffects || "");
@@ -2911,67 +2961,67 @@ function bonusTechEffects(config) {
 
 function bonusClassicalTechEffects(config) {
   const effects = [];
-  if (selectedHasBonusLabel(config, GAIA_ECON_GUILD_BONUS_LABEL)) effects.push(gaiaEconGuildClassicalEffects(config));
-  if (selectedHasBonusLabel(config, ORANOS_SKY_PASSAGE_BONUS_LABEL)) effects.push(ORANOS_SKY_PASSAGE_AGE_EFFECTS);
-  if (selectedHasBonusLabel(config, POSEIDON_SPEED_BY_AGE_BONUS_LABEL)) effects.push(POSEIDON_SPEED_BY_AGE_EFFECTS);
-  if (selectedHasBonusLabel(config, TEZCAT_DEVOTE_FAVOR_BONUS_LABEL)) effects.push(TEZCAT_DEVOTE_FAVOR_AGE_EFFECTS);
-  if (selectedHasBonusLabel(config, TEZCAT_OBSIDIAN_SHARD_BONUS_LABEL)) effects.push(tezcatObsidianShardClassicalEffects(config));
-  if (selectedHasBonusLabel(config, FUXI_NEZHA_BONUS_LABEL)) effects.push(FUXI_NEZHA_CLASSICAL_EFFECTS);
-  if (selectedHasBonusLabel(config, SHENNONG_GIFT_OF_BEASTS_BONUS_LABEL)) effects.push(SHENNONG_GIFT_OF_BEASTS_CLASSICAL_EFFECTS);
-  if (selectedHasBonusLabel(config, SHENNONG_FARM_LINE_UPGRADES_BONUS_LABEL)) effects.push(SHENNONG_FARM_LINE_CLASSICAL_EFFECTS);
-  if (selectedHasBonusLabel(config, SHENNONG_MYTH_REGEN_FAVORED_LAND_BONUS_LABEL)) effects.push(SHENNONG_MYTH_REGEN_FAVORED_LAND_AGE_EFFECTS);
-  if (selectedHasBonusLabel(config, SET_ANIMALS_BONUS_LABEL)) effects.push(SET_ANIMALS_CLASSICAL_EFFECTS);
-  if (selectedHasBonusLabel(config, DEMETER_HERDABLES_SPAWN_ON_AGE_UP_BONUS_LABEL)) effects.push(DEMETER_HERDABLES_SPAWN_CLASSICAL_EFFECTS);
-  if (selectedHasBonusLabel(config, DEMETER_TRAIN_FASTER_BY_AGE_BONUS_LABEL)) effects.push(DEMETER_TRAIN_FASTER_BY_AGE_EFFECTS);
-  if (selectedHasBonusLabel(config, HADES_MYTH_HP_BY_AGE_BONUS_LABEL)) effects.push(HADES_MYTH_HP_BY_AGE_EFFECTS);
-  if (selectedHasBonusLabel(config, TSUKUYOMI_FREE_KITSUNE_BONUS_LABEL)) effects.push(TSUKUYOMI_FREE_KITSUNE_EFFECT);
-  if (selectedHasBonusLabel(config, ODIN_RAVEN_SCOUTS_BONUS_LABEL)) effects.push(ODIN_RAVEN_LOS_AGE_EFFECT);
-  if (selectedHasBonusLabel(config, THOR_DWARVEN_ARMORY_BONUS_LABEL)) effects.push(THOR_DWARVEN_ARMORY_CLASSICAL_RESEARCH_RATE_EFFECT);
+  if (selectedHasBonusId(config, GAIA_ECON_GUILD_BONUS_ID)) effects.push(gaiaEconGuildClassicalEffects(config));
+  if (selectedHasBonusId(config, ORANOS_SKY_PASSAGE_BONUS_ID)) effects.push(ORANOS_SKY_PASSAGE_AGE_EFFECTS);
+  if (selectedHasBonusId(config, POSEIDON_SPEED_BY_AGE_BONUS_ID)) effects.push(POSEIDON_SPEED_BY_AGE_EFFECTS);
+  if (selectedHasBonusId(config, TEZCAT_DEVOTE_FAVOR_BONUS_ID)) effects.push(TEZCAT_DEVOTE_FAVOR_AGE_EFFECTS);
+  if (selectedHasBonusId(config, TEZCAT_OBSIDIAN_SHARD_BONUS_ID)) effects.push(tezcatObsidianShardClassicalEffects(config));
+  if (selectedHasBonusId(config, FUXI_NEZHA_BONUS_ID)) effects.push(FUXI_NEZHA_CLASSICAL_EFFECTS);
+  if (selectedHasBonusId(config, SHENNONG_GIFT_OF_BEASTS_BONUS_ID)) effects.push(SHENNONG_GIFT_OF_BEASTS_CLASSICAL_EFFECTS);
+  if (selectedHasBonusId(config, SHENNONG_FARM_LINE_UPGRADES_BONUS_ID)) effects.push(SHENNONG_FARM_LINE_CLASSICAL_EFFECTS);
+  if (selectedHasBonusId(config, SHENNONG_MYTH_REGEN_FAVORED_LAND_BONUS_ID)) effects.push(SHENNONG_MYTH_REGEN_FAVORED_LAND_AGE_EFFECTS);
+  if (selectedHasBonusId(config, SET_ANIMALS_BONUS_ID)) effects.push(SET_ANIMALS_CLASSICAL_EFFECTS);
+  if (selectedHasBonusId(config, DEMETER_HERDABLES_SPAWN_ON_AGE_UP_BONUS_ID)) effects.push(DEMETER_HERDABLES_SPAWN_CLASSICAL_EFFECTS);
+  if (selectedHasBonusId(config, DEMETER_TRAIN_FASTER_BY_AGE_BONUS_ID)) effects.push(DEMETER_TRAIN_FASTER_BY_AGE_EFFECTS);
+  if (selectedHasBonusId(config, HADES_MYTH_HP_BY_AGE_BONUS_ID)) effects.push(HADES_MYTH_HP_BY_AGE_EFFECTS);
+  if (selectedHasBonusId(config, TSUKUYOMI_FREE_KITSUNE_BONUS_ID)) effects.push(TSUKUYOMI_FREE_KITSUNE_EFFECT);
+  if (selectedHasBonusId(config, ODIN_RAVEN_SCOUTS_BONUS_ID)) effects.push(ODIN_RAVEN_LOS_AGE_EFFECT);
+  if (selectedHasBonusId(config, THOR_DWARVEN_ARMORY_BONUS_ID)) effects.push(THOR_DWARVEN_ARMORY_CLASSICAL_RESEARCH_RATE_EFFECT);
   return effects.filter(Boolean).join("\n");
 }
 function bonusHeroicTechEffects(config) {
   const effects = [];
-  if (selectedHasBonusLabel(config, GAIA_ECON_GUILD_BONUS_LABEL)) effects.push(gaiaEconGuildHeroicEffects(config));
-  if (selectedHasBonusLabel(config, ORANOS_SKY_PASSAGE_BONUS_LABEL)) effects.push(ORANOS_SKY_PASSAGE_AGE_EFFECTS);
-  if (selectedHasBonusLabel(config, POSEIDON_SPEED_BY_AGE_BONUS_LABEL)) effects.push(POSEIDON_SPEED_BY_AGE_EFFECTS);
-  if (selectedHasBonusLabel(config, QUETZ_EAGLE_RANGE_LOS_BONUS_LABEL)) effects.push(QUETZ_EAGLE_RANGE_LOS_AGE_EFFECTS);
-  if (selectedHasBonusLabel(config, TEZCAT_DEVOTE_FAVOR_BONUS_LABEL)) effects.push(TEZCAT_DEVOTE_FAVOR_AGE_EFFECTS);
-  if (selectedHasBonusLabel(config, TEZCAT_JAGUAR_RIDER_BONUS_LABEL)) effects.push(TEZCAT_JAGUAR_RIDER_HEROIC_EFFECTS);
-  if (selectedHasBonusLabel(config, TEZCAT_OBSIDIAN_SHARD_BONUS_LABEL)) effects.push(tezcatObsidianShardHeroicEffects(config));
-  if (selectedHasBonusLabel(config, FUXI_NEZHA_BONUS_LABEL)) effects.push(FUXI_NEZHA_HEROIC_EFFECTS);
-  if (selectedHasBonusLabel(config, SHENNONG_GIFT_OF_BEASTS_BONUS_LABEL)) effects.push(SHENNONG_GIFT_OF_BEASTS_HEROIC_EFFECTS);
-  if (selectedHasBonusLabel(config, SHENNONG_FARM_LINE_UPGRADES_BONUS_LABEL)) effects.push(shennongFarmLineHeroicEffects(config));
-  if (selectedHasBonusLabel(config, SHENNONG_MYTH_REGEN_FAVORED_LAND_BONUS_LABEL)) effects.push(SHENNONG_MYTH_REGEN_FAVORED_LAND_AGE_EFFECTS);
-  if (selectedHasBonusLabel(config, SET_ANIMALS_BONUS_LABEL)) effects.push(SET_ANIMALS_HEROIC_EFFECTS);
-  if (selectedHasBonusLabel(config, DEMETER_HERDABLES_SPAWN_ON_AGE_UP_BONUS_LABEL)) effects.push(DEMETER_HERDABLES_SPAWN_HEROIC_EFFECTS);
-  if (selectedHasBonusLabel(config, DEMETER_TRAIN_FASTER_BY_AGE_BONUS_LABEL)) effects.push(DEMETER_TRAIN_FASTER_BY_AGE_EFFECTS);
-  if (selectedHasBonusLabel(config, HADES_MYTH_HP_BY_AGE_BONUS_LABEL)) effects.push(HADES_MYTH_HP_BY_AGE_EFFECTS);
-  if (selectedHasBonusLabel(config, TSUKUYOMI_FREE_KITSUNE_BONUS_LABEL)) effects.push(TSUKUYOMI_FREE_KITSUNE_EFFECT);
-  if (selectedHasBonusLabel(config, ODIN_RAVEN_SCOUTS_BONUS_LABEL)) effects.push(ODIN_RAVEN_LOS_AGE_EFFECT);
-  if (selectedHasBonusLabel(config, THOR_DWARVEN_ARMORY_BONUS_LABEL)) effects.push(THOR_DWARVEN_ARMORY_LATER_RESEARCH_RATE_EFFECT);
+  if (selectedHasBonusId(config, GAIA_ECON_GUILD_BONUS_ID)) effects.push(gaiaEconGuildHeroicEffects(config));
+  if (selectedHasBonusId(config, ORANOS_SKY_PASSAGE_BONUS_ID)) effects.push(ORANOS_SKY_PASSAGE_AGE_EFFECTS);
+  if (selectedHasBonusId(config, POSEIDON_SPEED_BY_AGE_BONUS_ID)) effects.push(POSEIDON_SPEED_BY_AGE_EFFECTS);
+  if (selectedHasBonusId(config, QUETZ_EAGLE_RANGE_LOS_BONUS_ID)) effects.push(QUETZ_EAGLE_RANGE_LOS_AGE_EFFECTS);
+  if (selectedHasBonusId(config, TEZCAT_DEVOTE_FAVOR_BONUS_ID)) effects.push(TEZCAT_DEVOTE_FAVOR_AGE_EFFECTS);
+  if (selectedHasBonusId(config, TEZCAT_JAGUAR_RIDER_BONUS_ID)) effects.push(TEZCAT_JAGUAR_RIDER_HEROIC_EFFECTS);
+  if (selectedHasBonusId(config, TEZCAT_OBSIDIAN_SHARD_BONUS_ID)) effects.push(tezcatObsidianShardHeroicEffects(config));
+  if (selectedHasBonusId(config, FUXI_NEZHA_BONUS_ID)) effects.push(FUXI_NEZHA_HEROIC_EFFECTS);
+  if (selectedHasBonusId(config, SHENNONG_GIFT_OF_BEASTS_BONUS_ID)) effects.push(SHENNONG_GIFT_OF_BEASTS_HEROIC_EFFECTS);
+  if (selectedHasBonusId(config, SHENNONG_FARM_LINE_UPGRADES_BONUS_ID)) effects.push(shennongFarmLineHeroicEffects(config));
+  if (selectedHasBonusId(config, SHENNONG_MYTH_REGEN_FAVORED_LAND_BONUS_ID)) effects.push(SHENNONG_MYTH_REGEN_FAVORED_LAND_AGE_EFFECTS);
+  if (selectedHasBonusId(config, SET_ANIMALS_BONUS_ID)) effects.push(SET_ANIMALS_HEROIC_EFFECTS);
+  if (selectedHasBonusId(config, DEMETER_HERDABLES_SPAWN_ON_AGE_UP_BONUS_ID)) effects.push(DEMETER_HERDABLES_SPAWN_HEROIC_EFFECTS);
+  if (selectedHasBonusId(config, DEMETER_TRAIN_FASTER_BY_AGE_BONUS_ID)) effects.push(DEMETER_TRAIN_FASTER_BY_AGE_EFFECTS);
+  if (selectedHasBonusId(config, HADES_MYTH_HP_BY_AGE_BONUS_ID)) effects.push(HADES_MYTH_HP_BY_AGE_EFFECTS);
+  if (selectedHasBonusId(config, TSUKUYOMI_FREE_KITSUNE_BONUS_ID)) effects.push(TSUKUYOMI_FREE_KITSUNE_EFFECT);
+  if (selectedHasBonusId(config, ODIN_RAVEN_SCOUTS_BONUS_ID)) effects.push(ODIN_RAVEN_LOS_AGE_EFFECT);
+  if (selectedHasBonusId(config, THOR_DWARVEN_ARMORY_BONUS_ID)) effects.push(THOR_DWARVEN_ARMORY_LATER_RESEARCH_RATE_EFFECT);
   return effects.filter(Boolean).join("\n");
 }
 function bonusMythicTechEffects(config) {
   const effects = [];
-  if (selectedHasBonusLabel(config, ORANOS_SKY_PASSAGE_BONUS_LABEL)) effects.push(ORANOS_SKY_PASSAGE_AGE_EFFECTS);
-  if (selectedHasBonusLabel(config, POSEIDON_SPEED_BY_AGE_BONUS_LABEL)) effects.push(POSEIDON_SPEED_BY_AGE_EFFECTS);
-  if (selectedHasBonusLabel(config, QUETZ_EAGLE_RANGE_LOS_BONUS_LABEL)) effects.push(QUETZ_EAGLE_RANGE_LOS_AGE_EFFECTS);
-  if (selectedHasBonusLabel(config, TEZCAT_DEVOTE_FAVOR_BONUS_LABEL)) effects.push(TEZCAT_DEVOTE_FAVOR_AGE_EFFECTS);
-  if (selectedHasBonusLabel(config, TEZCAT_OBSIDIAN_SHARD_BONUS_LABEL)) effects.push(tezcatObsidianShardMythicEffects(config));
-  if (selectedHasBonusLabel(config, FUXI_NEZHA_BONUS_LABEL)) effects.push(FUXI_NEZHA_MYTHIC_EFFECTS);
-  if (selectedHasBonusLabel(config, SHENNONG_FARM_LINE_UPGRADES_BONUS_LABEL)) effects.push(shennongFarmLineMythicEffects(config));
-  if (selectedHasBonusLabel(config, SHENNONG_MYTH_REGEN_FAVORED_LAND_BONUS_LABEL)) effects.push(SHENNONG_MYTH_REGEN_FAVORED_LAND_AGE_EFFECTS);
-  if (selectedHasBonusLabel(config, SET_ANIMALS_BONUS_LABEL)) effects.push(SET_ANIMALS_MYTHIC_EFFECTS);
-  if (selectedHasBonusLabel(config, DEMETER_HERDABLES_SPAWN_ON_AGE_UP_BONUS_LABEL)) effects.push(DEMETER_HERDABLES_SPAWN_MYTHIC_EFFECTS);
-  if (selectedHasBonusLabel(config, DEMETER_TRAIN_FASTER_BY_AGE_BONUS_LABEL)) effects.push(DEMETER_TRAIN_FASTER_BY_AGE_EFFECTS);
-  if (selectedHasBonusLabel(config, HADES_MYTH_HP_BY_AGE_BONUS_LABEL)) effects.push(HADES_MYTH_HP_BY_AGE_EFFECTS);
-  if (selectedHasBonusLabel(config, TSUKUYOMI_FREE_KITSUNE_BONUS_LABEL)) effects.push(TSUKUYOMI_FREE_KITSUNE_EFFECT);
-  if (selectedHasBonusLabel(config, ODIN_RAVEN_SCOUTS_BONUS_LABEL)) effects.push(ODIN_RAVEN_LOS_AGE_EFFECT);
-  if (selectedHasBonusLabel(config, THOR_DWARVEN_ARMORY_BONUS_LABEL)) effects.push(THOR_DWARVEN_ARMORY_LATER_RESEARCH_RATE_EFFECT);
+  if (selectedHasBonusId(config, ORANOS_SKY_PASSAGE_BONUS_ID)) effects.push(ORANOS_SKY_PASSAGE_AGE_EFFECTS);
+  if (selectedHasBonusId(config, POSEIDON_SPEED_BY_AGE_BONUS_ID)) effects.push(POSEIDON_SPEED_BY_AGE_EFFECTS);
+  if (selectedHasBonusId(config, QUETZ_EAGLE_RANGE_LOS_BONUS_ID)) effects.push(QUETZ_EAGLE_RANGE_LOS_AGE_EFFECTS);
+  if (selectedHasBonusId(config, TEZCAT_DEVOTE_FAVOR_BONUS_ID)) effects.push(TEZCAT_DEVOTE_FAVOR_AGE_EFFECTS);
+  if (selectedHasBonusId(config, TEZCAT_OBSIDIAN_SHARD_BONUS_ID)) effects.push(tezcatObsidianShardMythicEffects(config));
+  if (selectedHasBonusId(config, FUXI_NEZHA_BONUS_ID)) effects.push(FUXI_NEZHA_MYTHIC_EFFECTS);
+  if (selectedHasBonusId(config, SHENNONG_FARM_LINE_UPGRADES_BONUS_ID)) effects.push(shennongFarmLineMythicEffects(config));
+  if (selectedHasBonusId(config, SHENNONG_MYTH_REGEN_FAVORED_LAND_BONUS_ID)) effects.push(SHENNONG_MYTH_REGEN_FAVORED_LAND_AGE_EFFECTS);
+  if (selectedHasBonusId(config, SET_ANIMALS_BONUS_ID)) effects.push(SET_ANIMALS_MYTHIC_EFFECTS);
+  if (selectedHasBonusId(config, DEMETER_HERDABLES_SPAWN_ON_AGE_UP_BONUS_ID)) effects.push(DEMETER_HERDABLES_SPAWN_MYTHIC_EFFECTS);
+  if (selectedHasBonusId(config, DEMETER_TRAIN_FASTER_BY_AGE_BONUS_ID)) effects.push(DEMETER_TRAIN_FASTER_BY_AGE_EFFECTS);
+  if (selectedHasBonusId(config, HADES_MYTH_HP_BY_AGE_BONUS_ID)) effects.push(HADES_MYTH_HP_BY_AGE_EFFECTS);
+  if (selectedHasBonusId(config, TSUKUYOMI_FREE_KITSUNE_BONUS_ID)) effects.push(TSUKUYOMI_FREE_KITSUNE_EFFECT);
+  if (selectedHasBonusId(config, ODIN_RAVEN_SCOUTS_BONUS_ID)) effects.push(ODIN_RAVEN_LOS_AGE_EFFECT);
+  if (selectedHasBonusId(config, THOR_DWARVEN_ARMORY_BONUS_ID)) effects.push(THOR_DWARVEN_ARMORY_LATER_RESEARCH_RATE_EFFECT);
   return effects.filter(Boolean).join("\n");
 }
 function hasKronosExtraMythUnitBonus(config) {
-  return selectedHasBonusLabel(config, KRONOS_EXTRA_MYTH_UNITS_BONUS_LABEL);
+  return selectedHasBonusId(config, KRONOS_EXTRA_MYTH_UNITS_BONUS_ID);
 }
 
 function kronosExtraMythUnitPlans(config) {
@@ -3042,7 +3092,7 @@ function sanitizeBonusTechEffects(xml) {
 
 function bonusMajorXml(config) {
   return selectedBonusEntries(config)
-    .filter((entry) => ![ZEUS_STARTING_FAVOR_BONUS_LABEL, KRONOS_TIMESHIFT_BONUS_LABEL, HUITZ_TONALLI_RESOURCES_BONUS_LABEL, HUITZ_SHORN_TONALLI_BONUS_LABEL, NUWA_FAVORED_LAND_FARTHER_BONUS_LABEL, SET_ANIMALS_BONUS_LABEL, SUSANOO_POWER_COST_FACTOR_BONUS_LABEL, SUSANOO_BUSHIDO_MYTH_XP_BONUS_LABEL, TSUKUYOMI_RESEARCH_BUSHIDO_XP_BONUS_LABEL, ODIN_GREAT_HALL_FAVOR_BONUS_LABEL].includes(entry.label))
+    .filter((entry) => ![ZEUS_STARTING_FAVOR_BONUS_ID, KRONOS_TIMESHIFT_BONUS_ID, HUITZ_TONALLI_RESOURCES_BONUS_ID, HUITZ_SHORN_TONALLI_BONUS_ID, NUWA_FAVORED_LAND_FARTHER_BONUS_ID, SET_ANIMALS_BONUS_ID, SUSANOO_POWER_COST_FACTOR_BONUS_ID, SUSANOO_BUSHIDO_MYTH_XP_BONUS_ID, TSUKUYOMI_RESEARCH_BUSHIDO_XP_BONUS_ID, ODIN_GREAT_HALL_FAVOR_BONUS_ID].includes(entry.id))
     .map((entry) => entry.majorXml || "")
     .filter(Boolean)
     .join("\n");
@@ -3305,7 +3355,10 @@ function generateMajorGodXmlFromPantheonTemplate(config, iconPath) {
 
 
 function hasSelectedBonus(config, sourceMajor, label) {
-  return selectedBonusEntries(config).some((entry) => entry.sourceMajor === sourceMajor && entry.label === label);
+  // Legacy helper only. Prefer selectedHasBonusId().
+  const currentEntry = bonusByLabel(label);
+  if (!currentEntry) return false;
+  return selectedBonusEntries(config).some((entry) => entry.id === currentEntry.id && entry.sourceMajor === sourceMajor);
 }
 
 function patchLokiSpawnContributorsForPantheon(doc, civ, config) {
@@ -3344,43 +3397,43 @@ function patchLokiSpawnContributorsForPantheon(doc, civ, config) {
 }
 
 function applyMajorGodSpecialBonusPatches(doc, civ, config) {
-  if (hasSelectedBonus(config, "Zeus", ZEUS_STARTING_FAVOR_BONUS_LABEL)) {
+  if (selectedHasBonusId(config, BONUS_IDS.ZEUS_STARTING_FAVOR)) {
     addZeusStartingFavor(doc, civ);
   }
-  if (hasSelectedBonus(config, "Gaia", "Starts with 2 Hero Citizens.")) {
+  if (selectedHasBonusId(config, BONUS_IDS.GAIA_HERO_CITIZENS)) {
     replaceAtlanteanStartingCitizensWithHeroes(civ);
   }
-  if (selectedHasBonusLabel(config, NUWA_FAVORED_LAND_FARTHER_BONUS_LABEL)) {
-    replaceBuildingChainFromSelectedBonus(doc, civ, config, NUWA_FAVORED_LAND_FARTHER_BONUS_LABEL);
+  if (selectedHasBonusId(config, NUWA_FAVORED_LAND_FARTHER_BONUS_ID)) {
+    replaceBuildingChainFromSelectedBonus(doc, civ, config, BONUS_IDS.NUWA_FAVORED_LAND_FARTHER);
   }
-  if (hasSelectedBonus(config, "Huitzilopochtli", HUITZ_TONALLI_RESOURCES_BONUS_LABEL)) {
+  if (selectedHasBonusId(config, BONUS_IDS.HUITZ_TONALLI_RESOURCES)) {
     insertIntoBountyResourceEarning(doc, civ, HUITZ_TONALLI_RESOURCE_REWARDS);
   }
-  if (hasSelectedBonus(config, "Huitzilopochtli", HUITZ_SHORN_TONALLI_BONUS_LABEL)) {
+  if (selectedHasBonusId(config, BONUS_IDS.HUITZ_SHORN_TONALLI)) {
     insertIntoBountyResourceEarning(doc, civ, HUITZ_SHORN_TONALLI_MULTIPLIER);
   }
-  if (hasSelectedBonus(config, "Set", SET_ANIMALS_BONUS_LABEL)) {
+  if (selectedHasBonusId(config, BONUS_IDS.SET_ANIMALS)) {
     addSetBaboonToStartingUnits(doc, civ);
   }
-  if (hasSelectedBonus(config, "Susanoo", SUSANOO_POWER_COST_FACTOR_BONUS_LABEL)) {
+  if (selectedHasBonusId(config, BONUS_IDS.SUSANOO_POWER_COST_FACTOR)) {
     setOnCastPowerCostFactor(doc, civ, "0.80");
   }
-  if (hasSelectedBonus(config, "Susanoo", SUSANOO_BUSHIDO_MYTH_XP_BONUS_LABEL)) {
+  if (selectedHasBonusId(config, BONUS_IDS.SUSANOO_BUSHIDO_MYTH_XP)) {
     insertIntoBountyResourceEarning(doc, civ, SUSANOO_BUSHIDO_MYTH_XP_BOUNTY);
   }
-  if (hasSelectedBonus(config, "Tsukuyomi", TSUKUYOMI_RESEARCH_BUSHIDO_XP_BONUS_LABEL)) {
+  if (selectedHasBonusId(config, BONUS_IDS.TSUKUYOMI_RESEARCH_BUSHIDO_XP)) {
     insertIntoBountyResourceEarning(doc, civ, TSUKUYOMI_RESEARCH_BUSHIDO_XP_BOUNTY);
   }
-  if (hasSelectedBonus(config, "Odin", ODIN_GREAT_HALL_FAVOR_BONUS_LABEL)) {
+  if (selectedHasBonusId(config, BONUS_IDS.ODIN_GREAT_HALL_FAVOR)) {
     insertIntoBountyResourceEarning(doc, civ, ODIN_GREAT_HALL_FAVOR_BOUNTY);
   }
-  if (selectedHasBonusLabel(config, LOKI_SPAWN_MYTH_UNITS_BONUS_LABEL)) {
+  if (selectedHasBonusId(config, LOKI_SPAWN_MYTH_UNITS_BONUS_ID)) {
     patchLokiSpawnContributorsForPantheon(doc, civ, config);
   }
-  if (selectedHasBonusLabel(config, TEZCAT_OBSIDIAN_SHARD_BONUS_LABEL)) {
+  if (selectedHasBonusId(config, TEZCAT_OBSIDIAN_SHARD_BONUS_ID)) {
     replaceObsidianShardReward(civ, obsidianShardProtoName(config));
   }
-  if (selectedHasBonusLabel(config, KRONOS_TIMESHIFT_BONUS_LABEL)) {
+  if (selectedHasBonusId(config, KRONOS_TIMESHIFT_BONUS_ID)) {
     replaceTimeShiftingBlock(doc, civ, config);
   }
 }
@@ -3478,12 +3531,12 @@ function setOnCastPowerCostFactor(doc, civ, value) {
   node.textContent = value;
 }
 
-const SUSANOO_POWER_COST_FACTOR_BONUS_LABEL = "Invoking a god power makes other god powers cheaper to reinvoke.";
-const SUSANOO_BUSHIDO_MYTH_XP_BONUS_LABEL = "Myth units generate Bushidō XP passively and in combat.";
+const SUSANOO_POWER_COST_FACTOR_BONUS_ID = BONUS_IDS.SUSANOO_POWER_COST_FACTOR;
+const SUSANOO_BUSHIDO_MYTH_XP_BONUS_ID = BONUS_IDS.SUSANOO_BUSHIDO_MYTH_XP;
 const SUSANOO_BUSHIDO_MYTH_XP_BOUNTY = `<bountyreward unittype="MythUnit" condition="Damage" combatxp="">2.0</bountyreward>`;
 
-const TSUKUYOMI_FREE_KITSUNE_BONUS_LABEL = "A free Kitsune appears at the Temple on each age-up except Wonder Age.";
-const TSUKUYOMI_RESEARCH_BUSHIDO_XP_BONUS_LABEL = "Researching technologies grants Bushidō XP.";
+const TSUKUYOMI_FREE_KITSUNE_BONUS_ID = BONUS_IDS.TSUKUYOMI_FREE_KITSUNE;
+const TSUKUYOMI_RESEARCH_BUSHIDO_XP_BONUS_ID = BONUS_IDS.TSUKUYOMI_RESEARCH_BUSHIDO_XP;
 const TSUKUYOMI_RESEARCH_BUSHIDO_XP_BOUNTY = `<researchreward techtype="all" combatxp="">1.0</researchreward>
 <researchcostmultiplier techtype="all" resourcetype="Food">1.0</researchcostmultiplier>
 <researchcostmultiplier techtype="all" resourcetype="Wood">1.0</researchcostmultiplier>
@@ -3491,17 +3544,17 @@ const TSUKUYOMI_RESEARCH_BUSHIDO_XP_BOUNTY = `<researchreward techtype="all" com
 <researchcostmultiplier techtype="all" resourcetype="Favor">10.0</researchcostmultiplier>
 <excludedtechflag>AgeUpgrade</excludedtechflag>
 <excludedtechflag>DynamicCost</excludedtechflag>`;
-const ODIN_GREAT_HALL_FAVOR_BONUS_LABEL = "Great Hall units generate +25% favor in battle.";
+const ODIN_GREAT_HALL_FAVOR_BONUS_ID = BONUS_IDS.ODIN_GREAT_HALL_FAVOR;
 const ODIN_GREAT_HALL_FAVOR_BOUNTY = `<bountyreward protounit="Hersir" condition="Damage" resourcetype="Favor">1.25</bountyreward>
 <bountyreward protounit="Jarl" condition="Damage" resourcetype="Favor">1.25</bountyreward>
 <bountyreward protounit="Godi" condition="Damage" resourcetype="Favor">1.25</bountyreward>
 <bountyreward protounit="RaidingCavalry" condition="Damage" resourcetype="Favor">1.25</bountyreward>`;
-const ODIN_RAVEN_SCOUTS_BONUS_LABEL = "Two Raven scouts spawn after the first Temple and respawn when killed.";
+const ODIN_RAVEN_SCOUTS_BONUS_ID = BONUS_IDS.ODIN_RAVEN_SCOUTS;
 const ODIN_RAVEN_LOS_AGE_EFFECT = `<effect type="Data" amount="2" subtype="LOS" relativity="Absolute">
 	<target type="ProtoUnit">Raven</target>
 </effect>`;
 
-const THOR_DWARVEN_ARMORY_BONUS_LABEL = "Dwarven Armory can be built and researched in any age, adding extra upgrades.";
+const THOR_DWARVEN_ARMORY_BONUS_ID = BONUS_IDS.THOR_DWARVEN_ARMORY;
 
 const THOR_DWARVEN_ARMORY_CLASSICAL_RESEARCH_RATE_EFFECT = `<effect type="Data" amount="0.67" subtype="ResearchRate" relativity="Absolute">
 	<target type="ProtoUnit">DwarvenArmory</target>
@@ -3510,10 +3563,10 @@ const THOR_DWARVEN_ARMORY_LATER_RESEARCH_RATE_EFFECT = `<effect type="Data" amou
 	<target type="ProtoUnit">DwarvenArmory</target>
 </effect>`;
 
-const THOR_ARMORY_TECH_DISCOUNT_BONUS_LABEL = "Technologies researched at Armory are cheaper.";
+const THOR_ARMORY_TECH_DISCOUNT_BONUS_ID = BONUS_IDS.THOR_ARMORY_TECH_DISCOUNT;
 
 function thorArmoryTechDiscountEffects(config) {
-  const target = selectedHasBonusLabel(config, THOR_DWARVEN_ARMORY_BONUS_LABEL) ? "DwarvenArmory" : "Armory";
+  const target = selectedHasBonusId(config, THOR_DWARVEN_ARMORY_BONUS_ID) ? "DwarvenArmory" : "Armory";
   return ["Food", "Wood", "Gold", "Favor"].map((resource) => `<effect type="Data" amount="0.90" subtype="CostBuildingTechs" resource="${resource}" relativity="BasePercent">
 	<target type="ProtoUnit">${target}</target>
 </effect>`).join("\n");
@@ -3529,14 +3582,14 @@ function thorDwarvenArmoryEgyptianCostEffects(config) {
 
 function thorDwarvenArmoryPoseidonMilitiaEffects(config) {
   if (config.baseCulture !== "Greek") return "";
-  if (!selectedHasBonusLabel(config, POSEIDON_MILITIA_BONUS_LABEL)) return "";
+  if (!selectedHasBonusId(config, POSEIDON_MILITIA_BONUS_ID)) return "";
   return `<effect type="Data" amount="4" subtype="PartisanUnit" unitType="Militia" relativity="Absolute">
 	<target type="ProtoUnit">DwarvenArmory</target>
 </effect>`;
 }
 
 function thorDwarvenArmoryForgeOfOlympusTech(config) {
-  if (!selectedHasBonusLabel(config, THOR_DWARVEN_ARMORY_BONUS_LABEL)) return "";
+  if (!selectedHasBonusId(config, THOR_DWARVEN_ARMORY_BONUS_ID)) return "";
   if (config.baseCulture !== "Greek") return "";
   const selectedMinorGods = Object.values(config.minorGods || {}).flat().filter(Boolean);
   if (!selectedMinorGods.includes("MythicAgeHephaestus")) return "";
@@ -3579,8 +3632,131 @@ function thorDwarvenArmoryForgeOfOlympusTech(config) {
 	</tech>`;
 }
 
+function hasProsperousSeedsGodPower(config) {
+  return String(config?.godPower || "") === "ProsperousSeeds";
+}
+
+function prosperousSeedsPansPioneersTech(config) {
+  if (!hasProsperousSeedsGodPower(config)) return "";
+  return `	<tech name="PansPioneers">
+		<effects mergemode="replace">
+			<effect type="Data" amount="0.90" subtype="cost" resource="Wood" relativity="BasePercent">
+				<target type="ProtoUnit">Building</target>
+			</effect>
+			<effect type="Data" amount="2" subtype="GathererLimit" relativity="Assign" tooltipid="STR_TECH_PANS_PIONEERS_OVERRIDE">
+				<target type="ProtoUnit">Farm</target>
+			</effect>
+			<effect type="Data" amount="2" subtype="GathererLimit" relativity="Assign" tooltipid="STR_TECH_PANS_PIONEERS_OVERRIDE">
+				<target type="ProtoUnit">FarmShennong</target>
+			</effect>
+		</effects>
+	</tech>`;
+}
+
+const CHINESE_CREATION_BUILDING_COMMANDS_BY_CULTURE = {
+  Greek: [
+    { proto: "Granary", row: 0, column: 1 },
+    { proto: "Storehouse", row: 0, column: 2 },
+    { proto: "ArcheryRange", row: 1, column: 0 },
+    { proto: "MilitaryAcademy", row: 1, column: 1 },
+    { proto: "Stable", row: 1, column: 2 },
+    { proto: "Fortress", row: 2, column: 3 },
+  ],
+  Egyptian: [
+    { proto: "Granary", row: 0, column: 1 },
+    { proto: "MiningCamp", row: 0, column: 2 },
+    { proto: "LumberCamp", row: 0, column: 3 },
+    { proto: "MonumentToGods", row: 1, column: 0 },
+    { proto: "MonumentToPharaohs", row: 1, column: 0 },
+    { proto: "MonumentToPriests", row: 1, column: 0 },
+    { proto: "MonumentToSoldiers", row: 1, column: 0 },
+    { proto: "MonumentToVillagers", row: 1, column: 0 },
+    { proto: "Barracks", row: 1, column: 1 },
+    { proto: "SiegeWorks", row: 1, column: 2 },
+    { proto: "MigdolStronghold", row: 2, column: 3 },
+    { proto: "Lighthouse", row: 2, column: 4 },
+  ],
+  Norse: [
+    { proto: "OxCartBuilding", row: 0, column: 1 },
+    { proto: "Longhouse", row: 1, column: 1 },
+    { proto: "GreatHall", row: 1, column: 2 },
+    { proto: "DwarvenArmory", row: 1, column: 5 },
+    { proto: "HillFort", row: 2, column: 3 },
+  ],
+  Atlantean: [
+    { proto: "Manor", row: 0, column: 0 },
+    { proto: "EconomicGuild", row: 0, column: 1 },
+    // SkyPassage is intentionally not added here. VillagerChineseClay / KuafuHero
+    // only receive it through the Oranos Sky Passage bonus, following the
+    // same rule as normal builders.
+    { proto: "MilitaryBarracks", row: 1, column: 1 },
+    { proto: "CounterBarracks", row: 1, column: 2 },
+    { proto: "Palace", row: 2, column: 3 },
+    { proto: "MirrorTower", row: 2, column: 4 },
+  ],
+  Japanese: [
+    { proto: "Watermill", row: 0, column: 1 },
+    { proto: "MiningCampJapanese", row: 0, column: 2 },
+    { proto: "Guardhouse", row: 1, column: 0 },
+    { proto: "Dojo", row: 1, column: 1 },
+    { proto: "StableJapanese", row: 1, column: 2 },
+    { proto: "Castle", row: 2, column: 3 },
+  ],
+  Aztec: [
+    { proto: "Calpulli", row: 0, column: 1 },
+    { proto: "WarHut", row: 1, column: 1 },
+    { proto: "NoblesHut", row: 1, column: 2 },
+    { proto: "GreatTemple", row: 2, column: 3 },
+  ],
+};
+
+function chineseCreationBuildingCommandTargets(config) {
+  if (!config || config.baseCulture === "Chinese") return [];
+  const targets = [];
+  if (String(config.godPower || "") === "Creation") targets.push("VillagerChineseClay");
+  if ((config.uniqueTechs || []).includes("KuafuChieftain")) targets.push("KuafuHero");
+  return targets;
+}
+
+function needsChineseCreationBuildingCommands(config) {
+  return chineseCreationBuildingCommandTargets(config).length > 0;
+}
+
+function chineseCreationSkyPassageCommandSlot(config) {
+  // Same convention as the regular Oranos builder UI: Egyptian builders use
+  // row 0 / column 4, most non-Chinese builders use row 2 / column 4.
+  // Atlantean is the special case from the provided build-command table:
+  // Sky Passage sits in row 0 / column 2 for its builder UI.
+  if (config?.baseCulture === "Atlantean") return { row: 0, column: 2 };
+  if (config?.baseCulture === "Egyptian") return { row: 0, column: 4 };
+  return { row: 2, column: 4 };
+}
+
+function chineseCreationBuildingCommandEffects(config) {
+  const targets = chineseCreationBuildingCommandTargets(config);
+  if (!targets.length) return "";
+  const rules = [...(CHINESE_CREATION_BUILDING_COMMANDS_BY_CULTURE[config.baseCulture] || [])];
+  if (selectedHasOranosSkyPassageBonus(config)) {
+    const slot = chineseCreationSkyPassageCommandSlot(config);
+    rules.push({ proto: "SkyPassage", row: slot.row, column: slot.column });
+  }
+  const effects = [];
+  const seen = new Set();
+  for (const target of targets) {
+    for (const rule of rules) {
+      const key = `${target}|${rule.proto}|${rule.row}|${rule.column}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      effects.push(`<effect type="Data" amount="1.00" subtype="CommandAdd" proto="${escapeXml(rule.proto)}" row="${rule.row}" column="${rule.column}" relativity="Assign">
+	<target type="ProtoUnit">${escapeXml(target)}</target>
+</effect>`);
+    }
+  }
+  return effects.join("\n");
+}
+
 function thorDwarvenArmoryCoatepecShrinesTech(config) {
-  if (!selectedHasBonusLabel(config, THOR_DWARVEN_ARMORY_BONUS_LABEL)) return "";
+  if (!(selectedHasBonusId(config, THOR_DWARVEN_ARMORY_BONUS_ID) || hasProsperousSeedsGodPower(config))) return "";
   if (config.baseCulture !== "Aztec") return "";
   const selectedMinorGods = Object.values(config.minorGods || {}).flat().filter(Boolean);
   if (!selectedMinorGods.includes("HeroicAgeCoatlicue")) return "";
@@ -3697,7 +3873,7 @@ function thorDwarvenArmoryArchaicEffects(config) {
 }
 
 function thorDwarvenArmoryMinorGodPrereqTechs(config) {
-  if (!selectedHasBonusLabel(config, THOR_DWARVEN_ARMORY_BONUS_LABEL)) return "";
+  if (!selectedHasBonusId(config, THOR_DWARVEN_ARMORY_BONUS_ID)) return "";
   const heroicMinorTechs = (config.minorGods.HeroicAge || []).filter(Boolean);
   return Array.from(new Set(heroicMinorTechs)).map((techName) => {
     const aegirEffects = techName === "HeroicAgeAegir" ? uniqueTechAegirTempleRepositionEffects(config) : "";
@@ -3772,7 +3948,7 @@ function thorDwarvenArmoryCommandAddArchaicEffects(config) {
 </effect>`).join("\n");
 }
 
-const THOR_DWARF_SPAWN_BONUS_LABEL = "Each Dwarven Armory upgrade grants a free Dwarf.";
+const THOR_DWARF_SPAWN_BONUS_ID = BONUS_IDS.THOR_DWARF_SPAWN;
 
 function thorDwarfSpawnTechName(config) {
   return `${config.internalName}DwarfSpawn`;
@@ -3789,7 +3965,7 @@ function thorDwarfSpawnArchaicEffects(config) {
 }
 
 function thorDwarfSpawnExtraTech(config) {
-  if (!selectedHasBonusLabel(config, THOR_DWARF_SPAWN_BONUS_LABEL)) return "";
+  if (!selectedHasBonusId(config, THOR_DWARF_SPAWN_BONUS_ID)) return "";
   return `	<tech name="${escapeXml(thorDwarfSpawnTechName(config))}">
 		<status>UNOBTAINABLE</status>
 		<flag>InfiniteTech</flag>
@@ -3866,8 +4042,8 @@ function addSetBaboonToStartingUnitsBlock(doc, startingUnitsNode, label) {
   startingUnitsNode.appendChild(unit);
 }
 
-function replaceBuildingChainFromSelectedBonus(doc, civ, config, label) {
-  const entry = selectedBonusEntries(config).find((bonus) => bonus.label === label);
+function replaceBuildingChainFromSelectedBonus(doc, civ, config, bonusId) {
+  const entry = selectedBonusEntries(config).find((bonus) => bonus.id === bonusId);
   const fragmentXml = entry?.majorXml || "";
   if (!fragmentXml.trim()) return;
 
@@ -4253,6 +4429,11 @@ function hasGreekHeraMinorGod(config) {
   return (config.minorGods?.MythicAge || []).includes("MythicAgeHera");
 }
 
+function hasGreekHephaestusMinorGod(config) {
+  if (!config || config.baseCulture !== "Greek") return false;
+  return (config.minorGods?.MythicAge || []).includes("MythicAgeHephaestus");
+}
+
 function argivePatronageUniqueUnit(config) {
   return config.greekUniqueUnit || GREEK_UNIQUE_UNITS.Zeus;
 }
@@ -4373,6 +4554,8 @@ function extraGeneratedTechs(config) {
   if (thorForgeOlympusTech) extras.push(thorForgeOlympusTech);
   const thorCoatepecShrinesTech = thorDwarvenArmoryCoatepecShrinesTech(config);
   if (thorCoatepecShrinesTech) extras.push(thorCoatepecShrinesTech);
+  const prosperousSeedsPansTech = prosperousSeedsPansPioneersTech(config);
+  if (prosperousSeedsPansTech) extras.push(prosperousSeedsPansTech);
   extras.push(relicNineCauldronsAllPantheonsTech());
   const skinRhinoTech = skinOfTheRhinoSharedTech(config);
   if (skinRhinoTech) extras.push(skinRhinoTech);
@@ -4386,7 +4569,7 @@ function extraGeneratedTechs(config) {
   if (olympianWeaponsAmazonTech) extras.push(olympianWeaponsAmazonTech);
   const fatedArrowsHestiaTech = fatedArrowsHestiaCentaurTech(config);
   if (fatedArrowsHestiaTech) extras.push(fatedArrowsHestiaTech);
-  if (!selectedHasBonusLabel(config, THOR_DWARVEN_ARMORY_BONUS_LABEL)) {
+  if (!selectedHasBonusId(config, THOR_DWARVEN_ARMORY_BONUS_ID)) {
     const aegirUniqueTechPatch = uniqueTechAegirTempleRepositionTechs(config);
     if (aegirUniqueTechPatch) extras.push(aegirUniqueTechPatch);
   }
@@ -4412,6 +4595,7 @@ ${kronosExtraMythUnitStatusEffects(config, "ArchaicAge")}
 ${techStatusEffects(uniqueTechNames(config), "obtainable")}
 ${indentTabBlock(uniqueTechSetNameEffects(config), 3)}
 ${indentTabBlock(uniqueTechUiPlacementEffects(config), 3)}
+${indentTabBlock(chineseCreationBuildingCommandEffects(config), 3)}
 ${indentTabBlock(bonusTechEffects(config), 3)}
 			<effect type="TechStatus" status="active">ArchaicAgeWeakenUnits</effect>
 ${uniqueTechEntries(config).some((group) => group.extraArchaicEffect === "FreyrTechCostBonus") ? `			<effect type="SetOnTechResearchedTech" amount="1.00">FreyrTechCostBonus</effect>
@@ -4483,7 +4667,7 @@ ${extraGeneratedTechs(config)}` : ""}
 }
 
 function generateProtoMods(config) {
-  const entries = [tezcatObsidianShardProtoXml(config), kronosHouseTemporalProtoXml(config), oranosEgyptianPriestSkyPassageProtoXml(config), argivePatronageFortressProtoXml(config), fatedArrowsCentaurProtoXml(config)].filter(Boolean);
+  const entries = [tezcatObsidianShardProtoXml(config), kronosHouseTemporalProtoXml(config), oranosEgyptianPriestSkyPassageProtoXml(config), argivePatronageFortressProtoXml(config), fatedArrowsCentaurProtoXml(config), fuxiNezhaProtoModsXml(config)].filter(Boolean);
   if (!entries.length) {
     return `<protomods>
 	<!-- Empty in this draft. -->
@@ -4527,7 +4711,8 @@ function generateStringMods(config) {
 
 ID = "${config.stringPrefix}"   ;   Str = "${escapeStringMod(config.displayName)}"
 ID = "${config.stringPrefix}_LR"   ;   Str = "${escapeStringMod(rollover)}"
-ID = "${config.stringPrefix}_T"   ;   Str = "${escapeStringMod(config.majorTitle)}"${selectedHasBonusLabel(config, NUWA_CREATORS_AUSPICE_BONUS_LABEL) || selectedBonusEntries(config).some((entry) => entry.id === "bonus_67") ? `
+ID = "${config.stringPrefix}_T"   ;   Str = "${escapeStringMod(config.majorTitle)}"${hasGreekHephaestusMinorGod(config) ? `
+ID = "STR_TECH_OLYMPIAN_WEAPONS_LR"   ;   Str = "Hephaestus improves the attack of Fortress unique units, especially against myth units."` : ""}${selectedHasBonusId(config, BONUS_IDS.NUWA_CREATORS_AUSPICE) ? `
 ID = "${nuwaAuspiceNotificationStringId(config)}"   ;   Str = "${escapeStringMod(config.displayName)} has enhanced their blessing!"` : ""}${uniqueTechCustomStringMods(config) ? `
 
 // UNIQUE TECHNOLOGY ROLLOVERS
@@ -4595,20 +4780,20 @@ function selectedHasBonusId(config, id) {
 function godPickerArchaicBonusUnits(config) {
   const units = [];
   if (selectedHasBonusId(config, "bonus_6")) units.push("HadesShade");
-  if (selectedHasBonusId(config, "bonus_56") || selectedHasBonusLabel(config, ORANOS_SKY_PASSAGE_BONUS_LABEL)) units.push("SkyPassage");
-  if (selectedHasBonusId(config, "bonus_31") || selectedHasBonusLabel(config, SET_ANIMALS_BONUS_LABEL)) units.push("BaboonOfSet");
+  if (selectedHasBonusId(config, "bonus_56") || selectedHasBonusId(config, ORANOS_SKY_PASSAGE_BONUS_ID)) units.push("SkyPassage");
+  if (selectedHasBonusId(config, "bonus_31") || selectedHasBonusId(config, SET_ANIMALS_BONUS_ID)) units.push("BaboonOfSet");
   if (selectedHasBonusId(config, "bonus_15")) units.push("Hippocampus");
-  if (selectedHasBonusId(config, "bonus_11") || selectedHasBonusLabel(config, POSEIDON_MILITIA_BONUS_LABEL)) units.push("Militia");
-  if (selectedHasBonusId(config, "bonus_42") || selectedHasBonusLabel(config, ODIN_RAVEN_SCOUTS_BONUS_LABEL)) units.push("Raven");
-  if (selectedHasBonusId(config, "bonus_36") || selectedHasBonusLabel(config, THOR_DWARVEN_ARMORY_BONUS_LABEL)) units.push("DwarvenArmory");
+  if (selectedHasBonusId(config, "bonus_11") || selectedHasBonusId(config, POSEIDON_MILITIA_BONUS_ID)) units.push("Militia");
+  if (selectedHasBonusId(config, "bonus_42") || selectedHasBonusId(config, ODIN_RAVEN_SCOUTS_BONUS_ID)) units.push("Raven");
+  if (selectedHasBonusId(config, "bonus_36") || selectedHasBonusId(config, THOR_DWARVEN_ARMORY_BONUS_ID)) units.push("DwarvenArmory");
   return units;
 }
 
 function godPickerArchaicBonusPowers(config) {
   const powers = [];
   if (selectedHasBonusId(config, "bonus_63")) powers.push("YinAndYangTechree");
-  if (selectedHasBonusId(config, "bonus_67") || selectedHasBonusLabel(config, NUWA_CREATORS_AUSPICE_BONUS_LABEL)) powers.push("ShieldBlessingTechree");
-  if (selectedHasBonusId(config, "bonus_71") || selectedHasBonusLabel(config, SHENNONG_GIFT_OF_BEASTS_BONUS_LABEL)) powers.push("SpawnRewardTechree");
+  if (selectedHasBonusId(config, "bonus_67") || selectedHasBonusId(config, NUWA_CREATORS_AUSPICE_BONUS_ID)) powers.push("ShieldBlessingTechree");
+  if (selectedHasBonusId(config, "bonus_71") || selectedHasBonusId(config, SHENNONG_GIFT_OF_BEASTS_BONUS_ID)) powers.push("SpawnRewardTechree");
   if (selectedHasBonusId(config, "bonus_75")) powers.push("BushidoAmaterasu");
   if (selectedHasBonusId(config, "bonus_83")) powers.push("BushidoSusanoo");
   if (selectedHasBonusId(config, "bonus_79")) powers.push("BushidoTsukuyomi");
@@ -5992,19 +6177,19 @@ function rightSideNode(type, name, parent = "", position = "1,1") {
 }
 
 function selectedHasGaiaEconomicEarlierBonus(config) {
-  return selectedHasBonusId(config, "bonus_62") || selectedHasBonusLabel(config, "Economic Guild and upgrades are 35% cheaper and available earlier.");
+  return selectedHasBonusId(config, "bonus_62") || selectedHasBonusId(config, BONUS_IDS.GAIA_ECON_GUILD);
 }
 
 function selectedHasOranosSkyPassageBonus(config) {
-  return selectedHasBonusId(config, "bonus_56") || selectedHasBonusLabel(config, ORANOS_SKY_PASSAGE_BONUS_LABEL);
+  return selectedHasBonusId(config, "bonus_56") || selectedHasBonusId(config, ORANOS_SKY_PASSAGE_BONUS_ID);
 }
 
 function selectedHasFuxiNezhaBonus(config) {
-  return selectedHasBonusId(config, "bonus_66") || selectedHasBonusLabel(config, FUXI_NEZHA_BONUS_LABEL);
+  return selectedHasBonusId(config, "bonus_66") || selectedHasBonusId(config, FUXI_NEZHA_BONUS_ID);
 }
 
 function selectedHasShennongFarmArchaicBonus(config) {
-  return selectedHasBonusId(config, "bonus_73") || selectedHasBonusLabel(config, "Farms are available in the Archaic Age and auto-build on Favored Land.");
+  return selectedHasBonusId(config, "bonus_73") || selectedHasBonusId(config, BONUS_IDS.SHENNONG_FARM_ARCHAIC);
 }
 
 const TECHTREE_ECON_UPGRADE_NAMES = new Set([
@@ -6156,7 +6341,7 @@ function applyGenericBonusRightSideNodes(culture, age, config, nodes, options = 
 }
 
 function selectedHasThorDwarvenArmoryBonus(config) {
-  return selectedHasBonusId(config, "bonus_36") || selectedHasBonusLabel(config, THOR_DWARVEN_ARMORY_BONUS_LABEL);
+  return selectedHasBonusId(config, "bonus_36") || selectedHasBonusId(config, THOR_DWARVEN_ARMORY_BONUS_ID);
 }
 
 function greekApplyThorDwarvenArmoryRightSide(nodes, config) {
@@ -12586,7 +12771,7 @@ function aztecApplyGreatTempleSelectionRightSide(age, config, nodes) {
   const arrival = Object.values(AZTEC_MYTHIC_ARRIVALS).includes(config?.aztecMythicArrival)
     ? config.aztecMythicArrival
     : AZTEC_MYTHIC_ARRIVALS.Quetzalcoatl;
-  const jaguarHeroic = selectedHasBonusId(config, "bonus_93") || selectedHasBonusLabel(config, TEZCAT_JAGUAR_RIDER_BONUS_LABEL);
+  const jaguarHeroic = selectedHasBonusId(config, "bonus_93") || selectedHasBonusId(config, TEZCAT_JAGUAR_RIDER_BONUS_ID);
   if (age === "MythicAge") {
     out.push(rightSideNode("Tech", arrival, "GreatTemple", "2,1"));
     if (!jaguarHeroic) out.push(rightSideNode("Unit", "JaguarRider", "GreatTemple", "5,0"));
