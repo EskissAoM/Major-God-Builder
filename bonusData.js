@@ -92,7 +92,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_7",
     "sourcePantheon": "Greek",
     "sourceMajor": "Hades",
-    "label": "Myth units gain bonus hit points by age.",
+    "label": "Myth units gain +4% bonus hit points by age.",
     "allowedPantheons": [
       "All"
     ],
@@ -105,7 +105,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_8",
     "sourcePantheon": "Greek",
     "sourceMajor": "Hades",
-    "label": "Ranged soldiers and heroes get extra range and line of sight.",
+    "label": "Ranged soldiers and heroes get +1 extra range and line of sight.",
     "allowedPantheons": [
       "All"
     ],
@@ -118,7 +118,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_9",
     "sourcePantheon": "Greek",
     "sourceMajor": "Hades",
-    "label": "Ranged-soldier technologies are cheaper.",
+    "label": "Ranged-soldier technologies are 33% cheaper.",
     "allowedPantheons": [
       "All"
     ],
@@ -131,7 +131,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_10",
     "sourcePantheon": "Greek",
     "sourceMajor": "Hades",
-    "label": "Ranged fortifications get extra range.",
+    "label": "Ranged fortifications get +2 extra range.",
     "allowedPantheons": [
       "All"
     ],
@@ -159,7 +159,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_12",
     "sourcePantheon": "Greek",
     "sourceMajor": "Poseidon",
-    "label": "Cavalry, Caravans, and myth units gain speed by age.",
+    "label": "Cavalry, Caravans, and myth units gain +0.1 speed by age.",
     "allowedPantheons": [
       "All"
     ],
@@ -214,7 +214,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_16",
     "sourcePantheon": "Greek",
     "sourceMajor": "Demeter",
-    "label": "Herdables near Temples improve favor-gathering.",
+    "label": "Herdables near Temples improve favor-gathering by 3% (up to 30%).",
     "allowedPantheons": [
       "Greek"
     ],
@@ -253,7 +253,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_19",
     "sourcePantheon": "Greek",
     "sourceMajor": "Demeter",
-    "label": "Herdables fatten faster and hold more food.",
+    "label": "Herdables fatten 40% faster and hold 20% more food.",
     "allowedPantheons": [
       "All"
     ],
@@ -266,7 +266,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_20",
     "sourcePantheon": "Greek",
     "sourceMajor": "Demeter",
-    "label": "Human soldiers and myth units train faster by age.",
+    "label": "Human soldiers and myth units train 10% faster by age.",
     "allowedPantheons": [
       "All"
     ],
@@ -307,7 +307,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_23",
     "sourcePantheon": "Egyptian",
     "sourceMajor": "Ra",
-    "label": "Pharaoh-empowered Monuments empower nearby buildings.",
+    "label": "Pharaoh-empowered Monuments empower nearby buildings at 60% efficiency.",
     "allowedPantheons": [
       "Egyptian"
     ],
@@ -320,7 +320,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_24",
     "sourcePantheon": "Egyptian",
     "sourceMajor": "Ra",
-    "label": "Priests can empower.",
+    "label": "Priests can empower at 60% efficiency of Pharaoh.",
     "allowedPantheons": [
       "Egyptian"
     ],
@@ -335,7 +335,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_25",
     "sourcePantheon": "Egyptian",
     "sourceMajor": "Isis",
-    "label": "Monuments block enemy god powers in range.",
+    "label": "Monuments block enemy god powers in a 25 range.",
     "allowedPantheons": [
       "Egyptian"
     ],
@@ -374,7 +374,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_28",
     "sourcePantheon": "Egyptian",
     "sourceMajor": "Isis",
-    "label": "Obelisks are cheaper and built faster by Priests.",
+    "label": "Obelisks are -5 gold cheaper and built 40% faster by Priests.",
     "allowedPantheons": [
       "Egyptian"
     ],
@@ -387,7 +387,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_29",
     "sourcePantheon": "Egyptian",
     "sourceMajor": "Isis",
-    "label": "Empowered Monuments heal nearby units and generate favor faster.",
+    "label": "Empowered Monuments heal nearby units by 1 hp/s and generate favor 100% faster.",
     "allowedPantheons": [
       "Egyptian"
     ],
@@ -402,7 +402,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_30",
     "sourcePantheon": "Egyptian",
     "sourceMajor": "Set",
-    "label": "Monuments reduce nearby Barracks and Migdol Stronghold unit costs.",
+    "label": "Monuments reduce nearby Barracks and Migdol Stronghold unit costs by 10%.",
     "allowedPantheons": [
       "Egyptian"
     ],
@@ -415,12 +415,25 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_31",
     "sourcePantheon": "Egyptian",
     "sourceMajor": "Set",
-    "label": "Starts with a Baboon of Set and gets Animals of Set on age-up. Pharaohs can summon Animals of Set and Priests can convert wild animals.",
+    "label": "Starts with a Baboon of Set and gets Animals of Set on age-up. Pharaohs can summon Animals of Set.",
     "allowedPantheons": [
       "Egyptian"
     ],
     "files": "techtree.xml\nmajor_gods.xml",
-    "notes": "Adds animal summon commands to Pharaoh.Enables Convert action for Priest.Adds one BaboonOfSet to Set's normal starting units.Enables and/or grants Set animal units; later animal grants may be in other age techs. Raw XML cleared: implemented by app.js special handler.",
+    "notes": "Adds animal summon commands to Pharaoh. Adds one BaboonOfSet to Set's starting units. Enables and/or grants Set animal units by age. Raw XML cleared: implemented by app.js special handler.",
+    "majorXml": "",
+    "techEffects": ""
+  },
+  {
+    "id": "bonus_31b",
+    "sourcePantheon": "Egyptian",
+    "sourceMajor": "Set",
+    "label": "Priests can convert wild animals.",
+    "allowedPantheons": [
+      "Egyptian"
+    ],
+    "files": "techtree.xml",
+    "notes": "Enables the Priest Convert action. Split from the original Animals of Set bonus so it can be selected separately.",
     "majorXml": "",
     "techEffects": ""
   },
@@ -428,7 +441,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_32",
     "sourcePantheon": "Egyptian",
     "sourceMajor": "Set",
-    "label": "Spearmen, Axemen, and Slingers move faster.",
+    "label": "Spearmen, Axemen, and Slingers move 5% faster.",
     "allowedPantheons": [
       "Egyptian"
     ],
@@ -469,7 +482,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_35",
     "sourcePantheon": "Norse",
     "sourceMajor": "Thor",
-    "label": "Dwarves cost less gold and gather food and wood faster.",
+    "label": "Dwarves cost -10 gold and gather food and wood 25% faster.",
     "allowedPantheons": [
       "Norse"
     ],
@@ -508,7 +521,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_38",
     "sourcePantheon": "Norse",
     "sourceMajor": "Thor",
-    "label": "Technologies researched at Armory are cheaper.",
+    "label": "Technologies researched at Armory are 10% cheaper.",
     "allowedPantheons": [
       "All"
     ],
@@ -549,7 +562,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_41",
     "sourcePantheon": "Norse",
     "sourceMajor": "Odin",
-    "label": "Human units and heroes regenerate hit points.",
+    "label": "Human units and heroes regenerate 0.4 hp/s.",
     "allowedPantheons": [
       "All"
     ],
@@ -603,7 +616,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_45",
     "sourcePantheon": "Norse",
     "sourceMajor": "Loki",
-    "label": "Military-built buildings are constructed faster.",
+    "label": "Military-built buildings are constructed 10% faster.",
     "displayLabels": {
       "Norse": "Infantry units construct buildings 10% faster.",
       "default": "Villagers construct buildings 10% faster."
@@ -620,7 +633,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_46",
     "sourcePantheon": "Norse",
     "sourceMajor": "Loki",
-    "label": "Ox Carts are cheaper.",
+    "label": "Ox Carts are 50% cheaper.",
     "allowedPantheons": [
       "Norse"
     ],
@@ -633,7 +646,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_47",
     "sourcePantheon": "Norse",
     "sourceMajor": "Loki",
-    "label": "Transforming Gatherers and Dwarves into Berserks is cheaper.",
+    "label": "Transforming Gatherers and Dwarves into Berserks is 50% cheaper.",
     "allowedPantheons": [
       "Norse"
     ],
@@ -693,7 +706,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_52",
     "sourcePantheon": "Atlantean",
     "sourceMajor": "Kronos",
-    "label": "Can Time-Shift buildings. Most are free, except Towers and Fortress-type buildings costing half their price.",
+    "label": "Can Time-Shift buildings. Most are free, except Towers and Fortress-type buildings costing 50% of their price.",
     "allowedPantheons": [
       "All"
     ],
@@ -797,7 +810,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_59",
     "sourcePantheon": "Atlantean",
     "sourceMajor": "Gaia",
-    "label": "Economic buildings grow Lush that heals friendly units and buildings.",
+    "label": "Economic buildings grow Lush that heals friendly units and buildings by 1hp/s.",
     "allowedPantheons": [
       "All"
     ],
@@ -823,7 +836,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_61",
     "sourcePantheon": "Atlantean",
     "sourceMajor": "Gaia",
-    "label": "Citizen hero promotion is cheaper.",
+    "label": "Citizen hero promotion is 25% cheaper.",
     "allowedPantheons": [
       "Atlantean"
     ],
@@ -855,7 +868,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_63",
     "sourcePantheon": "Chinese",
     "sourceMajor": "Fuxi",
-    "label": "Yin and Yang blessing alternates bonuses.Yin gives an economic gather-rate boost.Yang gives a human and siege damage boost.",
+    "label": "Yin and Yang blessing alternates bonuses. Yin gives a +10% gather-rate boost. Yang gives human and siege units +10% damage boost.",
     "allowedPantheons": [
       "All"
     ],
@@ -868,7 +881,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_64",
     "sourcePantheon": "Chinese",
     "sourceMajor": "Fuxi",
-    "label": "Buildings on Favored Land research much faster.",
+    "label": "Buildings on Favored Land research 300% faster.",
     "allowedPantheons": [
       "Chinese"
     ],
@@ -881,7 +894,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_65",
     "sourcePantheon": "Chinese",
     "sourceMajor": "Fuxi",
-    "label": "Military Camp and Machine Workshop additions are cheaper on Favored Land.",
+    "label": "Military Camp and Machine Workshop additions are 25% cheaper on Favored Land.",
     "allowedPantheons": [
       "Chinese"
     ],
@@ -909,7 +922,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_67",
     "sourcePantheon": "Chinese",
     "sourceMajor": "Nüwa",
-    "label": "Creator’s Auspice improves as favor is earned, reducing standard Villager cost and increasing building hit points by 10%.",
+    "label": "Creator’s Auspice improves as favor is earned, reducing standard Villager cost by 25% and increasing building hit points by 10% for each tier (up to 75% and 30% respectively).",
     "allowedPantheons": [
       "All"
     ],
@@ -922,7 +935,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_68",
     "sourcePantheon": "Chinese",
     "sourceMajor": "Nüwa",
-    "label": "Buildings on Favored Land self-construct slowly.",
+    "label": "Buildings on Favored Land self-construct at 25% speed.",
     "allowedPantheons": [
       "Chinese"
     ],
@@ -935,7 +948,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_69",
     "sourcePantheon": "Chinese",
     "sourceMajor": "Nüwa",
-    "label": "Buildings spread Favored Land farther.",
+    "label": "Buildings spread Favored Land 2 range farther.",
     "allowedPantheons": [
       "Chinese"
     ],
@@ -976,7 +989,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_72",
     "sourcePantheon": "Chinese",
     "sourceMajor": "Shennong",
-    "label": "Myth units regenerate hit points on Favored Land. Regeneration scales by age.",
+    "label": "Myth units regenerate +1.5 hit points by age on Favored Land up to +6hp/s.",
     "allowedPantheons": [
       "Chinese"
     ],
@@ -1021,7 +1034,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_75",
     "sourcePantheon": "Japanese",
     "sourceMajor": "Amaterasu",
-    "label": "Way of the Sun grants passive gold by Bushidō tier.",
+    "label": "Way of the Sun grants +1 passive gold by Bushidō tier.",
     "allowedPantheons": [
       "Japanese"
     ],
@@ -1034,7 +1047,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_76",
     "sourcePantheon": "Japanese",
     "sourceMajor": "Amaterasu",
-    "label": "Samurai and Onna-mushas generate Bushidō XP faster.",
+    "label": "Samurai and Onna-mushas generate Bushidō XP 300% faster.",
     "allowedPantheons": [
       "Japanese"
     ],
@@ -1047,7 +1060,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_77",
     "sourcePantheon": "Japanese",
     "sourceMajor": "Amaterasu",
-    "label": "Samurai and Onna-mushas regenerate hit points.",
+    "label": "Samurai and Onna-mushas regenerate +0.5 hit points, doubled in combat.",
     "allowedPantheons": [
       "Japanese"
     ],
@@ -1060,7 +1073,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_78",
     "sourcePantheon": "Japanese",
     "sourceMajor": "Amaterasu",
-    "label": "Shrines slowly increase nearby resource contents up to a cap.",
+    "label": "Shrines slowly increase nearby resource contents up to 40%.",
     "allowedPantheons": [
       "Japanese"
     ],
@@ -1075,7 +1088,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_79",
     "sourcePantheon": "Japanese",
     "sourceMajor": "Tsukuyomi",
-    "label": "Way of the Moon gives cavalry and Shinobi increasing attack by Bushidō tier.",
+    "label": "Way of the Moon gives cavalry and Shinobi +4% attack by Bushidō tier.",
     "allowedPantheons": [
       "Japanese"
     ],
@@ -1088,7 +1101,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_80",
     "sourcePantheon": "Japanese",
     "sourceMajor": "Tsukuyomi",
-    "label": "Researching technologies grants Bushidō XP.",
+    "label": "Researching technologies grants Bushidō XP equal to their resource cost.",
     "allowedPantheons": [
       "Japanese"
     ],
@@ -1101,7 +1114,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_81",
     "sourcePantheon": "Japanese",
     "sourceMajor": "Tsukuyomi",
-    "label": "Age-up is faster.",
+    "label": "Age-up is 33% faster.",
     "allowedPantheons": [
       "All"
     ],
@@ -1129,7 +1142,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_83",
     "sourcePantheon": "Japanese",
     "sourceMajor": "Susanoo",
-    "label": "Way of the Storm starts with favor, granting more favor on Bushidō tier-ups.",
+    "label": "Way of the Storm starts with 15 favor, granting increasingly more favor on Bushidō tier-ups.",
     "allowedPantheons": [
       "Japanese"
     ],
@@ -1142,7 +1155,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_84",
     "sourcePantheon": "Japanese",
     "sourceMajor": "Susanoo",
-    "label": "Myth units generate Bushidō XP passively and in combat.",
+    "label": "Myth units generate Bushidō XP passively (between 0.5XP/s and 3Xp/s depending on their age) and in combat (equal to twice the hit point damage they inflict on enemy units).",
     "allowedPantheons": [
       "Japanese"
     ],
@@ -1155,7 +1168,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_85",
     "sourcePantheon": "Japanese",
     "sourceMajor": "Susanoo",
-    "label": "Invoking a god power makes other god powers cheaper to reinvoke.",
+    "label": "Invoking a god power makes other god powers 20% cheaper to reinvoke.",
     "allowedPantheons": [
       "All"
     ],
@@ -1168,7 +1181,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_86",
     "sourcePantheon": "Japanese",
     "sourceMajor": "Susanoo",
-    "label": "Unit abilities recharge faster.",
+    "label": "Unit abilities recharge 34% faster.",
     "allowedPantheons": [
       "All"
     ],
@@ -1196,7 +1209,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_88",
     "sourcePantheon": "Aztec",
     "sourceMajor": "Huitzilopochtli",
-    "label": "Collecting Tonalli grants resources in addition to favor.",
+    "label": "Collecting Tonalli grants +5% standard resources in addition to favor.",
     "allowedPantheons": [
       "Aztec"
     ],
@@ -1209,7 +1222,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_89",
     "sourcePantheon": "Aztec",
     "sourceMajor": "Huitzilopochtli",
-    "label": "Shorn Ones have more hit points and generate extra Tonalli in combat.",
+    "label": "Shorn Ones have +10% hit points and generate 100% extra Tonalli in combat.",
     "allowedPantheons": [
       "Aztec"
     ],
@@ -1239,13 +1252,14 @@ window.AOM_BONUS_DATA = [
     "sourceMajor": "Tezcatlipoca",
     "label": "Sentry Towers, Spike Traps, and Smoke Traps build 25% faster and deal 25% more damage.",
     "displayLabels": {
-      "default": "Sentry Towers, Spike Traps, and Smoke Traps build 25% faster and deal 25% more damage."
+      "default": "Sentry Towers build 25% faster and deal 25% more damage.",
+      "Aztec": "Sentry Towers, Spike Traps, and Smoke Traps build 25% faster and deal 25% more damage."
     },
     "allowedPantheons": [
-      "Aztec"
+      "All"
     ],
     "files": "techtree.xml",
-    "notes": "Sets BuildPoints to 0.75 percent for SentryTower and AbstractTrap.Adds 1.25 BasePercent damage to SentryTower and AbstractTrap.",
+    "notes": "Aztec receives SentryTower and AbstractTrap effects. Other pantheons receive only the SentryTower effects.",
     "majorXml": "",
     "techEffects": "<effect type=\"Data\" amount=\"0.75\" subtype=\"BuildPoints\" relativity=\"Percent\">\n\t<target type=\"ProtoUnit\">SentryTower</target>\n</effect>\n<effect type=\"Data\" amount=\"0.75\" subtype=\"BuildPoints\" relativity=\"Percent\">\n\t<target type=\"ProtoUnit\">AbstractTrap</target>\n</effect>\n<effect type=\"Data\" allactions=\"1\" amount=\"1.25\" subtype=\"Damage\" relativity=\"BasePercent\">\n\t<target type=\"ProtoUnit\">SentryTower</target>\n</effect>\n<effect type=\"Data\" allactions=\"1\" amount=\"1.25\" subtype=\"Damage\" relativity=\"BasePercent\">\n\t<target type=\"ProtoUnit\">AbstractTrap</target>\n</effect>"
   },
@@ -1253,7 +1267,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_92",
     "sourcePantheon": "Aztec",
     "sourceMajor": "Tezcatlipoca",
-    "label": "Devoting Settlers gives higher immediate favor by age.",
+    "label": "Devoting Settlers gives +10% higher immediate favor by age.",
     "allowedPantheons": [
       "Aztec"
     ],
@@ -1323,7 +1337,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_97",
     "sourcePantheon": "Aztec",
     "sourceMajor": "Quetzalcoatl",
-    "label": "Eagle Warriors gain +1 range and +1 line of sight in the Heroic and Mythic Ages.",
+    "label": "Eagle Warriors gain +1 range and line of sight in the Heroic and Mythic Ages.",
     "allowedPantheons": [
       "Aztec"
     ],

@@ -30,6 +30,7 @@ const BONUS_IDS = Object.freeze({
   DEMETER_TRAIN_FASTER_BY_AGE: "bonus_20",
   RA_FORTRESS_HP: "bonus_22",
   SET_ANIMALS: "bonus_31",
+  SET_PRIEST_CONVERT_ANIMALS: "bonus_31b",
   SET_MILITARY_BUILDING_DISCOUNT: "bonus_33",
   THOR_DWARVEN_ARMORY: "bonus_36",
   THOR_DWARF_SPAWN: "bonus_37",
@@ -62,6 +63,7 @@ const BONUS_IDS = Object.freeze({
   HUITZ_TONALLI_RESOURCES: "bonus_88",
   HUITZ_SHORN_TONALLI: "bonus_89",
   TEZCAT_OBSIDIAN_SHARD: "bonus_90",
+  TEZCAT_TOWER_TRAPS: "bonus_91",
   TEZCAT_DEVOTE_FAVOR: "bonus_92",
   TEZCAT_JAGUAR_RIDER: "bonus_93",
   QUETZ_DROPSITE_DISCOUNT: "bonus_95",
@@ -1343,6 +1345,7 @@ const SHENNONG_MYTH_REGEN_FAVORED_LAND_BONUS_ID = BONUS_IDS.SHENNONG_MYTH_REGEN_
 const SHENNONG_GIFT_OF_BEASTS_BONUS_ID = BONUS_IDS.SHENNONG_GIFT_OF_BEASTS;
 const SHENNONG_FARM_LINE_UPGRADES_BONUS_ID = BONUS_IDS.SHENNONG_FARM_LINE_UPGRADES;
 const SET_ANIMALS_BONUS_ID = BONUS_IDS.SET_ANIMALS;
+const SET_PRIEST_CONVERT_ANIMALS_BONUS_ID = BONUS_IDS.SET_PRIEST_CONVERT_ANIMALS;
 const DEMETER_HERDABLES_TEMPLE_FAVOR_BONUS_ID = BONUS_IDS.DEMETER_HERDABLES_TEMPLE_FAVOR;
 const DEMETER_HERDABLES_FATTEN_BONUS_ID = BONUS_IDS.DEMETER_HERDABLES_FATTEN;
 const DEMETER_HERDABLES_SPAWN_ON_AGE_UP_BONUS_ID = BONUS_IDS.DEMETER_HERDABLES_SPAWN_ON_AGE_UP;
@@ -1362,59 +1365,79 @@ function dynamicBonusLabel(entry, pantheonOrConfig) {
   return displayLabels[pantheon] || displayLabels.default || entry.label || "";
 }
 
+function tezcatTowerTrapEffects(config) {
+  const sentryTowerEffects = `<effect type="Data" amount="0.75" subtype="BuildPoints" relativity="Percent">
+	<target type="ProtoUnit">SentryTower</target>
+</effect>
+<effect type="Data" allactions="1" amount="1.25" subtype="Damage" relativity="BasePercent">
+	<target type="ProtoUnit">SentryTower</target>
+</effect>`;
+
+  if (config?.baseCulture !== "Aztec") return sentryTowerEffects;
+
+  return `${sentryTowerEffects}
+<effect type="Data" amount="0.75" subtype="BuildPoints" relativity="Percent">
+	<target type="ProtoUnit">AbstractTrap</target>
+</effect>
+<effect type="Data" allactions="1" amount="1.25" subtype="Damage" relativity="BasePercent">
+	<target type="ProtoUnit">AbstractTrap</target>
+</effect>`;
+}
+
 const SET_ANIMALS_ARCHAIC_EFFECTS = `<effect type="Data" amount="1.00" subtype="Enable" relativity="Absolute">
 	<target type="ProtoUnit">BaboonOfSet</target>
 </effect>
-<effect type="Data" action="Convert" amount="1.00" subtype="ActionEnable" relativity="Absolute">
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="BaboonOfSet" row="1" column="1" relativity="Assign">
+	<target type="ProtoUnit">Pharaoh</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="GazelleOfSet" row="1" column="2" relativity="Assign">
+	<target type="ProtoUnit">Pharaoh</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="GiraffeOfSet" row="1" column="3" relativity="Assign">
+	<target type="ProtoUnit">Pharaoh</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="HippopotamusOfSet" row="1" column="4" relativity="Assign">
+	<target type="ProtoUnit">Pharaoh</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="HyenaOfSet" row="2" column="1" relativity="Assign">
+	<target type="ProtoUnit">Pharaoh</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="CrocodileOfSet" row="2" column="2" relativity="Assign">
+	<target type="ProtoUnit">Pharaoh</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="RhinocerosOfSet" row="2" column="3" relativity="Assign">
+	<target type="ProtoUnit">Pharaoh</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="ElephantOfSet" row="2" column="4" relativity="Assign">
+	<target type="ProtoUnit">Pharaoh</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="BaboonOfSet" row="1" column="1" relativity="Assign">
+	<target type="ProtoUnit">PharaohNewKingdom</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="GazelleOfSet" row="1" column="2" relativity="Assign">
+	<target type="ProtoUnit">PharaohNewKingdom</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="GiraffeOfSet" row="1" column="3" relativity="Assign">
+	<target type="ProtoUnit">PharaohNewKingdom</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="HippopotamusOfSet" row="1" column="4" relativity="Assign">
+	<target type="ProtoUnit">PharaohNewKingdom</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="HyenaOfSet" row="2" column="1" relativity="Assign">
+	<target type="ProtoUnit">PharaohNewKingdom</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="CrocodileOfSet" row="2" column="2" relativity="Assign">
+	<target type="ProtoUnit">PharaohNewKingdom</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="RhinocerosOfSet" row="2" column="3" relativity="Assign">
+	<target type="ProtoUnit">PharaohNewKingdom</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="ElephantOfSet" row="2" column="4" relativity="Assign">
+	<target type="ProtoUnit">PharaohNewKingdom</target>
+</effect>`;
+
+const SET_PRIEST_CONVERT_ANIMALS_ARCHAIC_EFFECTS = `<effect type="Data" action="Convert" amount="1.00" subtype="ActionEnable" relativity="Absolute">
 	<target type="ProtoUnit">Priest</target>
-</effect>
-<effect type="Data" amount="1.00" subtype="CommandAdd" proto="BaboonOfSet" row="1" column="1" relativity="Assign">
-	<target type="ProtoUnit">Pharaoh</target>
-</effect>
-<effect type="Data" amount="1.00" subtype="CommandAdd" proto="GazelleOfSet" row="1" column="2" relativity="Assign">
-	<target type="ProtoUnit">Pharaoh</target>
-</effect>
-<effect type="Data" amount="1.00" subtype="CommandAdd" proto="GiraffeOfSet" row="1" column="3" relativity="Assign">
-	<target type="ProtoUnit">Pharaoh</target>
-</effect>
-<effect type="Data" amount="1.00" subtype="CommandAdd" proto="HippopotamusOfSet" row="1" column="4" relativity="Assign">
-	<target type="ProtoUnit">Pharaoh</target>
-</effect>
-<effect type="Data" amount="1.00" subtype="CommandAdd" proto="HyenaOfSet" row="2" column="1" relativity="Assign">
-	<target type="ProtoUnit">Pharaoh</target>
-</effect>
-<effect type="Data" amount="1.00" subtype="CommandAdd" proto="CrocodileOfSet" row="2" column="2" relativity="Assign">
-	<target type="ProtoUnit">Pharaoh</target>
-</effect>
-<effect type="Data" amount="1.00" subtype="CommandAdd" proto="RhinocerosOfSet" row="2" column="3" relativity="Assign">
-	<target type="ProtoUnit">Pharaoh</target>
-</effect>
-<effect type="Data" amount="1.00" subtype="CommandAdd" proto="ElephantOfSet" row="2" column="4" relativity="Assign">
-	<target type="ProtoUnit">Pharaoh</target>
-</effect>
-<effect type="Data" amount="1.00" subtype="CommandAdd" proto="BaboonOfSet" row="1" column="1" relativity="Assign">
-	<target type="ProtoUnit">PharaohNewKingdom</target>
-</effect>
-<effect type="Data" amount="1.00" subtype="CommandAdd" proto="GazelleOfSet" row="1" column="2" relativity="Assign">
-	<target type="ProtoUnit">PharaohNewKingdom</target>
-</effect>
-<effect type="Data" amount="1.00" subtype="CommandAdd" proto="GiraffeOfSet" row="1" column="3" relativity="Assign">
-	<target type="ProtoUnit">PharaohNewKingdom</target>
-</effect>
-<effect type="Data" amount="1.00" subtype="CommandAdd" proto="HippopotamusOfSet" row="1" column="4" relativity="Assign">
-	<target type="ProtoUnit">PharaohNewKingdom</target>
-</effect>
-<effect type="Data" amount="1.00" subtype="CommandAdd" proto="HyenaOfSet" row="2" column="1" relativity="Assign">
-	<target type="ProtoUnit">PharaohNewKingdom</target>
-</effect>
-<effect type="Data" amount="1.00" subtype="CommandAdd" proto="CrocodileOfSet" row="2" column="2" relativity="Assign">
-	<target type="ProtoUnit">PharaohNewKingdom</target>
-</effect>
-<effect type="Data" amount="1.00" subtype="CommandAdd" proto="RhinocerosOfSet" row="2" column="3" relativity="Assign">
-	<target type="ProtoUnit">PharaohNewKingdom</target>
-</effect>
-<effect type="Data" amount="1.00" subtype="CommandAdd" proto="ElephantOfSet" row="2" column="4" relativity="Assign">
-	<target type="ProtoUnit">PharaohNewKingdom</target>
 </effect>`;
 
 const SET_ANIMALS_CLASSICAL_EFFECTS = `<effect type="CreateUnit" unit="HyenaOfSet" generator="AbstractTemple">
@@ -2938,12 +2961,14 @@ function bonusTechEffects(config) {
       if (entry.id === BONUS_IDS.KRONOS_EXTRA_MYTH_UNITS) return "";
       if (entry.id === BONUS_IDS.QUETZ_EAGLE_RANGE_LOS) return "";
       if (entry.id === BONUS_IDS.TEZCAT_JAGUAR_RIDER) return "";
+      if (entry.id === BONUS_IDS.TEZCAT_TOWER_TRAPS || entry.id === "bonus_91") return tezcatTowerTrapEffects(config);
       if (entry.id === BONUS_IDS.TEZCAT_OBSIDIAN_SHARD) return "";
       if (entry.id === BONUS_IDS.FUXI_NEZHA) return fuxiNezhaTempleCommandEffects(config);
       if (entry.id === BONUS_IDS.NUWA_CREATORS_AUSPICE || entry.id === "bonus_67") return nuwaCreatorsAuspiceCreatePowerEffect(config);
       if (entry.id === BONUS_IDS.SHENNONG_GIFT_OF_BEASTS) return "";
       if (entry.id === BONUS_IDS.SHENNONG_FARM_LINE_UPGRADES) return "";
       if (entry.id === BONUS_IDS.SET_ANIMALS) return SET_ANIMALS_ARCHAIC_EFFECTS;
+      if (entry.id === BONUS_IDS.SET_PRIEST_CONVERT_ANIMALS) return SET_PRIEST_CONVERT_ANIMALS_ARCHAIC_EFFECTS;
       if (entry.id === BONUS_IDS.SHENNONG_MYTH_REGEN_FAVORED_LAND) return SHENNONG_MYTH_REGEN_FAVORED_LAND_AGE_EFFECTS;
       if (entry.id === BONUS_IDS.SUSANOO_BUSHIDO_MYTH_XP) return SUSANOO_BUSHIDO_MYTH_XP_ARCHAIC_EFFECTS;
       if (entry.id === BONUS_IDS.TSUKUYOMI_FREE_KITSUNE) return TSUKUYOMI_FREE_KITSUNE_EFFECT;
@@ -3092,7 +3117,7 @@ function sanitizeBonusTechEffects(xml) {
 
 function bonusMajorXml(config) {
   return selectedBonusEntries(config)
-    .filter((entry) => ![ZEUS_STARTING_FAVOR_BONUS_ID, KRONOS_TIMESHIFT_BONUS_ID, HUITZ_TONALLI_RESOURCES_BONUS_ID, HUITZ_SHORN_TONALLI_BONUS_ID, NUWA_FAVORED_LAND_FARTHER_BONUS_ID, SET_ANIMALS_BONUS_ID, SUSANOO_POWER_COST_FACTOR_BONUS_ID, SUSANOO_BUSHIDO_MYTH_XP_BONUS_ID, TSUKUYOMI_RESEARCH_BUSHIDO_XP_BONUS_ID, ODIN_GREAT_HALL_FAVOR_BONUS_ID].includes(entry.id))
+    .filter((entry) => ![ZEUS_STARTING_FAVOR_BONUS_ID, KRONOS_TIMESHIFT_BONUS_ID, HUITZ_TONALLI_RESOURCES_BONUS_ID, HUITZ_SHORN_TONALLI_BONUS_ID, NUWA_FAVORED_LAND_FARTHER_BONUS_ID, SET_ANIMALS_BONUS_ID, SET_PRIEST_CONVERT_ANIMALS_BONUS_ID, SUSANOO_POWER_COST_FACTOR_BONUS_ID, SUSANOO_BUSHIDO_MYTH_XP_BONUS_ID, TSUKUYOMI_RESEARCH_BUSHIDO_XP_BONUS_ID, ODIN_GREAT_HALL_FAVOR_BONUS_ID].includes(entry.id))
     .map((entry) => entry.majorXml || "")
     .filter(Boolean)
     .join("\n");
@@ -14278,8 +14303,8 @@ async function exportGodPreviewImage() {
         const minors = entry.minors || [];
         const tileGap = 18;
         const bodyW = innerWidth - 40 - leftW - 30;
+        const tileW = (bodyW - tileGap) / 2;
         if (minors.length) {
-          const tileW = (bodyW - tileGap) / 2;
           minors.slice(0, 2).forEach((minor, i) => {
             const tx = bodyX + i * (tileW + tileGap);
             fillRoundRect(ctx, tx, ageY + 16, tileW, 82, 14, colors.row, colors.softStroke);
@@ -14297,12 +14322,19 @@ async function exportGodPreviewImage() {
           fillRoundRect(ctx, bodyX, extraY, bodyW, 42, 12, colors.row, colors.softStroke);
           drawLeftText(ctx, parts.label.toUpperCase(), bodyX + 16, extraY + 21, 150, canvasFont(14, 900), colors.label);
           const extraIcon = parts.icon ? extraIcons.get(parts.icon) : null;
-          const extraValueX = bodyX + 176;
+          const valueFont = canvasFont(18, 800);
+          // Canvas export has to reproduce the browser's flex layout manually.
+          // In the browser, the hero / special rows visually start close to the
+          // right edge of the first minor-god tile, not immediately after the
+          // label and not centered across the whole remaining row. Anchor the
+          // icon there so it lines up with the tile layout across wide exports.
+          const anchorIconX = minors.length ? (bodyX + tileW - 44) : (bodyX + Math.min(bodyW * 0.42, 360));
+          const extraValueW = Math.max(80, bodyX + bodyW - anchorIconX - 24);
           if (extraIcon) {
-            drawCircleImage(ctx, extraIcon, extraValueX + 18, extraY + 21, 32);
-            drawLeftText(ctx, parts.value, extraValueX + 44, extraY + 21, bodyW - 240, canvasFont(18, 800), colors.text);
+            drawCircleImage(ctx, extraIcon, anchorIconX, extraY + 21, 32);
+            drawLeftText(ctx, parts.value, anchorIconX + 36, extraY + 21, Math.max(40, extraValueW - 36), valueFont, colors.text);
           } else {
-            drawLeftText(ctx, parts.value, extraValueX, extraY + 21, bodyW - 196, canvasFont(18, 800), colors.text);
+            drawLeftText(ctx, parts.value, anchorIconX + 2, extraY + 21, extraValueW, valueFont, colors.text);
           }
           extraY += 48;
         }
