@@ -48,8 +48,11 @@ const BONUS_IDS = Object.freeze({
   GAIA_LUSH: "bonus_59",
   GAIA_HERO_CITIZENS: "bonus_60",
   GAIA_ECON_GUILD: "bonus_62",
+  FUXI_FAVORED_LAND_RESEARCH: "bonus_64",
+  FUXI_FAVORED_LAND_ADDITIONS: "bonus_65",
   FUXI_NEZHA: "bonus_66",
   NUWA_CREATORS_AUSPICE: "bonus_67",
+  NUWA_FAVORED_LAND_AUTOBUILD: "bonus_68",
   NUWA_FAVORED_LAND_FARTHER: "bonus_69",
   SHENNONG_GIFT_OF_BEASTS: "bonus_71",
   SHENNONG_MYTH_REGEN_FAVORED_LAND: "bonus_72",
@@ -1382,6 +1385,13 @@ const NUWA_FAVORED_LAND_FARTHER_BONUS_ID = BONUS_IDS.NUWA_FAVORED_LAND_FARTHER;
 const SHENNONG_MYTH_REGEN_FAVORED_LAND_BONUS_ID = BONUS_IDS.SHENNONG_MYTH_REGEN_FAVORED_LAND;
 const SHENNONG_GIFT_OF_BEASTS_BONUS_ID = BONUS_IDS.SHENNONG_GIFT_OF_BEASTS;
 const SHENNONG_FARM_LINE_UPGRADES_BONUS_ID = BONUS_IDS.SHENNONG_FARM_LINE_UPGRADES;
+const FAVORED_LAND_BUILDINGCHAIN_BONUS_IDS = new Set([
+  BONUS_IDS.FUXI_FAVORED_LAND_RESEARCH,
+  BONUS_IDS.NUWA_FAVORED_LAND_AUTOBUILD,
+  BONUS_IDS.NUWA_FAVORED_LAND_FARTHER,
+  BONUS_IDS.SHENNONG_MYTH_REGEN_FAVORED_LAND,
+  BONUS_IDS.SHENNONG_FARM_ARCHAIC,
+].filter(Boolean));
 const SET_ANIMALS_BONUS_ID = BONUS_IDS.SET_ANIMALS;
 const SET_PRIEST_CONVERT_ANIMALS_BONUS_ID = BONUS_IDS.SET_PRIEST_CONVERT_ANIMALS;
 const DEMETER_HERDABLES_TEMPLE_FAVOR_BONUS_ID = BONUS_IDS.DEMETER_HERDABLES_TEMPLE_FAVOR;
@@ -1556,10 +1566,10 @@ function oranosSkyPassageArchaicEffects(config) {
   }
   if (config.baseCulture === "Egyptian") {
     effects.push(`<effect type="Data" amount="0.00" subtype="cost" resource="Wood" relativity="Override">
-	<target type="ProtoUnit">DwarvenArmory</target>
+	<target type="ProtoUnit">SkyPassage</target>
 </effect>
 <effect type="Data" amount="25.00" subtype="cost" resource="Gold" relativity="Override">
-	<target type="ProtoUnit">DwarvenArmory</target>
+	<target type="ProtoUnit">SkyPassage</target>
 </effect>`);
   }
   return effects.join("\n");
@@ -2992,6 +3002,7 @@ function bonusTechEffects(config) {
       if (entry.id === BONUS_IDS.RA_FORTRESS_HP) return raFortressHitpointsEffects(config);
       if (entry.id === BONUS_IDS.POSEIDON_SPEED_BY_AGE) return POSEIDON_SPEED_BY_AGE_EFFECTS;
       if (entry.id === BONUS_IDS.POSEIDON_STABLE_MARKET_DISCOUNT) return poseidonStableMarketDiscountEffects(config);
+      if (entry.id === BONUS_IDS.FUXI_FAVORED_LAND_ADDITIONS && config.baseCulture !== "Chinese") return "";
       if (entry.id === BONUS_IDS.ORANOS_SKY_PASSAGE) return oranosSkyPassageArchaicEffects(config);
       if (entry.id === BONUS_IDS.TEZCAT_DEVOTE_FAVOR) return TEZCAT_DEVOTE_FAVOR_AGE_EFFECTS;
       if (entry.id === BONUS_IDS.KRONOS_EXTRA_MYTH_UNITS) return "";
@@ -3001,6 +3012,7 @@ function bonusTechEffects(config) {
       if (entry.id === BONUS_IDS.TEZCAT_OBSIDIAN_SHARD) return "";
       if (entry.id === BONUS_IDS.FUXI_NEZHA) return fuxiNezhaTempleCommandEffects(config);
       if (entry.id === BONUS_IDS.NUWA_CREATORS_AUSPICE || entry.id === "bonus_67") return nuwaCreatorsAuspiceCreatePowerEffect(config);
+      if (entry.id === BONUS_IDS.NUWA_FAVORED_LAND_AUTOBUILD) return nuwaFavoredLandAutoBuildEffects(config, sanitizeBonusTechEffects(entry.techEffects || ""));
       if (entry.id === BONUS_IDS.SHENNONG_GIFT_OF_BEASTS) return "";
       if (entry.id === BONUS_IDS.SHENNONG_FARM_LINE_UPGRADES) return "";
       if (entry.id === BONUS_IDS.SET_ANIMALS) return SET_ANIMALS_ARCHAIC_EFFECTS;
@@ -3471,9 +3483,7 @@ function applyMajorGodSpecialBonusPatches(doc, civ, config) {
   if (selectedHasBonusId(config, BONUS_IDS.GAIA_HERO_CITIZENS)) {
     replaceAtlanteanStartingCitizensWithHeroes(civ);
   }
-  if (selectedHasBonusId(config, NUWA_FAVORED_LAND_FARTHER_BONUS_ID)) {
-    replaceBuildingChainFromSelectedBonus(doc, civ, config, BONUS_IDS.NUWA_FAVORED_LAND_FARTHER);
-  }
+  applyFavoredLandBuildingChainPatch(doc, civ, config);
   if (selectedHasBonusId(config, BONUS_IDS.HUITZ_TONALLI_RESOURCES)) {
     insertIntoBountyResourceEarning(doc, civ, HUITZ_TONALLI_RESOURCE_REWARDS);
   }
@@ -4108,6 +4118,213 @@ function addSetBaboonToStartingUnitsBlock(doc, startingUnitsNode, label) {
   unit.setAttribute("z", "-4.00");
   unit.textContent = "BaboonOfSet";
   startingUnitsNode.appendChild(unit);
+}
+
+
+const FAVORED_LAND_CHAINABLE_BUILDINGS = Object.freeze({
+  shared: [
+    { unit: "TownCenter", radius: 20.0 },
+    { unit: "CitadelCenter", radius: 25.0 },
+    { unit: "VillageCenter", radius: 15.0 },
+    { unit: "Dock", radius: 10.0 },
+    { unit: "Temple", radius: 15.0 },
+    { unit: "SentryTower", radius: 12.0 },
+    { unit: "Armory", radius: 12.0 },
+    { unit: "Market", radius: 12.0 },
+    { unit: "Wonder", radius: 25.0 },
+  ],
+  sharedExceptAtlantean: [
+    { unit: "House", radius: 6.0 },
+  ],
+  Greek: [
+    { unit: "Storehouse", radius: 6.0 },
+    { unit: "Granary", radius: 6.0 },
+    { unit: "MilitaryAcademy", radius: 10.0 },
+    { unit: "ArcheryRange", radius: 10.0 },
+    { unit: "Stable", radius: 10.0 },
+    { unit: "Fortress", radius: 25.0 },
+  ],
+  Egyptian: [
+    { unit: "Granary", radius: 6.0 },
+    { unit: "LumberCamp", radius: 6.0 },
+    { unit: "MiningCamp", radius: 6.0 },
+    { unit: "Barracks", radius: 10.0 },
+    { unit: "SiegeWorks", radius: 10.0 },
+    { unit: "Lighthouse", radius: 12.0 },
+    { unit: "MigdolStronghold", radius: 25.0 },
+  ],
+  Norse: [
+    { unit: "Longhouse", radius: 10.0 },
+    { unit: "GreatHall", radius: 10.0 },
+    { unit: "HillFort", radius: 25.0 },
+    { unit: "AsgardianHillFort", radius: 25.0 },
+  ],
+  Atlantean: [
+    { unit: "Manor", radius: 6.0 },
+    { unit: "EconomicGuild", radius: 6.0 },
+    { unit: "MilitaryBarracks", radius: 10.0 },
+    { unit: "CounterBarracks", radius: 10.0 },
+    { unit: "Palace", radius: 25.0 },
+  ],
+  Chinese: [
+    { unit: "TentSPC", radius: 6.0 },
+    { unit: "Silo", radius: 6.0 },
+    { unit: "MachineWorkshop", radius: 12.0 },
+    { unit: "MachineWorkshopTower", radius: 12.0 },
+    { unit: "MachineWorkshopTrainingYard", radius: 12.0 },
+    { unit: "MilitaryCamp", radius: 10.0 },
+    { unit: "MilitaryCampTower", radius: 10.0 },
+    { unit: "MilitaryCampTrainingYard", radius: 10.0 },
+    { unit: "ImperialAcademy", radius: 12.0 },
+    { unit: "Baolei", radius: 25.0 },
+    { unit: "ThePeachBlossomSpring", radius: 15.0 },
+  ],
+  Japanese: [
+    { unit: "Watermill", radius: 6.0 },
+    { unit: "MiningCampJapanese", radius: 6.0 },
+    { unit: "Guardhouse", radius: 10.0 },
+    { unit: "Dojo", radius: 10.0 },
+    { unit: "StableJapanese", radius: 10.0 },
+    { unit: "Castle", radius: 25.0 },
+  ],
+  Aztec: [
+    { unit: "Calpulli", radius: 6.0 },
+    { unit: "CalpulliLivestockPen", radius: 6.0 },
+    { unit: "CalpulliLumberOutpost", radius: 6.0 },
+    { unit: "CalpulliCraftWorkshop", radius: 6.0 },
+    { unit: "WarHut", radius: 10.0 },
+    { unit: "NoblesHut", radius: 10.0 },
+    { unit: "GreatTemple", radius: 25.0 },
+  ],
+});
+
+function selectedHasFavoredLandBuildingChainBonus(config) {
+  return Array.from(FAVORED_LAND_BUILDINGCHAIN_BONUS_IDS).some((id) => selectedHasBonusId(config, id));
+}
+
+function shouldGenerateFavoredLandBuildingChain(config) {
+  return config?.baseCulture === "Chinese" || selectedHasFavoredLandBuildingChainBonus(config);
+}
+
+function favoredLandChainRadius(baseRadius, config) {
+  const bonus = selectedHasBonusId(config, NUWA_FAVORED_LAND_FARTHER_BONUS_ID) ? 2.0 : 0.0;
+  return (Number(baseRadius) + bonus).toFixed(1);
+}
+
+function favoredLandChainEntries(config) {
+  const entries = [
+    ...FAVORED_LAND_CHAINABLE_BUILDINGS.shared,
+    ...(config.baseCulture === "Atlantean" ? [] : FAVORED_LAND_CHAINABLE_BUILDINGS.sharedExceptAtlantean),
+    ...(FAVORED_LAND_CHAINABLE_BUILDINGS[config.baseCulture] || []),
+  ];
+  if (selectedHasBonusId(config, ORANOS_SKY_PASSAGE_BONUS_ID)) entries.push({ unit: "SkyPassage", radius: 6.0 });
+
+  const seen = new Set();
+  const out = [];
+  for (const entry of entries) {
+    if (!entry?.unit || seen.has(entry.unit)) continue;
+    seen.add(entry.unit);
+    out.push(entry);
+  }
+  return out;
+}
+
+const FAVORED_LAND_AUTOBUILD_ALREADY_TYPED_UNITS = new Set([
+  "TownCenter",
+  "VillageCenter",
+  "Settlement",
+  "House",
+  "Dock",
+  "Granary",
+  "Temple",
+  "SentryTower",
+  "Armory",
+  "Market",
+  "Wonder",
+  "Silo",
+  "MachineWorkshop",
+  "MachineWorkshopTower",
+  "MachineWorkshopTrainingYard",
+  "MilitaryCamp",
+  "MilitaryCampTower",
+  "MilitaryCampTrainingYard",
+  "ImperialAcademy",
+  "Baolei",
+  "Calpulli",
+  "CalpulliLivestockPen",
+  "CalpulliLumberOutpost",
+  "CalpulliCraftWorkshop",
+]);
+
+function favoredLandAutoBuildAffectedUnitTypeEffects(config) {
+  return favoredLandChainEntries(config)
+    .filter((entry) => entry?.unit && !FAVORED_LAND_AUTOBUILD_ALREADY_TYPED_UNITS.has(entry.unit))
+    .map((entry) => `<effect type="Data" amount="1.00" subtype="SetUnitType" unittype="LogicalTypeAffectedByBuildingChainAutoBuild" relativity="Absolute">
+	<target type="ProtoUnit">${escapeXml(entry.unit)}</target>
+</effect>`)
+    .join("\n");
+}
+
+function nuwaFavoredLandAutoBuildEffects(config, baseEffects = "") {
+  return [baseEffects, favoredLandAutoBuildAffectedUnitTypeEffects(config)].filter((part) => part && String(part).trim()).join("\n");
+}
+
+function buildFavoredLandBuildingChainNode(doc, config) {
+  const chain = doc.createElement("buildingchain");
+  const anchor = doc.createElement("anchor");
+  anchor.setAttribute("vfx", "VFXFavorGlow");
+  anchor.textContent = "AbstractTownCenter";
+  chain.appendChild(anchor);
+
+  const abundance = doc.createElement("abundancevfx");
+  abundance.setAttribute("small", "VFXAbundanceSmall");
+  abundance.setAttribute("medium", "VFXAbundanceMedium");
+  abundance.setAttribute("large", "VFXAbundanceLarge");
+  chain.appendChild(abundance);
+
+  if (selectedHasBonusId(config, BONUS_IDS.NUWA_FAVORED_LAND_AUTOBUILD)) {
+    const autoBuild = doc.createElement("autobuildvfx");
+    autoBuild.setAttribute("small", "VFXAutoBuild");
+    autoBuild.setAttribute("medium", "VFXAutoBuild");
+    autoBuild.setAttribute("large", "VFXAutoBuild");
+    chain.appendChild(autoBuild);
+  }
+
+  for (const entry of favoredLandChainEntries(config)) {
+    const node = doc.createElement("chainablebuilding");
+    node.setAttribute("chainradius", favoredLandChainRadius(entry.radius, config));
+    if (config.baseCulture === "Chinese") node.setAttribute("generationresource", "Favor");
+    node.textContent = entry.unit;
+    chain.appendChild(node);
+  }
+
+  if (config.baseCulture === "Chinese") {
+    const resourceGeneration = doc.createElement("resourcegeneration");
+    const tierLow = doc.createElement("tilerateperminutetier");
+    tierLow.setAttribute("resource", "Favor");
+    tierLow.setAttribute("mintiles", "0");
+    tierLow.textContent = "0.0075";
+    const tierHigh = doc.createElement("tilerateperminutetier");
+    tierHigh.setAttribute("resource", "Favor");
+    tierHigh.setAttribute("mintiles", "5000");
+    tierHigh.textContent = "0.0025";
+    resourceGeneration.appendChild(tierLow);
+    resourceGeneration.appendChild(tierHigh);
+    chain.appendChild(resourceGeneration);
+  }
+
+  return chain;
+}
+
+function applyFavoredLandBuildingChainPatch(doc, civ, config) {
+  const existing = civ.querySelector("buildingchain");
+  if (existing) existing.remove();
+  if (!shouldGenerateFavoredLandBuildingChain(config)) return;
+
+  const chain = buildFavoredLandBuildingChainNode(doc, config);
+  const before = civ.querySelector("bountyresourceearning") || civ.querySelector("timeshifting") || civ.querySelector("oncastpowercostfactor");
+  if (before) civ.insertBefore(chain, before);
+  else civ.appendChild(chain);
 }
 
 function replaceBuildingChainFromSelectedBonus(doc, civ, config, bonusId) {
@@ -13180,8 +13397,47 @@ ${technologies ? "\n" + indentBlock(technologies, 3) + "\n" : ""}
         </local:TechTreeAge>`;
 }
 
+const THOTH_PRIEST_MODS_TACTICS = `<tacticsmods>
+	<action>
+		<name>Empower</name>
+		<type>Empower</type>
+		<empowerdata mergemode="replace">
+			<logicaltypebuildingempoweredforlos>
+				<empowerrate modifytype="BuildRate">1.75</empowerrate>
+				<empowerrate modifytype="ResearchRate">1.75</empowerrate>
+				<empowerrate modifytype="LOSFactor">1.75</empowerrate>
+			</logicaltypebuildingempoweredforlos>
+			<logicaltypeaffectedbyvalleyofthekings>
+				<empowerrate modifytype="BuildRate">1.75</empowerrate>
+				<empowerrate modifytype="ResearchRate">1.75</empowerrate>
+				<empowerrate modifytype="MilitaryTrainingRate">1.75</empowerrate>
+				<empowerrate modifytype="ROF">0.75</empowerrate>
+				<modelattachment>vfx\\glow\\empower_pharaoh.xml</modelattachment>
+				<modelattachmentbone>bonethatdoesntexist</modelattachmentbone>
+			</logicaltypeaffectedbyvalleyofthekings>
+			<logicaltypebuildingthatcanbeempowered>
+				<empowerrate modifytype="BuildRate">1.75</empowerrate>
+				<empowerrate modifytype="ResearchRate">1.75</empowerrate>
+				<empowerrate modifytype="MilitaryTrainingRate">1.75</empowerrate>
+				<empowerrate modifytype="ROF">0.75</empowerrate>
+				<empowerrate modifytype="FavorGatherRate">1.20</empowerrate>
+				<empowerrate modifytype="DropsiteRate">1.20</empowerrate>
+				<empowerrate modifytype="GodPowerBlockRadius">2.0</empowerrate>
+				<modelattachment>vfx\\glow\\empower_pharaoh.xml</modelattachment>
+				<modelattachmentbone>bonethatdoesntexist</modelattachmentbone>
+			</logicaltypebuildingthatcanbeempowered>
+		</empowerdata>
+	</action>
+</tacticsmods>`;
+
+function hasSelectedThothMinorGod(config) {
+  return Object.values(config?.minorGods || {}).flat().includes("MythicAgeThoth");
+}
+
 function generateReadme(config) {
   const presetFileName = `${config.internalName}-preset.json`;
+  const thothTacticsLine = hasSelectedThothMinorGod(config) ? `
+${config.internalName}/game/data/gameplay/tactics/priest_mods.tactics` : "";
   const bonusLines = selectedBonusEntries(config).map((entry) => `- ${entry.sourcePantheon} - ${dynamicBonusLabel(entry, config)}`);
   const bonusDisplayWarning = bonusDisplayWarningText(config);
   const bonusDisplayWarningBlock = bonusDisplayWarning ? `
@@ -13210,7 +13466,7 @@ ${config.internalName}/game/data/gameplay/major_gods_mods.xml
 ${config.internalName}/game/data/gameplay/minor_gods_mods.xml
 ${config.internalName}/game/data/gameplay/techtree_mods.xml
 ${config.internalName}/game/data/gameplay/proto_mods.xml
-${config.internalName}/game/data/gameplay/powers_mods.xml
+${config.internalName}/game/data/gameplay/powers_mods.xml${thothTacticsLine}
 ${config.internalName}/game/data/strings/English/stringmods.txt
 ${config.internalName}/game/ui_myth/content/pregame/godpicker/GodPicker_${config.baseCulture}_${config.internalName}.xaml
 ${config.internalName}/game/ui_myth/content/pregame/techtree/TechTree_${config.baseCulture}_${config.internalName}.xaml
@@ -13268,6 +13524,10 @@ async function generateFiles(config) {
   files.push(textFile(`${root}game/data/gameplay/techtree_mods.xml`, generateTechTreeMods(config)));
   files.push(textFile(`${root}game/data/gameplay/proto_mods.xml`, generateProtoMods(config)));
   files.push(textFile(`${root}game/data/gameplay/powers_mods.xml`, generatePowersMods(config)));
+  files.push(directoryEntry(`${root}game/data/gameplay/tactics/`));
+  if (hasSelectedThothMinorGod(config)) {
+    files.push(textFile(`${root}game/data/gameplay/tactics/priest_mods.tactics`, THOTH_PRIEST_MODS_TACTICS));
+  }
   files.push(textFile(`${root}game/data/strings/English/stringmods.txt`, generateStringMods(config)));
   files.push(textFile(`${root}game/ui_myth/content/pregame/godpicker/GodPicker_${config.baseCulture}_${config.internalName}.xaml`, generateGodPickerXaml(config)));
   files.push(textFile(`${root}game/ui_myth/content/pregame/techtree/TechTree_${config.baseCulture}_${config.internalName}.xaml`, generateTechTreeXaml(config)));
@@ -13281,6 +13541,9 @@ function textFile(path, text) {
 }
 function binaryFile(path, arrayBuffer) {
   return { path, data: new Uint8Array(arrayBuffer) };
+}
+function directoryEntry(path) {
+  return { path: path.endsWith("/") ? path : `${path}/`, data: new Uint8Array() };
 }
 
 // Tiny ZIP writer using STORE method. No CDN or server needed.
