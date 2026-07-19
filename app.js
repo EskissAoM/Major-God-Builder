@@ -4,6 +4,8 @@
 const AGES = ["ClassicalAge", "HeroicAge", "MythicAge"];
 const PREVIEW_AGES = ["ArchaicAge", ...AGES];
 const MAX_BONUS_CHOICES = 4;
+const APP_VERSION = "1.1";
+const UPDATE_NOTICE_STORAGE_KEY = "aomrBuilderSeenVersion";
 const EXCLUDED_MINOR_GOD_NAMES = new Set(["malinalxochitldummy"]);
 
 const PANTHEON_KEYS = {
@@ -15188,6 +15190,33 @@ function updatePreview() {
 }
 
 
+function maybeShowUpdateNotice() {
+  const notice = document.getElementById("updateNotice");
+  if (!notice) return;
+  const closeButtons = [
+    document.getElementById("updateNoticeClose"),
+    document.getElementById("updateNoticeOk"),
+    document.getElementById("updateNoticeChangelog"),
+  ].filter(Boolean);
+  const closeNotice = () => {
+    notice.hidden = true;
+  };
+  closeButtons.forEach((button) => button.addEventListener("click", closeNotice));
+  notice.addEventListener("click", (event) => {
+    if (event.target === notice) closeNotice();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (!notice.hidden && event.key === "Escape") closeNotice();
+  });
+  try {
+    if (window.localStorage && localStorage.getItem(UPDATE_NOTICE_STORAGE_KEY) === APP_VERSION) return;
+    notice.hidden = false;
+    if (window.localStorage) localStorage.setItem(UPDATE_NOTICE_STORAGE_KEY, APP_VERSION);
+  } catch (err) {
+    notice.hidden = false;
+  }
+}
+
 function wireEvents() {
   els.baseMajor.addEventListener("change", () => { initGreekSpecificSelects(true); initChineseSpecificSelects(true); initAztecSpecificSelects(true); initGodPowerSelect(true); initUniqueTechSelects(true); initBonusSelects(true); refreshMinorOptions(true); });
   if (els.sameCultureOnly) els.sameCultureOnly.addEventListener("change", () => refreshMinorOptions(true));
@@ -15246,3 +15275,4 @@ initBonusSelects(false);
 initMinorPickers();
 wireEvents();
 updatePreview();
+maybeShowUpdateNotice();
