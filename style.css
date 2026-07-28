@@ -172,7 +172,7 @@ h2 { margin: 24px 0 12px; font-size: 19px; }
 .hero p { max-width: 880px; margin-left: auto; margin-right: auto; color: #d7c7ae; }
 .grid { display: grid; grid-template-columns: minmax(620px, 1.05fr) minmax(460px, .95fr); gap: 22px; align-items: start; }
 .panel { background: rgba(26, 22, 17, .88); border: 1px solid rgba(214, 169, 94, .24); box-shadow: 0 20px 70px rgba(0,0,0,.35); border-radius: 18px; padding: 20px; backdrop-filter: blur(8px); }
-.form-panel { position: relative; }
+.form-panel { position: relative; z-index: 20; }
 .form-top-actions {
   display: flex;
   justify-content: flex-end;
@@ -250,7 +250,7 @@ code { color: #ffd993; }
 .combo-select-input:disabled { opacity: .65; cursor: not-allowed; }
 .combo-suggestion-panel {
   position: absolute;
-  z-index: 50;
+  z-index: 2000;
   left: 0;
   right: auto;
   top: calc(100% + 6px);
@@ -328,6 +328,11 @@ code { color: #ffd993; }
 .combo-suggestion-option.disabled .combo-suggestion-description,
 .combo-suggestion-option.disabled:hover .combo-suggestion-description {
   color: #8b8173;
+}
+
+.preview-panel {
+  position: relative;
+  z-index: 1;
 }
 
 .god-preview {
@@ -602,21 +607,22 @@ h3.preview-god-name {
 
 /* Preview minor-god icon rows */
 .preview-age-row {
-  grid-template-columns: minmax(112px, 0.22fr) minmax(0, 1fr);
-  align-items: center;
+  grid-template-columns: minmax(96px, 0.18fr) minmax(0, 1fr);
+  align-items: start;
 }
 .preview-age-heading {
   display: grid;
   justify-items: center;
-  align-content: center;
+  align-content: start;
   gap: 6px;
   min-height: 86px;
   text-align: center;
+  padding-top: 6px;
 }
 .preview-age-heading h3 {
   margin: 0;
   color: #ffd993;
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.1;
 }
 .preview-age-icon,
@@ -632,26 +638,73 @@ h3.preview-god-name {
 }
 .preview-minor-god-row {
   display: grid;
-  grid-template-columns: repeat(2, minmax(92px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
   align-items: stretch;
 }
 .preview-minor-god-tile {
   display: grid;
-  justify-items: center;
-  align-content: center;
-  gap: 6px;
+  align-content: start;
+  gap: 7px;
   min-height: 82px;
   border: 1px solid rgba(255,255,255,.08);
   border-radius: 14px;
   background: rgba(13,11,9,.35);
   padding: 9px 8px;
-  text-align: center;
+  text-align: left;
+}
+.preview-minor-god-tile-header {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+}
+.preview-minor-god-tile-header .preview-minor-god-icon {
+  width: 38px;
+  height: 38px;
 }
 .preview-minor-god-name {
   color: #fff9ef;
   font-weight: 850;
   line-height: 1.12;
+}
+.preview-minor-god-details {
+  display: grid;
+  gap: 4px;
+}
+.preview-minor-detail {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: center;
+  gap: 6px;
+  min-height: 26px;
+}
+.preview-minor-detail-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,.35));
+}
+.preview-minor-detail-text {
+  display: grid;
+  min-width: 0;
+}
+.preview-minor-detail-label {
+  color: #bba98e;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.preview-minor-detail-value {
+  color: #fff9ef;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.15;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .preview-minor-god-empty {
   grid-column: 1 / -1;
@@ -1037,3 +1090,295 @@ h3.preview-god-name {
 .bonus-combination-warning[hidden] {
   display: none;
 }
+
+/* Minor god customization template */
+.minor-customization-shell {
+  display: grid;
+  gap: 12px;
+}
+.minor-mode-tabs {
+  display: inline-flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 4px 0 2px;
+}
+.minor-mode-tab.active {
+  color: #1b1209;
+  background: #e0b25d;
+  border: 1px solid #e0b25d;
+}
+.checkbox-field {
+  justify-content: flex-start;
+  width: fit-content;
+  margin-top: 2px;
+  color: #f5dfb8;
+}
+.checkbox-field input {
+  width: auto;
+}
+.preview-only-note {
+  margin: 4px 0 12px;
+}
+.minor-age-card {
+  display: grid;
+  gap: 12px;
+}
+.minor-original-choice {
+  display: grid;
+  gap: 8px;
+}
+.minor-choice-details {
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 12px;
+  background: rgba(13,11,9,.28);
+}
+.minor-detail-line {
+  display: grid;
+  grid-template-columns: minmax(86px, max-content) minmax(0, 1fr);
+  gap: 10px;
+  align-items: baseline;
+}
+.minor-detail-label {
+  color: #bba98e;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.minor-detail-value {
+  color: #fff9ef;
+  font-weight: 750;
+}
+.minor-detail-techs {
+  display: grid;
+  gap: 5px;
+}
+.minor-detail-techs ul {
+  margin: 0;
+  padding-left: 18px;
+  color: #efe9dd;
+  font-weight: 650;
+}
+.minor-detail-techs li {
+  margin: 2px 0;
+}
+.minor-custom-ages {
+  display: grid;
+  gap: 12px;
+}
+.custom-minor-age-card {
+  display: grid;
+  gap: 12px;
+}
+.custom-minor-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.custom-minor-card {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 14px;
+  background: rgba(13,11,9,.32);
+}
+.custom-minor-card h4 {
+  margin: 0;
+  color: #f5dfb8;
+  font-size: 15px;
+}
+.custom-minor-card label {
+  margin: 4px 0;
+}
+.custom-minor-details {
+  margin-top: 4px;
+}
+@media (max-width: 900px) {
+  .custom-minor-card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+#minorOriginalPickers.minor-grid {
+  grid-template-columns: 1fr;
+}
+.minor-age-card {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.minor-age-card > h3 {
+  grid-column: 1 / -1;
+}
+@media (max-width: 700px) {
+  .minor-age-card {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Minor custom picker polish */
+.custom-minor-card-grid {
+  align-items: start;
+}
+.custom-minor-card {
+  align-content: start;
+  min-width: 0;
+}
+.custom-minor-card label,
+.custom-minor-card input,
+.custom-minor-card select,
+.custom-minor-card .search-combo-wrap {
+  width: 100%;
+  min-width: 0;
+}
+.custom-minor-card .combo-suggestion-panel {
+  width: min(560px, calc(100vw - 48px));
+}
+.custom-minor-tech-description {
+  display: block;
+  margin-top: 4px;
+  line-height: 1.32;
+  color: #d7c9ad;
+  font-weight: 500;
+}
+.custom-minor-tech-description[hidden] {
+  display: none;
+}
+
+/* Minor god customization refinements */
+.minor-original-choice {
+  align-self: start;
+  align-content: start;
+  min-width: 0;
+}
+.minor-choice-heading {
+  min-height: 20px;
+  color: #efe9dd;
+  font-weight: 850;
+  line-height: 1.25;
+}
+.minor-original-choice > select {
+  width: 100%;
+  min-width: 0;
+}
+.custom-minor-tech-fields {
+  display: grid;
+  gap: 8px;
+  margin: 4px 0;
+  min-width: 0;
+}
+.custom-minor-tech-heading {
+  color: #efe9dd;
+  font-weight: 850;
+}
+.custom-minor-tech-fields select,
+.custom-minor-tech-fields .search-combo-wrap {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Minor-god preview: use the full card width and keep readable names. */
+.preview-age-row {
+  grid-template-columns: 1fr;
+  gap: 12px;
+  padding: 14px;
+}
+.preview-age-heading {
+  min-height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding-top: 0;
+}
+.preview-age-heading h3 {
+  font-size: 18px;
+}
+.preview-age-row-body {
+  width: 100%;
+}
+.preview-minor-god-row {
+  gap: 14px;
+}
+.preview-minor-god-tile {
+  padding: 12px;
+  gap: 9px;
+}
+.preview-minor-god-tile-header {
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 10px;
+}
+.preview-minor-god-tile-header.no-icon {
+  grid-template-columns: 1fr;
+}
+.preview-minor-god-tile-header .preview-minor-god-icon {
+  width: 44px;
+  height: 44px;
+}
+.preview-minor-god-name {
+  font-size: clamp(18px, 2vw, 22px);
+  line-height: 1.05;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.preview-minor-god-details {
+  gap: 6px;
+}
+.preview-minor-detail {
+  grid-template-columns: 30px minmax(0, 1fr);
+  min-height: 32px;
+  gap: 8px;
+}
+.preview-minor-detail-icon {
+  width: 30px;
+  height: 30px;
+}
+.preview-minor-detail-label {
+  font-size: 10.5px;
+}
+.preview-minor-detail-value {
+  font-size: 14px;
+  font-weight: 800;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+@media (max-width: 560px) {
+  .preview-minor-god-row {
+    grid-template-columns: 1fr;
+  }
+  .preview-minor-god-name {
+    white-space: normal;
+  }
+}
+
+.custom-minor-image-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  align-items: start;
+  margin: 2px 0;
+}
+.custom-minor-image-row label {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  min-width: 0;
+}
+.custom-minor-image-row input[type="file"] {
+  font-size: 12px;
+}
+@media (max-width: 560px) {
+  .custom-minor-image-row {
+    grid-template-columns: 1fr;
+  }
+}
+/* Original minor gods are now always restricted to the selected pantheon; the old checkbox is obsolete. */
+#sameCultureOnlyWrap {
+  display: none !important;
+}
+

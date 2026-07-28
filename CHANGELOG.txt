@@ -1,5 +1,17 @@
 AoM:R Major God Builder Changelog
 
+Version 2.0
+
+Main feature:
+- Minor god customization: create custom minor gods with custom names, qualities, portraits, icons, god powers, myth units, and technologies.
+
+Improvements:
+- Improved search function.
+- Technologies now use the correct custom god name in their descriptions.
+- Adjusted several technology descriptions.
+- Added new icons for Argive Patronage technology choices.
+- Asgardian Bastion is now really usable by every pantheon.
+
 Version 1.1
 
 Features:

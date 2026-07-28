@@ -31,7 +31,7 @@ It lets users choose a pantheon, god power, unique technology, bonuses, minor go
 
 ## Status
 
-Current version: **1.1**
+Current version: **2.0**
 
 The project is usable, but still open to balance, display, and edge-case improvements as more generated gods are tested.
 
@@ -39,3 +39,9 @@ The project is usable, but still open to balance, display, and edge-case improve
 
 Join the **Discord** - link in the website 
 Contact: eskissaom@gmail.com
+
+
+## Data files
+
+- `minorGodData.js` contains all custom minor-god data: myth units, technology definitions, myth-unit pairings, research buildings, and command UI locations.
+- `godPowerData.js` contains god-power data such as cooldowns.

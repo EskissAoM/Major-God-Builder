@@ -12,7 +12,7 @@
   <main class="shell">
     <div class="top-meta" aria-label="Project information">
       <span>Made by Eskiss</span>
-      <a class="version-link" href="#changelog">Version 1.1</a>
+      <a class="version-link" href="#changelog">Version 2.0</a>
       <a href="#contact">Contact / Social</a>
     </div>
     <header class="hero">
@@ -143,8 +143,22 @@
         </div>
 
         <h2>4. Minor gods</h2>
-        <p class="muted">Choose exactly two minor gods for each age.</p>
-        <div id="minorPickers" class="minor-grid"></div>
+        <p class="muted">Choose exactly two minor gods for each age. Original minor gods are restricted to the selected pantheon; Custom minor gods can mix powers, myth units, and technologies freely.</p>
+        <div id="minorPickers" class="minor-customization-shell">
+          <div class="minor-mode-tabs" role="tablist" aria-label="Minor god selection mode">
+            <button type="button" id="minorModeOriginal" class="minor-mode-tab active" aria-selected="true">Original</button>
+            <button type="button" id="minorModeCustom" class="minor-mode-tab secondary" aria-selected="false">Custom</button>
+          </div>
+
+          <section id="minorOriginalPanel" class="minor-mode-panel">
+            <div id="minorOriginalPickers" class="minor-grid"></div>
+          </section>
+
+          <section id="minorCustomPanel" class="minor-mode-panel" hidden>
+            <p class="muted preview-only-note">Custom minor gods export their age techs, selected powers, units, technologies, and optional portrait/icon images.</p>
+            <div id="minorCustomPickers" class="minor-custom-ages"></div>
+          </section>
+        </div>
 
         <h2>5. Export</h2>
         <div class="install-box">
@@ -180,17 +194,18 @@
 
       <section id="changelog" class="panel changelog-panel">
         <h2>Quick changelog</h2>
-        <h3>Version 1.1</h3>
-        <h4>Features</h4>
+        <h3>Version 2.0</h3>
+        <h4>Minor god customization</h4>
         <ul>
-          <li>Favored Land related bonuses can now be used by all pantheons.</li>
-          <li>Bushidō can now be used by all pantheons except Aztec.</li>
+          <li>Create custom minor gods with custom names, qualities, portraits, icons, god powers, myth units, and technologies.</li>
         </ul>
-        <p><em>I first wanted to keep some flavor for Japanese and Chinese by making those bonuses exclusive to them. Some players were theorycrafting around them, so I decided to let their full creativity bloom. Favored Land does not produce Favor and Bushidō is earned more slowly by other pantheons, meaning Chinese and Japanese will still make the strongest use of those tools.</em></p>
-        <h4>Fixes</h4>
+        <h4>Improvements</h4>
         <ul>
-          <li>Fixed Priests not being able to trigger Valley of the Kings tech.</li>
-          <li>Fixed Sky Passage still costing Wood with Egyptian gods.</li>
+          <li>Improved search function.</li>
+          <li>Technologies now use the correct custom god name in their descriptions.</li>
+          <li>Adjusted several technology descriptions.</li>
+          <li>Added new icons for Argive Patronage technology choices.</li>
+          <li>Asgardian Bastion is now really usable by every pantheon.</li>
         </ul>
       </section>
     </section>
@@ -199,11 +214,11 @@
       <div class="update-notice-card">
         <button type="button" id="updateNoticeClose" class="update-notice-close" aria-label="Close update notice">×</button>
         <p class="eyebrow">Updated</p>
-        <h2 id="updateNoticeTitle">What’s new in version 1.1</h2>
+        <h2 id="updateNoticeTitle">What’s new in version 2.0</h2>
         <ul>
-          <li>Favored Land bonuses are now usable by all pantheons.</li>
-          <li>Bushidō is now usable by all pantheons except Aztec.</li>
-          <li>Priest / Valley of the Kings and Egyptian Sky Passage cost fixes.</li>
+          <li><strong>Minor god customization:</strong> custom names, portraits, icons, powers, myth units, and technologies.</li>
+          <li>Improved search and cleaner technology descriptions using the correct custom god names.</li>
+          <li>New Argive Patronage icons and Asgardian Bastion support for every pantheon.</li>
         </ul>
         <div class="update-notice-actions">
           <a id="updateNoticeChangelog" class="button-link" href="#changelog">View changelog</a>
@@ -217,7 +232,8 @@
   <script src="majorGodTemplates.js"></script>
   <script src="godPickerTemplates.js"></script>
   <script src="techTreeTemplates.js"></script>
-  <script src="minorGodMythUnits.js"></script>
+  <script src="minorGodData.js"></script>
+  <script src="godPowerData.js"></script>
   <script src="previewIconData.js"></script>
   <script src="app.js"></script>
 </body>

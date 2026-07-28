@@ -4,7 +4,7 @@
 const AGES = ["ClassicalAge", "HeroicAge", "MythicAge"];
 const PREVIEW_AGES = ["ArchaicAge", ...AGES];
 const MAX_BONUS_CHOICES = 4;
-const APP_VERSION = "1.1";
+const APP_VERSION = "2.0";
 const UPDATE_NOTICE_STORAGE_KEY = "aomrBuilderSeenVersion";
 const EXCLUDED_MINOR_GOD_NAMES = new Set(["malinalxochitldummy"]);
 
@@ -139,34 +139,1632 @@ const UNIQUE_TECH_SOURCE_PANTHEON = {
 
 const UNIQUE_TECH_PANTHEON_ORDER = ["Greek", "Egyptian", "Norse", "Atlantean", "Chinese", "Japanese", "Aztec"];
 
-const UNIQUE_TECH_CUSTOM_ROLLOVERS = {
-  OlympianParentage: "The blood of CustomGod increases the hitpoints of heroes and causes them to regenerate hitpoints.",
-  VaultsOfErebus: "CustomGod's vaults provides a steady, endless income of Gold.",
-  LordOfHorses: "CustomGod improves the line of sight of cavalry and scouts, and causes them to regenerate hitpoints.",
-  DivineLabor: "CustomGod blessing increases Villager Farm and Herdable gathering rates and heals them when dropping Resources.",
-  SkinOfTheRhino: "CustomGod improves the armor of Villagers, making them more resistant to attacks.",
-  FloodOfTheNile: "CustomGod ensures the continued fertility of your lands, granting a steady trickle of Food.",
-  Clairvoyance: "CustomGod makes additional charges of the Vision God Power be cast with no Favor cost and be granted more quickly.",
-  HammerOfThunder: "CustomGod causes your Hersirs to inflict additional damage and generate favor faster.",
-  Hamask: "CustomGod inspires Berserks to move faster and deal additional damage to myth units.",
-  EyesInTheForest: "CustomGod causes units of Mother Nature, such as trees and animals, to temporarily grant you vision when nearby one of your units, and increase the speed of your heroes.",
-  FreyrsGift: "CustomGod increases the hitpoints of all units. This upgrade's Favor cost decreases with each technology researched.",
-  TemporalChaos: "CustomGod increases the number of buildings that can be simultaneously time-shifted, and reduces the cost and shifting time of time-shifting defensive buildings.",
-  EmpyreanSpeed: "CustomGod increases the speed of infantry units.",
-  Channels: "CustomGod increases the speed of units traversing their lush.",
-  CelestialWeapons: "CustomGod grants heroes celestial weapons, causing them to inflict extra divine damage.",
-  TaiChi: "CustomGod's philosophy causes heroes to train faster, and improves their hack and pierce armor.",
-  MountainousMight: "CustomGod imbues Kuafus with the power of the mountains, making them much stronger.",
-  KuafuChieftain: "CustomGod creates a Kuafu chieftain, a powerful hero Kuafu who respawns when lost.",
-  PeachOfImmortality: "CustomGod ripens the Peach of Immortality, which grants heroes and myth units more hitpoints.",
-  HerbalMedicine: "CustomGod teaches Sages to heal faster and restore the hitpoints of multiple friendly units at once.",
-  Kagura: "CustomGod summons a new Miko, and allows your Mikos to train and heal faster.",
-  Tenshu: "CustomGod improves the damage and line of sight of your Towers and Castles.",
-  CrushingWaves: "CustomGod increases the movement speed of myth units and causes their attacks to deal additional divine damage.",
-  WingsOfTheSouth: "CustomGod increases the movement speed and training rate of all War Hut units.",
-  TepeyollotlsReach: "CustomGod increases the damage and jump distance of Ocelotl Warriors and Jaguar Riders.",
-  FeastOfTlaxochimaco: "CustomGod enables livestock to be devoted at the Temple to temporarily increase the gather rate of all villagers.",
-};
+const UNIQUE_TECH_CUSTOM_ROLLOVERS = Object.freeze({
+  "OlympianParentage": "The blood of CustomGod increases the hitpoints of heroes and causes them to regenerate hitpoints.",
+  "VaultsOfErebus": "CustomGod's vaults provides a steady, endless income of Gold.",
+  "LordOfHorses": "CustomGod improves the line of sight of cavalry and scouts, and causes them to regenerate hitpoints.",
+  "DivineLabor": "CustomGod blessing increases Villager Farm and Herdable gathering rates and heals them when dropping Resources.",
+  "SkinOfTheRhino": "CustomGod improves the armor of Villagers, making them more resistant to attacks.",
+  "FloodOfTheNile": "CustomGod ensures the continued fertility of your lands, granting a steady trickle of Food.",
+  "Clairvoyance": "CustomGod makes additional charges of the Vision God Power be cast with no Favor cost and be granted more quickly.",
+  "HammerOfThunder": "CustomGod causes your Hersirs to inflict additional damage and generate favor faster.",
+  "Hamask": "CustomGod inspires Berserks to move faster and deal additional damage to myth units.",
+  "EyesInTheForest": "CustomGod causes units of Mother Nature, such as trees and animals, to temporarily grant you vision when nearby one of your units, and increase the speed of your heroes.",
+  "FreyrsGift": "CustomGod increases the hitpoints of all units. This upgrade's Favor cost decreases with each technology researched.",
+  "TemporalChaos": "CustomGod increases the number of buildings that can be simultaneously time-shifted, and reduces the cost and shifting time of time-shifting defensive buildings.",
+  "EmpyreanSpeed": "CustomGod increases the speed of infantry units.",
+  "Channels": "CustomGod increases the speed of units traversing their lush.",
+  "CelestialWeapons": "CustomGod grants heroes celestial weapons, causing them to inflict extra divine damage.",
+  "TaiChi": "CustomGod's philosophy causes heroes to train faster, and improves their hack and pierce armor.",
+  "MountainousMight": "CustomGod imbues Kuafus with the power of the mountains, making them much stronger.",
+  "KuafuChieftain": "CustomGod creates a Kuafu chieftain, a powerful hero Kuafu who respawns when lost.",
+  "PeachOfImmortality": "CustomGod ripens the Peach of Immortality, which grants heroes and myth units more hitpoints.",
+  "HerbalMedicine": "CustomGod teaches Sages to heal faster and restore the hitpoints of multiple friendly units at once.",
+  "Kagura": "CustomGod summons a new Miko, and allows your Mikos to train and heal faster.",
+  "Tenshu": "CustomGod improves the damage and line of sight of your Towers and Fortress-type buildings.",
+  "CrushingWaves": "CustomGod increases the movement speed of myth units and causes their attacks to deal additional divine damage.",
+  "WingsOfTheSouth": "CustomGod increases the movement speed and training rate of all War Hut units.",
+  "TepeyollotlsReach": "CustomGod increases the damage and jump distance of Ocelotl Warriors and Jaguar Riders.",
+  "FeastOfTlaxochimaco": "CustomGod enables livestock to be devoted at the Temple to temporarily increase the gather rate of all villagers."
+});
+
+const REVIEWED_MINOR_TECH_DESCRIPTIONS = Object.freeze({
+  "Abundance": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod blesses your dropsites that are on favored land, increasing the amount of resources earned from each deposit."
+    }
+  ],
+  "AdvancedDefenses": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod shares her defensive knowledge, improving Tower andFortress-type buildings damage, range, and line of sight, and also allowing you to upgrade wall towers into ranged towers."
+    }
+  ],
+  "AdzeOfWepwawet": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod lendsVillagers the Adze of Wepwawet, allowing them to fell trees and gather Wood faster."
+    }
+  ],
+  "AegisShield": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod’s shield makes infantry more resistant to pierce attacks, such as arrows."
+    }
+  ],
+  "AlluvialClay": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases the hitpoints of Prometheans and their offspring, and makes Promethean Offspring more numerous."
+    }
+  ],
+  "Anastrophe": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod's tactics allow your Pentekonters to deliver critical strikes, which slow the target and inflict extra damage."
+    }
+  ],
+  "ArcticWinds": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod enchants your close-combat ships with the icy arctic gale, allowing their attacks to slow down and even freeze enemies."
+    }
+  ],
+  "ArgivePatronage": [
+    {
+      "condition": "If Greek unique unit = Myrmidon",
+      "text": "CustomMinorGod’s favor causes your Fortresses to periodically spawn Myrmidon for free."
+    },
+    {
+      "condition": "If Greek unique unit = AmazonArcher",
+      "text": "CustomMinorGod’s favor causes your Fortresses to periodically spawn Amazon Archer for free."
+    },
+    {
+      "condition": "If Greek unique unit = Gastraphetoros",
+      "text": "CustomMinorGod’s favor causes your Fortresses to periodically spawn Gastraphetoros for free."
+    },
+    {
+      "condition": "If Greek unique unit = Hetairos",
+      "text": "CustomMinorGod’s favor causes your Fortresses to periodically spawn Hetairos for free."
+    }
+  ],
+  "Argonauts": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod grants you the Argo, a powerful heroic ship that may be rebuilt if sunk."
+    }
+  ],
+  "AsceticPractices": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Tengus to Tengu Masters, whose improved Martial Strike ability has a greater leap distance and more powerful effects."
+    }
+  ],
+  "AsperBlood": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod allows your Lampades to transform enemy human units into chickens."
+    }
+  ],
+  "AsymmetricalBows": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases the attack and range of your Yumi Horse Archers."
+    }
+  ],
+  "AtefCrown": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Mummies to Mummy Viziers, which have improved hitpoints and attack, and grants their Minions a longer lifespan."
+    }
+  ],
+  "AutumnOfAbundance": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod blesses Pixius, allowing them to earn food and wood in addition to gold while trading."
+    }
+  ],
+  "AvengingSpirit": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod's spirit causes your Hersirs' hammers to grow mightier with each strike, increasing in size and damage as they fight."
+    }
+  ],
+  "AxeOfVengeance": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases the attack of Axemen as they lose hitpoints, and makes them stronger against buildings."
+    }
+  ],
+  "BeastSlayer": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod’s blessing improves the movement speed and combat abilities of your heroes against myth units."
+    }
+  ],
+  "Berserkergang": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod instructs your Berserks in the Berserkergang, causing them to regain hitpoints as they inflict damage against enemy units."
+    }
+  ],
+  "BiteOfTheShark": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod provides Murmillones and Fanatics with serrated swords, increasing their attack and causing units that they damage to continue bleeding out over time."
+    }
+  ],
+  "BoneBow": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod equips Chariot Archers with desert bone bows, improving their range and line of sight."
+    }
+  ],
+  "BookOfThoth": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod's secrets allow your Villagers to gather Food, Wood, and Gold faster."
+    }
+  ],
+  "BottomlessStomach": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases Taoties' appetite, allowing them to use their special attacks more often."
+    }
+  ],
+  "Bravery": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod drives Huskarls to do more damage, especially to buildings."
+    }
+  ],
+  "BurningMalevolence": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Asuras to Asura Overlords, which attack faster and use their Blazing Jealousy ability more frequently."
+    }
+  ],
+  "BurntWater": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod strengthens your fortifications, increasing their hitpoints and allowing them to attack units beneath them with sacred fire-water."
+    }
+  ],
+  "CallOfValhalla": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod improves Berserk hitpoints, and grants you favor when they fall in battle."
+    }
+  ],
+  "CaveTroll": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Trolls to Cave Trolls, whose special attacks are significantly stronger."
+    }
+  ],
+  "Celerity": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod forces myth units to move and attack faster."
+    }
+  ],
+  "CentzonHuitznahua": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Tzitzimitls to Stardemon Tzitzimitls, which deal more damage and attack faster."
+    }
+  ],
+  "ChasingTheSun": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod imbuesVillagers with a strong work ethic, causing them to build faster."
+    }
+  ],
+  "ChthonicRites": [
+    {
+      "condition": "If custom major pantheon is Greek",
+      "text": "CustomMinorGod causes your Hydrai and Scyllai to regenerate hitpoints over time."
+    },
+    {
+      "condition": "If custom major pantheon is not Greek",
+      "text": "CustomMinorGod causes your Hydrai to regenerate hitpoints over time."
+    }
+  ],
+  "CipactlisScales": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases the armor of siege ships as they lose hitpoints."
+    }
+  ],
+  "CoatepecShrines": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod removes the cost of repairing buildings and allows them to regenerate hitpoints."
+    }
+  ],
+  "CondemnedSoul": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Wanyūdōs to Infernal Wanyūdōs, which deal more damage over a wider area."
+    }
+  ],
+  "CoyolxauhquiStone": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod reduces the resource cost of upgrades researched at the Temple and Fortress-type buildings."
+    }
+  ],
+  "CrimsonLinen": [
+    {
+      "condition": "If selected myth unit is Scarab",
+      "text": "CustomMinorGod’s sanguine rituals cause your myth units – especially Scarabs – to regain hitpoints while attacking enemy units."
+    },
+    {
+      "condition": "If selected myth unit is not Scarab",
+      "text": "CustomMinorGod’s sanguine rituals cause your myth units to regain hitpoints while attacking enemy units."
+    }
+  ],
+  "Criosphinx": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Sphinxes to Criosphinxes, with more hitpoints and attack."
+    }
+  ],
+  "Crocodilopolis": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Petsuchoi to Petsobeks, with increased range."
+    }
+  ],
+  "CuicacalliTraining": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod choreographs Coyote Warriors to move with unpredictable steps, improving their pierce armor."
+    }
+  ],
+  "Daktyloi": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod's minions automatically repair any friendly naval units near your Docks."
+    }
+  ],
+  "DanNoUraTactics": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod causes Wasens' strength to increase in numbers."
+    }
+  ],
+  "DarkWater": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod offers the Dark Water to your camel units, increasing their hitpoints and allowing them to regenerate."
+    }
+  ],
+  "DaughtersOfTheSea": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases the movement speed of Nereids and allows them to recharge their special ability considerably faster."
+    }
+  ],
+  "DeadlyRage": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Onis to Oni Warlords, which deal more damage and are more resistant to hack attacks."
+    }
+  ],
+  "DeadlySnare": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Jorogumos to Jorogumo Venom-Spinners, whose attacks deal poison damage over time."
+    }
+  ],
+  "DeimosSwordOfDread": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod lends Hypaspists the Sword of Dread, increasing their attack and enabling them an age earlier."
+    }
+  ],
+  "DenDenDrums": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod lowers the Favor cost of reinvoking God Powers."
+    }
+  ],
+  "DesertWind": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod places the desert wind at your Camel Riders' backs, increasing their speed, attack, and hitpoints."
+    }
+  ],
+  "DevoteesOfAtlas": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod inspires injured Fanatics into a frenzy, causing them to move and attack faster as they lose hitpoints."
+    }
+  ],
+  "Dionysia": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases the hitpoints of all units by a small amount."
+    }
+  ],
+  "Disablot": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Valkyries to Shieldmaiden Valkyries, with improved attack and healing rate."
+    }
+  ],
+  "DivineBlood": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod causes Villagers to move faster, build faster, and carry more resources."
+    }
+  ],
+  "DivineBooks": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod shares her divine books, whose knowledge makes your Training Yards cheaper and train units faster."
+    }
+  ],
+  "DivineJudgement": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod dispenses justice through your infantry's weapons, improving their damage, especially against myth units."
+    }
+  ],
+  "DivinePrefecture": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases the speed at which your buildings train units and research technologies."
+    }
+  ],
+  "DroughtShips": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod loads Fishing Ships with explosive sand. When sunk, they will detonate, damaging nearby units and temporarily trapping them in sand."
+    }
+  ],
+  "DwarvenAuger": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod enhances your Portable Rams with Dwarven Augers, improving their speed, training rate, and attack."
+    }
+  ],
+  "DwarvenBreastplate": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod provides your Hirdmen and Berserks with dwarven armor, making them more resistant to hack attacks, such as swords."
+    }
+  ],
+  "EightBanners": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod makes heroes train faster and allows them to regenerate hitpoints."
+    }
+  ],
+  "ElectrumBullets": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod's invention causes Slingers to deal additional divine damage."
+    }
+  ],
+  "EnchantedHymn": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Sirens to Prima Sirens who inflict more damage and increase the speed of entranced units."
+    }
+  ],
+  "EnyosBowOfHorror": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod lends Toxotai the Bow of Horror, which causes arrows to fly incredibly quickly and inflict more damage."
+    }
+  ],
+  "EternalHaunting": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod allows Shinigami to respawn an additional time."
+    }
+  ],
+  "EveningStar": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod grants a free Soul Guide for each of your existing Fortress-type buildings, and whenever a new one is completed."
+    }
+  ],
+  "FaceOfTheGorgon": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Medusai to Medusa Matriarchs, which have more range and turn enemies to stone more often."
+    }
+  ],
+  "FatedArrows": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod’s divine intervention guides archers' arrows to ricochet to up to 3 nearby enemy units, dealing less damage with each bounce."
+    }
+  ],
+  "FeastsOfRenown": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod's boundless hospitality radiates from your Town Centers and Fortress-type buildings, enabling them to heal nearby units and automatically generate Food."
+    }
+  ],
+  "FeetOfTheJackal": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Anubites to Guardian Anubites, with more hitpoints, attack, and jump distance."
+    }
+  ],
+  "FlamesOfTyphon": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Chimerai to Chimera Tyrants, which have more attack, special ability attack, and deal damage over time."
+    }
+  ],
+  "FlamingBlood": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod infuses myth units with flaming blood, causing them to deal additional damage to nearby enemies."
+    }
+  ],
+  "FloweryWars": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod's hunger for tribute increases the Favor earned from gathering tonalli of fallen foes."
+    }
+  ],
+  "ForceOfTheWestWind": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod enables you to construct Catapults an age early, and her breath imbues your Scarabs and siege weapons with the destructive power of the desert winds."
+    }
+  ],
+  "ForgeOfOlympus": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod uses his Forge of Olympus to reduce the costs of all Armory improvements, and armories research technologies faster."
+    }
+  ],
+  "FourJars": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod pours abundance from his jars, reducing the cost of Fortress-type buildings and allowing them to support population."
+    }
+  ],
+  "FrenziedDash": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod drives Taowus to dash faster and deal more damage."
+    }
+  ],
+  "FrontlineHeroics": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod reduces the cost of promoting your infantry units to heroes."
+    }
+  ],
+  "FuneralBarge": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod occasionally summons Leviathans to take the place of War Barges that you lose in battle."
+    }
+  ],
+  "FuneralRites": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod compensates you with gold when your warriors fall in combat."
+    }
+  ],
+  "FuryOfTheFallen": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod grants Berserks a temporary damage boost whenever one of your military units falls in battle nearby."
+    }
+  ],
+  "GalesFury": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod relentless winds cause cavalry to move and attack faster."
+    }
+  ],
+  "Gemini": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases Satyrs' damage and area of effect by allowing them to throw more javelins."
+    }
+  ],
+  "GildedShields": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod gilds sunlight into the shields of your Dao Swordsmen, greatly increasing their pierce armor."
+    }
+  ],
+  "Gjallarhorn": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Einherjar to Giant-Killer Einherjar, increasing their hitpoints and attack, and lengthening the benefits of their special ability."
+    }
+  ],
+  "GoheiWands": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod improves Miko Favor gather rate, and allows shrines to affect a wider area."
+    }
+  ],
+  "GoldenApples": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod causes Villagers to produce Favor from Temples faster."
+    }
+  ],
+  "GoldenKite": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases archer and hero damage, especially against myth units."
+    }
+  ],
+  "GraciousHospitality": [
+    {
+      "condition": "If custom major pantheon is Atlantean",
+      "text": "CustomMinorGod's nurturing presence allows you to build an additional manor."
+    },
+    {
+      "condition": "If custom major pantheon is not Atlantean",
+      "text": "CustomMinorGod's nurturing presence allows you to build additional houses."
+    }
+  ],
+  "GraniteBlood": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Fire Giants to Sons of Muspell, with more hitpoints, and also improves the hitpoints of all other Giants."
+    }
+  ],
+  "GraniteMaw": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Rock Giants to Bergrisar, whose insatiable hunger allows them to regain hitpoints when attacking enemy buildings and deal more damage."
+    }
+  ],
+  "GraspOfRan": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod's wrath occasionally summons Krakens near enemy ships that your Dragon Ships are attacking."
+    }
+  ],
+  "GreatestOfFifty": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod appoints military commanders, increasing infantry hitpoints and speed."
+    }
+  ],
+  "GuardianOfIo": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Argi to Guardians of Io, increasing their line of sight and the rate at which their special ability recharges."
+    }
+  ],
+  "GuidingFlame": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod's guiding flame increases your ships line of sight and attack range."
+    }
+  ],
+  "HallOfThanes": [
+    {
+      "condition": "If custom pantheon is Norse",
+      "text": "CustomMinorGod improves the speed of all foot soldiers, especially Hersirs."
+    },
+    {
+      "condition": "If custom pantheon is not Norse",
+      "text": "CustomMinorGod improves the speed of all foot soldiers."
+    }
+  ],
+  "HallowedWoodlands": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Hamadryads to Sylvan Hamadryads, increasing their survivability and ranged damage."
+    }
+  ],
+  "HaloOfTheSun": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases the damage, range and line of sight of Fire Siphons and Arci."
+    }
+  ],
+  "HandOfTalos": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod reforges Colossi into Silver Colossi, which have more hitpoints."
+    }
+  ],
+  "HannyaMask": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases infantry hitpoints and causes them to regenerate hitpoints when in battle."
+    }
+  ],
+  "HarvestOfSouls": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod enhances your infantry allowing them to harvest souls whenever they defeat an enemy, increasing their damage and attack speed for a short duration."
+    }
+  ],
+  "HeartOfTheTitans": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod reduces the time required to promote your human units to heroes."
+    }
+  ],
+  "HeavenlyBarrage": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod causes Junkozosens to shoot chain lightning that deals divine damage."
+    }
+  ],
+  "HephaestusRevenge": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod improves Automatons to Warrior Automatons, which have more hitpoints and can regenerate."
+    }
+  ],
+  "HeroicRenewal": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases your heroes' hitpoints and lets them regenerate."
+    }
+  ],
+  "Hieracosphinx": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Criosphinxes to Hieracosphinxes, with increased speed and attack."
+    }
+  ],
+  "HoovesOfTheWind": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod imbues your cavalry with the power of the wind, increasing their speed and hack armor."
+    }
+  ],
+  "HornsOfConsecration": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod gifts your Fanatics her blessing, enabling them to be trained an age early and train faster."
+    }
+  ],
+  "HuntersStrength": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod enhances your archers' bows, increasing their range and damage."
+    }
+  ],
+  "HuntressAxe": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod blesses Throwing Axeman with the Huntress' Axe, improving their range and ensuring that they never miss."
+    }
+  ],
+  "HymnOfTheWildwood": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod teaches your heroes the hymn of the wildwood, which allows them to heal nearby allied units in the area."
+    }
+  ],
+  "ImperialOrder": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod calls forth all fighting men, decreasing the cost of Military Camps and their units."
+    }
+  ],
+  "IvoryNetsuke": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod causes myth units to generate gold when attacking enemy units."
+    }
+  ],
+  "Jotuns": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Mountain Giants to Jotuns, which are larger, stronger, and significantly more effective against human soldiers."
+    }
+  ],
+  "Katagi": [
+    {
+      "condition": "If a Bushidō major-god bonus is selected",
+      "text": "CustomMinorGod increases infantry hitpoints and causes fallen infantry to contribute to your Bushidō."
+    },
+    {
+      "condition": "If no Bushidō major-god bonus is selected",
+      "text": "CustomMinorGod increases infantry hitpoints."
+    }
+  ],
+  "Kumiki": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod reduces the cost of archers and siege units."
+    }
+  ],
+  "LabyrinthOfMinos": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Minotaurs to Bull Minotaurs, which are faster and have more hitpoints."
+    }
+  ],
+  "LanceOfStone": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod improves the attack of Contarii and causes their attacks to slow down enemies even more."
+    }
+  ],
+  "LastStand": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod emboldens your cavalry units in the face of defeat, increasing their armor as they lose hitpoints."
+    }
+  ],
+  "LeatherFrameShield": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod's invention improves the pierce armor of {counter-cavalry infantry}."
+    }
+  ],
+  "LeizusSilk": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod gifts you his wife's divine silk, improving all human units' hitpoints and hack armor."
+    }
+  ],
+  "LongSerpent": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod blesses your Longboats, causing them to become bigger, stronger, and to fire more arrows as they damage enemy units."
+    }
+  ],
+  "Maelstrom": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod stirs up sea storms, allowing arrow ships to summon vortices while attacking."
+    }
+  ],
+  "MagueyCultivation": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod introduces maguey cultivation, increasing Villagers farming rates and granting a Food bounty when Farms are constructed."
+    }
+  ],
+  "MasterOfWeaponry": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases the attack range and attack speed of {counter-cavalry infantry}."
+    }
+  ],
+  "MechanicalArtisans": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases Oyumi range and pierce damage."
+    }
+  ],
+  "Metzliapan": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod reduces the Favor cost Axolotls and Mutant Axolotls, and allows them to use their special attacks more often."
+    }
+  ],
+  "Mictecah": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod imbues Shorn Ones with the chill of the underworld, enabling them to slay enemies more quickly, especially heroes."
+    }
+  ],
+  "MonstrousRage": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod’s rage inspires myth units to move and attack faster."
+    }
+  ],
+  "MythicRejuvenation": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod lets your myth units regenerate."
+    }
+  ],
+  "Nahuallatolli": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod reduces the cost of your traps, and increases their build limit."
+    }
+  ],
+  "Nebty": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases Priest and Pharaoh hitpoints, as well as their damage against myth units."
+    }
+  ],
+  "NecklaceOfEyeballs": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod adorns your Heroes with a Necklace of Eyeballs, increasing their attack, hitpoints, and line of sight."
+    }
+  ],
+  "Necropolis": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases the rate at which Monuments generate Favor."
+    }
+  ],
+  "NewKingdom": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod mandates that the realm be led by two Pharaohs instead of one."
+    }
+  ],
+  "NineWaves": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod grants your heroes and siege weapons the crushing might of the ocean, making them inflict more damage and move faster."
+    }
+  ],
+  "ObsidianKnapping": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod teaches the art of obsidian knapping, increasing the attack of units trained at the Nobles' Hut."
+    }
+  ],
+  "OcpatliInfusions": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod reveals the medicinal secrets of Ocpatli roots, fortifying villagers and human soldiers with regeneration and increased hitpoints."
+    }
+  ],
+  "OldCoyotesSpirit": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod inspires Chaneques to get the last laugh, increasing their hack armor and giving them a chance to spawn a trap when defeated."
+    }
+  ],
+  "OlympianWeapons": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod improves the attack of Hetairoi, Myrmidons, Amazon Archers and Gastraphetoroi, especially against myth units."
+    }
+  ],
+  "OmenOfDeath": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod causes Teixiptlas to call down a strike from the heavens when defeated, damaging nearby enemies."
+    }
+  ],
+  "OmenOfMalinalco": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod causes Maquizcoatls to release a poisonous cloud on death that damages nearby enemies and corrodes their armor, making them more vulnerable to attacks."
+    }
+  ],
+  "OmetochtlisRevelry": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Centzon Totochthin to Frenzied Centzon Totochthin, which have more hitpoints and consume farms and berry bushes faster to heal."
+    }
+  ],
+  "OniMask": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod improves myth unit hitpoints and training speed."
+    }
+  ],
+  "Onmyodo": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases Onmyōji damage."
+    }
+  ],
+  "Oracle": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases unit and building line of sight, and allows you to see what enemy buildings are training/researching when you select them."
+    }
+  ],
+  "OrichalcumMail": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases the hack armor of your infantry units."
+    }
+  ],
+  "PansPioneers": [
+    {
+      "condition": "If custom major pantheon is Egyptian",
+      "text": "CustomMinorGod shows the early pioneers how to cultivate with nature, making buildings cost less gold and allowing more villagers to work on a farm."
+    },
+    {
+      "condition": "If custom major pantheon is not Egyptian",
+      "text": "CustomMinorGod shows the early pioneers how to cultivate with nature, making buildings cost less wood and allowing more villagers to work on a farm."
+    }
+  ],
+  "Perception": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod blesses your Oracles and Hero Oracles, increasing their line of sight."
+    }
+  ],
+  "Petrification": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod petrifies the wood of your siege weapons, increasing their hack armor and causing them to gain additional hack armor while standing still."
+    }
+  ],
+  "PhobosSpearOfPanic": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod lends Hoplites, Militia, and Prodromoi the Spear of Panic, which enables them to inflict extra divine damage, which ignores armor."
+    }
+  ],
+  "PioneerOfTheSkies": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod enables your Siege Biremes to shoot fireballs that inflict area damage."
+    }
+  ],
+  "PiousSacrifice": [
+    {
+      "condition": "Default",
+      "text": "Falling in CustomMinorGod’s name, infantry units temporarily increase nearby allied Humans’ rate of fire when killed."
+    }
+  ],
+  "PoseidonsSecret": [
+    {
+      "condition": "If custom major pantheon is Atlantean",
+      "text": "CustomMinorGod steals Poseidon's secret knowledge, making your cavalry units cheaper and faster, and reducing the cost of promoting them to heroes."
+    },
+    {
+      "condition": "If custom major pantheon is not Atlantean",
+      "text": "CustomMinorGod steals Poseidon's secret knowledge, making your cavalry units cheaper and faster."
+    }
+  ],
+  "PowerOfChaos": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod causes Hunduns to deal much more damage to units they temporarily banish to the void."
+    }
+  ],
+  "PreciousBones": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod empowers your ranged soldiers, which increase their damage and compensates you with wood they fall in battle."
+    }
+  ],
+  "PredatoryInstinct": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Lykaons to Alpha Lykaons with increased damage, and causes current and future Town and Village Centers to spawn free Lykaons."
+    }
+  ],
+  "PropheticSight": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases the rate at which Oracles generate Favor, and allows them to reveal what other players' buildings are training or researching."
+    }
+  ],
+  "QiLinsBlessing": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod urges your Qilins to restore peace, increasing their healing range and efficiency."
+    }
+  ],
+  "RageOfSlaughter": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases Yazi hitpoints and allows Yazis to regain hitpoints as they damage enemy units."
+    }
+  ],
+  "Rampage": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod causes myth units to be trained nearly instantly."
+    }
+  ],
+  "RedCliffsFleet": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod retrieves ship wreckage, spawning a free Mengchong each time several are lost."
+    }
+  ],
+  "Reincarnation": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod reincarnates your fallen troops, spawning a new human soldier each time a number of them die."
+    }
+  ],
+  "RestlessArmy": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Onmorakis to Plaguebringer Onmorakis, which are faster and fire more projectiles with their special attack."
+    }
+  ],
+  "RheiasGift": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod removes the Favor cost of all mythological improvements, and returns any Favor that you have spent on previously researched ones."
+    }
+  ],
+  "Rigsthula": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod's guidance increases the speed at which your buildings train units and research technologies, including advancing to the next age."
+    }
+  ],
+  "Rime": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Frost Giants to Frost Giants of Thrym, with improved hitpoints and attack."
+    }
+  ],
+  "RingGiver": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod bestows prestigious rings upon your Jarls, increasing their hitpoints and causing them to do extra damage to myth units."
+    }
+  ],
+  "RingOath": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod vows to defend the realm of men, allowing his Asgardian Bastion God Power to be recast with a greatly reduced Favor cost."
+    }
+  ],
+  "RisingTide": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod grants your Qinglongs the force of the tides, allowing them to attack faster as they gain combat experience."
+    }
+  ],
+  "RoarOfOrthus": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Nemean Lions to Nemean Rexes, whose roars have a greater area of effect."
+    }
+  ],
+  "RockSolid": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod encases myth units in gravel shields, increasing their armor, and causing melee damage to be reflected back to the attacker."
+    }
+  ],
+  "SacredCats": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod's cats protect food dropsites from vermin, improving all Food gather rates."
+    }
+  ],
+  "SacredLand": [
+    {
+      "condition": "Default",
+      "text": "Under CustomMinorGod’s cycle-turning gaze, villagers earn gold while farming, and gather food from farms faster."
+    }
+  ],
+  "Safeguard": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases wall and tower hitpoints and makes all buildings cost less Gold."
+    }
+  ],
+  "SaltwaterSpring": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod causes Villagers to hunt faster."
+    }
+  ],
+  "Sarissa": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod’s technology extends the range of {counter-cavalry infantry} attacks, and enables them to inflict more damage."
+    }
+  ],
+  "SashimonoBannermen": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases cavalry hitpoints and causes them to deal bonus damage to other cavalry."
+    }
+  ],
+  "ScallopedAxe": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod's invention increases the attack of Axemen."
+    }
+  ],
+  "ScorchingFeathers": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod scorches the arrows, bolts, and javelins of your ranged soldiers, allowing them to melt away enemy armor and attack faster."
+    }
+  ],
+  "SeasideInfiltrators": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases Shinobi speed and allows them to become temporarily invisible."
+    }
+  ],
+  "SerpentSkirt": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod summons Anacondas from your destroyed buildings, to defend the area temporarily."
+    }
+  ],
+  "SerpentSpear": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod grants your Spearmen weapons coated with venom, which inflict damage over time."
+    }
+  ],
+  "ServantsOfGlory": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod's determination improves the movement speed of Longhouse units, and allows them to use a short burst of speed after standing idle."
+    }
+  ],
+  "Sessrumnir": [
+    {
+      "condition": "If custom pantheon is Norse",
+      "text": "CustomMinorGod improves the hitpoints of your heroes, and allows Godi's to be trained an age earlier."
+    },
+    {
+      "condition": "If custom pantheon is not Norse",
+      "text": "CustomMinorGod improves the hitpoints of your heroes."
+    }
+  ],
+  "Shaduf": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod's invention reduces the cost of Farms and enables Laborers to build them faster."
+    }
+  ],
+  "ShaftsOfPlague": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod sends your ranged soldiers her Shafts of Plague, increasing their attack and causing them to poison enemies."
+    }
+  ],
+  "ShakerOfHeaven": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod shares godly powers with your heroes, increasing their hitpoints and damage against myth units."
+    }
+  ],
+  "ShardsOfItztli": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod studs archer ships with her obsidian, increasing their attack."
+    }
+  ],
+  "ShoulderOfTalos": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod reforges Silver Colossi into Gold Colossi, which have more hitpoints and hack armor."
+    }
+  ],
+  "SilentResolve": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod's stoic silence inspires your Berserks to gather strength when idle, slowly increasing their damage when they are still."
+    }
+  ],
+  "SinisterDefiance": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod instills defiance in your Qiongqi, increasing their armor for each nearby enemy unit."
+    }
+  ],
+  "SlashAndBurn": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod's technique drastically reduces the cost of Farms and increases their gather rate."
+    }
+  ],
+  "SlingsOfTheSun": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod equips Slingers with burning Slings of the Sun, causing them to do extra damage to infantry."
+    }
+  ],
+  "Sojutsu": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod makes {counter-cavalry infantry} move and attack much faster."
+    }
+  ],
+  "SolarBarque": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod occasionally summons Sea Snakes near enemy ships that your Kebenits are attacking."
+    }
+  ],
+  "SonOfLoong": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases Yazi hitpoints and damage."
+    }
+  ],
+  "SongOfMidsummer": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod protects your Zhuque, increasing their hitpoints and letting them rapidly regenerate when landed."
+    }
+  ],
+  "SonsOfSleipnir": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases cavalry damage, especially against human ranged soldiers."
+    }
+  ],
+  "SonsOfTheSun": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod converts all Oracles to Heroes, and any newly trained Oracles are Heroes."
+    }
+  ],
+  "SouthernFire": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases Fire Archer damage and causes them to ignite enemy units and buildings."
+    }
+  ],
+  "SpearOfHorus": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod lends {counter-cavalry infantry} his weapon of retribution, increasing their attack and allowing them to counter cavalry more effectively."
+    }
+  ],
+  "SpiritOfMaat": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases the healing rate of Pharaohs and Priests, and lowers the cost of Priests."
+    }
+  ],
+  "SpiritedCharge": [
+    {
+      "condition": "If selected myth unit is Centaur",
+      "text": "CustomMinorGod increases the attack and speed of cavalry and Centaurs."
+    },
+    {
+      "condition": "If selected myth unit is not Centaur",
+      "text": "CustomMinorGod increases the attack and speed of cavalry."
+    }
+  ],
+  "SpoilsOfWar": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod drives you to pillage resources when you destroy enemy buildings."
+    }
+  ],
+  "StingOfYappan": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod grants your War Hut soldiers the sting of the scorpion, causing their attacks to inflict poison damage over time."
+    }
+  ],
+  "StoneskinQuinametzin": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Quinametzin to Stoneskin Quinametzin, which have more range, attack, and hitpoints."
+    }
+  ],
+  "StringOfHearts": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod's necklace of dismembered hands and hearts compels human soldiers to inflict damage, especially crush, making them more effective against buildings."
+    }
+  ],
+  "SumoTraining": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases infantry hitpoints and bonus damage against buildings."
+    }
+  ],
+  "SunDriedMudBrick": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod improves the hitpoints of buildings, and lowers their cost and construction time."
+    }
+  ],
+  "SunRay": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod imbues the projectiles fired by your units with sunlight, causing them to inflict more damage and reveal their surroundings."
+    }
+  ],
+  "SwineArray": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod's battle formation makes {counter-cavalry infantry} inflict more damage, especially to cavalry."
+    }
+  ],
+  "SylvanLore": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Centaurs to Centaur Polemarchs, which have more hitpoints, range, and line of sight."
+    }
+  ],
+  "TecciztecatlsPenance": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases the Favor earned by devoting Settlers."
+    }
+  ],
+  "TempestuousStorm": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod grants your heroes his sense of timing, greatly reducing their ability cooldowns and cost."
+    }
+  ],
+  "TempleOfHealing": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod allows your Temples to heal nearby allied units."
+    }
+  ],
+  "TenFistSword": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases Samurai attack and causes them to summon a Masterless Sword upon dying, which can deal one final strike."
+    }
+  ],
+  "TeponaztliDrums": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases the speed of your villagers, human soldiers, and heroes."
+    }
+  ],
+  "TheftOfFire": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases the rate at which Hero Citizens gather resources and construct buildings."
+    }
+  ],
+  "ThornedWalls": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod’s protection allows walls and fortifications to deal reflective damage when attacked by melee units."
+    }
+  ],
+  "ThracianHorses": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod provides your cavalry with the carnivorous Thracian Horses, which regain hitpoints when they attack enemy units."
+    }
+  ],
+  "ThunderingHooves": [
+    {
+      "condition": "If selected myth unit is Valkyrie",
+      "text": "CustomMinorGod improves cavalry and Valkyrie speed and hitpoints."
+    },
+    {
+      "condition": "If selected myth unit is not Valkyrie",
+      "text": "CustomMinorGod improves cavalry speed and hitpoints."
+    }
+  ],
+  "ThunderousPresence": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases Raiju movement speed and damage."
+    }
+  ],
+  "ThurisazRune": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod brands myth units with the Thurisaz Rune, increasing their speed and causing them to regenerate hitpoints."
+    }
+  ],
+  "TitanShield": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases the pierce armor of your Destroyers."
+    }
+  ],
+  "Titanomachy": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Centimani to Wardens of Tartarus, which have additional arms and attack faster."
+    }
+  ],
+  "Tlaloques": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod sends the Tlaloques to assist your people, significantly reducing the cost and research time of Calpulli improvements, and granting 75 gold for each Calpulli research completed."
+    }
+  ],
+  "ToloacheTrance": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod imbues your warriors' weapons with the effects of toloache, numbing the minds of enemies with every strike, slowing their attack speed."
+    }
+  ],
+  "Tonacatepetl": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod’s mountain of sustenance inspires Settlers near Livestock Pens to gather food faster, especially from animals."
+    }
+  ],
+  "TorchOfMisfortune": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Soul Guides to Soul Masters, which can use chain lightning attacks."
+    }
+  ],
+  "TusksOfApedemak": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod makes War Elephants stronger, cheaper, and reduces their population cost."
+    }
+  ],
+  "TwilightOfTheGods": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod's destiny to survive Ragnarok grants your human soldiers more hitpoints and enables them to inflict extra damage to heroes."
+    }
+  ],
+  "TwistedLimbs": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod contorts the bodies of Ocelotl Warriors, allowing their Leap ability to deal more damage and increasing their hitpoints."
+    }
+  ],
+  "Valgaldr": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod's magic upgrades Draugar to Revenant Draugar, which harness the chilling touch of winter for improved range and attack damage."
+    }
+  ],
+  "ValleyOfTheKings": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod teaches secrets that cause Barracks and Migdol Strongholds to spawn additional units when empowered."
+    }
+  ],
+  "VibrantLand": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod brings an early spring, causing trees to periodically grow near Houses and allowing you to gather wood faster and deposit it into Houses."
+    }
+  ],
+  "Vikings": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod causes Raiding Cavalry to produce Gold in addition to Favor while fighting enemy units, and deal additional divine damage."
+    }
+  ],
+  "VolcanicForge": [
+    {
+      "condition": "If selected myth unit is Automaton",
+      "text": "CustomMinorGod summons Hephaestus to harden the armor of your Automatons, soldiers, heroes, and ships, making them more resistant to pierce attacks, such as arrows."
+    },
+    {
+      "condition": "If selected myth unit is not Automaton",
+      "text": "CustomMinorGod summons Hephaestus to harden the armor of your soldiers, heroes, and ships, making them more resistant to pierce attacks, such as arrows."
+    }
+  ],
+  "WeightlessMace": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod increases{counter-cavalry infantry}' speed and attack."
+    }
+  ],
+  "WillOfKronos": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades your Cyclopes to Elder Cyclopes, which inflict damage over a wider area."
+    }
+  ],
+  "WindSickles": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Kamaitachis to Razorwind Kamaitachis, which deal significantly more damage."
+    }
+  ],
+  "WingedMessenger": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod grants you a respawning Pegasus and significantly improves the speed and line of sight of Pegasi."
+    }
+  ],
+  "WingsOfItzpapalotl": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod sharpens the wings of your Obsidian Butterflies, increasing their movement speed, bleed and special attack damage."
+    }
+  ],
+  "WinterHarvest": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod's harvest causes Food to be gathered faster, especially from Farms."
+    }
+  ],
+  "WisdomOfNine": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGodi upgrades Kitsunes to Nine-Tailed Kitsunes, which have more hitpoints and line of sight. Friendly units can simultaneously have their speed increased by two Nine-Tailed Kitsunes."
+    }
+  ],
+  "WrathOfTheDeep": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod upgrades Krakens to deadly Trench Krakens, which have more hitpoints and can capsize ships more often."
+    }
+  ],
+  "XuanyuansBloodline": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod temporarily grants infantry units additional damage and regeneration while fighting when nearby allied infantry units die."
+    }
+  ],
+  "Ydalir": [
+    {
+      "condition": "Default",
+      "text": "CustomMinorGod gifts you his famed yew dales, enabling Portable Rams an age earlier, and improving the work speed of all Hill Forts."
+    }
+  ]
+});
+
+const COUNTER_CAVALRY_INFANTRY_DESCRIPTION_LABELS = Object.freeze({
+  Greek: { singular: "Hoplite", plural: "Hoplites", possessive: "Hoplites'" },
+  Egyptian: { singular: "Spearman", plural: "Spearmen", possessive: "Spearmen's" },
+  Norse: { singular: "Hirdman", plural: "Hirdmen", possessive: "Hirdmen's" },
+  Atlantean: { singular: "Katapeltes", plural: "Katapeltes", possessive: "Katapeltes'" },
+  Chinese: { singular: "Ge Halberdier", plural: "Ge Halberdiers", possessive: "Ge Halberdiers'" },
+  Japanese: { singular: "Yari Spearman", plural: "Yari Spearmen", possessive: "Yari Spearmen's" },
+  Aztec: { singular: "Tlamanih Spearman", plural: "Tlamanih Spearmen", possessive: "Tlamanih Spearmen's" },
+});
+
+function counterCavalryInfantryDescriptionLabel(config = null, form = "plural") {
+  const pantheon = config?.baseCulture || selectedPantheon?.() || "Greek";
+  const entry = COUNTER_CAVALRY_INFANTRY_DESCRIPTION_LABELS[pantheon] || COUNTER_CAVALRY_INFANTRY_DESCRIPTION_LABELS.Greek;
+  return entry[form] || entry.plural;
+}
+
+function finalTechDescriptionText(template, options = {}) {
+  let text = String(template || "");
+  const customGodName = options.customGodName || "Custom God";
+  const customMinorName = options.customMinorName || "Custom minor god";
+  const config = options.config || null;
+  const singularCounter = counterCavalryInfantryDescriptionLabel(config, "singular");
+  const possessiveCounter = counterCavalryInfantryDescriptionLabel(config, "possessive");
+  const pluralCounter = counterCavalryInfantryDescriptionLabel(config, "plural");
+  text = text.replace(/\s*\{counter-cavalry infantry\}'s/g, ` ${possessiveCounter}`);
+  text = text.replace(/\s*\{counter-cavalry infantry\}'/g, ` ${possessiveCounter}`);
+  text = text.replaceAll("{counter-cavalry infantry} attacks", `${singularCounter} attacks`);
+  text = text.replaceAll("{counter-cavalry infantry}", pluralCounter);
+  text = text.replaceAll("CustomMinorGod", customMinorName);
+  text = text.replaceAll("CustomGod", customGodName);
+  return text.replace(/\s+([,.;:])/g, "$1").replace(/\s{2,}/g, " ").trim();
+}
+
+
+const MAJOR_UNIQUE_TECH_XML_BY_TECH = Object.freeze({
+  "OlympianParentage": "\t<tech name=\"OlympianParentage\">\n\t\t<displaynameid>STR_TECH_OLYMPIAN_PARENTAGE_NAME</displaynameid>\n\t\t<rollovertextid>STR_TECH_OLYMPIAN_PARENTAGE_LR</rollovertextid>\n\t\t<cost resourcetype=\"Food\">100.0000</cost>\n\t\t<cost resourcetype=\"Favor\">10.0000</cost>\n\t\t<researchpoints>40.0000</researchpoints>\n\t\t<status>UNOBTAINABLE</status>\n\t\t<icon>resources\\greek\\static_color\\technologies\\olympian_parentage_icon.png</icon>\n\t\t<flag>CountsTowardMilitaryScore</flag>\n\t\t<flag>MythTech</flag>\n\t\t<effects>\n\t\t\t<effect type=\"Data\" amount=\"1.25\" subtype=\"Hitpoints\" relativity=\"BasePercent\">\n\t\t\t\t<target type=\"ProtoUnit\">Hero</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" amount=\"1.0\" subtype=\"UnitRegenRate\" relativity=\"Absolute\">\n\t\t\t\t<target type=\"ProtoUnit\">Hero</target>\n\t\t\t</effect>\n\t\t</effects>\n\t</tech>",
+  "VaultsOfErebus": "\t<tech name=\"VaultsOfErebus\">\n\t\t<displaynameid>STR_TECH_VAULTS_OF_EREBUS_NAME</displaynameid>\n\t\t<rollovertextid>STR_TECH_VAULTS_OF_EREBUS_LR</rollovertextid>\n\t\t<cost resourcetype=\"Wood\">200.0000</cost>\n\t\t<cost resourcetype=\"Favor\">15.0000</cost>\n\t\t<researchpoints>40.0000</researchpoints>\n\t\t<status>UNOBTAINABLE</status>\n\t\t<icon>resources\\greek\\static_color\\technologies\\vaults_of_erebus_icon.png</icon>\n\t\t<flag>CountsTowardEconomicScore</flag>\n\t\t<flag>MythTech</flag>\n\t\t<effects>\n\t\t\t<effect type=\"Data\" amount=\"1.75\" subtype=\"ResourceTrickleRate\" resource=\"Gold\" relativity=\"Absolute\">\n\t\t\t\t<target type=\"Player\"></target>\n\t\t\t</effect>\n\t\t</effects>\n\t</tech>",
+  "LordOfHorses": "\t<tech name=\"LordOfHorses\">\n\t\t<displaynameid>STR_TECH_LORD_OF_HORSES_NAME</displaynameid>\n\t\t<rollovertextid>STR_TECH_LORD_OF_HORSES_LR</rollovertextid>\n\t\t<cost resourcetype=\"Food\">75.0000</cost>\n\t\t<cost resourcetype=\"Favor\">5.0000</cost>\n\t\t<researchpoints>25.0000</researchpoints>\n\t\t<status>UNOBTAINABLE</status>\n\t\t<icon>resources\\greek\\static_color\\technologies\\lord_of_horses_icon.png</icon>\n\t\t<flag>CountsTowardMilitaryScore</flag>\n\t\t<flag>MythTech</flag>\n\t\t<effects>\n\t\t\t<effect type=\"Data\" amount=\"4\" subtype=\"LOS\" relativity=\"Absolute\">\n\t\t\t\t<target type=\"ProtoUnit\">AbstractCavalry</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" amount=\"0.50\" subtype=\"UnitRegenRate\" relativity=\"Absolute\">\n\t\t\t\t<target type=\"ProtoUnit\">AbstractCavalry</target>\n\t\t\t</effect>\n\t\t</effects>\n\t</tech>",
+  "DivineLabor": "\t<tech name=\"DivineLabor\" orderhint=\"4\">\n\t\t<displaynameid>STR_TECH_DIVINE_LABOR_NAME</displaynameid>\n\t\t<rollovertextid>STR_TECH_DIVINE_LABOR_LR</rollovertextid>\n\t\t<cost resourcetype=\"Gold\">125.0000</cost>\n\t\t<cost resourcetype=\"Favor\">10.0000</cost>\n\t\t<researchpoints>40.0000</researchpoints>\n\t\t<status>UNOBTAINABLE</status>\n\t\t<icon>resources\\greek_demeter\\static_color\\technologies\\divine_labor_icon.png</icon>\n\t\t<flag>CountsTowardEconomicScore</flag>\n\t\t<flag>MythTech</flag>\n\t\t<effects>\n\t\t\t<effect type=\"Data\" action=\"Gather\" amount=\"1.10\" subtype=\"WorkRate\" unittype=\"Herdable\" relativity=\"BasePercent\">\n\t\t\t\t<target type=\"ProtoUnit\">EconomicUpgraded</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" action=\"Gather\" amount=\"1.10\" subtype=\"WorkRate\" unittype=\"NonConvertableHerdable\" relativity=\"BasePercent\">\n\t\t\t\t<target type=\"ProtoUnit\">EconomicUpgraded</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" action=\"Gather\" amount=\"1.10\" subtype=\"WorkRate\" unittype=\"AbstractFarm\" relativity=\"BasePercent\">\n\t\t\t\t<target type=\"ProtoUnit\">EconomicUpgraded</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" action=\"Gather\" amount=\"1.10\" subtype=\"WorkRateSpecific\" resource=\"Food\" unittype=\"ThePeachBlossomSpring\" relativity=\"BasePercent\" hidetooltip=\"\">\n\t\t\t\t<target type=\"ProtoUnit\">EconomicUpgraded</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" amount=\"10.00\" subtype=\"DropoffHeal\" relativity=\"Absolute\">\n\t\t\t\t<target type=\"ProtoUnit\">AbstractVillager</target>\n\t\t\t</effect>\n\t\t</effects>\n\t</tech>",
+  "SkinOfTheRhino": "\t<tech name=\"SkinOfTheRhino\">\n\t\t<displaynameid>STR_TECH_SKIN_OF_THE_RHINO_NAME</displaynameid>\n\t\t<rollovertextid>STR_TECH_SKIN_OF_THE_RHINO_LR</rollovertextid>\n\t\t<cost resourcetype=\"Food\">50.0000</cost>\n\t\t<cost resourcetype=\"Favor\">5.0000</cost>\n\t\t<researchpoints>15.0000</researchpoints>\n\t\t<status>UNOBTAINABLE</status>\n\t\t<icon>resources\\egyptian\\static_color\\technologies\\skin_of_the_rhino_icon.png</icon>\n\t\t<flag>CountsTowardMilitaryScore</flag>\n\t\t<flag>MythTech</flag>\n\t\t<effects>\n\t\t\t<effect type=\"Data\" amount=\"-0.25\" subtype=\"ArmorVulnerability\" armortype=\"Hack\" relativity=\"Percent\">\n\t\t\t\t<target type=\"ProtoUnit\">VillagerEgyptian</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" amount=\"-0.25\" subtype=\"ArmorVulnerability\" armortype=\"Pierce\" relativity=\"Percent\">\n\t\t\t\t<target type=\"ProtoUnit\">VillagerEgyptian</target>\n\t\t\t</effect>\n\t\t</effects>\n\t</tech>",
+  "FloodOfTheNile": "\t<tech name=\"FloodOfTheNile\">\n\t\t<displaynameid>STR_TECH_FLOOD_OF_THE_NILE_NAME</displaynameid>\n\t\t<rollovertextid>STR_TECH_FLOOD_OF_THE_NILE_LR</rollovertextid>\n\t\t<cost resourcetype=\"Gold\">150.0000</cost>\n\t\t<cost resourcetype=\"Favor\">8.0000</cost>\n\t\t<researchpoints>40.0000</researchpoints>\n\t\t<status>UNOBTAINABLE</status>\n\t\t<icon>resources\\egyptian\\static_color\\technologies\\flood_of_the_nile_icon.png</icon>\n\t\t<flag>CountsTowardEconomicScore</flag>\n\t\t<flag>MythTech</flag>\n\t\t<effects>\n\t\t\t<effect type=\"Data\" amount=\"1.0\" subtype=\"ResourceTrickleRate\" resource=\"Food\" relativity=\"Absolute\">\n\t\t\t\t<target type=\"Player\"></target>\n\t\t\t</effect>\n\t\t</effects>\n\t</tech>",
+  "Clairvoyance": "\t<tech name=\"Clairvoyance\">\n\t\t<displaynameid>STR_TECH_CLAIRVOYANCE_NAME</displaynameid>\n\t\t<rollovertextid>STR_TECH_CLAIRVOYANCE_LR</rollovertextid>\n\t\t<cost resourcetype=\"Gold\">150.0000</cost>\n\t\t<cost resourcetype=\"Favor\">10.0000</cost>\n\t\t<researchpoints>40.0000</researchpoints>\n\t\t<status>UNOBTAINABLE</status>\n\t\t<icon>resources\\egyptian\\static_color\\technologies\\clairvoyance_icon.png</icon>\n\t\t<flag>CountsTowardMilitaryScore</flag>\n\t\t<flag>MythTech</flag>\n\t\t<effects>\n\t\t\t<effect type=\"Data\" subtype=\"PowerCost\" protopower=\"Vision\" amount=\"0.00\" relativity=\"Override\">\n\t\t\t\t<target type=\"Player\"></target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" subtype=\"PowerROF\" protopower=\"Vision\" amount=\"0.50\" relativity=\"Percent\">\n\t\t\t\t<target type=\"Player\"></target>\n\t\t\t</effect>\n\t\t</effects>\n\t</tech>",
+  "HammerOfThunder": "\t<tech name=\"HammerOfThunder\">\n\t\t<displaynameid>STR_TECH_HAMMER_OF_THUNDER_NAME</displaynameid>\n\t\t<rollovertextid>STR_TECH_HAMMER_OF_THUNDER_LR</rollovertextid>\n\t\t<cost resourcetype=\"Gold\">125.0000</cost>\n\t\t<cost resourcetype=\"Favor\">10.0000</cost>\n\t\t<researchpoints>40.0000</researchpoints>\n\t\t<status>UNOBTAINABLE</status>\n\t\t<icon>resources\\norse\\static_color\\technologies\\hammer_of_thunder_icon.png</icon>\n\t\t<flag>CountsTowardMilitaryScore</flag>\n\t\t<flag>MythTech</flag>\n\t\t<techtype>ArmoryTechnology</techtype>\n\t\t<techage>HeroicAge</techage>\n\t\t<effects>\n\t\t\t<effect type=\"Data\" amount=\"1.15\" subtype=\"Damage\" action=\"HandAttack\" relativity=\"BasePercent\">\n\t\t\t\t<target type=\"ProtoUnit\">Hersir</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" action=\"AutoGather\" amount=\"1.5\" subtype=\"WorkRate\" unittype=\"Favor\" relativity=\"BasePercent\">\n\t\t\t\t<target type=\"ProtoUnit\">Hersir</target>\n\t\t\t</effect>\n\t\t</effects>\n\t</tech>",
+  "Hamask": "\t<tech name=\"Hamask\">\n\t\t<displaynameid>STR_TECH_HAMASK_NAME</displaynameid>\n\t\t<rollovertextid>STR_TECH_HAMASK_LR</rollovertextid>\n\t\t<cost resourcetype=\"Wood\">175.0000</cost>\n\t\t<cost resourcetype=\"Favor\">12.0000</cost>\n\t\t<researchpoints>40.0000</researchpoints>\n\t\t<status>UNOBTAINABLE</status>\n\t\t<icon>resources\\norse\\static_color\\technologies\\hamask_icon.png</icon>\n\t\t<flag>CountsTowardMilitaryScore</flag>\n\t\t<flag>MythTech</flag>\n\t\t<effects>\n\t\t\t<effect type=\"Data\" amount=\"1.10\" subtype=\"MaximumVelocity\" relativity=\"BasePercent\">\n\t\t\t\t<target type=\"ProtoUnit\">Berserk</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" action=\"HandAttack\" amount=\"1.5\" subtype=\"Damagebonus\" unittype=\"MythUnit\" relativity=\"BasePercent\">\n\t\t\t\t<target type=\"ProtoUnit\">Berserk</target>\n\t\t\t</effect>\n\t\t</effects>\n\t</tech>",
+  "EyesInTheForest": "\t<tech name=\"EyesInTheForest\">\n\t\t<displaynameid>STR_TECH_EYES_IN_THE_FOREST_NAME</displaynameid>\n\t\t<rollovertextid>STR_TECH_EYES_IN_THE_FOREST_LR</rollovertextid>\n\t\t<cost resourcetype=\"Gold\">75.0000</cost>\n\t\t<cost resourcetype=\"Favor\">8.0000</cost>\n\t\t<researchpoints>40.0000</researchpoints>\n\t\t<status>UNOBTAINABLE</status>\n\t\t<icon>resources\\norse\\static_color\\technologies\\eyes_in_the_forest_icon.png</icon>\n\t\t<flag>CountsTowardMilitaryScore</flag>\n\t\t<flag>MythTech</flag>\n\t\t<effects>\n\t\t\t<effect type=\"Data\" protoaction=\"LOSWithResources\" amount=\"1.00\" subtype=\"ProtoActionAdd\" unittype=\"ResourceSightContainer\" relativity=\"Assign\">\n\t\t\t\t<target type=\"ProtoUnit\">Unit</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" amount=\"1.05\" subtype=\"MaximumVelocity\" relativity=\"BasePercent\">\n\t\t\t\t<target type=\"ProtoUnit\">Hero</target>\n\t\t\t</effect>\n\t\t</effects>\n\t</tech>",
+  "FreyrsGift": "\t<tech name=\"FreyrsGift\">\n\t\t<displaynameid>STR_TECH_FREYRS_GIFT_NAME</displaynameid>\n\t\t<rollovertextid>STR_TECH_FREYRS_GIFT_LR</rollovertextid>\n\t\t<cost resourcetype=\"Food\">800.0000</cost>\n\t\t<cost resourcetype=\"Favor\">150.0000</cost>\n\t\t<researchpoints>20.0000</researchpoints>\n\t\t<status>UNOBTAINABLE</status>\n\t\t<icon>resources\\norse_freyr\\static_color\\technologies\\freyrs_gift_icon.png</icon>\n\t\t<flag>CountsTowardMilitaryScore</flag>\n\t\t<flag>MythTech</flag>\n\t\t<effects>\n\t\t\t<effect type=\"Data\" amount=\"1.1\" subtype=\"Hitpoints\" relativity=\"BasePercent\">\n\t\t\t\t<target type=\"ProtoUnit\">Unit</target>\n\t\t\t</effect>\n\t\t</effects>\n\t</tech>",
+  "TemporalChaos": "\t<tech name=\"TemporalChaos\">\n\t\t<displaynameid>STR_TECH_TEMPORAL_CHAOS_NAME</displaynameid>\n\t\t<rollovertextid>STR_TECH_TEMPORAL_CHAOS_LR</rollovertextid>\n\t\t<cost resourcetype=\"Wood\">100.0000</cost>\n\t\t<cost resourcetype=\"Gold\">50.0000</cost>\n\t\t<cost resourcetype=\"Favor\">10.0000</cost>\n\t\t<researchpoints>20.0000</researchpoints>\n\t\t<status>UNOBTAINABLE</status>\n\t\t<icon>resources\\atlantean\\static_color\\technologies\\temporal_chaos_icon.png</icon>\n\t\t<flag>CountsTowardMilitaryScore</flag>\n\t\t<flag>MythTech</flag>\n\t\t<effects>\n\t\t\t<effect type=\"Data\" subtype=\"TimeShiftingConcurrentShifts\" amount=\"1\" relativity=\"Absolute\">\n\t\t\t\t<target type=\"Player\"></target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" subtype=\"TimeShiftingCost\" amount=\"0.50\" unittype=\"Palace\" relativity=\"BasePercent\">\n\t\t\t\t<target type=\"Player\"></target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" subtype=\"TimeShiftingCost\" amount=\"0.50\" unittype=\"SentryTower\" relativity=\"BasePercent\">\n\t\t\t\t<target type=\"Player\"></target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" subtype=\"TimeShiftingCost\" amount=\"0.50\" unittype=\"MirrorTower\" relativity=\"BasePercent\">\n\t\t\t\t<target type=\"Player\"></target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" subtype=\"TimeShiftingTimeRatio\" amount=\"0.5\" unittype=\"Building\" relativity=\"Percent\">\n\t\t\t\t<target type=\"Player\"></target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" subtype=\"TimeShiftingTimeRatio\" amount=\"0.5\" unittype=\"Manor\" relativity=\"Percent\" hidetooltip=\"\">\n\t\t\t\t<target type=\"Player\"></target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" subtype=\"TimeShiftingTimeRatio\" amount=\"0.5\" unittype=\"Farm\" relativity=\"Percent\" hidetooltip=\"\">\n\t\t\t\t<target type=\"Player\"></target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" subtype=\"TimeShiftingTimeRatio\" amount=\"0.5\" unittype=\"EconomicGuild\" relativity=\"Percent\" hidetooltip=\"\">\n\t\t\t\t<target type=\"Player\"></target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" subtype=\"TimeShiftingTimeRatio\" amount=\"0.5\" unittype=\"MilitaryBarracks\" relativity=\"Percent\" hidetooltip=\"\">\n\t\t\t\t<target type=\"Player\"></target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" subtype=\"TimeShiftingTimeRatio\" amount=\"0.5\" unittype=\"CounterBarracks\" relativity=\"Percent\" hidetooltip=\"\">\n\t\t\t\t<target type=\"Player\"></target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" subtype=\"TimeShiftingTimeRatio\" amount=\"0.5\" unittype=\"Dock\" relativity=\"Percent\" hidetooltip=\"\">\n\t\t\t\t<target type=\"Player\"></target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" subtype=\"TimeShiftingTimeRatio\" amount=\"0.5\" unittype=\"Temple\" relativity=\"Percent\" hidetooltip=\"\">\n\t\t\t\t<target type=\"Player\"></target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" subtype=\"TimeShiftingTimeRatio\" amount=\"0.5\" unittype=\"Armory\" relativity=\"Percent\" hidetooltip=\"\">\n\t\t\t\t<target type=\"Player\"></target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" subtype=\"TimeShiftingTimeRatio\" amount=\"0.5\" unittype=\"Market\" relativity=\"Percent\" hidetooltip=\"\">\n\t\t\t\t<target type=\"Player\"></target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" subtype=\"TimeShiftingTimeRatio\" amount=\"0.5\" unittype=\"Palace\" relativity=\"Percent\" hidetooltip=\"\">\n\t\t\t\t<target type=\"Player\"></target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" subtype=\"TimeShiftingTimeRatio\" amount=\"0.5\" unittype=\"SentryTower\" relativity=\"Percent\" hidetooltip=\"\">\n\t\t\t\t<target type=\"Player\"></target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" subtype=\"TimeShiftingTimeRatio\" amount=\"0.5\" unittype=\"MirrorTower\" relativity=\"Percent\" hidetooltip=\"\">\n\t\t\t\t<target type=\"Player\"></target>\n\t\t\t</effect>\n\t\t</effects>\n\t</tech>",
+  "EmpyreanSpeed": "\t<tech name=\"EmpyreanSpeed\">\n\t\t<displaynameid>STR_TECH_EMPYREAN_SPEED_NAME</displaynameid>\n\t\t<rollovertextid>STR_TECH_EMPYREAN_SPEED_LR</rollovertextid>\n\t\t<cost resourcetype=\"Gold\">100.0000</cost>\n\t\t<cost resourcetype=\"Favor\">5.0000</cost>\n\t\t<researchpoints>30.0000</researchpoints>\n\t\t<status>UNOBTAINABLE</status>\n\t\t<icon>resources\\atlantean\\static_color\\technologies\\empyrean_speed_icon.png</icon>\n\t\t<flag>CountsTowardMilitaryScore</flag>\n\t\t<flag>MythTech</flag>\n\t\t<effects>\n\t\t\t<effect type=\"Data\" amount=\"1.10\" subtype=\"MaximumVelocity\" relativity=\"BasePercent\">\n\t\t\t\t<target type=\"ProtoUnit\">AbstractInfantry</target>\n\t\t\t</effect>\n\t\t</effects>\n\t</tech>",
+  "Channels": "\t<tech name=\"Channels\">\n\t\t<displaynameid>STR_TECH_CHANNELS_NAME</displaynameid>\n\t\t<rollovertextid>STR_TECH_CHANNELS_LR</rollovertextid>\n\t\t<advancedrollovertextoverrideid>STR_TECH_CHANNELS_OVERRIDE</advancedrollovertextoverrideid>\n\t\t<cost resourcetype=\"Gold\">100.0000</cost>\n\t\t<cost resourcetype=\"Favor\">10.0000</cost>\n\t\t<researchpoints>40.0000</researchpoints>\n\t\t<status>UNOBTAINABLE</status>\n\t\t<icon>resources\\atlantean\\static_color\\technologies\\channels_icon.png</icon>\n\t\t<flag>CountsTowardMilitaryScore</flag>\n\t\t<flag>MythTech</flag>\n\t\t<effects></effects>\n\t</tech>",
+  "CelestialWeapons": "\t<tech name=\"CelestialWeapons\" orderhint=\"0\">\n\t\t<displaynameid>STR_TECH_CELESTIAL_WEAPONS_NAME</displaynameid>\n\t\t<rollovertextid>STR_TECH_CELESTIAL_WEAPONS_LR</rollovertextid>\n\t\t<cost resourcetype=\"Food\">100.0000</cost>\n\t\t<cost resourcetype=\"Gold\">150.0000</cost>\n\t\t<cost resourcetype=\"Favor\">15.0000</cost>\n\t\t<researchpoints>40.0000</researchpoints>\n\t\t<status>UNOBTAINABLE</status>\n\t\t<icon>resources\\chinese\\static_color\\technologies\\celestial_weapons_icon.png</icon>\n\t\t<flag>CountsTowardMilitaryScore</flag>\n\t\t<flag>MythTech</flag>\n\t\t<effects>\n\t\t\t<effect type=\"Data\" amount=\"1.00\" subtype=\"Damage\" damagetype=\"Divine\" allactions=\"1\" relativity=\"Absolute\">\n\t\t\t\t<target type=\"ProtoUnit\">Hero</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" amount=\"1.00\" subtype=\"Damage\" damagetype=\"Divine\" allactions=\"1\" relativity=\"Absolute\">\n\t\t\t\t<target type=\"ProtoUnit\">Sage</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" amount=\"1.00\" subtype=\"Damage\" damagetype=\"Divine\" allactions=\"1\" relativity=\"Absolute\">\n\t\t\t\t<target type=\"ProtoUnit\">AbstractNezha</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" amount=\"1.00\" subtype=\"Damage\" damagetype=\"Divine\" allactions=\"1\" relativity=\"Absolute\">\n\t\t\t\t<target type=\"ProtoUnit\">JiangZiYa</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" amount=\"2.00\" subtype=\"Damage\" damagetype=\"Divine\" allactions=\"1\" relativity=\"Absolute\">\n\t\t\t\t<target type=\"ProtoUnit\">YangJian</target>\n\t\t\t</effect>\n\t\t</effects>\n\t</tech>",
+  "TaiChi": "\t<tech name=\"TaiChi\" orderhint=\"0\">\n\t\t<displaynameid>STR_TECH_TAI_CHI_NAME</displaynameid>\n\t\t<rollovertextid>STR_TECH_TAI_CHI_LR</rollovertextid>\n\t\t<cost resourcetype=\"Wood\">100.0000</cost>\n\t\t<cost resourcetype=\"Favor\">10.0000</cost>\n\t\t<researchpoints>40.0000</researchpoints>\n\t\t<status>UNOBTAINABLE</status>\n\t\t<icon>resources\\chinese\\static_color\\technologies\\tai_chi_icon.png</icon>\n\t\t<flag>CountsTowardMilitaryScore</flag>\n\t\t<flag>MythTech</flag>\n\t\t<effects>\n\t\t\t<effect type=\"Data\" amount=\"-0.10\" subtype=\"ArmorVulnerability\" armortype=\"Pierce\" relativity=\"Percent\">\n\t\t\t\t<target type=\"ProtoUnit\">Hero</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" amount=\"-0.10\" subtype=\"ArmorVulnerability\" armortype=\"Hack\" relativity=\"Percent\">\n\t\t\t\t<target type=\"ProtoUnit\">Hero</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" amount=\"0.75\" subtype=\"TrainPoints\" relativity=\"Percent\">\n\t\t\t\t<target type=\"ProtoUnit\">Hero</target>\n\t\t\t</effect>\n\t\t</effects>\n\t</tech>",
+  "MountainousMight": "\t<tech name=\"MountainousMight\" orderhint=\"0\">\n\t\t<displaynameid>STR_TECH_MOUNTAINOUS_MIGHT_NAME</displaynameid>\n\t\t<rollovertextid>STR_TECH_MOUNTAINOUS_MIGHT_LR</rollovertextid>\n\t\t<cost resourcetype=\"Wood\">150.0000</cost>\n\t\t<cost resourcetype=\"Gold\">150.0000</cost>\n\t\t<cost resourcetype=\"Favor\">10.0000</cost>\n\t\t<researchpoints>30.0000</researchpoints>\n\t\t<status>UNOBTAINABLE</status>\n\t\t<icon>resources\\chinese\\static_color\\technologies\\mountainous_might_icon.png</icon>\n\t\t<flag>CountsTowardMilitaryScore</flag>\n\t\t<flag>MythTech</flag>\n\t\t<effects>\n\t\t\t<effect type=\"Data\" allactions=\"1\" amount=\"1.5\" subtype=\"Damage\" relativity=\"BasePercent\">\n\t\t\t\t<target type=\"ProtoUnit\">Kuafu</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" allactions=\"1\" amount=\"1.5\" subtype=\"Damage\" relativity=\"BasePercent\">\n\t\t\t\t<target type=\"ProtoUnit\">KuafuHero</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" amount=\"1.20\" subtype=\"Hitpoints\" relativity=\"BasePercent\">\n\t\t\t\t<target type=\"ProtoUnit\">Kuafu</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" amount=\"1.20\" subtype=\"Hitpoints\" relativity=\"BasePercent\">\n\t\t\t\t<target type=\"ProtoUnit\">KuafuHero</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" amount=\"10.00\" subtype=\"LOS\" relativity=\"Absolute\">\n\t\t\t\t<target type=\"ProtoUnit\">Kuafu</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" amount=\"10.00\" subtype=\"LOS\" relativity=\"Absolute\">\n\t\t\t\t<target type=\"ProtoUnit\">KuafuHero</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" action=\"RangedAttack\" amount=\"10.00\" subtype=\"MaximumRange\" relativity=\"Absolute\">\n\t\t\t\t<target type=\"ProtoUnit\">Kuafu</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" action=\"RangedAttack\" amount=\"10.00\" subtype=\"MaximumRange\" relativity=\"Absolute\">\n\t\t\t\t<target type=\"ProtoUnit\">KuafuHero</target>\n\t\t\t</effect>\n\t\t</effects>\n\t</tech>",
+  "KuafuChieftain": "\t<tech name=\"KuafuChieftain\" orderhint=\"0\">\n\t\t<displaynameid>STR_TECH_KUAFU_CHIEFTAIN_NAME</displaynameid>\n\t\t<rollovertextid>STR_TECH_KUAFU_CHIEFTAIN_LR</rollovertextid>\n\t\t<cost resourcetype=\"Food\">150.0000</cost>\n\t\t<cost resourcetype=\"Favor\">10.0000</cost>\n\t\t<researchpoints>40.0000</researchpoints>\n\t\t<status>UNOBTAINABLE</status>\n\t\t<icon>resources\\chinese\\static_color\\technologies\\kuafu_chieftain_icon.png</icon>\n\t\t<flag>CountsTowardMilitaryScore</flag>\n\t\t<flag>MythTech</flag>\n\t\t<effects>\n\t\t\t<effect type=\"TechStatus\" status=\"obtainable\">HeroKuafuRespawn</effect>\n\t\t</effects>\n\t</tech>",
+  "PeachOfImmortality": "\t<tech name=\"PeachOfImmortality\" orderhint=\"0\">\n\t\t<displaynameid>STR_TECH_PEACH_OF_IMMORTALITY_NAME</displaynameid>\n\t\t<rollovertextid>STR_TECH_PEACH_OF_IMMORTALITY_LR</rollovertextid>\n\t\t<cost resourcetype=\"Food\">150.0000</cost>\n\t\t<cost resourcetype=\"Favor\">10.0000</cost>\n\t\t<researchpoints>30.0000</researchpoints>\n\t\t<status>UNOBTAINABLE</status>\n\t\t<icon>resources\\chinese\\static_color\\technologies\\peach_of_immortality_icon.png</icon>\n\t\t<flag>CountsTowardMilitaryScore</flag>\n\t\t<flag>MythTech</flag>\n\t\t<techtype>MythUnitUpgrade</techtype>\n\t\t<effects>\n\t\t\t<effect type=\"Data\" amount=\"1.15\" subtype=\"Hitpoints\" relativity=\"BasePercent\">\n\t\t\t\t<target type=\"ProtoUnit\">Hero</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" amount=\"1.15\" subtype=\"Hitpoints\" relativity=\"BasePercent\">\n\t\t\t\t<target type=\"ProtoUnit\">MythUnit</target>\n\t\t\t</effect>\n\t\t</effects>\n\t</tech>",
+  "HerbalMedicine": "\t<tech name=\"HerbalMedicine\" orderhint=\"0\">\n\t\t<displaynameid>STR_TECH_HERBAL_MEDICINE_NAME</displaynameid>\n\t\t<rollovertextid>STR_TECH_HERBAL_MEDICINE_LR</rollovertextid>\n\t\t<advancedrollovertextoverrideid>STR_TECH_HERBAL_MEDICINE_OVERRIDE</advancedrollovertextoverrideid>\n\t\t<cost resourcetype=\"Gold\">100.0000</cost>\n\t\t<cost resourcetype=\"Favor\">5.0000</cost>\n\t\t<researchpoints>40.0000</researchpoints>\n\t\t<status>UNOBTAINABLE</status>\n\t\t<icon>resources\\chinese\\static_color\\technologies\\herbal_medicine_icon.png</icon>\n\t\t<flag>CountsTowardMilitaryScore</flag>\n\t\t<flag>MythTech</flag>\n\t\t<effects>\n\t\t\t<effect type=\"Data\" action=\"Heal\" amount=\"0.00\" subtype=\"ActionEnable\" relativity=\"Absolute\">\n\t\t\t\t<target type=\"ProtoUnit\">Sage</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" action=\"HealUnitArea\" amount=\"1.00\" subtype=\"ActionEnable\" relativity=\"Absolute\">\n\t\t\t\t<target type=\"ProtoUnit\">Sage</target>\n\t\t\t</effect>\n\t\t</effects>\n\t</tech>",
+  "Kagura": "\t<tech name=\"Kagura\" orderhint=\"3\">\n\t\t<displaynameid>STR_TECH_KAGURA_NAME</displaynameid>\n\t\t<rollovertextid>STR_TECH_KAGURA_LR</rollovertextid>\n\t\t<cost resourcetype=\"Food\">60.0000</cost>\n\t\t<cost resourcetype=\"Favor\">5.0000</cost>\n\t\t<researchpoints>20.0000</researchpoints>\n\t\t<status>UNOBTAINABLE</status>\n\t\t<icon>resources\\japanese\\static_color\\technologies\\kagura_icon.png</icon>\n\t\t<flag>CountsTowardMilitaryScore</flag>\n\t\t<flag>MythTech</flag>\n\t\t<effects>\n\t\t\t<effect type=\"Data\" action=\"Heal\" amount=\"1.25\" unittype=\"LogicalTypeHealed\" subtype=\"WorkRate\" relativity=\"BasePercent\">\n\t\t\t\t<target type=\"ProtoUnit\">Miko</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" amount=\"0.75\" subtype=\"TrainPoints\" relativity=\"Percent\">\n\t\t\t\t<target type=\"ProtoUnit\">Miko</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"CreateUnit\" unit=\"Miko\" generator=\"AbstractSocketedTownCenter\">\n\t\t\t\t<pattern type=\"Leaving\" speed=\"0.00\" radius=\"0.00\" quantity=\"1.00\" minradius=\"0.00\">\n\t\t\t\t\t<offset x=\"0.00\" y=\"0.00\" z=\"0.00\"></offset>\n\t\t\t\t</pattern>\n\t\t\t</effect>\n\t\t</effects>\n\t</tech>",
+  "Tenshu": "\t<tech name=\"Tenshu\" orderhint=\"3\">\n\t\t<displaynameid>STR_TECH_TENSHU_NAME</displaynameid>\n\t\t<rollovertextid>STR_TECH_TENSHU_LR</rollovertextid>\n\t\t<cost resourcetype=\"Wood\">350.0000</cost>\n\t\t<cost resourcetype=\"Favor\">20.0000</cost>\n\t\t<researchpoints>40.0000</researchpoints>\n\t\t<status>UNOBTAINABLE</status>\n\t\t<icon>resources\\japanese\\static_color\\technologies\\tenshu_icon.png</icon>\n\t\t<flag>CountsTowardMilitaryScore</flag>\n\t\t<flag>MythTech</flag>\n\t\t<techtype>MythTechDefensive</techtype>\n\t\t<effects>\n\t\t\t<effect type=\"Data\" amount=\"1.40\" subtype=\"Damage\" allactions=\"1\" relativity=\"BasePercent\">\n\t\t\t\t<target type=\"ProtoUnit\">AbstractTower</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" amount=\"1.20\" subtype=\"Damage\" allactions=\"1\" relativity=\"BasePercent\">\n\t\t\t\t<target type=\"ProtoUnit\">AbstractFortress</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" amount=\"5\" subtype=\"LOS\" relativity=\"Absolute\">\n\t\t\t\t<target type=\"ProtoUnit\">AbstractTower</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" amount=\"5\" subtype=\"LOS\" relativity=\"Absolute\">\n\t\t\t\t<target type=\"ProtoUnit\">AbstractFortress</target>\n\t\t\t</effect>\n\t\t</effects>\n\t</tech>",
+  "CrushingWaves": "\t<tech name=\"CrushingWaves\" orderhint=\"3\">\n\t\t<displaynameid>STR_TECH_CRUSHING_WAVES_NAME</displaynameid>\n\t\t<rollovertextid>STR_TECH_CRUSHING_WAVES_LR</rollovertextid>\n\t\t<cost resourcetype=\"Food\">100.0000</cost>\n\t\t<cost resourcetype=\"Favor\">15.0000</cost>\n\t\t<researchpoints>20.0000</researchpoints>\n\t\t<status>UNOBTAINABLE</status>\n\t\t<icon>resources\\japanese\\static_color\\technologies\\crushing_waves_icon.png</icon>\n\t\t<flag>CountsTowardMilitaryScore</flag>\n\t\t<flag>MythTech</flag>\n\t\t<effects>\n\t\t\t<effect type=\"Data\" amount=\"1.10\" subtype=\"MaximumVelocity\" relativity=\"BasePercent\">\n\t\t\t\t<target type=\"ProtoUnit\">MythUnit</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" amount=\"1.0\" subtype=\"Damage\" damagetype=\"Divine\" allactions=\"1\" relativity=\"Absolute\">\n\t\t\t\t<target type=\"ProtoUnit\">MythUnit</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" amount=\"1.0\" subtype=\"Damage\" damagetype=\"Divine\" allactions=\"1\" relativity=\"Absolute\">\n\t\t\t\t<target type=\"ProtoUnit\">LogicalTypeDependentMyth</target>\n\t\t\t</effect>\n\t\t</effects>\n\t</tech>",
+  "WingsOfTheSouth": "\t<tech name=\"WingsOfTheSouth\" orderhint=\"8\">\n\t\t<displaynameid>STR_TECH_WINGS_OF_THE_SOUTH_NAME</displaynameid>\n\t\t<rollovertextid>STR_TECH_WINGS_OF_THE_SOUTH_LR</rollovertextid>\n\t\t<cost resourcetype=\"Gold\">150.0000</cost>\n\t\t<cost resourcetype=\"Favor\">12.0000</cost>\n\t\t<researchpoints>25.0000</researchpoints>\n\t\t<status>UNOBTAINABLE</status>\n\t\t<icon>resources\\aztec\\static_color\\technologies\\wings_of_the_south_icon.png</icon>\n\t\t<flag>CountsTowardMilitaryScore</flag>\n\t\t<flag>MythTech</flag>\n\t\t<effects>\n\t\t\t<effect type=\"Data\" amount=\"1.10\" subtype=\"MaximumVelocity\" relativity=\"BasePercent\">\n\t\t\t\t<target type=\"ProtoUnit\">TlamanihSpearman</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" amount=\"1.10\" subtype=\"MaximumVelocity\" relativity=\"BasePercent\">\n\t\t\t\t<target type=\"ProtoUnit\">TequihuaArcher</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" amount=\"0.60\" subtype=\"TrainPoints\" relativity=\"Percent\">\n\t\t\t\t<target type=\"ProtoUnit\">TlamanihSpearman</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" amount=\"0.60\" subtype=\"TrainPoints\" relativity=\"Percent\">\n\t\t\t\t<target type=\"ProtoUnit\">TequihuaArcher</target>\n\t\t\t</effect>\n\t\t</effects>\n\t</tech>",
+  "TepeyollotlsReach": "\t<tech name=\"TepeyollotlsReach\" orderhint=\"8\">\n\t\t<displaynameid>STR_TECH_TEPEYOLLOTLS_REACH_NAME</displaynameid>\n\t\t<rollovertextid>STR_TECH_TEPEYOLLOTLS_REACH_LR</rollovertextid>\n\t\t<cost resourcetype=\"Gold\">150.0000</cost>\n\t\t<cost resourcetype=\"Favor\">10.0000</cost>\n\t\t<researchpoints>30.0000</researchpoints>\n\t\t<status>UNOBTAINABLE</status>\n\t\t<icon>resources\\aztec\\static_color\\technologies\\tepeyollotls_reach_icon.png</icon>\n\t\t<flag>CountsTowardMilitaryScore</flag>\n\t\t<flag>MythTech</flag>\n\t\t<effects>\n\t\t\t<effect type=\"Data\" allactions=\"1\" amount=\"1.15\" subtype=\"Damage\" relativity=\"BasePercent\">\n\t\t\t\t<target type=\"ProtoUnit\">OcelotlWarrior</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" allactions=\"1\" amount=\"1.15\" subtype=\"Damage\" relativity=\"BasePercent\">\n\t\t\t\t<target type=\"ProtoUnit\">JaguarRider</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" action=\"JumpAttack\" amount=\"2.00\" subtype=\"MaximumRange\" relativity=\"Absolute\">\n\t\t\t\t<target type=\"ProtoUnit\">OcelotlWarrior</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" action=\"JumpAttack\" amount=\"2.00\" subtype=\"MaximumRange\" relativity=\"Absolute\">\n\t\t\t\t<target type=\"ProtoUnit\">JaguarRider</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" action=\"JumpAttackStealth\" amount=\"2.00\" subtype=\"MaximumRange\" relativity=\"Absolute\">\n\t\t\t\t<target type=\"ProtoUnit\">OcelotlWarrior</target>\n\t\t\t</effect>\n\t\t\t<effect type=\"Data\" action=\"JumpAttackStealth\" amount=\"2.00\" subtype=\"MaximumRange\" relativity=\"Absolute\">\n\t\t\t\t<target type=\"ProtoUnit\">JaguarRider</target>\n\t\t\t</effect>\n\t\t</effects>\n\t</tech>",
+  "FeastOfTlaxochimaco": "\t<tech name=\"FeastOfTlaxochimaco\" orderhint=\"8\">\n\t\t<displaynameid>STR_TECH_FEAST_OF_TLAXOCHIMACO_NAME</displaynameid>\n\t\t<rollovertextid>STR_TECH_FEAST_OF_TLAXOCHIMACO_LR</rollovertextid>\n\t\t<cost resourcetype=\"Food\">75.0000</cost>\n\t\t<cost resourcetype=\"Favor\">25.0000</cost>\n\t\t<researchpoints>20.0000</researchpoints>\n\t\t<status>UNOBTAINABLE</status>\n\t\t<icon>resources\\aztec\\static_color\\technologies\\feast_of_tlaxochimaco_icon.png</icon>\n\t\t<flag>CountsTowardMilitaryScore</flag>\n\t\t<flag>MythTech</flag>\n\t\t<effects>\n\t\t\t<effect type=\"Data\" action=\"DevoteMinor\" amount=\"1.00\" subtype=\"ActionEnable\" relativity=\"Absolute\" tooltipid=\"STR_TECH_FEAST_OF_TLAXOCHIMACO_OVERRIDE\">\n\t\t\t\t<target type=\"ProtoUnit\">Herdable</target>\n\t\t\t</effect>\n\t\t</effects>\n\t</tech>"
+});
 
 
 function uniqueTechSourcePantheon(group) {
@@ -175,12 +1773,282 @@ function uniqueTechSourcePantheon(group) {
 
 
 
-const TECH_DISPLAY_NAME_OVERRIDES = {
-  FreyrsGift: "Freyr's Gift",
-  SkinOfTheRhino: "Skin Of The Rhino",
-  TaiChi: "Tai Chi",
-  TepeyollotlsReach: "Tepeyollotl's Reach",
-};
+const TECH_DISPLAY_NAME_OVERRIDES = Object.freeze({
+  "OlympianParentage": "Olympian Parentage",
+  "VaultsOfErebus": "Vaults Of Erebus",
+  "LordOfHorses": "Lord Of Horses",
+  "DivineLabor": "Divine Labor",
+  "SkinOfTheRhino": "Skin Of The Rhino",
+  "FloodOfTheNile": "Flood Of The Nile",
+  "Clairvoyance": "Clairvoyance",
+  "HammerOfThunder": "Hammer Of Thunder",
+  "Hamask": "Hamask",
+  "EyesInTheForest": "Eyes In The Forest",
+  "FreyrsGift": "Freyr's Gift",
+  "TemporalChaos": "Temporal Chaos",
+  "EmpyreanSpeed": "Empyrean Speed",
+  "Channels": "Channels",
+  "CelestialWeapons": "Celestial Weapons",
+  "TaiChi": "Tai Chi",
+  "MountainousMight": "Mountainous Might",
+  "KuafuChieftain": "Kuafu Chieftain",
+  "PeachOfImmortality": "Peach Of Immortality",
+  "HerbalMedicine": "Herbal Medicine",
+  "Kagura": "Kagura",
+  "Tenshu": "Tenshu",
+  "CrushingWaves": "Crushing Waves",
+  "WingsOfTheSouth": "Wings Of The South",
+  "TepeyollotlsReach": "Tepeyollotl's Reach",
+  "FeastOfTlaxochimaco": "Feast Of Tlaxochimaco",
+  "DeimosSwordOfDread": "Deimos' Sword of Dread",
+  "EnyosBowOfHorror": "Enyo's Bow of Horror",
+  "PhobosSpearOfPanic": "Phobos' Spear of Panic",
+  "WillOfKronos": "Will of Kronos",
+  "AegisShield": "Aegis Shield",
+  "LabyrinthOfMinos": "Labyrinth of Minos",
+  "Sarissa": "Sarissa",
+  "SpiritedCharge": "Spirited Charge",
+  "SylvanLore": "Sylvan Lore",
+  "WingedMessenger": "Winged Messenger",
+  "HymnOfTheWildwood": "Hymn of the Wildwood",
+  "LykaonVillagerToWolf": "LykaonVillagerToWolf",
+  "LykaonWolfToVillager": "LykaonWolfToVillager",
+  "PansPioneers": "Pan's Pioneers",
+  "PredatoryInstinct": "Call of Lykaion",
+  "ThornedWalls": "Thorned Walls",
+  "Argonauts": "Argonauts",
+  "DivineBlood": "Divine Blood",
+  "GoldenApples": "Golden Apples",
+  "RoarOfOrthus": "Roar of Orthus",
+  "Anastrophe": "Anastrophe",
+  "Oracle": "Oracle",
+  "SunRay": "Sun Ray",
+  "TempleOfHealing": "Temple of Healing",
+  "ChthonicRites": "Chthonic Rites",
+  "Dionysia": "Dionysia",
+  "ThracianHorses": "Thracian Horses",
+  "FatedArrows": "Fated Arrows",
+  "GraciousHospitality": "Gracious Hospitality",
+  "GuidingFlame": "Guiding Flame",
+  "HallowedWoodlands": "Hallowed Woodlands",
+  "BeastSlayer": "Beast Slayer",
+  "FlamesOfTyphon": "Flames of Typhon",
+  "ShaftsOfPlague": "Shafts of Plague",
+  "ForgeOfOlympus": "Forge of Olympus",
+  "HandOfTalos": "Hand of Talos",
+  "OlympianWeapons": "Olympian Weapons",
+  "ShoulderOfTalos": "Shoulder of Talos",
+  "ArgivePatronage": "Argive Patronage",
+  "FaceOfTheGorgon": "Face of the Gorgon",
+  "MonstrousRage": "Monstrous Rage",
+  "EnchantedHymn": "Enchanted Hymn",
+  "HarvestOfSouls": "Harvest of Souls",
+  "PiousSacrifice": "Pious Sacrifice",
+  "SacredLand": "Sacred Land",
+  "FeetOfTheJackal": "Feet of the Jackal",
+  "Necropolis": "Necropolis",
+  "SerpentSpear": "Serpent Spear",
+  "AdzeOfWepwawet": "Adze of Wepwawet",
+  "Criosphinx": "Criosphinx",
+  "Hieracosphinx": "Hieracosphinx",
+  "SacredCats": "Sacred Cats",
+  "ElectrumBullets": "Electrum Bullets",
+  "LeatherFrameShield": "Leather Frame Shield",
+  "ScallopedAxe": "Scalloped Axe",
+  "Shaduf": "Shaduf",
+  "FuneralBarge": "Funeral Barge",
+  "FuneralRites": "Funeral Rites",
+  "Nebty": "Nebty",
+  "SpiritOfMaat": "Spirit of Maat",
+  "BoneBow": "Bone Bow",
+  "CrimsonLinen": "Crimson Linen",
+  "ForceOfTheWestWind": "Force of the West Wind",
+  "SlingsOfTheSun": "Slings of the Sun",
+  "Crocodilopolis": "Crocodilopolis",
+  "DarkWater": "Dark Water",
+  "SolarBarque": "Solar Barque",
+  "SunDriedMudBrick": "Sun-dried Mud-brick",
+  "AxeOfVengeance": "Axe of Vengeance",
+  "GreatestOfFifty": "Greatest of Fifty",
+  "SpearOfHorus": "Spear of Horus",
+  "AtefCrown": "Atef Crown",
+  "DesertWind": "Desert Wind",
+  "NewKingdom": "New Kingdom",
+  "BookOfThoth": "Book of Thoth",
+  "TusksOfApedemak": "Tusks of Apedemak",
+  "ValleyOfTheKings": "Valley of the Kings",
+  "CaveTroll": "Cave Troll",
+  "DwarvenBreastplate": "Dwarven Breastplate",
+  "HallOfThanes": "Hall of Thanes",
+  "Disablot": "Disablot",
+  "Sessrumnir": "Sessrumnir",
+  "ThunderingHooves": "Thundering Hooves",
+  "Gjallarhorn": "Gjallarhorn",
+  "Rigsthula": "Rigsthula",
+  "Safeguard": "Safeguard",
+  "RingOath": "Ring-Oath",
+  "ServantsOfGlory": "Servants of Glory",
+  "Valgaldr": "Valgaldr",
+  "Ydalir": "Ydalir",
+  "FeastsOfRenown": "Feasts of Renown",
+  "GraniteMaw": "Granite Maw",
+  "GraspOfRan": "Grasp of Ran",
+  "NineWaves": "Nine Waves",
+  "CallOfValhalla": "Call of Valhalla",
+  "LongSerpent": "Long Serpent",
+  "SwineArray": "Swine Array",
+  "ThurisazRune": "Thurisaz Rune",
+  "Jotuns": "Jotuns",
+  "RingGiver": "Ring Giver",
+  "Vikings": "Vikings",
+  "WrathOfTheDeep": "Wrath of the Deep",
+  "ArcticWinds": "Arctic Winds",
+  "HuntressAxe": "Huntress' Axe",
+  "Rime": "Rime",
+  "WinterHarvest": "Winter Harvest",
+  "DwarvenAuger": "Dwarven Auger",
+  "SonsOfSleipnir": "Sons of Sleipnir",
+  "GraniteBlood": "Granite Blood",
+  "Rampage": "Rampage",
+  "Berserkergang": "Berserkergang",
+  "Bravery": "Bravery",
+  "AvengingSpirit": "Avenging Spirit",
+  "FuryOfTheFallen": "Fury of the Fallen",
+  "SilentResolve": "Silent Resolve",
+  "TwilightOfTheGods": "Twilight of the Gods",
+  "HephaestusRevenge": "Hephaestus Revenge",
+  "Perception": "Perception",
+  "VolcanicForge": "Volcanic Forge",
+  "BiteOfTheShark": "Bite of the Shark",
+  "FrontlineHeroics": "Frontline Heroics",
+  "WeightlessMace": "Weightless Mace",
+  "AlluvialClay": "Alluvial Clay",
+  "HeartOfTheTitans": "Heart of the Titans",
+  "TheftOfFire": "Theft of Fire",
+  "Gemini": "Gemini",
+  "HeroicRenewal": "Heroic Renewal",
+  "PioneerOfTheSkies": "Pioneer of the Skies",
+  "SonsOfTheSun": "Sons of the Sun",
+  "Daktyloi": "Daktyloi",
+  "HornsOfConsecration": "Horns of Consecration",
+  "OrichalcumMail": "Orichalcum Mail",
+  "RheiasGift": "Rheia's Gift",
+  "DaughtersOfTheSea": "Daughters of the sea",
+  "LanceOfStone": "Lance of Stone",
+  "PoseidonsSecret": "Poseidon's Secret",
+  "PropheticSight": "Prophetic Sight",
+  "DevoteesOfAtlas": "Devotees of Atlas",
+  "GuardianOfIo": "Guardian of Io",
+  "TitanShield": "Titan Shield",
+  "AsperBlood": "Asper Blood",
+  "Celerity": "Celerity",
+  "MythicRejuvenation": "Mythic Rejuvenation",
+  "HaloOfTheSun": "Halo of the Sun",
+  "Petrification": "Petrification",
+  "Titanomachy": "Titanomachy",
+  "MasterOfWeaponry": "Master of Weaponry",
+  "RageOfSlaughter": "Rage of Slaughter",
+  "SonOfLoong": "Son of Loong",
+  "SpoilsOfWar": "Spoils of War",
+  "Abundance": "Abundance",
+  "AdvancedDefenses": "Advanced Defenses",
+  "ChasingTheSun": "Chasing The Sun",
+  "SinisterDefiance": "Sinister Defiance",
+  "DivineBooks": "Divine Books",
+  "QiLinsBlessing": "Qilin's Blessing",
+  "Reincarnation": "Reincarnation",
+  "FrenziedDash": "Frenzied Dash",
+  "HoovesOfTheWind": "Hooves of the Wind",
+  "Maelstrom": "Maelstrom",
+  "VibrantLand": "Vibrant Land",
+  "BottomlessStomach": "Bottomless Stomach",
+  "DroughtShips": "Drought Ships",
+  "RockSolid": "Rock Solid",
+  "ScorchingFeathers": "Scorching Feathers",
+  "AutumnOfAbundance": "Autumn of Abundance",
+  "DivineJudgement": "Divine Judgment",
+  "GildedShields": "Gilded Shields",
+  "RedCliffsFleet": "Red Cliffs Fleet",
+  "LastStand": "Last Stand",
+  "RisingTide": "Rising Tide",
+  "ShakerOfHeaven": "Shaker of Heaven",
+  "TempestuousStorm": "Tempestuous Storm",
+  "ImperialOrder": "Imperial Order",
+  "LeizusSilk": "Leizu's Silk",
+  "PowerOfChaos": "Power of Chaos",
+  "XuanyuansBloodline": "Xuanyuan's Bloodline",
+  "FlamingBlood": "Flaming Blood",
+  "SlashAndBurn": "Slash and Burn",
+  "SongOfMidsummer": "Song of Midsummer",
+  "SouthernFire": "Southern Fire",
+  "GoheiWands": "GoheiWands",
+  "Katagi": "Katagi",
+  "WindSickles": "Wind Sickles",
+  "DeadlySnare": "Deadly Snare",
+  "IvoryNetsuke": "Ivory Netsuke",
+  "SashimonoBannermen": "Sashimono Bannermen",
+  "WisdomOfNine": "Wisdom Of Nine",
+  "CondemnedSoul": "Condemned Soul",
+  "HuntersStrength": "Hunters Strength",
+  "Kumiki": "Kumiki",
+  "SaltwaterSpring": "Saltwater Spring",
+  "DeadlyRage": "Deadly Rage",
+  "GalesFury": "Gales Fury",
+  "OniMask": "Oni Mask",
+  "AsceticPractices": "Ascetic Practices",
+  "DanNoUraTactics": "Dan-no-ura Tactics",
+  "EightBanners": "Eight Banners",
+  "GoldenKite": "Golden Kite",
+  "DenDenDrums": "Den Den Drums",
+  "HannyaMask": "Hannya Mask",
+  "HeavenlyBarrage": "Heavenly Barrage",
+  "ThunderousPresence": "Thunderous Presence",
+  "DivinePrefecture": "Divine Prefecture",
+  "MechanicalArtisans": "Mechanical Artisans",
+  "RestlessArmy": "Restless Army",
+  "BurningMalevolence": "Burning Malevolence",
+  "Sojutsu": "Sojutsu",
+  "SumoTraining": "Sumo Training",
+  "TenFistSword": "Ten Fist Sword",
+  "AsymmetricalBows": "Asymmetrical Bows",
+  "EternalHaunting": "Eternal Haunting",
+  "Onmyodo": "Onmyodo",
+  "SeasideInfiltrators": "Seaside Infiltrators",
+  "CuicacalliTraining": "Cuicacalli Training",
+  "Nahuallatolli": "Nahuallatolli",
+  "OldCoyotesSpirit": "Old Coyote's Spirit",
+  "TeponaztliDrums": "Teponaztli Drums",
+  "OmenOfMalinalco": "Omen of Malinalco",
+  "StingOfYappan": "Sting of Yappan",
+  "ToloacheTrance": "Toloache Trance",
+  "MagueyCultivation": "Maguey Cultivation",
+  "OcpatliInfusions": "Ocpatli Infusions",
+  "OmetochtlisRevelry": "Ometochtli's Revelry",
+  "CipactlisScales": "Cipactli’s Scales",
+  "CoatepecShrines": "Coatepec Shrines",
+  "SerpentSkirt": "Serpent Skirt",
+  "StringOfHearts": "String of Hearts",
+  "CentzonHuitznahua": "Centzon Huitznahua",
+  "CoyolxauhquiStone": "Coyolxauhqui's Stone",
+  "Metzliapan": "Metzliapán",
+  "TecciztecatlsPenance": "Tecciztécatl's Penance",
+  "FloweryWars": "Flowery Wars",
+  "ObsidianKnapping": "Obsidian Knapping",
+  "ShardsOfItztli": "Shards of Itztli",
+  "WingsOfItzpapalotl": "Wings of Itzpapalotl",
+  "Mictecah": "Mictecah",
+  "NecklaceOfEyeballs": "Necklace of Eyeballs",
+  "OmenOfDeath": "Omen of Death",
+  "PreciousBones": "Precious Bones",
+  "BurntWater": "Burnt Water",
+  "FourJars": "Four Jars",
+  "Tlaloques": "Tlaloques",
+  "Tonacatepetl": "Tonacatépetl",
+  "EveningStar": "Evening Star",
+  "StoneskinQuinametzin": "Stoneskin Quinametzin",
+  "TorchOfMisfortune": "Torch of Misfortune",
+  "TwistedLimbs": "Twisted Limbs"
+});
 
 function displayTechName(internalName) {
   if (!internalName) return "";
@@ -189,6 +2057,18 @@ function displayTechName(internalName) {
     .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
     .replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2")
     .trim();
+}
+
+function techBrowserDisplayName(internalName, fallback = "") {
+  const id = String(internalName || "");
+  if (id && TECH_DISPLAY_NAME_OVERRIDES[id]) return TECH_DISPLAY_NAME_OVERRIDES[id];
+  const fallbackText = String(fallback || "").trim();
+  if (fallbackText && TECH_DISPLAY_NAME_OVERRIDES[fallbackText]) return TECH_DISPLAY_NAME_OVERRIDES[fallbackText];
+  return fallbackText || displayTechName(id);
+}
+
+function uniqueTechGroupDisplayName(group) {
+  return techBrowserDisplayName(uniqueTechOriginalTechId(group), group?.label || group?.id || "");
 }
 
 const DEFAULT_TEMPLATE_MAJOR_BY_CULTURE = {
@@ -339,6 +2219,12 @@ const els = {
   iconFile: $("iconFile"),
   sameCultureOnly: $("sameCultureOnly"),
   minorPickers: $("minorPickers"),
+  minorModeOriginal: $("minorModeOriginal"),
+  minorModeCustom: $("minorModeCustom"),
+  minorOriginalPanel: $("minorOriginalPanel"),
+  minorCustomPanel: $("minorCustomPanel"),
+  minorOriginalPickers: $("minorOriginalPickers"),
+  minorCustomPickers: $("minorCustomPickers"),
   downloadZip: $("downloadZip"),
   loadPreset: $("loadPreset"),
   loadPresetTop: $("loadPresetTop"),
@@ -408,7 +2294,7 @@ function displayGodName(name) {
       }
       return part.slice(0, 1).toUpperCase() + part.slice(1);
     })
-    .join("");
+    .join("\n");
 }
 
 function minorLabel(god) {
@@ -422,18 +2308,27 @@ function isExcludedMinorGod(god) {
   return EXCLUDED_MINOR_GOD_NAMES.has(name) || [...EXCLUDED_MINOR_GOD_NAMES].some((blocked) => tech.includes(blocked));
 }
 
+const MINOR_TECH_CANONICAL_ALIASES = {
+  ClassicalAgeAmenouzume: "ClassicalAgeAmeNoUzume",
+  ClassicalAgeInariokami: "ClassicalAgeInariOkami",
+};
+
+function normalizeMinorTechAlias(value) {
+  return MINOR_TECH_CANONICAL_ALIASES[value] || value;
+}
+
 function canonicalMinorTech(godOrTech, ageHint = "") {
   if (!godOrTech) return "";
-  if (typeof godOrTech === "object") return `${godOrTech.age}${pascal(godOrTech.name)}`;
+  if (typeof godOrTech === "object") return normalizeMinorTechAlias(`${godOrTech.age}${pascal(godOrTech.name)}`);
   const raw = String(godOrTech);
   const found = window.AOM_DATA.minors.find((g) => !isExcludedMinorGod(g) && (g.tech === raw || `${g.age}${pascal(g.name)}` === raw));
-  if (found) return `${found.age}${pascal(found.name)}`;
+  if (found) return normalizeMinorTechAlias(`${found.age}${pascal(found.name)}`);
   const m = raw.match(/^(ClassicalAge|HeroicAge|MythicAge)(.+)$/i);
   if (m) {
     const properAge = AGES.find((a) => a.toLowerCase() === m[1].toLowerCase()) || ageHint || m[1];
-    return `${properAge}${pascal(m[2])}`;
+    return normalizeMinorTechAlias(`${properAge}${pascal(m[2])}`);
   }
-  return sanitizeId(raw);
+  return normalizeMinorTechAlias(sanitizeId(raw));
 }
 
 function setMessage(text, isError = false) {
@@ -587,12 +2482,21 @@ function uniqueTechEntries(configOrIds) {
   return ids.map(getUniqueTechGroup).filter(Boolean);
 }
 
+function customMajorUniqueTechName(baseTech, config) {
+  return `${sanitizeId(baseTech)}${sanitizeId(config?.internalName)}`;
+}
+
+function uniqueTechCustomTechName(groupOrTech, config) {
+  const baseTech = typeof groupOrTech === "string" ? groupOrTech : uniqueTechOriginalTechId(groupOrTech);
+  return customMajorUniqueTechName(baseTech, config);
+}
+
 function skinOfTheRhinoCustomTechName(config) {
-  return `SkinOfTheRhino${sanitizeId(config.internalName)}`;
+  return customMajorUniqueTechName("SkinOfTheRhino", config);
 }
 
 function temporalChaosCustomTechName(config) {
-  return `TemporalChaos${sanitizeId(config.internalName)}`;
+  return customMajorUniqueTechName("TemporalChaos", config);
 }
 
 function techStringKey(techId) {
@@ -616,7 +2520,7 @@ function uniqueTechCustomRolloverStringId(group, config) {
 
 function uniqueTechCustomDescription(group, config) {
   const source = UNIQUE_TECH_CUSTOM_ROLLOVERS[uniqueTechOriginalTechId(group)] || "CustomGod improves this technology.";
-  return source.replaceAll("CustomGod", config.displayName || config.internalName);
+  return finalTechDescriptionText(source, { customGodName: config.displayName || config.internalName, config });
 }
 
 function currentCustomGodDisplayNameForUi() {
@@ -625,19 +2529,13 @@ function currentCustomGodDisplayNameForUi() {
 
 function uniqueTechUiDescription(group) {
   const source = UNIQUE_TECH_CUSTOM_ROLLOVERS[uniqueTechOriginalTechId(group)] || "CustomGod improves this technology.";
-  return source.replaceAll("CustomGod", currentCustomGodDisplayNameForUi());
+  return finalTechDescriptionText(source, { customGodName: currentCustomGodDisplayNameForUi(), config: { baseCulture: selectedPantheon() } });
 }
 
 function uniqueTechSetNameEffects(config) {
-  return uniqueTechEntries(config).map((group) => {
-    const actualTech = uniqueTechNames([group.id])[0];
-    const techName = group.id === "SkinOfTheRhino"
-      ? skinOfTheRhinoCustomTechName(config)
-      : group.id === "TemporalChaos"
-        ? temporalChaosCustomTechName(config)
-        : actualTech;
-    return `<effect type="SetName" tech="${escapeXml(techName)}" newname="${escapeXml(uniqueTechDisplayNameStringId(group))}" newRollover="${escapeXml(uniqueTechCustomRolloverStringId(group, config))}" ></effect>`;
-  }).join("\n");
+  // Major-god unique technologies are now generated as custom techs with their
+  // own rollovertextid, so the old SetName age-tech workaround is no longer used.
+  return "";
 }
 
 function uniqueTechCustomStringMods(config) {
@@ -652,11 +2550,9 @@ function uniqueTechNames(configOrIds) {
   const names = [];
   const hasConfig = !Array.isArray(configOrIds) && configOrIds && configOrIds.internalName;
   for (const group of uniqueTechEntries(configOrIds)) {
-    const techs = group.id === "SkinOfTheRhino" && hasConfig
-      ? [skinOfTheRhinoCustomTechName(configOrIds)]
-      : group.id === "TemporalChaos" && hasConfig
-        ? [temporalChaosCustomTechName(configOrIds)]
-        : group.techs;
+    const techs = hasConfig
+      ? [uniqueTechCustomTechName(group, configOrIds)]
+      : (group.techs || [group.id]);
     for (const tech of techs) {
       if (!seen.has(tech)) {
         seen.add(tech);
@@ -679,7 +2575,7 @@ const UNIQUE_TECH_UI_BUILDINGS_BY_TECH = {
   FloodOfTheNile: { Greek: ["Granary"], Egyptian: ["Granary"], Norse: ["OxCart"], Atlantean: ["EconomicGuild"], Chinese: ["Silo"], Japanese: ["WaterMill"], Aztec: ["Calpulli", "CalpulliLivestockPen", "CalpulliLumberOutpost", "CalpulliCraftWorkshop"] },
   FreyrsGift: { Greek: ["TownCenter", "VillageCenter", "CitadelCenter"], Egyptian: ["TownCenter", "VillageCenter", "CitadelCenter"], Norse: ["TownCenter", "VillageCenter", "CitadelCenter"], Atlantean: ["TownCenter", "VillageCenter", "CitadelCenter"], Chinese: ["TownCenter", "VillageCenter", "CitadelCenter"], Japanese: ["TownCenter", "VillageCenter", "CitadelCenter"], Aztec: ["TownCenter", "VillageCenter", "CitadelCenter"] },
   HammerOfThunder: { Norse: ["Armory"] },
-  KuafuChieftain: { Chinese: ["TownCenter", "VillageCenter", "CitadelCenter"] },
+  KuafuChieftain: { Greek: ["TownCenter", "VillageCenter", "CitadelCenter"], Egyptian: ["TownCenter", "VillageCenter", "CitadelCenter"], Norse: ["TownCenter", "VillageCenter", "CitadelCenter"], Atlantean: ["TownCenter", "VillageCenter", "CitadelCenter"], Chinese: ["TownCenter", "VillageCenter", "CitadelCenter"], Japanese: ["TownCenter", "VillageCenter", "CitadelCenter"], Aztec: ["TownCenter", "VillageCenter", "CitadelCenter"] },
   LordOfHorses: { Greek: ["Stable"], Egyptian: ["Temple"], Norse: ["Temple"], Atlantean: ["Temple"], Chinese: ["Temple"], Japanese: ["StableJapanese"], Aztec: ["Temple"] },
   OlympianParentage: { Greek: ["Temple"], Egyptian: ["Temple"], Norse: ["Temple"], Atlantean: ["Temple"], Chinese: ["Temple"], Japanese: ["Temple"], Aztec: ["Temple"] },
   PeachOfImmortality: { Greek: ["Temple"], Egyptian: ["Temple"], Norse: ["Temple"], Atlantean: ["Temple"], Chinese: [], Japanese: ["Temple"], Aztec: ["Temple"] },
@@ -692,9 +2588,9 @@ const UNIQUE_TECH_UI_BUILDINGS_BY_TECH = {
 
 function uniqueTechActualTechName(group, config) {
   if (!group) return "";
-  if (group.id === "SkinOfTheRhino") return skinOfTheRhinoCustomTechName(config);
-  if (group.id === "TemporalChaos") return temporalChaosCustomTechName(config);
-  return uniqueTechNames([group.id])[0] || group.techs?.[0] || group.id;
+  return config?.internalName
+    ? uniqueTechCustomTechName(group, config)
+    : (uniqueTechNames([group.id])[0] || group.techs?.[0] || group.id);
 }
 
 function uniqueTechUiBuildingPosition(building, pantheon) {
@@ -716,36 +2612,29 @@ function uniqueTechUiBuildingPosition(building, pantheon) {
 }
 
 function uniqueTechCommandTargetBuilding(building) {
-  return ["Armory", "DwarvenArmory"].includes(building) ? "AbstractArmory" : building;
+  if (["Armory", "DwarvenArmory"].includes(building)) return "AbstractArmory";
+  if (["TownCenter", "VillageCenter", "CitadelCenter", "AbstractTownCenter"].includes(building)) return "AbstractTownCenter";
+  return building;
 }
 
 function uniqueTechCommandEffectsForBuilding(techName, building, pantheon) {
   const position = uniqueTechUiBuildingPosition(building, pantheon);
   if (!position) return "";
   const targetBuilding = uniqueTechCommandTargetBuilding(building);
-  return `<effect type="Data" amount="1.00" subtype="CommandRemove" tech="${escapeXml(techName)}" relativity="Assign">
-	<target type="ProtoUnit">${escapeXml(targetBuilding)}</target>
-</effect>
-<effect type="Data" amount="1.00" subtype="CommandAdd" tech="${escapeXml(techName)}" row="${position.row}" column="${position.column}" relativity="Assign">
+  return `<effect type="Data" amount="1.00" subtype="CommandAdd" tech="${escapeXml(techName)}" row="${position.row}" column="${position.column}" relativity="Assign">
 	<target type="ProtoUnit">${escapeXml(targetBuilding)}</target>
 </effect>`;
 }
 
 function uniqueTechUiPlacementEffects(config) {
-  const pantheon = config.baseCulture;
-  const effects = [];
-  for (const group of uniqueTechEntries(config)) {
-    const techName = uniqueTechActualTechName(group, config);
-    const buildings = UNIQUE_TECH_UI_BUILDINGS_BY_TECH[group.id]?.[pantheon] || [];
-    for (const building of buildings) {
-      const xml = uniqueTechCommandEffectsForBuilding(techName, building, pantheon);
-      if (xml) effects.push(xml);
-    }
-  }
-  return effects.join("\n");
+  const allocator = makeTechUiSlotAllocator();
+  return buildUniqueTechUiPlacements(config, allocator)
+    .map((placement) => techUiCommandAddEffect(placement.techName, placement.target, placement.position))
+    .join("\n");
 }
 
 function uniqueTechAegirTempleRepositionEffects(config) {
+  if (isCustomMinorGodMode(config)) return "";
   if (config.baseCulture !== "Norse") return "";
   if (!(config.minorGods?.HeroicAge || []).includes("HeroicAgeAegir")) return "";
   const effects = [];
@@ -753,10 +2642,7 @@ function uniqueTechAegirTempleRepositionEffects(config) {
     const techName = uniqueTechActualTechName(group, config);
     const buildings = UNIQUE_TECH_UI_BUILDINGS_BY_TECH[group.id]?.Norse || [];
     if (!buildings.includes("Temple")) continue;
-    effects.push(`<effect type="Data" amount="1.00" subtype="CommandRemove" tech="${escapeXml(techName)}" relativity="Assign">
-	<target type="ProtoUnit">Temple</target>
-</effect>
-<effect type="Data" amount="1.00" subtype="CommandAdd" tech="${escapeXml(techName)}" row="1" column="4" relativity="Assign">
+    effects.push(`<effect type="Data" amount="1.00" subtype="CommandAdd" tech="${escapeXml(techName)}" row="1" column="4" relativity="Assign">
 	<target type="ProtoUnit">Temple</target>
 </effect>`);
   }
@@ -829,6 +2715,7 @@ function ensureSelectFilterInput(select, kind, placeholder) {
   const refresh = () => {
     if (kind === "unique") initUniqueTechSelects(true);
     else if (kind === "bonus") initBonusSelects(true);
+    else if (kind === "minorCustom") refreshCustomMinorOptions(true);
     updatePreview();
   };
 
@@ -860,11 +2747,19 @@ function ensureSelectFilterInput(select, kind, placeholder) {
     select.value = value || "";
     input.value = label || "";
     select.dataset.searchQuery = "";
+    delete select.dataset.searchEditing;
     closePanel();
     refresh();
   };
 
   input.addEventListener("input", () => {
+    if (kind === "bonus") {
+      select.dataset.searchQuery = input.value || "";
+      select.dataset.searchEditing = "true";
+      refresh();
+      openPanel();
+      return;
+    }
     chooseExactMatch();
     refresh();
     openPanel();
@@ -908,6 +2803,28 @@ function ensureSelectFilterInput(select, kind, placeholder) {
   input.addEventListener("blur", () => {
     setTimeout(() => {
       if (!wrapper.contains(document.activeElement)) {
+        if (kind === "bonus") {
+          const raw = input.value || "";
+          const trimmed = raw.trim();
+          if (!trimmed) {
+            select.value = "";
+            input.value = "";
+          } else {
+            const map = JSON.parse(select.dataset.comboMap || "{}");
+            const matchedValue = map[raw] ?? map[normalizeSearchText(raw)];
+            if (matchedValue !== undefined) {
+              select.value = matchedValue || "";
+            } else {
+              const selectedOption = select.selectedOptions && select.selectedOptions[0];
+              input.value = selectedOption && select.value ? (select.dataset.displayLabel || selectedOption.textContent || "") : "";
+            }
+          }
+          delete select.dataset.searchEditing;
+          select.dataset.searchQuery = "";
+          closePanel();
+          refresh();
+          return;
+        }
         if (!select.value && input.value.trim()) input.value = "";
         select.dataset.searchQuery = "";
         closePanel();
@@ -1028,7 +2945,8 @@ function setComboDisplay(select, label) {
   const input = select?.dataset?.filterInputId ? document.getElementById(select.dataset.filterInputId) : null;
   if (!input) return;
   select.dataset.displayLabel = label || "";
-  if (!(document.activeElement === input && !select.value)) {
+  const isEditingSearch = document.activeElement === input && select.dataset.searchEditing === "true";
+  if (!isEditingSearch && !(document.activeElement === input && !select.value)) {
     input.value = label || "";
   }
   input.disabled = Boolean(select.disabled);
@@ -1043,23 +2961,18 @@ function uniqueTechSearchText(group) {
     group.label,
     sourcePantheon,
     allowedText,
-    ...(group.techs || []).map(displayTechName),
+    ...(group.techs || []).map((tech) => techBrowserDisplayName(tech)),
     ...(group.techs || []),
     uniqueTechUiDescription(group),
     group.requiresGodPower ? `requires ${group.requiresGodPower}` : "",
-  ].join(" ");
+  ].join("\n");
 }
 
 function bonusSearchText(entry, pantheon = selectedPantheon()) {
   return [
-    entry.id,
     entry.sourcePantheon,
-    entry.sourceMajor,
-    entry.label,
     dynamicBonusLabel(entry, pantheon),
-    ...(entry.allowedPantheons || []),
-    entry.files || "",
-  ].join(" ");
+  ].join("\n");
 }
 
 function includeCurrentOption(options, current, getById) {
@@ -1070,7 +2983,7 @@ function includeCurrentOption(options, current, getById) {
 
 function uniqueTechComboLabel(group) {
   const sourcePantheon = uniqueTechSourcePantheon(group);
-  let label = `${sourcePantheon} — ${displayTechName(group.label || group.id)}`;
+  let label = `${sourcePantheon} — ${uniqueTechGroupDisplayName(group)}`;
   if (group.requiresGodPower) label += ` (requires ${group.requiresGodPower})`;
   return label;
 }
@@ -1109,10 +3022,10 @@ function initUniqueTechSelects(keep = true) {
     for (const sourcePantheon of orderedSourcePantheons) {
       const optGroup = document.createElement("optgroup");
       optGroup.label = sourcePantheon;
-      for (const group of groupedOptions.get(sourcePantheon).sort((a, b) => displayTechName(a.label || a.id).localeCompare(displayTechName(b.label || b.id)))) {
+      for (const group of groupedOptions.get(sourcePantheon).sort((a, b) => uniqueTechGroupDisplayName(a).localeCompare(uniqueTechGroupDisplayName(b)))) {
         const opt = document.createElement("option");
         opt.value = group.id;
-        opt.textContent = displayTechName(group.label || group.id);
+        opt.textContent = uniqueTechGroupDisplayName(group);
         if (group.requiresGodPower) opt.textContent += ` (requires ${group.requiresGodPower})`;
         if (current && group.id === current && query && !searchMatchesText(uniqueTechSearchText(group), query)) {
           opt.textContent += " (selected; outside filter)";
@@ -1160,8 +3073,12 @@ function availableBonuses() {
     .sort((a, b) => a.sourcePantheon.localeCompare(b.sourcePantheon) || dynamicBonusLabel(a, pantheon).localeCompare(dynamicBonusLabel(b, pantheon)));
 }
 
+function bonusSelectValues() {
+  return bonusSelects().map((select) => select.value || "");
+}
+
 function selectedBonusIds() {
-  return bonusSelects().map((select) => select.value).filter(Boolean);
+  return bonusSelectValues().filter(Boolean);
 }
 
 function getBonusById(id) {
@@ -1267,7 +3184,7 @@ const BONUS_DISPLAY_WARNING_IDS = new Set([
 
 function formatHumanList(items) {
   const list = (items || []).filter(Boolean);
-  if (list.length <= 1) return list.join("");
+  if (list.length <= 1) return list.join("\n");
   if (list.length === 2) return `${list[0]} and ${list[1]}`;
   return `${list.slice(0, -1).join(", ")}, and ${list[list.length - 1]}`;
 }
@@ -1299,7 +3216,7 @@ function bonusDisplayWarningText(configOrIds) {
   for (const entry of bushidoDependencyWarningEntries(configOrIds)) {
     warnings.push(`No Bushidō progression bonus is selected: "${dynamicBonusLabel(entry, configOrIds)}" will not have any practical effect.`);
   }
-  return warnings.join(" ");
+  return warnings.join("\n");
 }
 
 function updateBonusCombinationWarning(configOrIds = selectedBonusIds()) {
@@ -1315,7 +3232,7 @@ function bonusComboLabel(entry, pantheon = selectedPantheon()) {
 }
 
 function initBonusSelects(keep = true) {
-  const previous = keep ? selectedBonusIds() : [];
+  const previous = keep ? bonusSelectValues() : [];
   const pantheon = selectedPantheon();
   const allOptions = availableBonuses();
   for (const [index, select] of bonusSelects().entries()) {
@@ -1572,7 +3489,7 @@ const ORANOS_SKY_PASSAGE_ARCHAIC_EFFECTS = `<effect type="Data" amount="1.00" su
 
 const ORANOS_SKY_PASSAGE_BUILDERS_BY_PANTHEON = {
   Greek: ["VillagerGreek", "LykaonVillager"],
-  Egyptian: ["Priest"],
+  Egyptian: ["VillagerEgyptian"],
   Norse: ["Berserk", "Hirdman", "ThrowingAxeman", "Huskarl", "Hersir", "Godi"],
   Chinese: ["VillagerChinese", "VillagerChineseClay", "Kuafu"],
   Japanese: ["VillagerJapanese"],
@@ -1874,6 +3791,8 @@ const FUXI_NEZHA_AREA_HEAL_PROTOACTION = `<protoaction>
 
 function fuxiNezhaProtoModsXml(config) {
   if (!selectedHasBonusId(config, FUXI_NEZHA_BONUS_ID)) return "";
+  if ((config?.baseCulture || "") !== "Greek") return "";
+  if (!hasHymnOfTheWildwoodTech(config)) return "";
   return ["NezhaChild", "NezhaYouth", "Nezha"].map((proto) => `	<unit name="${proto}">
 		${FUXI_NEZHA_AREA_HEAL_PROTOACTION}
 	</unit>`).join("\n");
@@ -2492,6 +4411,15 @@ const LOKI_COUNTER_DAMAGE_RULES_BY_PANTHEON = {
       "target": "WarElephant",
       "actions": [
         "HandAttack"
+      ]
+    },
+    {
+      "counteredType": "MythUnit",
+      "targetType": "ProtoUnit",
+      "target": "Hero",
+      "actions": [
+        "RangedAttackMyth",
+        "LightningAttack"
       ]
     }
   ],
@@ -3334,6 +5262,7 @@ function hasKronosExtraMythUnitBonus(config) {
 
 function kronosExtraMythUnitPlans(config) {
   if (!hasKronosExtraMythUnitBonus(config)) return [];
+  if (isCustomMinorGodMode(config)) return kronosExtraCustomMinorMythUnitPlans(config);
   const agePairs = [
     { ownerAge: "ArchaicAge", nextMinorAge: "ClassicalAge" },
     { ownerAge: "ClassicalAge", nextMinorAge: "HeroicAge" },
@@ -3358,6 +5287,20 @@ function kronosExtraMythUnitPlans(config) {
     }
   }
   return plans;
+}
+
+function kronosExtraCustomMinorMythUnitPlans(config) {
+  const ownerAgeByMinorAge = { ClassicalAge: "ArchaicAge", HeroicAge: "ClassicalAge", MythicAge: "HeroicAge" };
+  const usedNames = new Set();
+  return customMinorAllCards(config)
+    .filter((card) => card.name && card.godPower && card.mythUnit && ownerAgeByMinorAge[card.age])
+    .map((card) => {
+      const mythUnit = card.mythUnit;
+      let techName = `${config.internalName}Extra${mythUnit}`;
+      if (usedNames.has(techName)) techName = `${techName}For${customMinorAgeTechName(card)}`;
+      usedNames.add(techName);
+      return { ownerAge: ownerAgeByMinorAge[card.age], minorTech: customMinorAgeTechName(card), mythUnit, techName };
+    });
 }
 
 function kronosExtraMythUnitStatusEffects(config, ownerAge) {
@@ -3406,57 +5349,1135 @@ function bonusMajorXml(config) {
     .join("\n");
 }
 
+const NON_SELECTABLE_MINOR_TECHS = Object.freeze(new Set([
+  "LykaonVillagerToWolf",
+  "LykaonWolfToVillager",
+]));
+
+function isSelectableMinorTechnologyEntry(entry) {
+  return !!entry?.internalName && !NON_SELECTABLE_MINOR_TECHS.has(entry.internalName);
+}
+
+function minorCustomizationSourceData() {
+  const data = window.AOM_MINOR_GOD_CUSTOMIZATION || {};
+  return {
+    mythUnits: Array.isArray(data.mythUnits) ? data.mythUnits : [],
+    godPowers: Array.isArray(data.godPowers) ? data.godPowers : [],
+    technologies: Array.isArray(data.technologies) ? data.technologies.filter(isSelectableMinorTechnologyEntry) : [],
+    mythTechPairs: Array.isArray(data.mythTechPairs) ? data.mythTechPairs : [],
+  };
+}
+
+function minorCustomizationIdentifier(value) {
+  return sanitizeId(value || "").toLowerCase();
+}
+
+function minorCustomizationMythTechPairs(age = "") {
+  const pairs = minorCustomizationSourceData().mythTechPairs || [];
+  return age ? pairs.filter((entry) => entry.age === age) : pairs;
+}
+
+function pairedMythUnitsForTech(techName, age = "") {
+  const techId = minorCustomizationIdentifier(techName);
+  if (!techId) return [];
+  return minorCustomizationMythTechPairs(age)
+    .filter((entry) => minorCustomizationIdentifier(entry.tech) === techId)
+    .map((entry) => entry.mythUnit)
+    .filter(Boolean);
+}
+
+function isMinorTechAllowedForMythUnit(techEntry, selectedMythUnit, age = "") {
+  const pairedUnits = pairedMythUnitsForTech(techEntry?.internalName, age);
+  if (!pairedUnits.length) return true;
+  if (!selectedMythUnit) return false;
+  const selectedId = minorCustomizationIdentifier(selectedMythUnit);
+  return pairedUnits.some((unit) => minorCustomizationIdentifier(unit) === selectedId);
+}
+
+function filterMinorTechnologiesForMythUnit(techs, selectedMythUnit, age = "") {
+  return (techs || []).filter((tech) => isMinorTechAllowedForMythUnit(tech, selectedMythUnit, age));
+}
+
+
+
+function minorGodTechDefinitionData() {
+  const data = window.AOM_MINOR_GOD_TECH_DEFINITIONS || {};
+  return Array.isArray(data.techs) ? data.techs : [];
+}
+
+function minorGodTechDefinitionByName(name) {
+  const id = String(name || "");
+  if (!id) return null;
+  return minorGodTechDefinitionData().find((entry) => entry.name === id) || null;
+}
+
+function minorTechnologyUiEntryByName(name) {
+  const id = String(name || "");
+  if (!id) return null;
+  return minorCustomizationSourceData().technologies.find((entry) => entry.internalName === id) || null;
+}
+
+function minorTechResearchBuildingData() {
+  const data = window.AOM_MINOR_GOD_TECH_RESEARCH_BUILDINGS || {};
+  const rows = Array.isArray(data.techs) ? data.techs : [];
+  return rows;
+}
+
+function minorTechResearchBuildingEntry(baseTechName) {
+  const id = String(baseTechName || "");
+  if (!id) return null;
+  return minorTechResearchBuildingData().find((entry) => entry.tech === id) || null;
+}
+
+const TECH_UI_BUILDING_ALIASES = Object.freeze({
+  DwarvenArmory: "Armory",
+  AbstractArmory: "Armory",
+  TownCenter: "TownCenter",
+  VillageCenter: "TownCenter",
+  CitadelCenter: "TownCenter",
+  HillFort: "FortressGroup",
+  Hillfort: "FortressGroup",
+  AsgardianHillFort: "FortressGroup",
+  Baolei: "FortressGroup",
+  Castle: "FortressGroup",
+  MigdolStronghold: "FortressGroup",
+  Palace: "FortressGroup",
+  fortress: "Fortress",
+  Fortress: "Fortress",
+  GreatTemple: "GreatTemple",
+  "Archery Range": "ArcheryRange",
+  ArcheryRange: "ArcheryRange",
+  Barracks: "Barracks",
+  CounterBarracks: "CounterBarracks",
+  Calpulli: "Calpulli",
+  CalpulliLivestockPen: "Calpulli",
+  CalpulliLumberOutpost: "Calpulli",
+  CalpulliCraftWorkshop: "Calpulli",
+  Dock: "Dock",
+  Dojo: "Dojo",
+  EconomicGuild: "EconomicGuild",
+  Granary: "Granary",
+  GreatHall: "GreatHall",
+  Guardhouse: "GuardHouse",
+  GuardHouse: "GuardHouse",
+  Longhouse: "LongHouse",
+  LongHouse: "LongHouse",
+  LumberCamp: "LumberCamp",
+  MachineWorkshop: "MachineWorkshop",
+  MachineWorkshopTower: "MachineWorkshop",
+  MachineWorkshopTrainingYard: "MachineWorkshop",
+  Market: "Market",
+  MilitaryAcademy: "MilitaryAcademy",
+  MilitaryBarracks: "MilitaryBarracks",
+  MilitaryCamp: "MilitaryCamp",
+  MilitaryCampTower: "MilitaryCamp",
+  MilitaryCampTrainingYard: "MilitaryCamp",
+  NoblesHut: "NoblesHut",
+  OxCart: "OxCart",
+  SentryTower: "SentryTower",
+  ShrineJapanese: "Shrine",
+  ShrineOfTheHunt: "Shrine",
+  SiegeWorks: "SiegeWorks",
+  Silo: "Silo",
+  Stable: "Stable",
+  StableJapanese: "StableJapanese",
+  Storehouse: "Storehouse",
+  WallConnector: "Wall",
+  WallGate: "Wall",
+  WallLong: "Wall",
+  WallMedium: "Wall",
+  WallShort: "Wall",
+  WarHut: "WarHut",
+  Watermill: "WaterMill",
+  WaterMill: "WaterMill",
+});
+
+function techUiCanonicalBuilding(building) {
+  const id = String(building || "").trim();
+  if (!id) return "";
+  return TECH_UI_BUILDING_ALIASES[id] || id;
+}
+
+function techUiCommandTargetBuilding(building) {
+  const id = String(building || "").trim();
+  if (["Armory", "DwarvenArmory", "AbstractArmory"].includes(id)) return "AbstractArmory";
+  const canonicalTarget = {
+    fortress: "Fortress",
+    Fortress: "Fortress",
+    Guardhouse: "GuardHouse",
+    Longhouse: "LongHouse",
+    Watermill: "WaterMill",
+  };
+  return canonicalTarget[id] || id;
+}
+
+
+function selectedMinorGodPower(config, powerName) {
+  const target = String(powerName || "");
+  if (!target) return false;
+  if (config?.minorGodCustomization?.mode === "custom") {
+    return customMinorAllCards(config).some((card) => card.godPower === target);
+  }
+  for (const age of AGES) {
+    for (const minorTech of config?.minorGods?.[age] || []) {
+      if (matchingCustomMinorEntries("godPowers", age, minorTech).some((entry) => entry.internalName === target)) return true;
+    }
+  }
+  return false;
+}
+
+function hasAsgardianBastion(config) {
+  return selectedMinorGodPower(config, "AsgardianBastion");
+}
+
+function hasNonNorseAsgardianBastion(config) {
+  return config?.baseCulture !== "Norse" && hasAsgardianBastion(config);
+}
+
+function shouldAddAsgardianHillFortFavoredLandChain(config) {
+  if (!hasAsgardianBastion(config)) return false;
+  return config?.baseCulture === "Chinese" || selectedHasFavoredLandBuildingChainBonus(config);
+}
+
+function fortressCommandSourceBuildingForPantheon(pantheon) {
+  return {
+    Greek: "Fortress",
+    Egyptian: "MigdolStronghold",
+    Norse: "HillFort",
+    Atlantean: "Palace",
+    Chinese: "Baolei",
+    Japanese: "Castle",
+    Aztec: "GreatTemple",
+  }[pantheon] || "";
+}
+
+function asgardianHillFortLocationCanonicalForPantheon(pantheon) {
+  const source = fortressCommandSourceBuildingForPantheon(pantheon);
+  return source ? techUiCanonicalBuilding(source) : "";
+}
+
+function shouldAddAsgardianHillFortUiTarget(config, canonical) {
+  if (!hasAsgardianBastion(config)) return false;
+  if (config?.baseCulture === "Norse") return canonical === "FortressGroup";
+  return canonical === asgardianHillFortLocationCanonicalForPantheon(config.baseCulture);
+}
+
+function customMinorUsesMythUnit(config, mythUnitName) {
+  const target = minorCustomizationIdentifier(mythUnitName);
+  if (!target || config?.minorGodCustomization?.mode !== "custom") return false;
+  for (const card of customMinorAllCards(config)) {
+    if (minorCustomizationIdentifier(card.mythUnit) === target) return true;
+  }
+  return false;
+}
+
+function techUiLocationPools(building, slotKind, config = null) {
+  const canonical = techUiCanonicalBuilding(building);
+  const data = window.AOM_TECH_COMMAND_LOCATIONS || {};
+  const entry = data[canonical];
+  if (!entry) return [];
+  let pool = [];
+  if (slotKind && Array.isArray(entry[slotKind])) pool = entry[slotKind];
+  else if (slotKind === "UniqueTech" && Array.isArray(entry.UniqueTech)) pool = entry.UniqueTech;
+  else if (Array.isArray(entry.AnyAge)) pool = entry.AnyAge;
+  const out = (pool || []).map((pos) => ({ row: Number(pos.row), column: Number(pos.column) }));
+  if (canonical === "TownCenter" && Array.isArray(entry.conditional)) {
+    for (const pos of entry.conditional) {
+      if (pos.unless === "chineseWithLykaon") {
+        const blocked = config?.baseCulture === "Chinese" && customMinorUsesMythUnit(config, "LykaonVillager");
+        if (blocked) continue;
+      }
+      if (pos.when === "notGreek" && config?.baseCulture === "Greek") continue;
+      out.push({ row: Number(pos.row), column: Number(pos.column) });
+    }
+  }
+  const seen = new Set();
+  return out.filter((pos) => {
+    if (!Number.isFinite(pos.row) || !Number.isFinite(pos.column)) return false;
+    const key = `${pos.row}:${pos.column}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function minorTechResearchBuildingsForPantheon(baseTechName, pantheon) {
+  if (String(baseTechName || "") === "AdvancedDefenses") return ["WallConnector", "SentryTower"];
+  const entry = minorTechResearchBuildingEntry(baseTechName);
+  const buildings = entry?.available_in?.[pantheon];
+  return Array.isArray(buildings) ? buildings.filter(Boolean) : [];
+}
+
+function uniqueTechResearchBuildingsForPantheon(group, pantheon) {
+  return UNIQUE_TECH_UI_BUILDINGS_BY_TECH[group?.id]?.[pantheon] || [];
+}
+
+function normalizedTechUiTargetsForBuildings(buildings, config = null) {
+  const seen = new Set();
+  const out = [];
+  const pushTarget = (building, target, canonical) => {
+    if (!target || !canonical) return;
+    const key = `${target}|${canonical}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    out.push({ building, target, canonical });
+  };
+  for (const building of buildings || []) {
+    const target = techUiCommandTargetBuilding(building);
+    const canonical = techUiCanonicalBuilding(building);
+    pushTarget(building, target, canonical);
+    if (shouldAddAsgardianHillFortUiTarget(config, canonical)) {
+      pushTarget("AsgardianHillFort", "AsgardianHillFort", canonical);
+    }
+  }
+  return out;
+}
+
+function minorTechHasResearchLocation(baseTechName, pantheon, config = null) {
+  const buildings = minorTechResearchBuildingsForPantheon(baseTechName, pantheon);
+  return normalizedTechUiTargetsForBuildings(buildings, config).some((item) => techUiLocationPools(item.canonical, "AnyAge", config).length || techUiLocationPools(item.canonical, "ClassicalAge", config).length || techUiLocationPools(item.canonical, "HeroicAge", config).length || techUiLocationPools(item.canonical, "MythicAge", config).length);
+}
+
+function techUiPositionKey(pos) {
+  return `${Number(pos.row)}:${Number(pos.column)}`;
+}
+
+function techUiPositionsOverlap(a, b) {
+  return a && b && Number(a.row) === Number(b.row) && Number(a.column) === Number(b.column);
+}
+
+const MINOR_TECH_SHARED_UI_PREREQ_PAIRS = Object.freeze([
+  ["HandOfTalos", "ShoulderOfTalos"],
+  ["Criosphinx", "Hieracosphinx"],
+  ["SonOfLoong", "RageOfSlaughter"],
+]);
+
+function minorTechPairCanShareUiSpot(a, b) {
+  const left = String(a || "");
+  const right = String(b || "");
+  return MINOR_TECH_SHARED_UI_PREREQ_PAIRS.some(([first, second]) =>
+    (left === first && right === second) || (left === second && right === first)
+  );
+}
+
+const ARGIVE_PATRONAGE_MINOR_TECHS = Object.freeze(["ArgivePatronage"]);
+
+function isArgivePatronageMinorTech(baseName) {
+  return ARGIVE_PATRONAGE_MINOR_TECHS.includes(String(baseName || ""));
+}
+
+function selectedCustomMinorArgivePatronageRecords(config) {
+  if (config?.minorGodCustomization?.mode !== "custom") return [];
+  return selectedCustomMinorTechRecords(config).filter((record) => isArgivePatronageMinorTech(record.baseName));
+}
+
+function customMinorArgivePatronageOverrideStringId(record) {
+  const suffix = sanitizeId(record?.customMinorInternal || record?.customName || "CustomGod").toUpperCase();
+  return `STR_TECH_ARGIVE_PATRONAGE_${suffix}_OVERRIDE`;
+}
+
+function customMinorArgivePatronageRolloverStringId(record) {
+  const suffix = sanitizeId(record?.customMinorInternal || record?.customName || "CustomGod").toUpperCase();
+  return `STR_TECH_ARGIVE_PATRONAGE_${suffix}_LR`;
+}
+
+
+const ARGIVE_PATRONAGE_CUSTOM_ICON_ASSETS = Object.freeze({
+  Gastraphetoros: {
+    fileName: "argive_patronage_gastraphetoros_icon.png",
+    dataBase64: "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",
+  },
+  Hetairos: {
+    fileName: "argive_patronage_hetairos_icon.png",
+    dataBase64: "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",
+  },
+});
+
+function uint8ArrayFromBase64(base64) {
+  const binary = atob(base64 || "");
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return bytes;
+}
+
+function argivePatronageCustomIconAsset(config) {
+  return ARGIVE_PATRONAGE_CUSTOM_ICON_ASSETS[argivePatronageUniqueUnit(config)] || null;
+}
+
+function argivePatronageTechIconPath(config) {
+  const unit = argivePatronageUniqueUnit(config);
+  if (unit === "AmazonArcher") return "resources\\greek\\static_color\\technologies\\argive_patronage_demeter_icon.png";
+  if (unit === "Myrmidon") return "resources\\greek\\static_color\\technologies\\argive_patronage_icon.png";
+  const asset = argivePatronageCustomIconAsset(config);
+  if (asset) return `resources\\${config.lowerName || sanitizeId(config.internalName || config.displayName || "customgod").toLowerCase()}\\technologies\\${asset.fileName}`;
+  return "resources\\greek\\static_color\\technologies\\argive_patronage_icon.png";
+}
+
+function selectedArgivePatronageCustomIconAsset(config) {
+  if (!config) return null;
+  if (hasGreekHeraMinorGod(config) || selectedCustomMinorArgivePatronageRecords(config).length) return argivePatronageCustomIconAsset(config);
+  return null;
+}
+
+
+function makeTechUiSlotAllocator() {
+  const occupied = new Map();
+  const fallbackCursors = new Map();
+  const entriesForBuilding = (target) => occupied.get(target) || [];
+  const fallbackKey = (target, pool, meta = {}) => `${target}|${meta.type || ""}|${meta.age || meta.slotKind || ""}|${(pool || []).map(techUiPositionKey).join(",")}`;
+  const canOverlap = (existing, candidate) => {
+    if (!techUiPositionsOverlap(existing.position, candidate.position)) return true;
+    if (existing.type === "minor" && candidate.type === "minor") {
+      if (minorTechPairCanShareUiSpot(existing.baseName, candidate.baseName)) return true;
+      if (existing.age === candidate.age && existing.slot !== candidate.slot) return true;
+    }
+    return false;
+  };
+  const reserve = (target, candidate, options = {}) => {
+    const entries = entriesForBuilding(target);
+    if (!options.allowConflict) {
+      for (const existing of entries) {
+        if (!canOverlap(existing, candidate)) return false;
+      }
+    }
+    entries.push(candidate);
+    occupied.set(target, entries);
+    return true;
+  };
+  const allocate = (target, pool, meta) => {
+    const positions = pool || [];
+    for (const position of positions) {
+      const candidate = { ...meta, position };
+      if (reserve(target, candidate)) return position;
+    }
+    if (!positions.length) return null;
+    const key = fallbackKey(target, positions, meta);
+    const cursor = fallbackCursors.get(key) || 0;
+    const position = positions[cursor % positions.length];
+    fallbackCursors.set(key, cursor + 1);
+    reserve(target, { ...meta, position, fallback: true }, { allowConflict: true });
+    return position;
+  };
+  return { allocate, reserve };
+}
+
+function uniqueTechFixedPosition(building, pantheon) {
+  return uniqueTechUiBuildingPosition(building, pantheon);
+}
+
+function fixedPositionIsInPool(position, pool) {
+  if (!position) return false;
+  return (pool || []).some((candidate) => techUiPositionsOverlap(position, candidate));
+}
+
+function buildUniqueTechUiPlacements(config, allocator) {
+  const pantheon = config.baseCulture;
+  const placements = [];
+  const seenPlacements = new Set();
+  for (const group of uniqueTechEntries(config)) {
+    const techName = uniqueTechActualTechName(group, config);
+    const rawBuildings = uniqueTechResearchBuildingsForPantheon(group, pantheon);
+    for (const item of normalizedTechUiTargetsForBuildings(rawBuildings, config)) {
+      const target = item.canonical === "TownCenter" ? "AbstractTownCenter" : item.target;
+      const dedupeKey = `${techName}|${target}|${item.canonical}`;
+      if (seenPlacements.has(dedupeKey)) continue;
+      seenPlacements.add(dedupeKey);
+      let pool = techUiLocationPools(item.canonical, "UniqueTech", config);
+      if (!pool.length) pool = techUiLocationPools(item.canonical, "AnyAge", config);
+      if (!pool.length) continue;
+      const fixed = uniqueTechFixedPosition(item.building, pantheon);
+      let position = null;
+      if (fixedPositionIsInPool(fixed, pool)) {
+        const candidate = { type: "unique", techName, position: fixed };
+        if (allocator.reserve(target, candidate)) position = fixed;
+      }
+      if (!position) position = allocator.allocate(target, pool, { type: "unique", techName });
+      if (!position) continue;
+      placements.push({ techName, target, position, type: "unique" });
+    }
+  }
+  return placements;
+}
+
+function buildCustomMinorTechUiPlacements(config, allocator) {
+  if (config?.minorGodCustomization?.mode !== "custom") return [];
+  const pantheon = config.baseCulture;
+  const placements = [];
+  for (const record of selectedCustomMinorTechRecords(config)) {
+    const rawBuildings = minorTechResearchBuildingsForPantheon(record.baseName, pantheon);
+    for (const item of normalizedTechUiTargetsForBuildings(rawBuildings, config)) {
+      const pool = techUiLocationPools(item.canonical, record.age, config).length
+        ? techUiLocationPools(item.canonical, record.age, config)
+        : techUiLocationPools(item.canonical, "AnyAge", config);
+      if (!pool.length) continue;
+      const position = allocator.allocate(item.target, pool, {
+        type: "minor",
+        techName: record.customName,
+        baseName: record.baseName,
+        age: record.age,
+        slot: record.slot,
+      });
+      if (!position) continue;
+      placements.push({ techName: record.customName, target: item.target, sourceBuilding: item.building, canonical: item.canonical, position, type: "minor", age: record.age, slot: record.slot });
+    }
+  }
+  return placements;
+}
+
+function techUiCommandAddEffect(techName, target, position) {
+  return `<effect type="Data" amount="1.00" subtype="CommandAdd" tech="${escapeXml(techName)}" row="${position.row}" column="${position.column}" relativity="Assign">\n\t<target type="ProtoUnit">${escapeXml(target)}</target>\n</effect>`;
+}
+
+function techUiCommandRemoveEffect(techName, target) {
+  return `<effect type="Data" amount="1.00" subtype="CommandRemove" tech="${escapeXml(techName)}" relativity="Assign">\n\t<target type="ProtoUnit">${escapeXml(target)}</target>\n</effect>`;
+}
+
+function customMinorTechUiPlacementEffects(config) {
+  if (config?.minorGodCustomization?.mode !== "custom") return "";
+  const allocator = makeTechUiSlotAllocator();
+  buildUniqueTechUiPlacements(config, allocator);
+  return buildCustomMinorTechUiPlacements(config, allocator)
+    .map((placement) => techUiCommandAddEffect(placement.techName, placement.target, placement.position))
+    .join("\n");
+}
+
+function customMinorInternalName(name, age = "", slot = 1) {
+  return sanitizeId(name || "", `Custom${String(age || "Minor").replace(/Age$/, "")}MinorGod${slot}`);
+}
+
+function customMinorGeneratedTechName(baseTechName, customMinorInternal) {
+  if (isArgivePatronageMinorTech(baseTechName)) return `ArgivePatronage${customMinorInternal}`;
+  return `${String(baseTechName || "")}${customMinorInternal}`;
+}
+
+function customMinorTechName(baseTechName, customMinor) {
+  return customMinorGeneratedTechName(baseTechName, customMinorInternalName(customMinor?.name, customMinor?.age, customMinor?.slot));
+}
+
+function selectedCustomMinorTechCards(config) {
+  if (config?.minorGodCustomization?.mode !== "custom") return [];
+  const cards = [];
+  for (const age of AGES) {
+    const entries = config.minorGodCustomization.custom?.[age] || [];
+    entries.forEach((entry, index) => {
+      const techs = (entry.techs || []).filter(Boolean);
+      if (!techs.length) return;
+      cards.push({ ...entry, age, slot: index + 1, techs });
+    });
+  }
+  return cards;
+}
+
+function selectedCustomMinorTechRecords(config) {
+  const records = [];
+  for (const card of selectedCustomMinorTechCards(config)) {
+    const customName = customMinorInternalName(card.name, card.age, card.slot);
+    for (const tech of card.techs || []) {
+      records.push({
+        baseName: tech,
+        customName: customMinorGeneratedTechName(tech, customName),
+        customMinorName: card.name || "",
+        customMinorInternal: customName,
+        age: card.age,
+        slot: card.slot,
+        card,
+        config,
+      });
+    }
+  }
+  return records;
+}
+
+function hasIvoryNetsukeMinorTech(config) {
+  const isCustom = config?.minorGodCustomization?.mode === "custom";
+  if (isCustom) return selectedCustomMinorTechRecords(config).some((record) => record.baseName === "IvoryNetsuke");
+  return Object.values(config?.minorGods || {}).flat().includes("ClassicalAgeInariOkami");
+}
+
+function customMinorSelectedTechsFromState(current, except = {}) {
+  const selected = new Set();
+  const custom = current?.custom || collectMinorCustomization().custom || {};
+  for (const age of AGES) {
+    const entries = custom[age] || [];
+    entries.forEach((entry, slotIndex) => {
+      const techs = Array.isArray(entry.techs) ? entry.techs : [];
+      techs.forEach((tech, techIndex) => {
+        if (!tech) return;
+        if (except.age === age && except.slot === slotIndex + 1 && except.index === techIndex + 1) return;
+        selected.add(tech);
+      });
+    });
+  }
+  return selected;
+}
+
+function customMinorTechCustomNameMapForCard(card) {
+  const map = new Map();
+  const internal = customMinorInternalName(card?.name, card?.age, card?.slot);
+  for (const tech of card?.techs || []) {
+    if (tech) map.set(tech, customMinorGeneratedTechName(tech, internal));
+  }
+  return map;
+}
+
+function replaceSelectedTechReferencesInXml(xml, nameMap) {
+  let out = String(xml || "");
+  for (const [base, custom] of nameMap.entries()) {
+    const escapedBase = escapeRegExp(base);
+    out = out.replace(new RegExp(`>${escapedBase}<`, "g"), `>${custom}<`);
+    // Rename selected tech references, but keep standard proto powers untouched.
+    // Example: VibrantLand custom minor tech should still CreatePower protopower="VibrantLand".
+    out = out.replace(
+      new RegExp(`(\b(?!protopower\b)[A-Za-z_:][-A-Za-z0-9_:.]*\s*=\s*)"${escapedBase}"`, "g"),
+      `$1"${custom}"`
+    );
+  }
+  return out;
+}
+
+function customMinorTechRolloverId(definition, customMinorInternal = "CustomGod") {
+  const id = definition?.rolloverTextId || `STR_TECH_${String(definition?.name || "CUSTOM").toUpperCase()}_LR`;
+  const suffix = sanitizeId(customMinorInternal, "CustomGod").toUpperCase();
+  return id.endsWith("_LR") ? id.replace(/_LR$/, `_${suffix}_LR`) : `${id}_${suffix}_LR`;
+}
+
+function indentCustomTechInner(xml, tabs = 2) {
+  const rawLines = String(xml || "").replace(/\r\n/g, "\n").split("\n");
+  while (rawLines.length && !rawLines[0].trim()) rawLines.shift();
+  while (rawLines.length && !rawLines[rawLines.length - 1].trim()) rawLines.pop();
+  if (!rawLines.length) return "";
+  const leadingTabs = (line) => ((line.match(/^\t*/) || [""])[0] || "").length;
+  const firstText = rawLines[0].trim();
+  const rootMatch = firstText.match(/^<([A-Za-z0-9_:-]+)(\s|>|\/)/);
+  const rootName = rootMatch?.[1] || "";
+  const lastIndex = rawLines.length - 1;
+  const hasRootClosing = rootName && rawLines[lastIndex]?.trim?.().startsWith(`</${rootName}`);
+  let childBaseTabs = Infinity;
+  rawLines.forEach((line, index) => {
+    if (!line.trim()) return;
+    if (index === 0) return;
+    if (hasRootClosing && index === lastIndex) return;
+    childBaseTabs = Math.min(childBaseTabs, leadingTabs(line));
+  });
+  const childShiftTabs = Number.isFinite(childBaseTabs) ? Math.max(0, childBaseTabs - 1) : 0;
+  return rawLines
+    .filter((line) => line.trim())
+    .map((line, index) => {
+      let normalized = line.trimEnd();
+      if (index === 0 || (hasRootClosing && index === lastIndex)) {
+        normalized = normalized.trimStart();
+      } else if (childShiftTabs > 0) {
+        normalized = normalized.replace(new RegExp(`^\\t{0,${childShiftTabs}}`), "");
+      }
+      return `${"\t".repeat(tabs)}${normalized}`;
+    })
+    .join("\n");
+}
+
+function buildCustomMinorGodTechXmlForRecord(record) {
+  const definition = minorGodTechDefinitionByName(record.baseName);
+  if (!definition) return "";
+  if (isArgivePatronageMinorTech(record.baseName)) return buildCustomMinorArgivePatronageTechXml(record, definition);
+  const attrs = [`name="${escapeXml(record.customName)}"`];
+  for (const [key, value] of Object.entries(definition.attributes || {})) {
+    attrs.push(`${escapeXml(key)}="${escapeXml(value)}"`);
+  }
+  const lines = [`	<tech ${attrs.join(" ")}>`];
+  if (definition.displayNameId) lines.push(`		<displaynameid>${escapeXml(definition.displayNameId)}</displaynameid>`);
+  lines.push(`		<rollovertextid>${escapeXml(customMinorTechRolloverId(definition, record.customMinorInternal))}</rollovertextid>`);
+  for (const cost of definition.costs || []) {
+    lines.push(`		<cost resourcetype="${escapeXml(cost.resource)}">${escapeXml(cost.value)}</cost>`);
+  }
+  if (definition.researchPoints) lines.push(`		<researchpoints>${escapeXml(definition.researchPoints)}</researchpoints>`);
+  if (definition.status) lines.push(`		<status>${escapeXml(definition.status)}</status>`);
+  if (definition.icon) lines.push(`		<icon>${escapeXml(isArgivePatronageMinorTech(record.baseName) ? argivePatronageTechIconPath(record.config || {}) : definition.icon)}</icon>`);
+  for (const flag of definition.flags || []) lines.push(`		<flag>${escapeXml(flag)}</flag>`);
+  if (definition.techType) lines.push(`		<techtype>${escapeXml(definition.techType)}</techtype>`);
+  const nameMap = customMinorTechCustomNameMapForCard(record.card);
+  if (definition.prereqsXml) lines.push(indentCustomTechInner(replaceSelectedTechReferencesInXml(definition.prereqsXml, nameMap), 2));
+  if (definition.extraXml) lines.push(indentCustomTechInner(replaceSelectedTechReferencesInXml(definition.extraXml, nameMap), 2));
+  const adjustedEffectsXml = adjustedCustomMinorTechEffectsXml(definition, record);
+  if (adjustedEffectsXml) lines.push(indentCustomTechInner(replaceSelectedTechReferencesInXml(adjustedEffectsXml, nameMap), 2));
+  lines.push(`	</tech>`);
+  return lines.join("\n");
+}
+
+function buildCustomMinorArgivePatronageTechXml(record, definition) {
+  const attrs = [`name="${escapeXml(record.customName)}"`];
+  for (const [key, value] of Object.entries(definition.attributes || {})) {
+    attrs.push(`${escapeXml(key)}="${escapeXml(value)}"`);
+  }
+  const lines = [`	<tech ${attrs.join(" ")}>`];
+  if (definition.displayNameId) lines.push(`		<displaynameid>${escapeXml(definition.displayNameId)}</displaynameid>`);
+  lines.push(`		<rollovertextid>${escapeXml(customMinorArgivePatronageRolloverStringId(record))}</rollovertextid>`);
+  for (const cost of definition.costs || []) {
+    lines.push(`		<cost resourcetype="${escapeXml(cost.resource)}">${escapeXml(cost.value)}</cost>`);
+  }
+  if (definition.researchPoints) lines.push(`		<researchpoints>${escapeXml(definition.researchPoints)}</researchpoints>`);
+  if (definition.status) lines.push(`		<status>${escapeXml(definition.status)}</status>`);
+  if (definition.icon) lines.push(`		<icon>${escapeXml(isArgivePatronageMinorTech(record.baseName) ? argivePatronageTechIconPath(record.config || {}) : definition.icon)}</icon>`);
+  for (const flag of definition.flags || []) lines.push(`		<flag>${escapeXml(flag)}</flag>`);
+  if (definition.techType) lines.push(`		<techtype>${escapeXml(definition.techType)}</techtype>`);
+  lines.push(`		<prereqs>`);
+  lines.push(`			<techstatus status="Active">${escapeXml(customMinorAgeTechName(record.card))}</techstatus>`);
+  lines.push(`		</prereqs>`);
+  lines.push(`		<effects>`);
+  lines.push(`			<effect type="Data" action="${escapeXml(record.customName)}" amount="1.00" subtype="ActionEnable" relativity="Absolute" tooltipid="${escapeXml(customMinorArgivePatronageOverrideStringId(record))}">`);
+  lines.push(`				<target type="ProtoUnit">AbstractFortress</target>`);
+  lines.push(`			</effect>`);
+  lines.push(`		</effects>`);
+  lines.push(`	</tech>`);
+  return lines.join("\n");
+}
+
+
+function customMinorGodGeneratedTechsXml(config) {
+  const seen = new Set();
+  const techs = [];
+  for (const record of selectedCustomMinorTechRecords(config)) {
+    if (seen.has(record.customName)) continue;
+    seen.add(record.customName);
+    const xml = buildCustomMinorGodTechXmlForRecord(record);
+    if (xml) techs.push(xml);
+  }
+  return techs.join("\n");
+}
+
+function customMinorGodTechStatusEffectsForAge(config, age) {
+  const records = selectedCustomMinorTechRecords(config).filter((record) => record.age === age);
+  return techStatusEffects(records.map((record) => record.customName), "obtainable");
+}
+
+function customMinorGodTechStringMods(config) {
+  const rows = [];
+  const seen = new Set();
+  for (const record of selectedCustomMinorTechRecords(config)) {
+    const definition = minorGodTechDefinitionByName(record.baseName);
+    const uiEntry = minorTechnologyUiEntryByName(record.baseName);
+    if (!definition || !uiEntry?.description) continue;
+    const id = isArgivePatronageMinorTech(record.baseName)
+      ? customMinorArgivePatronageRolloverStringId(record)
+      : customMinorTechRolloverId(definition, record.customMinorInternal);
+    if (seen.has(id)) continue;
+    seen.add(id);
+    const sourceMinor = uiEntry.minorGod || "";
+    const customName = record.customMinorName || sourceMinor || "this minor god";
+    let text = adjustedMinorTechDescriptionText(record.baseName, uiEntry.description, record.card, record.config);
+    if (isArgivePatronageMinorTech(record.baseName)) {
+      const unit = argivePatronageUniqueUnitDisplayName(config);
+      text = `${customName}’s favor causes your Fortresses to periodically spawn ${unit} for free.`;
+      rows.push(`ID = "${id}"   ;   Str = "${escapeStringMod(text)}"`);
+      rows.push(`ID = "${customMinorArgivePatronageOverrideStringId(record)}"   ;   Str = "Fortress: Summon a ${escapeStringMod(unit)} every 60 seconds"`);
+      continue;
+    }
+    if (sourceMinor) {
+      text = text.replace(new RegExp(escapeRegExp(sourceMinor), "g"), customName);
+    }
+    text = finalTechDescriptionText(text, { customMinorName: customName, config });
+    rows.push(`ID = "${id}"   ;   Str = "${escapeStringMod(text)}"`);
+  }
+  return rows.join("\n");
+}
+
+const CUSTOM_MINOR_AGE_TECH_META = Object.freeze({
+  ClassicalAge: {
+    costs: [{ resource: "Food", value: "400.0000" }],
+    researchPoints: "60.0000",
+    icon: "resources\\shared\\static_color\\technologies\\classical_age_icon.png",
+    techType: "ClassicalAge",
+    flags: ["AgeUpgrade", "CountsTowardEconomicScore"],
+    prereqs: [`<typecount unit="AbstractTemple" count="1.00" state="aliveState" operator="gte"></typecount>`],
+  },
+  HeroicAge: {
+    costs: [{ resource: "Food", value: "800.0000" }, { resource: "Gold", value: "500.0000" }],
+    researchPoints: "75.0000",
+    icon: "resources\\shared\\static_color\\technologies\\heroic_age_icon.png",
+    techType: "HeroicAge",
+    flags: ["AgeUpgrade", "CountsTowardEconomicScore", "OrPrereqs"],
+    prereqs: [`<typecount unit="AbstractArmory" count="1.00" state="aliveState" operator="gte"></typecount>`, `<typecount unit="Market" count="1.00" state="aliveState" operator="gte"></typecount>`],
+  },
+  MythicAge: {
+    costs: [{ resource: "Food", value: "1200.0000" }, { resource: "Gold", value: "1200.0000" }],
+    researchPoints: "120.0000",
+    icon: "resources\\shared\\static_color\\technologies\\mythic_age_icon.png",
+    techType: "MythicAge",
+    flags: ["AgeUpgrade", "CountsTowardEconomicScore"],
+    prereqs: [`<typecount unit="AbstractFortress" count="1.00" state="aliveState" operator="gte"></typecount>`],
+  },
+});
+
+function customMinorAllCards(config) {
+  if (config?.minorGodCustomization?.mode !== "custom") return [];
+  const cards = [];
+  for (const age of AGES) {
+    const entries = config.minorGodCustomization.custom?.[age] || [];
+    entries.forEach((entry, index) => cards.push({ ...entry, age, slot: index + 1 }));
+  }
+  return cards;
+}
+
+function customMinorAgeTechName(card) {
+  return `${String(card?.age || "")}${customMinorInternalName(card?.name, card?.age, card?.slot)}`;
+}
+
+function customMinorAgeTechNamesForAge(config, age) {
+  return customMinorAllCards(config).filter((card) => card.age === age && card.name && card.godPower && card.mythUnit).map(customMinorAgeTechName);
+}
+
+function customMinorAgeTechCommandAddEffects(config, age) {
+  if (config?.minorGodCustomization?.mode !== "custom") return "";
+  return customMinorAllCards(config)
+    .filter((card) => card.age === age && card.name && card.godPower && card.mythUnit)
+    .map((card) => `\t\t\t<effect type="Data" amount="1.00" subtype="CommandAdd" tech="${escapeXml(customMinorAgeTechName(card))}" row="2" column="0" relativity="Assign">\n\t\t\t\t<target type="ProtoUnit">AbstractTownCenter</target>\n\t\t\t</effect>`)
+    .join("\n");
+}
+
+function customMinorSecretsOfTheTitansCommandRemoveEffect(config) {
+  if (config?.minorGodCustomization?.mode !== "custom") return "";
+  return `\t\t\t<effect type="Data" amount="1.00" subtype="CommandRemove" tech="SecretsOfTheTitans" relativity="Assign">\n\t\t\t\t<target type="ProtoUnit">AbstractTownCenter</target>\n\t\t\t</effect>`;
+}
+
+function customMinorSecretsOfTheTitansCommandAddEffect(config) {
+  if (config?.minorGodCustomization?.mode !== "custom") return "";
+  return `\t\t\t<effect type="Data" amount="1.00" subtype="CommandAdd" tech="SecretsOfTheTitans" row="2" column="0" relativity="Assign">\n\t\t\t\t<target type="ProtoUnit">AbstractTownCenter</target>\n\t\t\t</effect>`;
+}
+
+function customMinorAgeTechStringBase(card) {
+  return `STR_TECH_${customMinorInternalName(card?.name, card?.age, card?.slot).toUpperCase()}`;
+}
+
+function godPowerCooldown(power) {
+  const value = window.AOM_GOD_POWER_COOLDOWNS?.[power];
+  return value == null || value === "" ? "60.0" : String(value);
+}
+
+function customMinorCardTechRecords(card) {
+  const records = [];
+  const customInternal = customMinorInternalName(card?.name, card?.age, card?.slot);
+  for (const tech of (card?.techs || []).filter(Boolean)) {
+    records.push({ baseName: tech, customName: customMinorGeneratedTechName(tech, customInternal), card });
+  }
+  return records;
+}
+
+function customMinorAgeTechsForNextAge(config, age) {
+  if (age === "ClassicalAge") return techStatusEffects(customMinorAgeTechNamesForAge(config, "HeroicAge"), "obtainable");
+  if (age === "HeroicAge") return techStatusEffects(customMinorAgeTechNamesForAge(config, "MythicAge"), "obtainable");
+  return "";
+}
+
+function customMinorSharedAgeEffects(config, age) {
+  const lines = [];
+  lines.push(`<effect type="TechStatus" status="active">${escapeXml(age)}General</effect>`);
+  lines.push(`<effect type="TechStatus" status="active">${escapeXml(cultureAgeTech(age, config.baseCulture))}</effect>`);
+  const next = customMinorAgeTechsForNextAge(config, age);
+  if (next) lines.push(next);
+  if (age === "ClassicalAge") {
+    const extras = [norseClassicalExtraEffects(config), greekClassicalExtraEffects(config), aztecClassicalExtraEffects(config), kronosExtraMythUnitStatusEffects(config, age), bonusClassicalTechEffects(config)].filter(Boolean).join("\n");
+    if (extras) lines.push(extras);
+  } else if (age === "HeroicAge") {
+    const extras = [norseHeroicExtraEffects(config), greekHeroicExtraEffects(config), kronosExtraMythUnitStatusEffects(config, age), bonusHeroicTechEffects(config)].filter(Boolean).join("\n");
+    if (extras) lines.push(extras);
+  } else if (age === "MythicAge") {
+    const extras = [norseMythicExtraEffects(config), greekMythicExtraEffects(config), chineseMythicExtraEffects(config), aztecMythicExtraEffects(config), bonusMythicTechEffects(config)].filter(Boolean).join("\n");
+    if (extras) lines.push(extras);
+  }
+  return removeBlankXmlLines(lines.join("\n"));
+}
+
+
+function asgardianHillFortAutoBuildRateEffect(config, age) {
+  if (!hasNonNorseAsgardianBastion(config)) return "";
+  const amount = age === "HeroicAge" ? "1.00" : age === "MythicAge" ? "2.00" : "";
+  if (!amount) return "";
+  return `<effect type="Data" amount="${amount}" subtype="AutoBuildRate" relativity="Absolute">
+	<target type="ProtoUnit">AsgardianHillFort</target>
+</effect>`;
+}
+
+function asgardianHillFortCommandSourceEntries(config) {
+  if (!config || config.baseCulture === "Norse") return [];
+  const source = fortressCommandSourceBuildingForPantheon(config.baseCulture);
+  if (!source) return [];
+  const data = window.AOM_FORTRESS_TYPE_BUILDING_UI_ENTRIES || window.AOM_MINOR_GOD_DATA?.fortressTypeBuildingUiEntries || {};
+  const building = (data.buildings || []).find((entry) => entry.building === source);
+  return Array.isArray(building?.entries) ? building.entries : [];
+}
+
+const ASGARDIAN_HILL_FORT_OVERLAPPING_TECH_COMMANDS = Object.freeze([
+  "MediumInfantry",
+  "HeavyInfantry",
+  "ChampionInfantry",
+  "DraftHorses",
+  "Engineers",
+  "AdvancedFortifications",
+]);
+
+const ASGARDIAN_HILL_FORT_SOURCE_TECH_EXCLUSIONS = Object.freeze([
+  "OlympianParentage",
+  "Tenshu",
+  "TepeyollotlsReach",
+]);
+
+function asgardianHillFortCommandRemoveEffects() {
+  return ASGARDIAN_HILL_FORT_OVERLAPPING_TECH_COMMANDS.map((tech) =>
+    `<effect type="Data" amount="1.00" subtype="CommandRemove" tech="${escapeXml(tech)}" relativity="Assign">
+	<target type="ProtoUnit">AsgardianHillFort</target>
+</effect>`
+  ).join("\n");
+}
+
+const ASGARDIAN_HILL_FORT_BUILDERS_BY_PANTHEON = Object.freeze({
+  Greek: ["VillagerGreek", "LykaonVillager"],
+  Egyptian: ["VillagerEgyptian"],
+  Atlantean: ["VillagerAtlantean", "VillagerAtlanteanHero"],
+  Chinese: ["VillagerChinese", "Kuafu"],
+  Japanese: ["VillagerJapanese"],
+  Aztec: ["VillagerAztec"],
+});
+
+function asgardianHillFortBuilderCommandTargets(config) {
+  const targets = [];
+  if (config?.baseCulture !== "Norse") {
+    targets.push(...(ASGARDIAN_HILL_FORT_BUILDERS_BY_PANTHEON[config?.baseCulture] || []));
+  }
+  // Creation / Kuafu Chieftain can add extra Chinese-style builders to any pantheon,
+  // including Norse, so they also receive the Asgardian Hill Fort build command.
+  if (String(config?.godPower || "") === "Creation") targets.push("VillagerChineseClay");
+  if ((config?.uniqueTechs || []).includes("KuafuChieftain")) targets.push("KuafuHero");
+  return [...new Set(targets.filter(Boolean))];
+}
+
+function asgardianHillFortBuilderCommandEffectsForCard(config, card) {
+  if (card?.godPower !== "AsgardianBastion" || card?.age !== "ClassicalAge") return "";
+  const targets = asgardianHillFortBuilderCommandTargets(config);
+  if (!targets.length) return "";
+  return targets.map((target) => `<effect type="Data" amount="1.00" subtype="CommandAdd" proto="AsgardianHillFort" row="100" column="100" relativity="Assign">
+	<target type="ProtoUnit">${escapeXml(target)}</target>
+</effect>`).join("\n");
+}
+
+function asgardianHillFortCommandAddEffectsForCard(config, card) {
+  if (config?.baseCulture === "Norse" || card?.godPower !== "AsgardianBastion" || card?.age !== "ClassicalAge") return "";
+  const effects = [];
+  const removes = asgardianHillFortCommandRemoveEffects();
+  if (removes) effects.push(removes);
+  for (const entry of asgardianHillFortCommandSourceEntries(config)) {
+    if (entry.type === "tech" && ASGARDIAN_HILL_FORT_SOURCE_TECH_EXCLUSIONS.includes(String(entry.name || ""))) continue;
+    const attr = entry.type === "train" ? "proto" : "tech";
+    effects.push(`<effect type="Data" amount="1.00" subtype="CommandAdd" ${attr}="${escapeXml(entry.name)}" row="${Number(entry.row)}" column="${Number(entry.column)}" relativity="Assign">
+	<target type="ProtoUnit">AsgardianHillFort</target>
+</effect>`);
+  }
+  return effects.join("\n");
+}
+
+
+function argonautsDockCommandAddEffectForCard(config, card) {
+  if (config?.baseCulture === "Greek" || card?.age !== "HeroicAge") return "";
+  if (!Array.isArray(card?.techs) || !card.techs.includes("Argonauts")) return "";
+  return `<effect type="Data" amount="1.00" subtype="CommandAdd" proto="TheArgo" row="1" column="2" relativity="Assign">
+	<target type="ProtoUnit">Dock</target>
+</effect>`;
+}
+
+const CUSTOM_MINOR_MYTH_UNIT_TEMPLE_SLOTS = Object.freeze({
+  HeroicAge: Object.freeze({
+    MountainGiant: Object.freeze({ row: 0, column: 2 }),
+  }),
+  MythicAge: Object.freeze({
+    FireGiant: Object.freeze({ row: 0, column: 3 }),
+    FenrisWolfBrood: Object.freeze({ row: 0, column: 3 }),
+    Fafnir: Object.freeze({ row: 0, column: 3 }),
+  }),
+});
+
+function customMinorMythUnitTempleSlotEffectForCard(card) {
+  const unit = String(card?.mythUnit || "");
+  const slot = CUSTOM_MINOR_MYTH_UNIT_TEMPLE_SLOTS?.[card?.age]?.[unit];
+  if (!slot) return "";
+  return `<effect type="Data" amount="1.00" subtype="CommandRemove" proto="${escapeXml(unit)}" relativity="Assign">
+	<target type="ProtoUnit">AbstractTemple</target>
+</effect>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="${escapeXml(unit)}" row="${slot.row}" column="${slot.column}" relativity="Assign">
+	<target type="ProtoUnit">AbstractTemple</target>
+</effect>`;
+}
+
+function buildCustomMinorAgeTechXmlForCard(config, card) {
+  const meta = CUSTOM_MINOR_AGE_TECH_META[card.age];
+  if (!meta || !card.name || !card.godPower || !card.mythUnit) return "";
+  const stringBase = customMinorAgeTechStringBase(card);
+  const techRecords = customMinorCardTechRecords(card);
+  const techNames = techRecords.map((record) => record.customName);
+  const lines = [`\t<tech name="${escapeXml(customMinorAgeTechName(card))}">`];
+  lines.push(`\t\t<displaynameid>${stringBase}_NAME</displaynameid>`);
+  lines.push(`\t\t<rollovertextid>${stringBase}_LR</rollovertextid>`);
+  for (const cost of meta.costs) lines.push(`\t\t<cost resourcetype="${escapeXml(cost.resource)}">${escapeXml(cost.value)}</cost>`);
+  lines.push(`\t\t<researchpoints>${escapeXml(meta.researchPoints)}</researchpoints>`);
+  lines.push(`\t\t<status>UNOBTAINABLE</status>`);
+  lines.push(`\t\t<icon>${escapeXml(meta.icon)}</icon>`);
+  for (const flag of meta.flags) lines.push(`\t\t<flag>${escapeXml(flag)}</flag>`);
+  lines.push(`\t\t<techtype>${escapeXml(meta.techType)}</techtype>`);
+  lines.push(`\t\t<prereqs>`);
+  for (const prereq of meta.prereqs) lines.push(indentCustomTechInner(prereq, 3));
+  lines.push(`\t\t</prereqs>`);
+  lines.push(`\t\t<effects>`);
+  const effects = [];
+  effects.push(`<effect type="SetAge">${escapeXml(card.age)}</effect>`);
+  effects.push(`<effect type="Data" subtype="GodPower" power="${escapeXml(card.godPower)}" amount="1.0" cooldown="${escapeXml(godPowerCooldown(card.godPower))}" relativity="Absolute">\n\t<target type="Player"></target>\n</effect>`);
+  effects.push(`<effect type="Data" amount="1.00" subtype="Enable" relativity="Absolute">\n\t<target type="ProtoUnit">${escapeXml(card.mythUnit)}</target>\n</effect>`);
+  effects.push(`<effect type="CreateUnit" unit="${escapeXml(card.mythUnit)}" generator="AbstractTemple">\n\t<pattern type="Leaving" speed="0.00" radius="0.00" quantity="1.00" minradius="0.00">\n\t\t<offset x="0.00" y="0.00" z="0.00"></offset>\n\t</pattern>\n</effect>`);
+  const asgardianBuilderCommands = asgardianHillFortBuilderCommandEffectsForCard(config, card);
+  if (asgardianBuilderCommands) effects.push(asgardianBuilderCommands);
+  const asgardianCommands = asgardianHillFortCommandAddEffectsForCard(config, card);
+  if (asgardianCommands) effects.push(asgardianCommands);
+  const argonautsDockCommand = argonautsDockCommandAddEffectForCard(config, card);
+  if (argonautsDockCommand) effects.push(argonautsDockCommand);
+  const mythUnitTempleSlotCommand = customMinorMythUnitTempleSlotEffectForCard(card);
+  if (mythUnitTempleSlotCommand) effects.push(mythUnitTempleSlotCommand);
+  for (const tech of techNames) effects.push(`<effect type="TechStatus" status="obtainable">${escapeXml(tech)}</effect>`);
+  if (["Lykaon", "LykaonVillager"].includes(card.mythUnit)) {
+    effects.push(`<effect type="TechStatus" status="active">LykaonVillagerToWolf</effect>`);
+    effects.push(`<effect type="TechStatus" status="active">LykaonWolfToVillager</effect>`);
+  }
+  effects.push(`<effect type="TextOutput">${stringBase}_SELF</effect>`);
+  effects.push(`<effect all="true" type="TextOutput">${stringBase}_OTHER</effect>`);
+  lines.push(indentCustomTechInner(effects.join("\n"), 3));
+  lines.push(`\t\t</effects>`);
+  lines.push(`\t</tech>`);
+  return removeBlankXmlLines(lines.join("\n"));
+}
+
+function customMinorAgeTechsXml(config) {
+  if (config?.minorGodCustomization?.mode !== "custom") return "";
+  return customMinorAllCards(config).map((card) => buildCustomMinorAgeTechXmlForCard(config, card)).filter(Boolean).join("\n");
+}
+
+function customMinorAgeTechStringMods(config) {
+  if (config?.minorGodCustomization?.mode !== "custom") return "";
+  const rows = [];
+  const seen = new Set();
+  for (const card of customMinorAllCards(config)) {
+    if (!card.name) continue;
+    const base = customMinorAgeTechStringBase(card);
+    if (seen.has(base)) continue;
+    seen.add(base);
+    const ageLabel = card.age.replace("Age", " Age");
+    const quality = String(card.quality || "").trim();
+    const name = String(card.name || "Custom Minor God").trim();
+    const through = quality ? `through the ${quality} of ${name}` : `through ${name}`;
+    rows.push(`ID = "${base}_NAME"   ;   Str = "${escapeStringMod(name)}"`);
+    rows.push(`ID = "${base}_LR"   ;   Str = "${escapeStringMod(`Advance to the ${ageLabel} ${through}.`)}"`);
+    rows.push(`ID = "${base}_SELF"   ;   Str = "${escapeStringMod(`You have advanced to the ${ageLabel} ${through}!`)}"`);
+    rows.push(`ID = "${base}_OTHER"   ;   Str = "${escapeStringMod(`{0} advances to the ${ageLabel} ${through}.`)}"`);
+  }
+  return rows.join("\n");
+}
+
+function minorCustomizationMode() {
+  return els.minorModeCustom?.classList.contains("active") ? "custom" : "original";
+}
+
+function setMinorCustomizationMode(mode) {
+  const custom = mode === "custom";
+  if (els.minorModeOriginal) {
+    els.minorModeOriginal.classList.toggle("active", !custom);
+    els.minorModeOriginal.classList.toggle("secondary", custom);
+    els.minorModeOriginal.setAttribute("aria-selected", custom ? "false" : "true");
+  }
+  if (els.minorModeCustom) {
+    els.minorModeCustom.classList.toggle("active", custom);
+    els.minorModeCustom.classList.toggle("secondary", !custom);
+    els.minorModeCustom.setAttribute("aria-selected", custom ? "true" : "false");
+  }
+  if (els.minorOriginalPanel) els.minorOriginalPanel.hidden = custom;
+  if (els.minorCustomPanel) els.minorCustomPanel.hidden = !custom;
+  refreshMinorOptionDetails();
+  updatePreview();
+}
+
+function originalMinorRestrictToPantheon() {
+  // Original minor-god mode is intentionally locked to the selected pantheon.
+  // The old cross-pantheon checkbox remains hidden for backward preset compatibility.
+  return true;
+}
+
 function makeMinorPicker(age, slot) {
-  const label = document.createElement("label");
-  label.textContent = `${age.replace("Age", " Age")} choice ${slot}`;
+  const wrap = document.createElement("div");
+  wrap.className = "minor-original-choice";
+  const heading = document.createElement("div");
+  heading.className = "minor-choice-heading";
+  heading.textContent = `${age.replace("Age", " Age")} choice ${slot}`;
   const select = document.createElement("select");
   select.id = `${age}_${slot}`;
   select.dataset.age = age;
   select.dataset.slot = String(slot);
-  label.appendChild(select);
-  return label;
+  wrap.append(heading, select);
+  const details = document.createElement("div");
+  details.id = `${age}_${slot}_details`;
+  details.className = "minor-choice-details";
+  wrap.appendChild(details);
+  return wrap;
 }
 
 function initMinorPickers() {
-  els.minorPickers.innerHTML = "";
+  const originalRoot = els.minorOriginalPickers || els.minorPickers;
+  if (!originalRoot) return;
+  originalRoot.innerHTML = "";
   for (const age of AGES) {
     const card = document.createElement("div");
-    card.className = "age-card";
+    card.className = "age-card minor-age-card";
     const h = document.createElement("h3");
     h.textContent = age.replace("Age", " Age");
     card.appendChild(h);
     card.appendChild(makeMinorPicker(age, 1));
     card.appendChild(makeMinorPicker(age, 2));
-    els.minorPickers.appendChild(card);
+    originalRoot.appendChild(card);
   }
-  refreshMinorOptions();
+  initCustomMinorPickers(false);
+  refreshMinorOptions(false);
+}
+
+function minorSelectOptionLabel(god, mixedPantheons = false) {
+  const name = minorLabel(god);
+  return mixedPantheons ? `${god.culture} - ${name}` : name;
 }
 
 function refreshMinorOptions(keep = true) {
   const base = selectedBaseMajor();
+  const restrict = originalMinorRestrictToPantheon();
   const current = keep ? collectMinorSelectionLoose() : {};
   for (const age of AGES) {
     const options = window.AOM_DATA.minors.filter((g) => {
       if (isExcludedMinorGod(g)) return false;
       if (g.age !== age) return false;
-      return g.culture === base.culture;
+      return !restrict || g.culture === base.culture;
+    }).sort((a, b) => {
+      if (restrict) return minorLabel(a).localeCompare(minorLabel(b));
+      return `${a.culture} ${minorLabel(a)}`.localeCompare(`${b.culture} ${minorLabel(b)}`);
     });
+    const defaultOptions = options.filter((g) => g.culture === base.culture);
     for (const slot of [1, 2]) {
       const select = $(`${age}_${slot}`);
+      if (!select) continue;
       select.innerHTML = "";
       for (const god of options) {
         const opt = document.createElement("option");
         opt.value = canonicalMinorTech(god);
-        opt.textContent = minorLabel(god);
+        opt.textContent = minorSelectOptionLabel(god, !restrict);
         select.appendChild(opt);
       }
       const previous = current[age]?.[slot - 1];
       if (previous && options.some((g) => canonicalMinorTech(g) === canonicalMinorTech(previous))) select.value = canonicalMinorTech(previous);
+      else if (defaultOptions[slot - 1]) select.value = canonicalMinorTech(defaultOptions[slot - 1]);
       else if (options[slot - 1]) select.value = canonicalMinorTech(options[slot - 1]);
       else if (options[0]) select.value = canonicalMinorTech(options[0]);
     }
   }
   enforceMinorDifference();
+  refreshCustomMinorOptions(keep);
+  refreshMinorOptionDetails();
   updatePreview();
 }
 
@@ -3474,6 +6495,7 @@ function pickFirstAvailable(select, blockedValue) {
 }
 
 function enforceMinorDifference(changedSelect) {
+  if (changedSelect && !changedSelect.dataset?.slot) return;
   const ages = changedSelect?.dataset?.age ? [changedSelect.dataset.age] : AGES;
   for (const age of ages) {
     const first = $(`${age}_1`);
@@ -3485,6 +6507,7 @@ function enforceMinorDifference(changedSelect) {
     }
     setMinorOptionsDisabled(age);
   }
+  refreshMinorOptionDetails();
 }
 
 function collectMinorSelectionLoose() {
@@ -3497,6 +6520,1064 @@ function collectMinorSelectionLoose() {
     }
   }
   return result;
+}
+
+function minorCustomizationEntries(kind, age = "") {
+  const list = minorCustomizationSourceData()[kind] || [];
+  return age ? list.filter((entry) => entry.age === age) : list;
+}
+
+function minorCustomizationValue(entry) {
+  return entry?.internalName || "";
+}
+
+function uniqueMinorCustomizationEntries(entries) {
+  const seen = new Set();
+  const unique = [];
+  for (const entry of entries || []) {
+    const value = minorCustomizationValue(entry);
+    if (!value) continue;
+    if (seen.has(value)) continue;
+    seen.add(value);
+    unique.push(entry);
+  }
+  return unique;
+}
+
+function customMinorSelectedValuesFromState(kind, current, except = {}) {
+  const selected = new Set();
+  const custom = current?.custom || collectMinorCustomization().custom || {};
+  for (const age of AGES) {
+    const entries = custom[age] || [];
+    entries.forEach((entry, slotIndex) => {
+      if (except.age === age && except.slot === slotIndex + 1) return;
+      let value = "";
+      if (kind === "godPowers") value = entry.godPower || "";
+      else if (kind === "mythUnits") value = entry.mythUnit || "";
+      if (value) selected.add(value);
+    });
+  }
+  return selected;
+}
+
+function minorCustomizationEntryLabel(entry) {
+  if (!entry) return "—";
+  return `${entry.pantheon} - ${techBrowserDisplayName(entry.internalName, entry.displayName)}`;
+}
+
+function minorCustomizationSearchText(entry) {
+  if (!entry) return "";
+  return [
+    entry.pantheon,
+    techBrowserDisplayName(entry.internalName, entry.displayName),
+    entry.displayName || "",
+    entry.internalName || "",
+    entry.description || "",
+  ].join("\n");
+}
+
+function customMinorCardUsesMythUnit(card, unitName) {
+  return minorCustomizationIdentifier(card?.mythUnit) === minorCustomizationIdentifier(unitName);
+}
+
+function customMinorHasBushidoBonus(config = null) {
+  if (config) return hasSelectedBushidoBonus(config);
+  return hasSelectedBushidoBonus({ baseCulture: selectedPantheon(), bonuses: selectedBonusIds() });
+}
+
+function reviewedMinorTechDescriptionConditionMatches(condition, baseName, card = {}, config = null) {
+  const cond = String(condition || "Default").trim();
+  if (!cond || cond.toLowerCase() === "default") return true;
+  const pantheon = config?.baseCulture || selectedPantheon();
+  const greekUniqueUnit = config?.greekUniqueUnit || selectedGreekUniqueUnit?.() || "";
+  if (/selected myth unit is not\s+(.+)$/i.test(cond)) {
+    const unit = cond.match(/selected myth unit is not\s+(.+)$/i)[1].trim();
+    return !customMinorCardUsesMythUnit(card, unit);
+  }
+  if (/selected myth unit is\s+(.+)$/i.test(cond)) {
+    const unit = cond.match(/selected myth unit is\s+(.+)$/i)[1].trim();
+    return customMinorCardUsesMythUnit(card, unit);
+  }
+  if (/custom (?:major )?pantheon is not\s+(.+)$/i.test(cond)) {
+    const culture = cond.match(/custom (?:major )?pantheon is not\s+(.+)$/i)[1].trim();
+    return pantheon !== culture;
+  }
+  if (/custom (?:major )?pantheon is\s+(.+)$/i.test(cond)) {
+    const culture = cond.match(/custom (?:major )?pantheon is\s+(.+)$/i)[1].trim();
+    return pantheon === culture;
+  }
+  if (/Greek unique unit\s*=\s*(.+)$/i.test(cond)) {
+    const unit = cond.match(/Greek unique unit\s*=\s*(.+)$/i)[1].trim();
+    return greekUniqueUnit === unit;
+  }
+  if (/no Bushidō major-god bonus/i.test(cond)) return !customMinorHasBushidoBonus(config);
+  if (/Bushidō major-god bonus is selected/i.test(cond)) return customMinorHasBushidoBonus(config);
+  return false;
+}
+
+function reviewedMinorTechDescriptionTemplate(baseName, card = {}, config = null) {
+  const rows = REVIEWED_MINOR_TECH_DESCRIPTIONS[String(baseName || "")] || [];
+  const specific = rows.find((row) => String(row.condition || "").toLowerCase() !== "default" && reviewedMinorTechDescriptionConditionMatches(row.condition, baseName, card, config));
+  if (specific?.text) return specific.text;
+  const fallback = rows.find((row) => String(row.condition || "").toLowerCase() === "default");
+  return fallback?.text || "";
+}
+
+function fallbackAdjustedMinorTechDescriptionText(baseName, description, card = {}, config = null) {
+  let text = String(description || "");
+  switch (baseName) {
+    case "SpiritedCharge":
+      if (!customMinorCardUsesMythUnit(card, "Centaur")) {
+        text = text.replace(/ and Centaurs\.?/i, ".");
+      }
+      break;
+    case "ChthonicRites":
+      if ((config?.baseCulture || selectedPantheon()) !== "Greek") {
+        text = text.replace(/ Hydrai and Scyllai /i, " Hydrai ");
+      }
+      break;
+    case "CrimsonLinen":
+      if (!customMinorCardUsesMythUnit(card, "Scarab")) {
+        text = text.replace(/ – especially Scarabs –/i, "");
+      }
+      break;
+    case "PoseidonsSecret":
+      if ((config?.baseCulture || selectedPantheon()) !== "Atlantean") {
+        text = text.replace(/, and reducing the cost of promoting them to heroes/i, "");
+      }
+      break;
+    case "ThunderingHooves":
+      if (!customMinorCardUsesMythUnit(card, "Valkyrie")) {
+        text = text.replace(/cavalry and Valkyrie speed and hitpoints/i, "cavalry speed and hitpoints");
+      }
+      break;
+    case "VolcanicForge":
+      if (!customMinorCardUsesMythUnit(card, "Automaton")) {
+        text = text.replace(/your Automatons, soldiers, heroes, and ships/i, "your soldiers, heroes, and ships");
+      }
+      break;
+    case "Katagi":
+      if (!customMinorHasBushidoBonus(config)) {
+        text = text.replace(/ and causes fallen infantry to contribute to your Bushidō/i, "");
+      }
+      break;
+    default:
+      break;
+  }
+  return text;
+}
+
+function adjustedMinorTechDescriptionText(baseName, description, card = {}, config = null) {
+  const reviewed = reviewedMinorTechDescriptionTemplate(baseName, card, config);
+  const text = reviewed || fallbackAdjustedMinorTechDescriptionText(baseName, description, card, config);
+  return String(text || "").replace(/\s+\./g, ".").replace(/\s{2,}/g, " ").trim();
+}
+
+function customMinorTechnologyBrowserDescription(entry, card = {}, config = null) {
+  if (!entry) return "";
+  const customName = String(card?.name || "").trim() || "Custom minor god";
+  if (isArgivePatronageMinorTech(entry.internalName)) {
+    const unit = argivePatronageUniqueUnitDisplayName({ greekUniqueUnit: config?.greekUniqueUnit || selectedGreekUniqueUnit() });
+    return `${customName}’s favor causes your Fortresses to periodically spawn ${unit} for free.`;
+  }
+  let text = adjustedMinorTechDescriptionText(entry.internalName, entry.description || "", card, config);
+  const sourceMinor = entry.minorGod || "";
+  if (sourceMinor) text = text.replace(new RegExp(escapeRegExp(sourceMinor), "g"), customName);
+  return finalTechDescriptionText(text, { customMinorName: customName, config });
+}
+
+function removeXmlEffectBlocksContaining(xml, shouldRemove) {
+  return String(xml || "").replace(/\n?\t*<effect\b[\s\S]*?<\/effect>/g, (block) => shouldRemove(block) ? "" : block);
+}
+
+
+const SUN_RAY_AFFECTED_UNITS_BY_PANTHEON = Object.freeze({
+  Egyptian: ["Slinger", "ChariotArcher", "Priest", "Pharaoh", "PharaohNewKingdom"],
+  Norse: ["ThrowingAxeman", "Godi"],
+  Atlantean: ["Turma", "Cheiroballista", "Arcus", "TurmaHero", "CheiroballistaHero", "ArcusHero"],
+  Chinese: ["FireArcher", "WuzuJavelineer", "ChuKoNu", "Pioneer"],
+  Japanese: ["YumiHorseArcher"],
+  Aztec: ["QuimichinSpy"],
+});
+
+const SUN_RAY_AFFECTED_MYTH_UNITS = Object.freeze(["Troll", "Draugr", "Satyr", "StymphalianBird"]);
+
+const FATED_ARROWS_CHAIN_UNITS_BY_PANTHEON = Object.freeze({
+  Japanese: ["YumiArcher", "YumiHorseArcher", "Bushi"],
+  Aztec: ["QuimichinSpy", "TequihuaArcher", "EagleWarrior"],
+});
+
+const FATED_ARROWS_CHAIN_MYTH_UNITS = Object.freeze(["Centaur", "Draugr", "Satyr"]);
+
+function selectedMinorGodMythUnits(config = {}) {
+  const units = new Set();
+  if (config?.minorGodCustomization?.mode === "custom") {
+    for (const card of customMinorAllCards(config)) {
+      if (card?.mythUnit) units.add(String(card.mythUnit));
+    }
+  } else {
+    const mythUnitByAgeTech = window.AOM_MINOR_GOD_MYTH_UNITS || window.AOM_MINOR_GOD_DATA?.mythUnitsByAgeTech || {};
+    for (const ageTech of Object.values(config?.minorGods || {}).flat()) {
+      const mythUnit = mythUnitByAgeTech?.[ageTech];
+      if (mythUnit) units.add(String(mythUnit));
+    }
+  }
+  return units;
+}
+
+function sunRayAffectedUnitTypeEffects(pantheon, config = {}) {
+  const units = new Set(SUN_RAY_AFFECTED_UNITS_BY_PANTHEON[pantheon] || []);
+  const selectedMythUnits = selectedMinorGodMythUnits(config);
+  for (const mythUnit of SUN_RAY_AFFECTED_MYTH_UNITS) {
+    if (selectedMythUnits.has(mythUnit)) units.add(mythUnit);
+  }
+  return [...units].map((unit) => `\n\t\t\t<effect type="Data" amount="1.00" subtype="SetUnitType" unittype="LogicalTypeAffectedBySunRay" relativity="Absolute">\n\t\t\t\t<target type="ProtoUnit">${escapeXml(unit)}</target>\n\t\t\t</effect>`).join("");
+}
+
+function fatedArrowsSelectedMythUnits(config = {}) {
+  const selectedMythUnits = selectedMinorGodMythUnits(config);
+  return FATED_ARROWS_CHAIN_MYTH_UNITS.filter((unit) => selectedMythUnits.has(unit));
+}
+
+function fatedArrowsChainProtoUnits(config = {}) {
+  if (!selectedMinorHasBaseTech(config, "FatedArrows")) return [];
+  const units = new Set(FATED_ARROWS_CHAIN_UNITS_BY_PANTHEON[config?.baseCulture || ""] || []);
+  for (const mythUnit of fatedArrowsSelectedMythUnits(config)) units.add(mythUnit);
+  return [...units];
+}
+
+function fatedArrowsSelectedMythUnitEffects(config = {}) {
+  return fatedArrowsSelectedMythUnits(config)
+    .map((unit) => `\n\t\t\t<effect type="Data" amount="2.00" subtype="NumberBounces" action="RangedAttack" relativity="Absolute">\n\t\t\t\t<target type="ProtoUnit">${escapeXml(unit)}</target>\n\t\t\t</effect>`)
+    .join("");
+}
+
+
+const CUSTOM_MINOR_COUNTER_CAVALRY_TARGETS = Object.freeze({
+  Greek: ["Hoplite"],
+  Egyptian: ["Spearman"],
+  Norse: ["Hirdman"],
+  Atlantean: ["Katapeltes", "KatapeltesHero"],
+  Chinese: ["GeHalberdier"],
+  Japanese: ["YariSpearman"],
+  Aztec: ["TlamanihSpearman"],
+});
+
+const CUSTOM_MINOR_FORTRESS_TARGETS = Object.freeze({
+  Greek: "Fortress",
+  Egyptian: "MigdolStronghold",
+  Norse: "HillFort",
+  Atlantean: "Palace",
+  Chinese: "Baolei",
+  Japanese: "Castle",
+  Aztec: "GreatTemple",
+});
+
+function customMinorEffectsXml(body) {
+  const lines = Array.isArray(body) ? body.filter(Boolean).join("\n") : String(body || "");
+  return `<effects>\n${lines}\n\t\t</effects>`;
+}
+
+function customMinorDataEffect(attrs, target) {
+  return `\t\t\t<effect type="Data" ${attrs}>\n\t\t\t\t<target type="ProtoUnit">${escapeXml(target)}</target>\n\t\t\t</effect>`;
+}
+
+function customMinorReplaceProtoUnitTargets(xml, targetMap) {
+  let out = String(xml || "");
+  for (const [from, to] of Object.entries(targetMap || {})) {
+    const pattern = new RegExp(`(<target\\s+type="ProtoUnit"[^>]*>)${escapeRegExp(from)}(<\\/target>)`, "g");
+    out = out.replace(pattern, `$1${escapeXml(to)}$2`);
+  }
+  return out;
+}
+
+function customMinorCounterCavalryTargets(config) {
+  return CUSTOM_MINOR_COUNTER_CAVALRY_TARGETS[config?.baseCulture || ""] || CUSTOM_MINOR_COUNTER_CAVALRY_TARGETS.Greek;
+}
+
+function customMinorCounterCavalryEffectsXml(baseName, config) {
+  const targets = customMinorCounterCavalryTargets(config);
+  const effects = [];
+  const addForTargets = (builder) => targets.forEach((target) => effects.push(builder(target)));
+  switch (baseName) {
+    case "SpearOfHorus":
+      addForTargets((target) => customMinorDataEffect(`amount="1.10" subtype="Damage" action="HandAttack" relativity="BasePercent"`, target));
+      addForTargets((target) => customMinorDataEffect(`action="HandAttack" amount="1.00" subtype="Damagebonus" unittype="AbstractCavalry" relativity="Absolute"`, target));
+      break;
+    case "SwineArray":
+      addForTargets((target) => customMinorDataEffect(`amount="1.10" subtype="Damage" action="HandAttack" relativity="BasePercent"`, target));
+      addForTargets((target) => customMinorDataEffect(`action="HandAttack" amount="2.00" subtype="Damagebonus" unittype="AbstractCavalry" relativity="Absolute"`, target));
+      break;
+    case "MasterOfWeaponry":
+      addForTargets((target) => customMinorDataEffect(`action="HandAttack" amount="1.00" subtype="MaximumRange" relativity="Absolute"`, target));
+      addForTargets((target) => customMinorDataEffect(`action="HandAttack" amount="0.90" subtype="RateOfFire" relativity="Percent"`, target));
+      break;
+    case "Sojutsu":
+      addForTargets((target) => customMinorDataEffect(`action="HandAttack" amount="0.85" subtype="RateOfFire" relativity="Percent"`, target));
+      addForTargets((target) => customMinorDataEffect(`amount="1.15" subtype="MaximumVelocity" relativity="BasePercent"`, target));
+      break;
+    case "Sarissa":
+      addForTargets((target) => customMinorDataEffect(`action="HandAttack" amount="0.5" subtype="MaximumRange" relativity="Absolute"`, target));
+      addForTargets((target) => customMinorDataEffect(`amount="1.1" subtype="Damage" action="HandAttack" damagetype="Hack" relativity="BasePercent"`, target));
+      break;
+    case "LeatherFrameShield":
+      addForTargets((target) => customMinorDataEffect(`amount="-0.15" subtype="ArmorVulnerability" armortype="Pierce" relativity="Percent"`, target));
+      break;
+    case "WeightlessMace":
+      addForTargets((target) => customMinorDataEffect(`amount="1.10" subtype="MaximumVelocity" relativity="BasePercent"`, target));
+      addForTargets((target) => customMinorDataEffect(`amount="1.15" subtype="Damage" action="HandAttack" relativity="BasePercent"`, target));
+      break;
+    default:
+      return "";
+  }
+  return customMinorEffectsXml(effects);
+}
+
+function customMinorEveningStarEffectsXml() {
+  return customMinorEffectsXml(customMinorDataEffect(`action="EveningStarSoulGuide" amount="1.00" subtype="ActionEnable" relativity="Absolute" tooltipid="STR_TECH_EVENING_STAR_OVERRIDE"`, "AbstractFortress"));
+}
+
+function customMinorSlashAndBurnEffectsXml(config) {
+  const costResource = config?.baseCulture === "Egyptian" ? "Gold" : "Wood";
+  return customMinorEffectsXml([
+    customMinorDataEffect(`action="Gather" amount="1.15" subtype="WorkRate" unittype="AbstractFarm" relativity="BasePercent"`, "EconomicUpgraded"),
+    customMinorDataEffect(`amount="0.20" subtype="Cost" resource="${costResource}" relativity="Percent"`, "Farm"),
+  ]);
+}
+
+function customMinorForgeOfOlympusEffectsXml(config) {
+  const target = selectedHasThorDwarvenArmoryBonus(config) ? "DwarvenArmory" : "Armory";
+  return customMinorEffectsXml([
+    customMinorDataEffect(`amount="0.25" subtype="CostBuildingTechs" resource="Food" relativity="Percent"`, target),
+    customMinorDataEffect(`amount="0.25" subtype="CostBuildingTechs" resource="Wood" relativity="Percent"`, target),
+    customMinorDataEffect(`amount="0.25" subtype="CostBuildingTechs" resource="Gold" relativity="Percent"`, target),
+    customMinorDataEffect(`amount="1.5" subtype="ResearchRate" relativity="BasePercent"`, target),
+  ]);
+}
+
+function customMinorCoatepecShrinesEffectsXml() {
+  return customMinorEffectsXml([
+    customMinorDataEffect(`amount="2.5" subtype="UnitRegenRate" relativity="Absolute"`, "Building"),
+    `\t\t\t<effect type="Data" amount="0.00" subtype="RepairCostFactor" relativity="BasePercent" tooltipid="STR_TECH_COATEPEC_SHRINES_OVERRIDE">\n\t\t\t\t<target type="Player"></target>\n\t\t\t</effect>`,
+    customMinorDataEffect(`amount="0.00" subtype="ProtoUnitFlag" flag="DynamicUpdate" relativity="Absolute"`, "Building"),
+  ]);
+}
+
+function customMinorFourJarsEffectsXml() {
+  return customMinorEffectsXml([
+    customMinorDataEffect(`amount="0.80" subtype="cost" resource="Wood" relativity="BasePercent"`, "AbstractFortress"),
+    customMinorDataEffect(`amount="0.80" subtype="cost" resource="Gold" relativity="BasePercent"`, "AbstractFortress"),
+    customMinorDataEffect(`amount="1.00" subtype="PopulationCapAddition" relativity="Absolute"`, "AbstractFortress"),
+  ]);
+}
+
+function customMinorCoyolxauhquiStoneEffectsXml(config) {
+  const fortress = CUSTOM_MINOR_FORTRESS_TARGETS[config?.baseCulture || ""] || "GreatTemple";
+  const effects = [];
+  for (const resource of ["Food", "Wood", "Gold"]) effects.push(customMinorDataEffect(`amount="0.25" subtype="CostBuildingTechs" resource="${resource}" relativity="Percent"`, "AbstractTemple"));
+  for (const resource of ["Food", "Wood", "Gold"]) effects.push(customMinorDataEffect(`amount="0.25" subtype="CostBuildingTechs" resource="${resource}" relativity="Percent"`, fortress));
+  return customMinorEffectsXml(effects);
+}
+
+function customMinorPetrificationEffectsXml(config) {
+  const effects = [];
+  if (config?.baseCulture !== "Atlantean") {
+    effects.push(customMinorDataEffect(`protoaction="PetrificationBonus" amount="1.00" subtype="ProtoActionAdd" unittype="FireSiphon" relativity="Assign" hidetooltip=""`, "AbstractSiegeWeapon"));
+    effects.push(customMinorDataEffect(`protoaction="PetrificationBonus" amount="1.00" subtype="ProtoActionAdd" unittype="SiegeBireme" relativity="Assign" hidetooltip=""`, "AbstractSiegeShip"));
+  }
+  effects.push(customMinorDataEffect(`amount="-0.20" subtype="ArmorVulnerability" armortype="Hack" relativity="Percent"`, "AbstractSiegeWeapon"));
+  effects.push(customMinorDataEffect(`amount="-0.20" subtype="ArmorVulnerability" armortype="Hack" relativity="Percent"`, "AbstractSiegeShip"));
+  effects.push(customMinorDataEffect(`action="PetrificationBonus" amount="1.00" subtype="ActionEnable" relativity="Absolute" tooltipid="STR_TECH_PETRIFICATION_OVERRIDE"`, "AbstractSiegeWeapon"));
+  effects.push(customMinorDataEffect(`action="PetrificationBonus" amount="1.00" subtype="ActionEnable" relativity="Absolute" tooltipid="STR_TECH_PETRIFICATION_OVERRIDE2"`, "AbstractSiegeShip"));
+  return customMinorEffectsXml(effects);
+}
+
+function customMinorSpoilsOfWarTechEffectsXml() {
+  return customMinorEffectsXml([
+    `\t\t\t<effect type="Data" subtype="BountyResourceEarningMultiplier" condition="Destroy" unittype="Building" resourcetype="Wood" amount="100000.0" relativity="Absolute">\n\t\t\t\t<target type="Player"></target>\n\t\t\t</effect>`,
+    `\t\t\t<effect type="Data" subtype="BountyResourceEarningMultiplier" condition="Destroy" unittype="Building" resourcetype="Gold" amount="100000.0" relativity="Absolute">\n\t\t\t\t<target type="Player"></target>\n\t\t\t</effect>`,
+    `\t\t\t<effect type="Data" subtype="BountyResourceEarningMultiplier" condition="Destroy" unittype="Building" resourcetype="Food" amount="100000.0" relativity="Absolute">\n\t\t\t\t<target type="Player"></target>\n\t\t\t</effect>`,
+  ]);
+}
+
+function customMinorXuanyuansBloodlineEffectsXml(config) {
+  if (config?.baseCulture === "Chinese") {
+    return customMinorEffectsXml(customMinorDataEffect(`action="SelfDestructAttack" amount="1.00" subtype="ActionEnable" relativity="Absolute"`, "AbstractInfantry"));
+  }
+  return customMinorEffectsXml([
+    customMinorDataEffect(`protoaction="SelfDestructAttack" amount="1.00" subtype="ProtoActionAdd" unittype="DaoSwordsman" relativity="Assign"`, "AbstractInfantry"),
+    customMinorDataEffect(`protoaction="SelfDestructAttack" amount="1.00" subtype="SelfDestructProtoAction" relativity="Absolute"`, "AbstractInfantry"),
+    customMinorDataEffect(`action="SelfDestructAttack" amount="1.00" subtype="ActionEnable" relativity="Absolute"`, "AbstractInfantry"),
+  ]);
+}
+
+function customMinorGoldenKiteEffectsXml(config, baseXml) {
+  if (config?.baseCulture === "Japanese") return baseXml;
+  const effects = [
+    customMinorDataEffect(`action="RangedAttack" amount="1.20" subtype="Damagebonus" unittype="MythUnit" relativity="BasePercent"`, "AbstractArcher"),
+    customMinorDataEffect(`action="RangedAttackFlying" amount="1.20" subtype="Damagebonus" unittype="MythUnit" relativity="BasePercent"`, "AbstractArcher"),
+  ];
+  const addHeroAction = (action) => effects.push(customMinorDataEffect(`action="${action}" amount="1.20" subtype="Damagebonus" unittype="MythUnit" relativity="BasePercent"`, "Hero"));
+  switch (config?.baseCulture) {
+    case "Greek":
+      ["RangedAttack", "RangedAttackFlying", "ChargedHandAttack", "HandAttack", "JumpAttack", "Gore"].forEach(addHeroAction);
+      break;
+    case "Egyptian":
+      ["RangedAttackMyth", "HandAttack"].forEach(addHeroAction);
+      break;
+    case "Chinese":
+      effects.push(customMinorDataEffect(`action="RangedAttack" amount="1.20" subtype="Damagebonus" unittype="MythUnit" relativity="BasePercent"`, "Sage"));
+      effects.push(customMinorDataEffect(`action="RangedAttack" amount="1.20" subtype="Damagebonus" unittype="MythUnit" relativity="BasePercent"`, "JiangZiYa"));
+      addHeroAction("HandAttack");
+      break;
+    case "Aztec":
+      ["HandAttack", "RangedAttack", "JumpAttack", "LightningAttack"].forEach(addHeroAction);
+      break;
+    case "Norse":
+    case "Atlantean":
+    default:
+      addHeroAction("HandAttack");
+      break;
+  }
+  effects.push(customMinorDataEffect(`amount="1.15" subtype="Damage" allactions="1" relativity="BasePercent"`, "AbstractArcher"));
+  effects.push(customMinorDataEffect(`amount="1.15" subtype="Damage" allactions="1" relativity="BasePercent"`, "Hero"));
+  return customMinorEffectsXml(effects);
+}
+
+function customMinorAdjustedThurisazRuneEffectsXml(xml, config) {
+  let out = String(xml || "");
+  if (config?.godPower !== "Nidhogg") {
+    out = removeXmlEffectBlocksContaining(out, (block) => /subtype="UnitRegenRate"/i.test(block) && /<target[^>]*>Nidhogg<\/target>/i.test(block));
+  }
+  if (config?.godPower === "YinglongsWrath" && !/<target[^>]*>YingLong<\/target>/i.test(out)) {
+    const yingLongEffect = `\n\t\t\t<effect type="Data" amount="-0.5" subtype="UnitRegenRate" relativity="Absolute" hidetooltip="">\n\t\t\t\t<target type="ProtoUnit">YingLong</target>\n\t\t\t</effect>`;
+    out = out.replace(/(\n?\t*<\/effects>)/i, `${yingLongEffect}$1`);
+  }
+  return out;
+}
+
+function adjustedCustomMinorTechEffectsXml(definition, record) {
+  let xml = String(definition?.effectsXml || "");
+  const baseName = record?.baseName || definition?.name || "";
+  switch (baseName) {
+    case "SpiritedCharge":
+      if (!customMinorCardUsesMythUnit(record?.card, "Centaur")) {
+        xml = removeXmlEffectBlocksContaining(xml, (block) => /<target[^>]*>Centaur<\/target>/i.test(block));
+      }
+      break;
+    case "ChthonicRites":
+      if (record?.config?.baseCulture !== "Greek") {
+        xml = removeXmlEffectBlocksContaining(xml, (block) => /<target[^>]*>Scylla<\/target>/i.test(block));
+      }
+      break;
+    case "CrimsonLinen":
+      if (!customMinorCardUsesMythUnit(record?.card, "Scarab")) {
+        xml = removeXmlEffectBlocksContaining(xml, (block) => /<target[^>]*>Scarab<\/target>/i.test(block));
+      }
+      break;
+    case "PoseidonsSecret":
+      if (record?.config?.baseCulture !== "Atlantean") {
+        xml = removeXmlEffectBlocksContaining(xml, (block) => /<target[^>]*type="TechType"[^>]*>HeroCavalry<\/target>/i.test(block));
+      }
+      break;
+    case "ThunderingHooves":
+      if (!customMinorCardUsesMythUnit(record?.card, "Valkyrie")) {
+        xml = removeXmlEffectBlocksContaining(xml, (block) => /<target[^>]*>Valkyrie<\/target>/i.test(block));
+      }
+      break;
+    case "Sessrumnir":
+      if (record?.config?.baseCulture !== "Norse") {
+        xml = removeXmlEffectBlocksContaining(xml, (block) => /subtype="Enable"/i.test(block) && /<target[^>]*>Godi<\/target>/i.test(block));
+      }
+      break;
+    case "VolcanicForge":
+      if (!customMinorCardUsesMythUnit(record?.card, "Automaton")) {
+        xml = removeXmlEffectBlocksContaining(xml, (block) => /<target[^>]*>Automaton<\/target>/i.test(block));
+      }
+      break;
+    case "Katagi":
+      if (!customMinorHasBushidoBonus(record?.config)) {
+        xml = removeXmlEffectBlocksContaining(xml, (block) => /subtype="OnDeathCombatXP"/i.test(block));
+      }
+      break;
+    case "HymnOfTheWildwood":
+      if (record?.config?.baseCulture !== "Greek") {
+        xml = `<effects>
+			<effect type="Data" protoaction="AreaHealHymnOfTheWildwood" amount="1.00" subtype="ProtoActionAdd" unittype="AreaHealHymnOfTheWildwoodContainer" relativity="Assign" tooltipid="STR_TECH_HYMN_OF_THE_WILDWOOD_OVERRIDE">
+				<target type="ProtoUnit">Hero</target>
+			</effect>
+		</effects>`;
+      }
+      break;
+    case "GraciousHospitality":
+      if (record?.config?.baseCulture === "Atlantean") {
+        xml = `<effects>
+			<effect type="Data" amount="1.00" subtype="BuildLimit" relativity="Absolute">
+				<target type="ProtoUnit">Manor</target>
+			</effect>
+		</effects>`;
+      }
+      break;
+    case "Shaduf":
+      if (record?.config?.baseCulture !== "Egyptian") {
+        xml = removeXmlEffectBlocksContaining(xml, (block) => /subtype="cost"[^>]*resource="Gold"|resource="Gold"[^>]*subtype="cost"/i.test(block) && /<target[^>]*>Farm<\/target>/i.test(block));
+        const woodCostEffect = `
+			<effect type="Data" amount="0.50" subtype="cost" resource="Wood" relativity="Percent">
+				<target type="ProtoUnit">Farm</target>
+			</effect>`;
+        xml = xml.replace(/(<effects>)/i, `$1${woodCostEffect}`);
+      }
+      break;
+    case "PansPioneers": {
+      const costResource = record?.config?.baseCulture === "Egyptian" ? "Gold" : "Wood";
+      const prosperousSeedsFarmShennongEffect = hasProsperousSeedsGodPower(record?.config)
+        ? `
+			<effect type="Data" amount="0.00" subtype="ProtoUnitFlag" flag="UseStaticFarmingAnims" relativity="Absolute">
+				<target type="ProtoUnit">FarmShennong</target>
+			</effect>`
+        : "";
+      xml = `<effects>${prosperousSeedsFarmShennongEffect}
+			<effect type="Data" amount="0.90" subtype="cost" resource="${costResource}" relativity="BasePercent">
+				<target type="ProtoUnit">Building</target>
+			</effect>
+			<effect type="Data" amount="2" subtype="GathererLimit" relativity="Assign" tooltipid="STR_TECH_PANS_PIONEERS_OVERRIDE">
+				<target type="ProtoUnit">AbstractFarm</target>
+			</effect>
+		</effects>`;
+      break;
+    }
+    case "HarvestOfSouls":
+      if (record?.config?.baseCulture === "Greek") {
+        if (record?.config?.greekUniqueUnit === "Myrmidon") {
+          const myrmidonEffects = `
+			<effect type="Data" protoaction="HarvestofSouls" amount="1.00" subtype="ProtoActionAdd" unittype="Hoplite" relativity="Assign">
+				<target type="ProtoUnit">Myrmidon</target>
+			</effect>
+			<effect type="Data" action="HarvestofSouls" amount="1.00" subtype="ActionEnable" relativity="Absolute" tooltipid="STR_TECH_HARVEST_OF_SOULS_OVERRIDE1">
+				<target type="ProtoUnit">Myrmidon</target>
+			</effect>`;
+          xml = xml.replace(/(<effects>)/i, `$1${myrmidonEffects}`);
+        }
+      } else {
+        xml = `<effects>
+			<effect type="Data" protoaction="HarvestofSouls" amount="1.00" subtype="ProtoActionAdd" unittype="Hoplite" relativity="Assign">
+				<target type="ProtoUnit">AbstractInfantry</target>
+			</effect>
+			<effect type="Data" action="HarvestofSouls" amount="1.00" subtype="ActionEnable" relativity="Absolute" tooltipid="STR_TECH_HARVEST_OF_SOULS_OVERRIDE1">
+				<target type="ProtoUnit">AbstractInfantry</target>
+			</effect>
+		</effects>`;
+      }
+      break;
+    case "FatedArrows": {
+      const mythUnitEffects = fatedArrowsSelectedMythUnitEffects(record?.config || {});
+      if (mythUnitEffects) {
+        for (const unit of fatedArrowsSelectedMythUnits(record?.config || {})) {
+          const existing = new RegExp(`<target[^>]*>${escapeRegExp(unit)}</target>`, "i");
+          if (existing.test(xml)) continue;
+          const effect = `\n\t\t\t<effect type="Data" amount="2.00" subtype="NumberBounces" action="RangedAttack" relativity="Absolute">\n\t\t\t\t<target type="ProtoUnit">${escapeXml(unit)}</target>\n\t\t\t</effect>`;
+          xml = xml.replace(/(\n?\t*<\/effects>)/i, `${effect}$1`);
+        }
+      }
+      break;
+    }
+    case "SunRay": {
+      const unitTypeEffects = sunRayAffectedUnitTypeEffects(record?.config?.baseCulture, record?.config);
+      if (unitTypeEffects) xml = xml.replace(/(<effects>)/i, `$1${unitTypeEffects}`);
+      break;
+    }
+    case "IvoryNetsuke":
+      if (record?.config?.baseCulture === "Norse") {
+        xml = xml
+          .replace(/(unittype="LogicalTypeMythUnitNotTitan"[\s\S]*?amount=")0\.3("|[\s])/i, "$124$2")
+          .replace(/(unittype="LogicalTypeDependentMyth"[\s\S]*?amount=")0\.3("|[\s])/i, "$124$2")
+          .replace(/(unittype="AbstractTitan"[\s\S]*?amount=")0\.03("|[\s])/i, "$12.4$2");
+      }
+      break;
+    case "ShaftsOfPlague":
+      if (!/action="RangedAttackFlying"[^>]*subtype="Damage"|subtype="Damage"[^>]*action="RangedAttackFlying"/i.test(xml)) {
+        const flyingEffect = `
+			<effect type="Data" amount="1.10" subtype="Damage" action="RangedAttackFlying" relativity="BasePercent">
+				<target type="ProtoUnit">AbstractArcher</target>
+			</effect>`;
+        xml = xml.replace(/(\n?\t*<\/effects>)/i, `${flyingEffect}$1`);
+      }
+      break;
+    case "MonstrousRage":
+      if (!/action="BeamAttack"[^>]*subtype="RateOfFire"|subtype="RateOfFire"[^>]*action="BeamAttack"/i.test(xml)) {
+        const beamEffect = `
+			<effect type="Data" action="BeamAttack" amount="0.75" subtype="RateOfFire" relativity="Percent">
+				<target type="ProtoUnit">MythUnit</target>
+			</effect>`;
+        xml = xml.replace(/(\n?\t*<\/effects>)/i, `${beamEffect}$1`);
+      }
+      if (!/action="LightningAttack"[^>]*subtype="RateOfFire"|subtype="RateOfFire"[^>]*action="LightningAttack"/i.test(xml)) {
+        const lightningEffect = `
+			<effect type="Data" action="LightningAttack" amount="0.75" subtype="RateOfFire" relativity="Percent">
+				<target type="ProtoUnit">MythUnit</target>
+			</effect>`;
+        xml = xml.replace(/(\n?\t*<\/effects>)/i, `${lightningEffect}$1`);
+      }
+      break;
+    case "SpearOfHorus":
+    case "SwineArray":
+    case "MasterOfWeaponry":
+    case "Sojutsu":
+    case "Sarissa":
+    case "LeatherFrameShield":
+    case "WeightlessMace":
+      xml = customMinorCounterCavalryEffectsXml(baseName, record?.config || {});
+      break;
+    case "EveningStar":
+      xml = customMinorEveningStarEffectsXml();
+      break;
+    case "SlashAndBurn":
+      xml = customMinorSlashAndBurnEffectsXml(record?.config || {});
+      break;
+    case "ForgeOfOlympus":
+      xml = customMinorForgeOfOlympusEffectsXml(record?.config || {});
+      break;
+    case "CoatepecShrines":
+      xml = customMinorCoatepecShrinesEffectsXml();
+      break;
+    case "FourJars":
+      xml = customMinorFourJarsEffectsXml();
+      break;
+    case "CoyolxauhquiStone":
+      xml = customMinorCoyolxauhquiStoneEffectsXml(record?.config || {});
+      break;
+    case "Petrification":
+      xml = customMinorPetrificationEffectsXml(record?.config || {});
+      break;
+    case "CipactlisScales":
+      xml = customMinorReplaceProtoUnitTargets(xml, { AtlatlSiegeCanoe: "AbstractSiegeShip" });
+      break;
+    case "ShardsOfItztli":
+      xml = customMinorReplaceProtoUnitTargets(xml, { ArrowCanoe: "AbstractArcherShip" });
+      break;
+    case "AdvancedDefenses":
+      xml = customMinorReplaceProtoUnitTargets(xml, { Baolei: "AbstractFortress" });
+      break;
+    case "SpoilsOfWar":
+      xml = customMinorSpoilsOfWarTechEffectsXml();
+      break;
+    case "XuanyuansBloodline":
+      xml = customMinorXuanyuansBloodlineEffectsXml(record?.config || {});
+      break;
+    case "GoldenKite":
+      xml = customMinorGoldenKiteEffectsXml(record?.config || {}, xml);
+      break;
+    case "ThurisazRune":
+      xml = customMinorAdjustedThurisazRuneEffectsXml(xml, record?.config || {});
+      break;
+    default:
+      break;
+  }
+  return xml.replace(/\n{2,}/g, "\n");
+}
+
+function minorTechnologyAvailableForCustomCard(entry, cardState, config = null) {
+  if (!entry?.internalName) return false;
+  const exportConfig = config || { baseCulture: selectedPantheon(), bonuses: selectedBonusIds() };
+  if (entry.internalName === "RingOath" && cardState?.godPower !== "AsgardianBastion") return false;
+  if (entry.internalName === "SerpentSpear" && exportConfig?.baseCulture !== "Egyptian") return false;
+  if (entry.internalName === "AutumnOfAbundance" && minorCustomizationIdentifier(cardState?.mythUnit) !== minorCustomizationIdentifier("PiXiu") && minorCustomizationIdentifier(cardState?.mythUnit) !== minorCustomizationIdentifier("Pixiu")) return false;
+  if (entry.internalName === "EternalHaunting" && minorCustomizationIdentifier(cardState?.mythUnit) !== minorCustomizationIdentifier("Shinigami")) return false;
+  if (entry.internalName === "Abundance") {
+    return exportConfig?.baseCulture !== "Norse" && (exportConfig?.baseCulture === "Chinese" || selectedHasFavoredLandBuildingChainBonus(exportConfig));
+  }
+  if (entry.internalName === "Onmyodo" || entry.internalName === "SeasideInfiltrators") {
+    return exportConfig?.baseCulture === "Japanese";
+  }
+  return true;
+}
+
+function fillMinorCustomizationSelect(select, entries, value = "", options = {}) {
+  if (!select) return;
+  const includeNone = Boolean(options.includeNone);
+  const searchable = Boolean(options.searchable);
+  const hasExplicitValue = arguments.length >= 3;
+  const previous = hasExplicitValue ? (value || "") : (select.value || "");
+  const filterInput = searchable ? ensureSelectFilterInput(select, "minorCustom", options.placeholder || "Type to search...") : null;
+  const rawQuery = searchable ? selectFilterQuery(select) : "";
+  const workingEntries = uniqueMinorCustomizationEntries(entries);
+  const disabledValues = new Set(Array.from(options.disabledValues || []).filter(Boolean));
+  const disabledReason = options.disabledReason || "Already selected by another custom minor god";
+  const filteredEntries = searchable
+    ? workingEntries.filter((entry) => searchMatchesText(minorCustomizationSearchText(entry), rawQuery))
+    : workingEntries;
+
+  select.innerHTML = "";
+  if (includeNone) {
+    const opt = document.createElement("option");
+    opt.value = "";
+    opt.textContent = "None";
+    select.appendChild(opt);
+  }
+  const groups = new Map();
+  for (const entry of filteredEntries) {
+    const label = entry.pantheon || "Other";
+    if (!groups.has(label)) groups.set(label, []);
+    groups.get(label).push(entry);
+  }
+  const suggestions = [];
+  for (const [label, groupEntries] of groups.entries()) {
+    const group = document.createElement("optgroup");
+    group.label = label;
+    for (const entry of groupEntries.sort((a, b) => minorCustomizationEntryLabel(a).localeCompare(minorCustomizationEntryLabel(b)))) {
+      const opt = document.createElement("option");
+      opt.value = minorCustomizationValue(entry);
+      opt.textContent = techBrowserDisplayName(entry.internalName, entry.displayName);
+      opt.dataset.pantheon = entry.pantheon || "";
+      opt.dataset.minorGod = entry.minorGod || "";
+      const disabled = disabledValues.has(opt.value) && opt.value !== previous;
+      if (disabled) {
+        opt.disabled = true;
+        opt.title = disabledReason;
+      }
+      group.appendChild(opt);
+      if (searchable) {
+        suggestions.push({
+          value: opt.value,
+          label: minorCustomizationEntryLabel(entry),
+          description: options.showDescription ? (options.descriptionFormatter ? options.descriptionFormatter(entry) : (entry.description || "")) : "",
+          noTooltip: true,
+          disabled,
+          disabledReason,
+        });
+      }
+    }
+    select.appendChild(group);
+  }
+  const allValues = workingEntries.map(minorCustomizationValue).filter(Boolean);
+  const filteredValues = filteredEntries.map(minorCustomizationValue).filter(Boolean);
+  if (previous && allValues.includes(previous)) select.value = previous;
+  else {
+    const firstEnabledFiltered = filteredEntries.map(minorCustomizationValue).find((entryValue) => entryValue && !disabledValues.has(entryValue));
+    const firstEnabledAny = workingEntries.map(minorCustomizationValue).find((entryValue) => entryValue && !disabledValues.has(entryValue));
+    select.value = includeNone ? "" : (firstEnabledFiltered || firstEnabledAny || "");
+  }
+  if (searchable) {
+    setComboSuggestions(select, suggestions);
+    const selectedEntry = getSelectedMinorCustomizationEntry(options.kind || "", options.age || select.dataset.age || "", select.value) || entries.find((entry) => minorCustomizationValue(entry) === select.value);
+    setComboDisplay(select, selectedEntry ? minorCustomizationEntryLabel(selectedEntry) : (document.activeElement === filterInput ? rawQuery : ""));
+  }
+}
+
+function matchingCustomMinorEntries(kind, age, minorTech) {
+  const canonical = canonicalMinorTech(minorTech);
+  return minorCustomizationEntries(kind, age).filter((entry) => canonicalMinorTech(entry.minorTech || `${entry.age}${entry.minorGod}`) === canonical);
+}
+
+function originalMinorDetails(tech) {
+  const god = getMinorByTech(tech);
+  if (!god) return null;
+  const age = god.age;
+  const canonical = canonicalMinorTech(god);
+  const power = matchingCustomMinorEntries("godPowers", age, canonical)[0] || null;
+  const mythUnits = matchingCustomMinorEntries("mythUnits", age, canonical);
+  const techs = matchingCustomMinorEntries("technologies", age, canonical).filter((entry) => entry.enableStatus !== "active" || entry.displayName);
+  return { god, power, mythUnits, techs };
+}
+
+function minorDetailLine(label, value, className = "") {
+  const line = document.createElement("div");
+  line.className = `minor-detail-line ${className}`.trim();
+  const labelEl = document.createElement("span");
+  labelEl.className = "minor-detail-label";
+  labelEl.textContent = label;
+  const valueEl = document.createElement("span");
+  valueEl.className = "minor-detail-value";
+  valueEl.textContent = value || "—";
+  line.append(labelEl, valueEl);
+  return line;
+}
+
+function renderOriginalMinorDetails(age, slot) {
+  const details = $(`${age}_${slot}_details`);
+  const select = $(`${age}_${slot}`);
+  if (!details || !select) return;
+  details.replaceChildren();
+  const info = originalMinorDetails(select.value);
+  if (!info) return;
+  if (info.power) details.appendChild(minorDetailLine("Power", info.power.displayName));
+  const mythNames = info.mythUnits.map((entry) => entry.displayName).join(", ");
+  details.appendChild(minorDetailLine("Myth unit", mythNames || "None"));
+  const techWrap = document.createElement("div");
+  techWrap.className = "minor-detail-techs";
+  const title = document.createElement("span");
+  title.className = "minor-detail-label";
+  title.textContent = "Techs";
+  techWrap.appendChild(title);
+  const list = document.createElement("ul");
+  for (const tech of info.techs.filter((entry) => entry.displayName).slice(0, 4)) {
+    const li = document.createElement("li");
+    li.textContent = tech.displayName;
+    if (tech.description) li.title = tech.description;
+    list.appendChild(li);
+  }
+  if (!list.children.length) {
+    const li = document.createElement("li");
+    li.textContent = "None";
+    list.appendChild(li);
+  }
+  techWrap.appendChild(list);
+  details.appendChild(techWrap);
+}
+
+function refreshMinorOptionDetails() {
+  for (const age of AGES) for (const slot of [1, 2]) renderOriginalMinorDetails(age, slot);
+  refreshCustomMinorDetails();
+}
+
+function customMinorElementId(age, slot, field) {
+  return `customMinor_${age}_${slot}_${field}`;
+}
+
+function defaultOriginalMinorForSlot(age, slot) {
+  const culture = selectedPantheon();
+  const options = window.AOM_DATA.minors.filter((g) => !isExcludedMinorGod(g) && g.age === age && g.culture === culture);
+  return options[slot - 1] || options[0] || window.AOM_DATA.minors.find((g) => !isExcludedMinorGod(g) && g.age === age) || null;
+}
+
+function createOptionSelect(id, options = {}) {
+  const select = document.createElement("select");
+  select.id = id;
+  if (options.age) select.dataset.age = options.age;
+  if (options.kind) select.dataset.customKind = options.kind;
+  return select;
+}
+
+function createOptionField(labelText, id, options = {}) {
+  const label = document.createElement("label");
+  label.textContent = labelText;
+  const select = createOptionSelect(id, options);
+  label.appendChild(select);
+  return { label, select };
+}
+
+function makeCustomMinorCard(age, slot) {
+  const card = document.createElement("section");
+  card.className = "custom-minor-card";
+  const title = document.createElement("h4");
+  title.textContent = `${age.replace("Age", " Age")} custom choice ${slot}`;
+  card.appendChild(title);
+
+  const nameLabel = document.createElement("label");
+  nameLabel.textContent = "Minor god name";
+  const nameInput = document.createElement("input");
+  nameInput.id = customMinorElementId(age, slot, "name");
+  nameInput.type = "text";
+  nameInput.placeholder = "Minor god name";
+  nameLabel.appendChild(nameInput);
+  card.appendChild(nameLabel);
+
+  const qualityLabel = document.createElement("label");
+  qualityLabel.innerHTML = '<span class="field-heading">Quality <span class="muted">(optional)</span></span>';
+  const qualityInput = document.createElement("input");
+  qualityInput.id = customMinorElementId(age, slot, "quality");
+  qualityInput.type = "text";
+  qualityInput.placeholder = "Example: wisdom";
+  qualityLabel.appendChild(qualityInput);
+  const qualityHint = document.createElement("small");
+  qualityHint.className = "muted field-help";
+  qualityHint.textContent = "Used in age-up messages, e.g. “through the wisdom of Athena”. If empty: “through Athena”.";
+  qualityLabel.appendChild(qualityHint);
+  card.appendChild(qualityLabel);
+
+  const imageRow = document.createElement("div");
+  imageRow.className = "custom-minor-image-row";
+  const portraitLabel = document.createElement("label");
+  portraitLabel.innerHTML = '<span class="field-heading">Portrait <span class="muted">(optional)</span></span>';
+  const portraitInput = document.createElement("input");
+  portraitInput.id = customMinorElementId(age, slot, "portrait");
+  portraitInput.type = "file";
+  portraitInput.accept = ".png,.jpg,.jpeg,image/png,image/jpeg";
+  portraitLabel.appendChild(portraitInput);
+  const iconLabel = document.createElement("label");
+  iconLabel.innerHTML = '<span class="field-heading">Icon <span class="muted">(optional)</span></span>';
+  const iconInput = document.createElement("input");
+  iconInput.id = customMinorElementId(age, slot, "icon");
+  iconInput.type = "file";
+  iconInput.accept = ".png,.jpg,.jpeg,image/png,image/jpeg";
+  iconLabel.appendChild(iconInput);
+  imageRow.appendChild(portraitLabel);
+  imageRow.appendChild(iconLabel);
+  card.appendChild(imageRow);
+
+  const power = createOptionField("God power", customMinorElementId(age, slot, "godPower"), { age, kind: "godPowers" });
+  card.appendChild(power.label);
+  const myth = createOptionField("Myth unit", customMinorElementId(age, slot, "mythUnit"), { age, kind: "mythUnits" });
+  card.appendChild(myth.label);
+
+  const techGroup = document.createElement("div");
+  techGroup.className = "custom-minor-tech-fields";
+  const techHeading = document.createElement("span");
+  techHeading.className = "field-heading custom-minor-tech-heading";
+  techHeading.textContent = "Technologies";
+  techGroup.appendChild(techHeading);
+  for (const index of [1, 2, 3]) {
+    const techSelect = createOptionSelect(customMinorElementId(age, slot, `tech${index}`), {
+      age,
+      kind: "technologies",
+    });
+    techSelect.setAttribute("aria-label", `Technology ${index}`);
+    techGroup.appendChild(techSelect);
+  }
+  card.appendChild(techGroup);
+  return card;
+}
+
+function initCustomMinorPickers(keep = true) {
+  if (!els.minorCustomPickers) return;
+  const current = keep ? collectMinorCustomization() : null;
+  els.minorCustomPickers.innerHTML = "";
+  for (const age of AGES) {
+    const ageCard = document.createElement("section");
+    ageCard.className = "age-card custom-minor-age-card";
+    const h = document.createElement("h3");
+    h.textContent = age.replace("Age", " Age");
+    ageCard.appendChild(h);
+    const grid = document.createElement("div");
+    grid.className = "custom-minor-card-grid";
+    for (const slot of [1, 2]) grid.appendChild(makeCustomMinorCard(age, slot));
+    ageCard.appendChild(grid);
+    els.minorCustomPickers.appendChild(ageCard);
+  }
+  refreshCustomMinorOptions(false, current);
+}
+
+function refreshCustomMinorOptions(keep = true, presetLike = null) {
+  if (!els.minorCustomPickers) return;
+  const current = presetLike || (keep ? collectMinorCustomization() : null);
+  const researchPantheon = selectedPantheon();
+  for (const age of AGES) {
+    const powers = uniqueMinorCustomizationEntries(minorCustomizationEntries("godPowers", age));
+    const units = uniqueMinorCustomizationEntries(minorCustomizationEntries("mythUnits", age));
+    const baseTechs = uniqueMinorCustomizationEntries(minorCustomizationEntries("technologies", age))
+      .filter((entry) => entry.internalName && entry.enableStatus !== "active")
+      .filter((entry) => minorTechHasResearchLocation(entry.internalName, researchPantheon, { baseCulture: researchPantheon, minorGodCustomization: current }));
+    for (const slot of [1, 2]) {
+      const existing = current?.custom?.[age]?.[slot - 1] || {};
+      const nameInput = $(customMinorElementId(age, slot, "name"));
+      if (nameInput && !keep) nameInput.value = existing.name || "";
+      else if (nameInput && Object.prototype.hasOwnProperty.call(existing, "name")) nameInput.value = existing.name || "";
+      const qualityInput = $(customMinorElementId(age, slot, "quality"));
+      if (qualityInput && !keep) qualityInput.value = existing.quality || "";
+      else if (qualityInput && Object.prototype.hasOwnProperty.call(existing, "quality")) qualityInput.value = existing.quality || "";
+      const usedPowers = customMinorSelectedValuesFromState("godPowers", current, { age, slot });
+      fillMinorCustomizationSelect($(customMinorElementId(age, slot, "godPower")), powers, existing.godPower || "", {
+        includeNone: true,
+        searchable: true,
+        kind: "godPowers",
+        age,
+        placeholder: "Type to search god powers...",
+        disabledValues: usedPowers,
+        disabledReason: "Already selected by another custom minor god",
+      });
+      const mythSelect = $(customMinorElementId(age, slot, "mythUnit"));
+      const usedMythUnits = customMinorSelectedValuesFromState("mythUnits", current, { age, slot });
+      fillMinorCustomizationSelect(mythSelect, units, existing.mythUnit || "", {
+        includeNone: true,
+        searchable: true,
+        kind: "mythUnits",
+        age,
+        placeholder: "Type to search myth units...",
+        disabledValues: usedMythUnits,
+        disabledReason: "Already selected by another custom minor god",
+      });
+      const selectedMythUnit = mythSelect?.value || "";
+      const selectedGodPower = $(customMinorElementId(age, slot, "godPower"))?.value || "";
+      const currentCardForRules = { ...existing, age, slot, godPower: selectedGodPower, mythUnit: selectedMythUnit };
+      const techs = filterMinorTechnologiesForMythUnit(baseTechs, selectedMythUnit, age)
+        .filter((entry) => minorTechnologyAvailableForCustomCard(entry, currentCardForRules, { baseCulture: researchPantheon, bonuses: selectedBonusIds() }));
+      for (const index of [1, 2, 3]) {
+        const existingTechs = Array.isArray(existing.techs) ? existing.techs : [];
+        const existingTech = Object.prototype.hasOwnProperty.call(existingTechs, index - 1) ? existingTechs[index - 1] : "";
+        const usedElsewhere = customMinorSelectedTechsFromState(current, { age, slot, index });
+        fillMinorCustomizationSelect($(customMinorElementId(age, slot, `tech${index}`)), techs, existingTech || "", {
+          includeNone: true,
+          searchable: true,
+          kind: "technologies",
+          age,
+          placeholder: "Type to search technologies...",
+          showDescription: true,
+          descriptionFormatter: (entry) => customMinorTechnologyBrowserDescription(entry, currentCardForRules, { baseCulture: researchPantheon, bonuses: selectedBonusIds() }),
+          disabledValues: usedElsewhere,
+          disabledReason: "Already selected by another custom minor god",
+        });
+      }
+    }
+  }
+  refreshCustomMinorDetails();
+}
+
+function getSelectedMinorCustomizationEntry(kind, age, internalName) {
+  if (!internalName) return null;
+  return minorCustomizationEntries(kind, age).find((entry) => entry.internalName === internalName) || null;
+}
+
+function collectMinorCustomization() {
+  const mode = minorCustomizationMode();
+  const result = {
+    mode,
+    restrictOriginalPantheon: true,
+    custom: {},
+  };
+  for (const age of AGES) {
+    result.custom[age] = [];
+    for (const slot of [1, 2]) {
+      const name = $(customMinorElementId(age, slot, "name"))?.value?.trim() || "";
+      const quality = $(customMinorElementId(age, slot, "quality"))?.value?.trim() || "";
+      const portraitFileName = $(customMinorElementId(age, slot, "portrait"))?.files?.[0]?.name || "";
+      const iconFileName = $(customMinorElementId(age, slot, "icon"))?.files?.[0]?.name || "";
+      const godPower = $(customMinorElementId(age, slot, "godPower"))?.value || "";
+      const mythUnit = $(customMinorElementId(age, slot, "mythUnit"))?.value || "";
+      const techs = [1, 2, 3].map((index) => $(customMinorElementId(age, slot, `tech${index}`))?.value || "");
+      result.custom[age].push({ name, quality, portraitFileName, iconFileName, godPower, mythUnit, techs });
+    }
+  }
+  return result;
+}
+
+function collectPreviewMinorGods(config, age) {
+  const customization = config.minorGodCustomization || {};
+  if (customization.mode === "custom") {
+    return (customization.custom?.[age] || []).map((entry, index) => {
+      const unit = getSelectedMinorCustomizationEntry("mythUnits", age, entry.mythUnit);
+      const power = getSelectedMinorCustomizationEntry("godPowers", age, entry.godPower);
+      const techs = (entry.techs || []).map((tech) => {
+        const techEntry = getSelectedMinorCustomizationEntry("technologies", age, tech);
+        const name = techBrowserDisplayName(techEntry?.internalName || tech, techEntry?.displayName);
+        return name ? { name, icon: previewMinorTechnologyIconPath(techEntry?.internalName || tech, name, config) } : null;
+      }).filter(Boolean);
+      return {
+        name: entry.name || `Custom ${age.replace("Age", "")} God ${index + 1}`,
+        icon: currentCustomMinorGodIconPreviewUrl(age, index + 1),
+        power: techBrowserDisplayName(power?.internalName || entry.godPower, power?.displayName),
+        powerIcon: previewGodPowerIconPath(power?.internalName || entry.godPower, power?.displayName),
+        mythUnit: techBrowserDisplayName(unit?.internalName || entry.mythUnit, unit?.displayName),
+        mythUnitIcon: previewMythUnitIconPath(unit?.internalName || entry.mythUnit, unit?.displayName),
+        techs,
+      };
+    }).filter((entry) => entry.name);
+  }
+  return (config.minorGods[age] || []).map((tech) => previewMinorGodData(tech, config)).filter((minor) => minor?.name);
+}
+
+function customMinorExtraRowsForAge(config, age) {
+  return [];
+}
+
+function refreshCustomMinorDetails() {
+  // Technology descriptions are shown only inside the searchable suggestion list.
+}
+
+function applyMinorCustomizationPreset(customization) {
+  if (!customization) return;
+  if (els.sameCultureOnly) els.sameCultureOnly.checked = true;
+  setMinorCustomizationMode(customization.mode === "custom" ? "custom" : "original");
+  refreshCustomMinorOptions(false, customization);
 }
 
 function getMinorByTech(tech) {
@@ -3544,6 +7625,7 @@ function getConfig() {
   const base = selectedBaseMajor();
   const internal = sanitizeFolder(els.displayName.value);
   const minorGods = collectMinorSelectionLoose();
+  const minorGodCustomization = collectMinorCustomization();
   const uniqueTechs = selectedUniqueTechGroups();
   const bonuses = selectedBonusIds();
   return {
@@ -3566,6 +7648,7 @@ function getConfig() {
     uniqueTechs,
     bonuses,
     minorGods,
+    minorGodCustomization,
     stringPrefix: `STR_CIV_${internal.toUpperCase()}`,
     ageTechs: {
       archaic: `ArchaicAge${internal}`,
@@ -3574,6 +7657,102 @@ function getConfig() {
       mythic: `MythicAge${internal}`,
     },
   };
+}
+
+
+
+function validateCustomMinorGodTechSelections(config) {
+  const errors = [];
+  if (config?.minorGodCustomization?.mode !== "custom") return errors;
+  const allSelected = [];
+  for (const age of AGES) {
+    const cards = config.minorGodCustomization.custom?.[age] || [];
+    for (const slot of [1, 2]) {
+      const card = { ...(cards[slot - 1] || {}), age, slot };
+      const label = `${age.replace("Age", " Age")} custom choice ${slot}`;
+      if (!String(card.name || "").trim()) errors.push(`${label}: enter a minor god name.`);
+      if (!card.godPower) errors.push(`${label}: choose a god power.`);
+      if (!card.mythUnit) errors.push(`${label}: choose a myth unit.`);
+      const techs = Array.isArray(card.techs) ? card.techs : [];
+      const selectedTechs = techs.filter(Boolean);
+      const cardTechSet = new Set(selectedTechs);
+      for (const tech of selectedTechs) {
+        const uiEntry = minorTechnologyUiEntryByName(tech);
+        const definition = minorGodTechDefinitionByName(tech);
+        if (!uiEntry) {
+          errors.push(`${tech}: selected custom minor-god technology is not in the UI data.`);
+          continue;
+        }
+        if (uiEntry.age !== card.age) {
+          errors.push(`${uiEntry.displayName || tech} is a ${uiEntry.age.replace("Age", " Age")} technology and cannot be used by a ${card.age.replace("Age", " Age")} custom minor god.`);
+        }
+        if (!definition) {
+          errors.push(`${uiEntry.displayName || tech}: missing techtree XML definition.`);
+          continue;
+        }
+        if (!minorTechnologyAvailableForCustomCard(uiEntry, card, config)) {
+          if (uiEntry.internalName === "Abundance") {
+            errors.push(`${uiEntry.displayName || tech} requires Chinese pantheon or a Favored Land bonus, and is not available for Norse.`);
+          } else if (uiEntry.internalName === "Onmyodo" || uiEntry.internalName === "SeasideInfiltrators") {
+            errors.push(`${uiEntry.displayName || tech} is Japanese-only.`);
+          } else if (uiEntry.internalName === "EternalHaunting") {
+            errors.push(`${uiEntry.displayName || tech} requires Shinigami to be selected as the same custom minor god's myth unit.`);
+          } else {
+            errors.push(`${uiEntry.displayName || tech} requires Asgardian Bastion to be selected as the same custom minor god's god power.`);
+          }
+        }
+        if (!minorTechHasResearchLocation(tech, config.baseCulture, config)) {
+          errors.push(`${uiEntry.displayName || tech}: no valid research building/UI location exists for ${config.baseCulture}.`);
+        }
+        const pairedUnits = pairedMythUnitsForTech(tech, card.age);
+        if (pairedUnits.length && !pairedUnits.some((unit) => minorCustomizationIdentifier(unit) === minorCustomizationIdentifier(card.mythUnit))) {
+          errors.push(`${uiEntry.displayName || tech} requires the matching myth unit (${pairedUnits.join(" or ")}) on the same custom minor god.`);
+        }
+        for (const prereq of definition.prereqTechs || []) {
+          const prereqUi = minorTechnologyUiEntryByName(prereq);
+          if (prereqUi && !cardTechSet.has(prereq)) {
+            errors.push(`${uiEntry.displayName || tech} requires ${prereqUi.displayName || prereq}. Add it to the same custom minor god before exporting.`);
+          }
+        }
+        allSelected.push({ tech, label: uiEntry.displayName || tech });
+      }
+    }
+  }
+  const seen = new Map();
+  for (const item of allSelected) {
+    if (seen.has(item.tech)) errors.push(`${item.label} can only be selected once across custom minor gods.`);
+    else seen.set(item.tech, item.label);
+  }
+  const seenPowers = new Map();
+  const seenMythUnits = new Map();
+  for (const age of AGES) {
+    const cards = config.minorGodCustomization.custom?.[age] || [];
+    for (const slot of [1, 2]) {
+      const card = { ...(cards[slot - 1] || {}), age, slot };
+      const label = `${age.replace("Age", " Age")} custom choice ${slot}`;
+      if (card.godPower) {
+        const powerEntry = getSelectedMinorCustomizationEntry("godPowers", age, card.godPower);
+        const powerLabel = powerEntry?.displayName || displayTechName(card.godPower);
+        if (seenPowers.has(card.godPower)) errors.push(`${powerLabel} god power can only be selected once across custom minor gods.`);
+        else seenPowers.set(card.godPower, label);
+      }
+      if (card.mythUnit) {
+        const mythEntry = getSelectedMinorCustomizationEntry("mythUnits", age, card.mythUnit);
+        const mythLabel = mythEntry?.displayName || displayTechName(card.mythUnit);
+        if (seenMythUnits.has(card.mythUnit)) errors.push(`${mythLabel} myth unit can only be selected once across custom minor gods.`);
+        else seenMythUnits.set(card.mythUnit, label);
+      }
+    }
+  }
+  const seenAgeTechs = new Map();
+  for (const card of customMinorAllCards(config)) {
+    if (!card.name) continue;
+    const techName = customMinorAgeTechName(card);
+    const label = `${card.age.replace("Age", " Age")} custom choice ${card.slot}`;
+    if (seenAgeTechs.has(techName)) errors.push(`${label}: custom minor god name creates a duplicate age tech. Use a unique name.`);
+    else seenAgeTechs.set(techName, label);
+  }
+  return errors;
 }
 
 function validateConfig(config) {
@@ -3620,10 +7799,24 @@ function validateConfig(config) {
     if (picks.length !== 2 || !picks[0] || !picks[1]) errors.push(`${age}: choose two minor gods.`);
     if (picks[0] === picks[1]) errors.push(`${age}: the two minor gods must be different.`);
   }
+  for (const error of validateCustomMinorGodTechSelections(config)) errors.push(error);
+  if (config.minorGodCustomization?.mode === "original") {
+    config.minorGodCustomization.restrictOriginalPantheon = true;
+  }
   const imageUploads = [
     { file: els.portraitFile?.files?.[0], label: "Portrait" },
     { file: els.iconFile?.files?.[0], label: "Icon" },
   ];
+  if (config.minorGodCustomization?.mode === "custom") {
+    for (const age of AGES) {
+      for (const slot of [1, 2]) {
+        imageUploads.push(
+          { file: $(customMinorElementId(age, slot, "portrait"))?.files?.[0], label: `${age.replace("Age", " Age")} custom minor god ${slot} portrait` },
+          { file: $(customMinorElementId(age, slot, "icon"))?.files?.[0], label: `${age.replace("Age", " Age")} custom minor god ${slot} icon` },
+        );
+      }
+    }
+  }
   for (const { file, label } of imageUploads) {
     if (!file) continue;
     const allowedIconExts = new Set(["png", "jpg", "jpeg"]);
@@ -3711,6 +7904,27 @@ function patchLokiSpawnContributorsForPantheon(doc, civ, config) {
   }
 }
 
+function ensureIvoryNetsukeBountyResourceEarning(doc, civ, config) {
+  if (!hasIvoryNetsukeMinorTech(config)) return;
+  if (hasSelectedBushidoBonus(config)) return;
+  if (config.baseCulture === "Norse") return;
+
+  let bounty = civ.querySelector("bountyresourceearning");
+  if (config.baseCulture === "Aztec") {
+    if (!bounty) return;
+  } else {
+    if (!bounty) {
+      bounty = doc.createElement("bountyresourceearning");
+      insertMajorGodDataNode(civ, bounty, "combatxp, timeshifting, oncastpowercostfactor");
+    }
+    ensureDirectChildText(doc, bounty, "active", "true");
+  }
+
+  ensureDirectChildTextValue(doc, bounty, "excludedtarget", "Building");
+  ensureDirectChildTextValue(doc, bounty, "excludedtarget", "Resource");
+  ensureDirectChildText(doc, bounty, "bountydamagegoal", "1.0");
+}
+
 function applyMajorGodSpecialBonusPatches(doc, civ, config) {
   removeChineseTemplateBountyResourceEarning(civ, config);
   if (config.baseCulture === "Chinese" && hasSelectedChiyouMinorGod(config) && !hasSelectedBushidoBonus(config)) {
@@ -3723,6 +7937,7 @@ function applyMajorGodSpecialBonusPatches(doc, civ, config) {
     replaceAtlanteanStartingCitizensWithHeroes(civ);
   }
   applyFavoredLandBuildingChainPatch(doc, civ, config);
+  ensureIvoryNetsukeBountyResourceEarning(doc, civ, config);
   if (hasSelectedBushidoBonus(config)) {
     ensureBushidoCombatXpMajorGodData(doc, civ, config);
   }
@@ -3818,6 +8033,7 @@ function ensureBountyTargetMultiplier(doc, bounty, attrs, text) {
 }
 
 function hasSelectedChiyouMinorGod(config) {
+  if (isCustomMinorGodMode(config)) return false;
   return Object.values(config?.minorGods || {}).flat().includes("ClassicalAgeChiyou");
 }
 
@@ -4065,6 +8281,7 @@ function thorDwarvenArmoryPoseidonMilitiaEffects(config) {
 }
 
 function thorDwarvenArmoryForgeOfOlympusTech(config) {
+  if (isCustomMinorGodMode(config)) return "";
   if (!selectedHasBonusId(config, THOR_DWARVEN_ARMORY_BONUS_ID)) return "";
   if (config.baseCulture !== "Greek") return "";
   const selectedMinorGods = Object.values(config.minorGods || {}).flat().filter(Boolean);
@@ -4113,6 +8330,7 @@ function hasProsperousSeedsGodPower(config) {
 }
 
 function prosperousSeedsPansPioneersTech(config) {
+  if (isCustomMinorGodMode(config)) return "";
   if (!hasProsperousSeedsGodPower(config)) return "";
   return `	<tech name="PansPioneers">
 		<effects mergemode="replace">
@@ -4190,7 +8408,6 @@ function chineseCreationBuildingCommandTargets(config) {
   if (!config || config.baseCulture === "Chinese") return [];
   const targets = [];
   if (String(config.godPower || "") === "Creation") targets.push("VillagerChineseClay");
-  if ((config.uniqueTechs || []).includes("KuafuChieftain")) targets.push("KuafuHero");
   return targets;
 }
 
@@ -4208,10 +8425,25 @@ function chineseCreationSkyPassageCommandSlot(config) {
   return { row: 2, column: 4 };
 }
 
+function chineseStyleBuilderCommandRules(config) {
+  const rules = [...(CHINESE_CREATION_BUILDING_COMMANDS_BY_CULTURE[config?.baseCulture] || [])];
+  const useDwarvenArmory = selectedHasBonusId(config, THOR_DWARVEN_ARMORY_BONUS_ID);
+  const mapped = rules.map((rule) => {
+    if (rule?.proto === "Armory" || rule?.proto === "DwarvenArmory") {
+      return { ...rule, proto: useDwarvenArmory ? "DwarvenArmory" : "Armory" };
+    }
+    return { ...rule };
+  });
+  if (useDwarvenArmory && !mapped.some((rule) => rule?.proto === "DwarvenArmory")) {
+    mapped.push({ proto: "DwarvenArmory", row: 1, column: 5 });
+  }
+  return mapped;
+}
+
 function chineseCreationBuildingCommandEffects(config) {
   const targets = chineseCreationBuildingCommandTargets(config);
   if (!targets.length) return "";
-  const rules = [...(CHINESE_CREATION_BUILDING_COMMANDS_BY_CULTURE[config.baseCulture] || [])];
+  const rules = chineseStyleBuilderCommandRules(config);
   if (selectedHasOranosSkyPassageBonus(config)) {
     const slot = chineseCreationSkyPassageCommandSlot(config);
     rules.push({ proto: "SkyPassage", row: slot.row, column: slot.column });
@@ -4232,6 +8464,7 @@ function chineseCreationBuildingCommandEffects(config) {
 }
 
 function thorDwarvenArmoryCoatepecShrinesTech(config) {
+  if (isCustomMinorGodMode(config)) return "";
   if (!(selectedHasBonusId(config, THOR_DWARVEN_ARMORY_BONUS_ID) || hasProsperousSeedsGodPower(config))) return "";
   if (config.baseCulture !== "Aztec") return "";
   const selectedMinorGods = Object.values(config.minorGods || {}).flat().filter(Boolean);
@@ -4349,6 +8582,7 @@ function thorDwarvenArmoryArchaicEffects(config) {
 }
 
 function thorDwarvenArmoryMinorGodPrereqTechs(config) {
+  if (isCustomMinorGodMode(config)) return "";
   if (!selectedHasBonusId(config, THOR_DWARVEN_ARMORY_BONUS_ID)) return "";
   const heroicMinorTechs = (config.minorGods.HeroicAge || []).filter(Boolean);
   return Array.from(new Set(heroicMinorTechs)).map((techName) => {
@@ -4418,6 +8652,7 @@ const THOR_DWARVEN_ARMORY_COMMANDADD_RULES = {
 };
 
 function thorDwarvenArmoryCommandAddArchaicEffects(config) {
+  if (isCustomMinorGodMode(config)) return "";
   const rules = THOR_DWARVEN_ARMORY_COMMANDADD_RULES[config.baseCulture] || [];
   return rules.map((rule) => `<effect type="Data" amount="1.00" subtype="CommandAdd" tech="${escapeXml(rule.tech)}" row="${rule.row}" column="${rule.column}" relativity="Assign">
 	<target type="ProtoUnit">DwarvenArmory</target>
@@ -4625,6 +8860,7 @@ function favoredLandChainEntries(config) {
   ];
   if (selectedHasBonusId(config, ORANOS_SKY_PASSAGE_BONUS_ID)) entries.push({ unit: "SkyPassage", radius: 10.0 });
   if (selectedHasBonusId(config, THOR_DWARVEN_ARMORY_BONUS_ID)) entries.push({ unit: "DwarvenArmory", radius: 12.0 });
+  if (shouldAddAsgardianHillFortFavoredLandChain(config)) entries.push({ unit: "AsgardianHillFort", radius: 25.0 });
 
   const seen = new Set();
   const out = [];
@@ -4895,6 +9131,14 @@ function indent(xml, level = 1) {
   return xml.split("\n").map((line) => pad + line).join("\n");
 }
 
+function removeBlankXmlLines(xml) {
+  return String(xml || "")
+    .replace(/\r\n/g, "\n")
+    .split("\n")
+    .filter((line) => line.trim())
+    .join("\n");
+}
+
 function techStatusEffects(techs, status = "obtainable") {
   return techs.map((tech) => `\t\t\t<effect type="TechStatus" status="${status}">${escapeXml(tech)}</effect>`).join("\n");
 }
@@ -5016,7 +9260,7 @@ function skinOfTheRhinoSharedTech(config) {
   if (!selectedHasUniqueTechId(config, "SkinOfTheRhino")) return "";
   return `<tech name="${escapeXml(skinOfTheRhinoCustomTechName(config))}">
 		<displaynameid>STR_TECH_SKIN_OF_THE_RHINO_NAME</displaynameid>
-		<rollovertextid>STR_TECH_SKIN_OF_THE_RHINO_LR</rollovertextid>
+		<rollovertextid>${escapeXml(uniqueTechCustomRolloverStringId({ id: "SkinOfTheRhino" }, config))}</rollovertextid>
 		<cost resourcetype="Food">50.0000</cost>
 		<cost resourcetype="Favor">5.0000</cost>
 		<researchpoints>15.0000</researchpoints>
@@ -5039,7 +9283,7 @@ function skinOfTheRhinoSharedTech(config) {
 
 
 function hasGreekHermesAndHestiaMinorGods(config) {
-  if (!config || config.baseCulture !== "Greek") return false;
+  if (!config || isCustomMinorGodMode(config) || config.baseCulture !== "Greek") return false;
   const selectedMinorGods = Object.values(config.minorGods || {}).flat();
   return selectedMinorGods.includes("ClassicalAgeHermes") && selectedMinorGods.includes("HeroicAgeHestia");
 }
@@ -5119,12 +9363,12 @@ function argivePatronageCustomOverrideStringId(config) {
 }
 
 function hasGreekHeraMinorGod(config) {
-  if (!config || config.baseCulture !== "Greek") return false;
+  if (!config || isCustomMinorGodMode(config) || config.baseCulture !== "Greek") return false;
   return (config.minorGods?.MythicAge || []).includes("MythicAgeHera");
 }
 
 function hasGreekHephaestusMinorGod(config) {
-  if (!config || config.baseCulture !== "Greek") return false;
+  if (!config || isCustomMinorGodMode(config) || config.baseCulture !== "Greek") return false;
   return (config.minorGods?.MythicAge || []).includes("MythicAgeHephaestus");
 }
 
@@ -5161,7 +9405,7 @@ function argivePatronageCustomTech(config) {
 		<cost resourcetype="Favor">30.0000</cost>
 		<researchpoints>40.0000</researchpoints>
 		<status>UNOBTAINABLE</status>
-		<icon>resources\\greek\\static_color\\technologies\\argive_patronage_icon.png</icon>
+		<icon>${escapeXml(argivePatronageTechIconPath(config))}</icon>
 		<flag>CountsTowardMilitaryScore</flag>
 		<flag>HideAdvancedRollover</flag>
 		<flag>MythTech</flag>
@@ -5170,7 +9414,7 @@ function argivePatronageCustomTech(config) {
 		</prereqs>
 		<effects>
 			<effect type="Data" action="${escapeXml(actionName)}" amount="1.00" subtype="ActionEnable" relativity="Absolute" tooltipid="${escapeXml(argivePatronageCustomOverrideStringId(config))}">
-				<target type="ProtoUnit">Fortress</target>
+				<target type="ProtoUnit">AbstractFortress</target>
 			</effect>
 		</effects>
 	</tech>`;
@@ -5184,19 +9428,25 @@ ID = "${argivePatronageCustomOverrideStringId(config)}"   ;   Str = "Fortress: S
 }
 
 function argivePatronageFortressProtoXml(config) {
-  if (!hasGreekHeraMinorGod(config)) return "";
-  const actionName = argivePatronageCustomTechName(config);
+  const actions = [];
+  if (hasGreekHeraMinorGod(config)) actions.push(argivePatronageCustomTechName(config));
+  for (const record of selectedCustomMinorArgivePatronageRecords(config)) actions.push(record.customName);
+  const uniqueActions = [...new Set(actions.filter(Boolean))];
+  if (!uniqueActions.length) return "";
   const unit = argivePatronageUniqueUnit(config);
-  return `	<unit name="Fortress">
-		<protoaction>
+  const protoactions = uniqueActions.map((actionName) => `		<protoaction>
 			<name>${escapeXml(actionName)}</name>
 			<type>Maintain</type>
 			<rate type="${escapeXml(unit)}">1.0</rate>
 			<active>0</active>
 			<persistent>1</persistent>
 			<maintaintrainpoints>60.0</maintaintrainpoints>
-		</protoaction>
-	</unit>`;
+		</protoaction>`).join("\n");
+  const targetBuildings = ["Fortress"];
+  if (hasAsgardianBastion(config)) targetBuildings.push("AsgardianHillFort");
+  return [...new Set(targetBuildings)].map((building) => `	<unit name="${escapeXml(building)}">
+${protoactions}
+	</unit>`).join("\n");
 }
 
 function temporalChaosCustomTech(config) {
@@ -5221,7 +9471,7 @@ function temporalChaosCustomTech(config) {
   ].join("\n");
   return `<tech name="${escapeXml(techName)}">
 		<displaynameid>STR_TECH_TEMPORAL_CHAOS_NAME</displaynameid>
-		<rollovertextid>STR_TECH_TEMPORAL_CHAOS_LR</rollovertextid>
+		<rollovertextid>${escapeXml(uniqueTechCustomRolloverStringId({ id: "TemporalChaos" }, config))}</rollovertextid>
 		<cost resourcetype="Wood">100.0000</cost>
 		<cost resourcetype="Gold">50.0000</cost>
 		<cost resourcetype="Favor">10.0000</cost>
@@ -5234,6 +9484,80 @@ function temporalChaosCustomTech(config) {
 ${effects}
 		</effects>
 	</tech>`;
+}
+
+
+function majorUniqueTechBaseXml(baseTech) {
+  return MAJOR_UNIQUE_TECH_XML_BY_TECH[baseTech] || "";
+}
+
+function replaceMajorUniqueTechRolloverIds(xml, group, config) {
+  const rolloverId = uniqueTechCustomRolloverStringId(group, config);
+  let out = String(xml || "");
+  out = out.replace(/<rollovertextid>[^<]*<\/rollovertextid>/, `<rollovertextid>${escapeXml(rolloverId)}</rollovertextid>`);
+  out = out.replace(/<advancedrollovertextoverrideid>[^<]*<\/advancedrollovertextoverrideid>/g, `<advancedrollovertextoverrideid>${escapeXml(rolloverId)}</advancedrollovertextoverrideid>`);
+  return out;
+}
+
+function cloneMajorUniqueTechXml(group, config) {
+  const baseTech = uniqueTechOriginalTechId(group);
+  const sourceXml = majorUniqueTechBaseXml(baseTech);
+  if (!sourceXml) return "";
+  const customName = uniqueTechCustomTechName(group, config);
+  let xml = String(sourceXml).trim();
+  xml = xml.replace(new RegExp(`(<tech\\s+name=")${escapeRegExp(baseTech)}(")`), `$1${escapeXml(customName)}$2`);
+  xml = replaceMajorUniqueTechRolloverIds(xml, group, config);
+  return xml;
+}
+
+function kuafuChieftainBuilderCommandEffects(config) {
+  if (!config || config.baseCulture === "Chinese") return "";
+  const rules = chineseStyleBuilderCommandRules(config);
+  if (selectedHasOranosSkyPassageBonus(config)) {
+    const slot = chineseCreationSkyPassageCommandSlot(config);
+    rules.push({ proto: "SkyPassage", row: slot.row, column: slot.column });
+  }
+  const seen = new Set();
+  return rules.map((rule) => {
+    const key = `${rule.proto}|${rule.row}|${rule.column}`;
+    if (seen.has(key)) return "";
+    seen.add(key);
+    return `<effect type="Data" amount="1.00" subtype="CommandAdd" proto="${escapeXml(rule.proto)}" row="${rule.row}" column="${rule.column}" relativity="Assign">
+	<target type="ProtoUnit">KuafuHero</target>
+</effect>`;
+  }).filter(Boolean).join("\n");
+}
+
+function insertEffectsIntoMajorUniqueTechXml(xml, effectsXml) {
+  if (!effectsXml || !String(effectsXml).trim()) return xml;
+  const indented = indentTabBlock(effectsXml, 3);
+  if (String(xml).includes("<effects></effects>")) {
+    return String(xml).replace("<effects></effects>", `<effects>\n${indented}\n\t\t</effects>`);
+  }
+  return String(xml).replace(/\n\t\t<\/effects>/, `\n${indented}\n\t\t</effects>`);
+}
+
+function majorUniqueTechXmlForGroup(group, config) {
+  if (!group) return "";
+  if (group.id === "SkinOfTheRhino") return skinOfTheRhinoSharedTech(config);
+  if (group.id === "TemporalChaos") return temporalChaosCustomTech(config);
+  let xml = cloneMajorUniqueTechXml(group, config);
+  if (!xml) return "";
+  if (group.id === "KuafuChieftain") {
+    xml = insertEffectsIntoMajorUniqueTechXml(xml, kuafuChieftainBuilderCommandEffects(config));
+  }
+  return xml;
+}
+
+function majorUniqueTechsXml(config) {
+  const techs = uniqueTechEntries(config).map((group) => majorUniqueTechXmlForGroup(group, config)).filter((xml) => xml && xml.trim());
+  return techs.join("\n\n");
+}
+
+function missingMajorUniqueTechBaseXmlNames(config) {
+  return uniqueTechEntries(config)
+    .map((group) => uniqueTechOriginalTechId(group))
+    .filter((name) => !majorUniqueTechBaseXml(name));
 }
 
 function chineseChiyouSpoilsOfWarTech(config) {
@@ -5270,10 +9594,8 @@ function extraGeneratedTechs(config) {
   const prosperousSeedsPansTech = prosperousSeedsPansPioneersTech(config);
   if (prosperousSeedsPansTech) extras.push(prosperousSeedsPansTech);
   extras.push(relicNineCauldronsAllPantheonsTech());
-  const skinRhinoTech = skinOfTheRhinoSharedTech(config);
-  if (skinRhinoTech) extras.push(skinRhinoTech);
-  const temporalChaosTech = temporalChaosCustomTech(config);
-  if (temporalChaosTech) extras.push(temporalChaosTech);
+  const majorUniqueTechs = majorUniqueTechsXml(config);
+  if (majorUniqueTechs) extras.push(majorUniqueTechs);
   const argiveHeraTech = argivePatronageMythicAgeHeraTech(config);
   if (argiveHeraTech) extras.push(argiveHeraTech);
   const argiveTech = argivePatronageCustomTech(config);
@@ -5282,34 +9604,48 @@ function extraGeneratedTechs(config) {
   if (olympianWeaponsAmazonTech) extras.push(olympianWeaponsAmazonTech);
   const fatedArrowsHestiaTech = fatedArrowsHestiaCentaurTech(config);
   if (fatedArrowsHestiaTech) extras.push(fatedArrowsHestiaTech);
+  const hymnWildwoodPatch = hymnOfTheWildwoodNonGreekTechPatch(config);
+  if (hymnWildwoodPatch) extras.push(hymnWildwoodPatch);
+  const graciousAtlanteanPatch = graciousHospitalityAtlanteanTechPatch(config);
+  if (graciousAtlanteanPatch) extras.push(graciousAtlanteanPatch);
+  const sessrumnirPatch = sessrumnirNonNorseTechPatch(config);
+  if (sessrumnirPatch) extras.push(sessrumnirPatch);
   if (!selectedHasBonusId(config, THOR_DWARVEN_ARMORY_BONUS_ID)) {
     const aegirUniqueTechPatch = uniqueTechAegirTempleRepositionTechs(config);
     if (aegirUniqueTechPatch) extras.push(aegirUniqueTechPatch);
   }
   const bushidoTierTechs = bushidoCombatXpTierTechs(config);
   if (bushidoTierTechs) extras.push(bushidoTierTechs);
+  const customMinorAgeTechs = customMinorAgeTechsXml(config);
+  if (customMinorAgeTechs) extras.push(customMinorAgeTechs);
+  const customMinorTechs = customMinorGodGeneratedTechsXml(config);
+  if (customMinorTechs) extras.push(customMinorTechs);
   return indentTabBlock(extras.join("\n\n"), 1);
 }
 
 function generateTechTreeMods(config) {
   const c = config.ageTechs;
-  const classical = config.minorGods.ClassicalAge;
-  const heroic = config.minorGods.HeroicAge;
-  const mythic = config.minorGods.MythicAge;
+  const useCustomMinorGods = config.minorGodCustomization?.mode === "custom";
+  const classical = useCustomMinorGods ? [] : (config.minorGods.ClassicalAge || []);
+  const heroic = useCustomMinorGods ? [] : (config.minorGods.HeroicAge || []);
+  const mythic = useCustomMinorGods ? [] : (config.minorGods.MythicAge || []);
   const culture = config.baseCulture;
-  return `<techtreemods>
+  return removeBlankXmlLines(`<techtreemods>
 	<tech name="${escapeXml(c.archaic)}">
 		<status>UNOBTAINABLE</status>
 		<flag>HideAllNotifications</flag>
 		<flag>AgeTech</flag>
 		<effects>
 			<effect type="TechStatus" status="active">${escapeXml(cultureAgeTech("ArchaicAge", culture))}</effect>
-${techStatusEffects([...classical, c.classical])}
+${useCustomMinorGods ? techStatusEffects([...customMinorAgeTechNamesForAge(config, "ClassicalAge"), c.classical], "obtainable") : techStatusEffects([...classical, c.classical])}
+${useCustomMinorGods ? customMinorAgeTechCommandAddEffects(config, "ClassicalAge") : ""}
+${useCustomMinorGods ? customMinorSecretsOfTheTitansCommandRemoveEffect(config) : ""}
 ${indentTabBlock(greekArchaicExtraEffects(config), 3)}
 ${kronosExtraMythUnitStatusEffects(config, "ArchaicAge")}
 ${techStatusEffects(uniqueTechNames(config), "obtainable")}
 ${indentTabBlock(uniqueTechSetNameEffects(config), 3)}
 ${indentTabBlock(uniqueTechUiPlacementEffects(config), 3)}
+${useCustomMinorGods ? indentTabBlock(customMinorTechUiPlacementEffects(config), 3) : ""}
 ${indentTabBlock(chineseCreationBuildingCommandEffects(config), 3)}
 ${indentTabBlock(bonusTechEffects(config), 3)}
 			<effect type="TechStatus" status="active">ArchaicAgeWeakenUnits</effect>
@@ -5332,7 +9668,8 @@ ${uniqueTechEntries(config).some((group) => group.extraArchaicEffect === "FreyrT
 ${norseClassicalExtraEffects(config)}
 ${indentTabBlock(greekClassicalExtraEffects(config), 3)}
 ${indentTabBlock(aztecClassicalExtraEffects(config), 3)}
-${techStatusEffects([...heroic, c.heroic])}
+${useCustomMinorGods ? techStatusEffects([...customMinorAgeTechNamesForAge(config, "HeroicAge"), c.heroic], "obtainable") : techStatusEffects([...heroic, c.heroic])}
+${useCustomMinorGods ? customMinorAgeTechCommandAddEffects(config, "HeroicAge") : ""}
 ${kronosExtraMythUnitStatusEffects(config, "ClassicalAge")}
 ${indentTabBlock(bonusClassicalTechEffects(config), 3)}
 		</effects>
@@ -5349,11 +9686,13 @@ ${indentTabBlock(bonusClassicalTechEffects(config), 3)}
 		<effects>
 			<effect type="TechStatus" status="active">HeroicAgeGeneral</effect>
 			<effect type="TechStatus" status="active">${escapeXml(cultureAgeTech("HeroicAge", culture))}</effect>
-${techStatusEffects([...mythic, c.mythic])}
+${useCustomMinorGods ? techStatusEffects([...customMinorAgeTechNamesForAge(config, "MythicAge"), c.mythic], "obtainable") : techStatusEffects([...mythic, c.mythic])}
+${useCustomMinorGods ? customMinorAgeTechCommandAddEffects(config, "MythicAge") : ""}
 ${norseHeroicExtraEffects(config)}
 ${indentTabBlock(greekHeroicExtraEffects(config), 3)}
 ${kronosExtraMythUnitStatusEffects(config, "HeroicAge")}
 ${indentTabBlock(bonusHeroicTechEffects(config), 3)}
+${indentTabBlock(asgardianHillFortAutoBuildRateEffect(config, "HeroicAge"), 3)}
 		</effects>
 	</tech>
 
@@ -5373,16 +9712,187 @@ ${indentTabBlock(greekMythicExtraEffects(config), 3)}
 ${indentTabBlock(chineseMythicExtraEffects(config), 3)}
 ${indentTabBlock(aztecMythicExtraEffects(config), 3)}
 ${indentTabBlock(bonusMythicTechEffects(config), 3)}
+${indentTabBlock(asgardianHillFortAutoBuildRateEffect(config, "MythicAge"), 3)}
+${useCustomMinorGods ? customMinorSecretsOfTheTitansCommandAddEffect(config) : ""}
 		</effects>
 	</tech>
 ${extraGeneratedTechs(config) ? `
 
 ${extraGeneratedTechs(config)}` : ""}
-</techtreemods>\n`;
+</techtreemods>\n`);
+}
+
+
+const SHAFTS_OF_PLAGUE_ARCHERS_BY_PANTHEON = Object.freeze({
+  Greek: ["Toxotes", "Peltast", "Gastraphetoros", "AmazonArcher"],
+  Egyptian: ["Slinger", "ChariotArcher"],
+  Norse: ["ThrowingAxeman", "Godi"],
+  Atlantean: ["Turma", "TurmaHero", "Cheiroballista", "CheiroballistaHero", "Arcus", "ArcusHero"],
+  Chinese: ["FireArcher", "WuzuJavelineer", "ChuKoNu", "Pioneer"],
+  Japanese: ["YumiArcher", "YumiHorseArcher", "Bushi"],
+  Aztec: ["QuimichinSpy", "TequihuaArcher", "EagleWarrior"],
+});
+
+function hasHymnOfTheWildwoodTech(config) {
+  return selectedMinorHasBaseTech(config, "HymnOfTheWildwood");
+}
+
+function hymnOfTheWildwoodContainerProtoXml(config) {
+  if (!hasHymnOfTheWildwoodTech(config)) return "";
+  if ((config?.baseCulture || "") === "Greek") return "";
+  return `	<unit name="AreaHealHymnOfTheWildwoodContainer">
+		<obstructionradiusx>0.1000</obstructionradiusx>
+		<obstructionradiusz>0.1000</obstructionradiusz>
+		<movementtype>air</movementtype>
+		<flag>Invulnerable</flag>
+		<flag>NoIdleActions</flag>
+		<flag>DoNotDieAtZeroHitpoints</flag>
+		<flag>NoHPBar</flag>
+		<flag>NonAutoFormedUnit</flag>
+		<flag>DoNotShowOnMiniMap</flag>
+		<flag>NotSelectable</flag>
+		<flag>NotSearchable</flag>
+		<flag>NoTieToGround</flag>
+		<flag>NonCollideable</flag>
+		<flag>DontRotateObstruction</flag>
+		<flag>NotPlayerPlaceable</flag>
+		<flag>NotKBTracked</flag>
+		<flag>NotDeathTracked</flag>
+		<flag>HideFromDialogs</flag>
+		<tactics>container.tactics</tactics>
+		<protoaction>
+			<name>AreaHealHymnOfTheWildwood</name>
+			<type>AutoRangedModify</type>
+			<modifyamount>0.75</modifyamount>
+			<maxrange>5</maxrange>
+			<slowhealmultiplier>0.50</slowhealmultiplier>
+			<modifyabstracttype>LogicalTypeHealed</modifyabstracttype>
+			<persistent>1</persistent>
+			<modifytype>HealRate</modifytype>
+			<modifyflyingunits>1</modifyflyingunits>
+			<includeally>1</includeally>
+			<modifystacklimit>4</modifystacklimit>
+			<modelattachment>greek\\godpowers\\restoration\\healing_vfx.xml</modelattachment>
+			<modelattachmentbone>bonethatdoesntexist</modelattachmentbone>
+			<modifyupdateinterval>1750</modifyupdateinterval>
+		</protoaction>
+	</unit>`;
+}
+
+function hymnOfTheWildwoodNonGreekTechPatch(config) {
+  if ((config?.baseCulture || "") === "Greek") return "";
+  if (!selectedOriginalMinorHasBaseTech(config, "HymnOfTheWildwood")) return "";
+  return `	<tech name="HymnOfTheWildwood">
+		<effects mergemode="replace">
+			<effect type="Data" protoaction="AreaHealHymnOfTheWildwood" amount="1.00" subtype="ProtoActionAdd" unittype="AreaHealHymnOfTheWildwoodContainer" relativity="Assign" tooltipid="STR_TECH_HYMN_OF_THE_WILDWOOD_OVERRIDE">
+				<target type="ProtoUnit">Hero</target>
+			</effect>
+		</effects>
+	</tech>`;
+}
+
+function graciousHospitalityAtlanteanTechPatch(config) {
+  if ((config?.baseCulture || "") !== "Atlantean") return "";
+  if (!selectedOriginalMinorHasBaseTech(config, "GraciousHospitality")) return "";
+  return `	<tech name="GraciousHospitality">
+		<effects mergemode="replace">
+			<effect type="Data" amount="1.00" subtype="BuildLimit" relativity="Absolute">
+				<target type="ProtoUnit">Manor</target>
+			</effect>
+		</effects>
+	</tech>`;
+}
+
+function sessrumnirNonNorseTechPatch(config) {
+  if ((config?.baseCulture || "") === "Norse") return "";
+  if (!selectedOriginalMinorHasBaseTech(config, "Sessrumnir")) return "";
+  return `	<tech name="Sessrumnir">
+		<effects mergemode="replace">
+			<effect type="Data" amount="1.10" subtype="Hitpoints" relativity="BasePercent">
+				<target type="ProtoUnit">Hero</target>
+			</effect>
+		</effects>
+	</tech>`;
+}
+
+function selectedCustomMinorHasBaseTech(config, baseTechName) {
+  if (config?.minorGodCustomization?.mode !== "custom") return false;
+  return selectedCustomMinorTechRecords(config).some((record) => record.baseName === baseTechName);
+}
+
+function selectedOriginalMinorHasBaseTech(config, baseTechName) {
+  if (config?.minorGodCustomization?.mode === "custom") return false;
+  const target = String(baseTechName || "");
+  if (!target) return false;
+  for (const age of AGES) {
+    for (const minorTech of config?.minorGods?.[age] || []) {
+      if (matchingCustomMinorEntries("technologies", age, minorTech).some((entry) => entry.internalName === target)) return true;
+    }
+  }
+  return false;
+}
+
+function selectedMinorHasBaseTech(config, baseTechName) {
+  return selectedCustomMinorHasBaseTech(config, baseTechName) || selectedOriginalMinorHasBaseTech(config, baseTechName);
+}
+
+function archerRangedAttackProtoActionMods(config) {
+  const modsByUnit = new Map();
+  const addMod = (unit, xml) => {
+    if (!unit || !xml) return;
+    if (!modsByUnit.has(unit)) modsByUnit.set(unit, []);
+    modsByUnit.get(unit).push(xml);
+  };
+
+  if (selectedCustomMinorHasBaseTech(config, "ShaftsOfPlague") && config?.baseCulture !== "Greek") {
+    for (const unit of SHAFTS_OF_PLAGUE_ARCHERS_BY_PANTHEON[config?.baseCulture || ""] || []) {
+      addMod(unit, `\t\t\t<onhiteffect active="0" type="DamageOverTime" duration="6.000000">
+\t\t\t\t<damage type="Divine">0.2500000</damage>
+\t\t\t\t<target attacktype="Unit"></target>
+\t\t\t\t<target ignoretype="AbstractSiegeWeapon"></target>
+\t\t\t</onhiteffect>
+\t\t\t<onhiteffect active="0" type="Attach" proto="VFXPoison" attachbone="spine" duration="6.000000">
+\t\t\t\t<target attacktype="Unit"></target>
+\t\t\t\t<target ignoretype="AbstractSiegeWeapon"></target>
+\t\t\t</onhiteffect>`);
+    }
+  }
+
+  if (selectedCustomMinorHasBaseTech(config, "ScorchingFeathers") && config?.baseCulture !== "Chinese") {
+    for (const unit of SHAFTS_OF_PLAGUE_ARCHERS_BY_PANTHEON[config?.baseCulture || ""] || []) {
+      addMod(unit, `\t\t\t<onhiteffect active="0" type="StatModify" duration="5.00000">
+\t\t\t\t<target attacktype="Unit"></target>
+\t\t\t\t<target ignoretype="AbstractSiegeWeapon"></target>
+\t\t\t\t<target ignoretype="AbstractTitan"></target>
+\t\t\t\t<modify type="ArmorSpecific" dmgtype="Pierce" applytype="Multiply" stack="">0.9900</modify>
+\t\t\t\t<modify type="ArmorSpecific" dmgtype="Hack" applytype="Multiply" stack="">0.9900</modify>
+\t\t\t</onhiteffect>
+\t\t\t<onhiteffect active="0" type="Attach" proto="VFXScorchingFeathers" attachbone="spine" duration="5.000000">
+\t\t\t\t<target attacktype="Unit"></target>
+\t\t\t\t<target ignoretype="AbstractSiegeWeapon"></target>
+\t\t\t\t<target ignoretype="AbstractTitan"></target>
+\t\t\t</onhiteffect>`);
+    }
+  }
+
+  for (const unit of fatedArrowsChainProtoUnits(config)) {
+    addMod(unit, `\t\t\t<projectilechainbounce>1</projectilechainbounce>
+\t\t\t<projectilechainbouncereduction>0.800</projectilechainbouncereduction>
+\t\t\t<projectilechainbouncerange>5</projectilechainbouncerange>`);
+  }
+
+  return [...modsByUnit.entries()]
+    .map(([unit, mods]) => `\t<unit name="${escapeXml(unit)}">
+\t\t<protoaction>
+\t\t\t<name>RangedAttack</name>
+${mods.join("\n")}
+\t\t</protoaction>
+\t</unit>`)
+    .join("\n");
 }
 
 function generateProtoMods(config) {
-  const entries = [tezcatObsidianShardProtoXml(config), kronosHouseTemporalProtoXml(config), oranosEgyptianPriestSkyPassageProtoXml(config), argivePatronageFortressProtoXml(config), fatedArrowsCentaurProtoXml(config), fuxiNezhaProtoModsXml(config)].filter(Boolean);
+  const entries = [tezcatObsidianShardProtoXml(config), kronosHouseTemporalProtoXml(config), oranosEgyptianPriestSkyPassageProtoXml(config), argivePatronageFortressProtoXml(config), fuxiNezhaProtoModsXml(config), hymnOfTheWildwoodContainerProtoXml(config), archerRangedAttackProtoActionMods(config)].filter(Boolean);
   if (!entries.length) {
     return `<protomods>
 	<!-- Empty in this draft. -->
@@ -5394,7 +9904,57 @@ ${entries.join("\n")}
 </protomods>
 `;
 }
-function generateMinorGodsMods() {
+const CUSTOM_MINOR_DEFAULT_PORTRAIT = "resources\\greek\\static_color\\minor_gods\\athena_portrait.png";
+const CUSTOM_MINOR_DEFAULT_ICON = "resources\\greek\\static_color\\minor_gods\\athena_icon.png";
+
+function selectedCustomMinorImageFile(age, slot, kind) {
+  const input = $(customMinorElementId(age, slot, kind));
+  const file = input?.files?.[0] || null;
+  return isBrowserPreviewableIconFile(file) ? file : null;
+}
+
+function selectedCustomMinorPortraitFile(age, slot) {
+  return selectedCustomMinorImageFile(age, slot, "portrait") || selectedCustomMinorImageFile(age, slot, "icon");
+}
+
+function selectedCustomMinorIconFile(age, slot) {
+  return selectedCustomMinorImageFile(age, slot, "icon") || selectedCustomMinorImageFile(age, slot, "portrait");
+}
+
+function customMinorImageFileName(card, kind) {
+  const techName = sanitizeId(customMinorAgeTechName(card), "CustomMinorGod");
+  return `${techName}_${kind}.png`;
+}
+
+function customMinorImageResourcePath(config, card, kind) {
+  const file = kind === "portrait"
+    ? selectedCustomMinorPortraitFile(card.age, card.slot)
+    : selectedCustomMinorIconFile(card.age, card.slot);
+  if (!file) return kind === "portrait" ? CUSTOM_MINOR_DEFAULT_PORTRAIT : CUSTOM_MINOR_DEFAULT_ICON;
+  return `resources\\${config.lowerName}\\minor_gods\\${customMinorImageFileName(card, kind)}`;
+}
+
+function customMinorGodModsXml(config) {
+  if (config?.minorGodCustomization?.mode !== "custom") return "";
+  const rows = [];
+  const seen = new Set();
+  for (const card of customMinorAllCards(config)) {
+    if (!card.name || !card.godPower || !card.mythUnit) continue;
+    const tag = customMinorAgeTechName(card).toLowerCase();
+    if (seen.has(tag)) continue;
+    seen.add(tag);
+    const portraitPath = customMinorImageResourcePath(config, card, "portrait");
+    const iconPath = customMinorImageResourcePath(config, card, "icon");
+    rows.push(`	<${tag} portraitfilename="${portraitPath}" portraiticonfilename="${iconPath}"></${tag}>`);
+  }
+  return rows.join("\n");
+}
+
+function generateMinorGodsMods(config) {
+  const customMinorRows = customMinorGodModsXml(config);
+  if (customMinorRows) {
+    return `<minorgodsmods>\n${customMinorRows}\n</minorgodsmods>\n`;
+  }
   return `<minorgodsmods>\n\t<!-- Existing vanilla minor gods are referenced directly, so no new minor god definitions are required for this draft. -->\n</minorgodsmods>\n`;
 }
 
@@ -5420,7 +9980,7 @@ function generateStringMods(config) {
 // GENERATED BY AOM RETOLD MAJOR GOD CREATOR DRAFT
 // General strings used by major_gods_mods.xml.
 // Rollover includes the optional custom focus and selected bonus summary.
-// Existing minor-god and age-tech strings remain vanilla.
+// Custom minor-god mode generates custom age-tech and minor-tech rollover strings.
 
 // GENERAL
 
@@ -5436,7 +9996,15 @@ ${uniqueTechCustomStringMods(config)}` : ""}${argivePatronageStringMods(config) 
 
 // HERA ARGIVE PATRONAGE
 
-${argivePatronageStringMods(config)}` : ""}
+${argivePatronageStringMods(config)}` : ""}${customMinorAgeTechStringMods(config) ? `
+
+// CUSTOM MINOR GOD AGE TECH STRINGS
+
+${customMinorAgeTechStringMods(config)}` : ""}${customMinorGodTechStringMods(config) ? `
+
+// CUSTOM MINOR GOD TECHNOLOGY ROLLOVERS
+
+${customMinorGodTechStringMods(config)}` : ""}
 `;
 }
 
@@ -5488,6 +10056,10 @@ function uniqueList(items) {
   return Array.from(new Set((items || []).filter(Boolean)));
 }
 
+function isCustomMinorGodMode(config) {
+  return config?.minorGodCustomization?.mode === "custom";
+}
+
 function selectedHasBonusId(config, id) {
   return selectedBonusEntries(config).some((entry) => entry.id === id);
 }
@@ -5525,11 +10097,13 @@ function lookupTemplateBlock(map, key) {
 
 function applyCustomTechNamesToUiBlock(block, config) {
   let out = String(block || "");
-  if (config && selectedHasUniqueTechId(config, "SkinOfTheRhino")) {
-    out = out.replace(/SkinOfTheRhino(?:[A-Za-z0-9_]+)?/g, skinOfTheRhinoCustomTechName(config));
-  }
-  if (config && selectedHasUniqueTechId(config, "TemporalChaos")) {
-    out = out.replace(/TemporalChaos(?:[A-Za-z0-9_]+)?/g, temporalChaosCustomTechName(config));
+  if (config) {
+    for (const group of uniqueTechEntries(config)) {
+      const baseTech = uniqueTechOriginalTechId(group);
+      const customTech = uniqueTechActualTechName(group, config);
+      if (!baseTech || !customTech || baseTech === customTech) continue;
+      out = out.replace(new RegExp(`${escapeRegExp(baseTech)}(?:[A-Za-z0-9_]+)?`, "g"), customTech);
+    }
   }
   if (config && hasGreekHeraMinorGod(config)) {
     out = out.replace(/ArgivePatronage(?:Zeus|Poseidon|Hades|Demeter|[A-Za-z0-9_]+)/g, argivePatronageCustomTechName(config));
@@ -5556,13 +10130,222 @@ function indentBlock(block, level = 0) {
     .join("\n");
 }
 
+function techTreeCustomMinorCardsForAge(config, age) {
+  if (config?.minorGodCustomization?.mode !== "custom") return [];
+  return customMinorAllCards(config)
+    .filter((card) => card.age === age && card.name && card.godPower && card.mythUnit);
+}
+
+function techTreeCustomMinorTokenNodesForCard(card) {
+  const nodes = [];
+  if (card?.mythUnit) nodes.push({ type: "Unit", baseName: card.mythUnit, name: card.mythUnit, card });
+  for (const record of customMinorCardTechRecords(card)) {
+    nodes.push({ type: "Tech", baseName: record.baseName, name: record.customName, record, card });
+  }
+  return nodes;
+}
+
+function techTreeAllSourceFinders() {
+  return [
+    greekFindRightSideNodesForToken,
+    egyptianFindRightSideNodesForToken,
+    norseFindRightSideNodesForToken,
+    atlanteanFindRightSideNodesForToken,
+    chineseFindRightSideNodesForToken,
+    japaneseFindRightSideNodesForToken,
+    aztecFindRightSideNodesForToken,
+  ].filter((fn) => typeof fn === "function");
+}
+
+function techTreeNodeCopiesWithName(nodes, replacementName) {
+  return (nodes || []).map((node) => ({ ...node, name: replacementName || node.name }));
+}
+
+function techTreeSourceNodesForTokenAcrossCultures(age, tokenNode) {
+  const out = [];
+  const seen = new Set();
+  for (const finder of techTreeAllSourceFinders()) {
+    for (const node of finder(age, tokenNode) || []) {
+      const key = `${node.type}|${node.name}|${node.parent || ""}|${node.uniqueParent || ""}|${node.position || ""}|${node.uniqueIdentifier || ""}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push({ ...node });
+    }
+  }
+  return out;
+}
+
+function techTreeParentNameForUiTarget(target, config = null, sourceBuilding = "") {
+  const culture = config?.baseCulture || "";
+  const raw = String(sourceBuilding || target || "");
+  const id = String(target || sourceBuilding || "");
+  const fortress = fortressCommandSourceBuildingForPantheon(culture);
+  if (id === "AbstractArmory") return selectedHasThorDwarvenArmoryBonus(config) ? "DwarvenArmory" : "Armory";
+  if (id === "Fortress" || techUiCanonicalBuilding(raw) === "FortressGroup") return fortress || id || raw;
+  const aliases = {
+    TownCenter: "TownCenter",
+    VillageCenter: "TownCenter",
+    CitadelCenter: "TownCenter",
+    CalpulliLivestockPen: "Calpulli",
+    CalpulliLumberOutpost: "Calpulli",
+    CalpulliCraftWorkshop: "Calpulli",
+    OxCart: "OxCartBuilding",
+    OxCartBuilding: "OxCartBuilding",
+    LongHouse: "Longhouse",
+    Longhouse: "Longhouse",
+    GuardHouse: "Guardhouse",
+    Guardhouse: "Guardhouse",
+    WaterMill: "Watermill",
+    Watermill: "Watermill",
+    Shrine: "ShrineJapanese",
+    ShrineJapanese: "ShrineJapanese",
+    ShrineOfTheHunt: "ShrineJapanese",
+    TzompantliTower: "TzompantliTowerTechTree",
+    TzompantliTowerTechTree: "TzompantliTowerTechTree",
+  };
+  return aliases[id] || aliases[raw] || id || raw;
+}
+
+function techTreePositionFromUiPosition(position, fallbackColumn = 1) {
+  const column = Number(position?.column);
+  const row = Number(position?.row);
+  const x = Number.isFinite(column) ? column : fallbackColumn;
+  const y = Number.isFinite(row) && row <= 0 ? 0 : 1;
+  return { x, y, position: `${x},${y}` };
+}
+
+function customMinorTechTreeUiPlacementMap(config) {
+  const allocator = makeTechUiSlotAllocator();
+  buildUniqueTechUiPlacements(config, allocator);
+  const map = new Map();
+  for (const placement of buildCustomMinorTechUiPlacements(config, allocator)) {
+    // Asgardian Bastion can mirror many normal building commands onto
+    // AsgardianHillFort for gameplay UI, but those mirrored entries should not
+    // create extra right-side in-game techtree nodes.
+    if (placement.target === "AsgardianHillFort" || placement.sourceBuilding === "AsgardianHillFort") continue;
+    if (!map.has(placement.techName)) map.set(placement.techName, []);
+    map.get(placement.techName).push(placement);
+  }
+  return map;
+}
+
+function customMinorFallbackTechTreeNodesForToken(age, config, token, placementMap = null) {
+  if (!token) return [];
+  if (token.type === "Unit") {
+    const ageColumn = { ClassicalAge: 1, HeroicAge: 2, MythicAge: 3 }[age] || 1;
+    return [{ type: "Unit", name: token.name, parent: "Temple", position: `${ageColumn},0`, x: ageColumn, y: 0 }];
+  }
+  if (token.type !== "Tech") return [];
+  const map = placementMap || customMinorTechTreeUiPlacementMap(config);
+  const placements = map.get(token.name) || [];
+  const out = placements.map((placement, index) => {
+    const position = techTreePositionFromUiPosition(placement.position, index + 1);
+    return {
+      type: "Tech",
+      name: token.name,
+      parent: techTreeParentNameForUiTarget(placement.target, config, placement.sourceBuilding),
+      position: position.position,
+      x: position.x,
+      y: position.y,
+    };
+  });
+  const seen = new Set();
+  return out.filter((node) => {
+    const key = `${node.type}|${node.name}|${node.parent || ""}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function customMinorRightSideNodesForAge(age, config, currentCultureFinder) {
+  if (config?.minorGodCustomization?.mode !== "custom") return [];
+  const nodes = [];
+  const placementMap = customMinorTechTreeUiPlacementMap(config);
+  for (const card of techTreeCustomMinorCardsForAge(config, age)) {
+    for (const token of techTreeCustomMinorTokenNodesForCard(card)) {
+      if (token.type === "Tech" && token.baseName === "AdvancedDefenses") {
+        nodes.push(...customMinorFallbackTechTreeNodesForToken(age, config, token, placementMap));
+        continue;
+      }
+      const lookup = { type: token.type, name: token.baseName };
+      let found = currentCultureFinder ? currentCultureFinder(age, lookup) : [];
+      // Cross-pantheon custom minor-god choices may not exist in the current
+      // pantheon's source tree. Fall back to any source tree, then to the actual
+      // command UI placement data used by the generated tech.
+      if (!found.length && token.type === "Unit") found = techTreeSourceNodesForTokenAcrossCultures(age, lookup);
+      if (found.length) nodes.push(...techTreeNodeCopiesWithName(found, token.name));
+      else nodes.push(...customMinorFallbackTechTreeNodesForToken(age, config, token, placementMap));
+    }
+  }
+  return nodes;
+}
+
+function customMinorPriorSelectedMinorBuildingKeys(age, config, finder, sameBuildingKeyFn) {
+  const out = new Set();
+  if (config?.minorGodCustomization?.mode !== "custom") return out;
+  const order = ["ClassicalAge", "HeroicAge", "MythicAge"];
+  const index = order.indexOf(age);
+  if (index <= 0) return out;
+  for (const priorAge of order.slice(0, index)) {
+    const priorNodes = customMinorRightSideNodesForAge(priorAge, config, finder);
+    for (const node of priorNodes) {
+      const key = sameBuildingKeyFn(node, priorNodes);
+      if (key) out.add(key);
+    }
+  }
+  return out;
+}
+
+function techTreeCustomMinorBonusTrack(card) {
+  const techRecords = customMinorCardTechRecords(card);
+  const nodes = [
+    card.godPower ? `                        <local:TechTreeNode Power="${escapeXml(card.godPower)}" />` : "",
+    card.mythUnit ? `                        <local:TechTreeNode Unit="${escapeXml(card.mythUnit)}" />` : "",
+    ...techRecords.map((record) => `                        <local:TechTreeNode Tech="${escapeXml(record.customName)}" />`),
+  ].filter(Boolean).join("\n");
+  return `<local:TechTreeBonusTrack God="${escapeXml(customMinorAgeTechName(card))}">
+                    <local:TechTreeBonusTrack.Technologies>
+${nodes}
+                    </local:TechTreeBonusTrack.Technologies>
+                </local:TechTreeBonusTrack>`;
+}
+
+function techTreeCustomMinorBonusTracksForAge(config, age) {
+  return techTreeCustomMinorCardsForAge(config, age).map(techTreeCustomMinorBonusTrack);
+}
+
+function godPickerCustomMinorBonusTrack(card) {
+  const techRecords = customMinorCardTechRecords(card);
+  const nodes = [
+    card.godPower ? `                        <techTree:TechTreeNode Power="${escapeXml(card.godPower)}" />` : "",
+    card.mythUnit ? `                        <techTree:TechTreeNode Unit="${escapeXml(card.mythUnit)}" />` : "",
+    ...techRecords.map((record) => `                        <techTree:TechTreeNode Tech="${escapeXml(record.customName)}" />`),
+  ].filter(Boolean).join("\n");
+  return `<techTree:TechTreeBonusTrack God="${escapeXml(customMinorAgeTechName(card))}">
+                    <techTree:TechTreeBonusTrack.Technologies>
+${nodes}
+                    </techTree:TechTreeBonusTrack.Technologies>
+                </techTree:TechTreeBonusTrack>`;
+}
+
+function godPickerCustomMinorBonusTracksForAge(config, age) {
+  if (config?.minorGodCustomization?.mode !== "custom") return [];
+  return customMinorAllCards(config)
+    .filter((card) => card.age === age && card.name && card.godPower && card.mythUnit)
+    .map(godPickerCustomMinorBonusTrack);
+}
+
 function generateGodPickerAge(age, techs, config) {
+  const customTracks = godPickerCustomMinorBonusTracksForAge(config, age);
+  const tracks = customTracks.length ? customTracks : (techs || []).map((tech) => godPickerBonusTrack(tech, config));
   return `        <techTree:TechTreeAge AgeName="${age}">
             <techTree:TechTreeAge.Bonuses>
-${techs.map((tech) => indentBlock(godPickerBonusTrack(tech, config), 4)).join("\n\n")}
+${tracks.map((track) => indentBlock(track, 4)).join("\n\n")}
             </techTree:TechTreeAge.Bonuses>
         </techTree:TechTreeAge>`;
 }
+
 
 function generateTechTreeXaml(config) {
   if (config?.baseCulture === "Greek") {
@@ -5883,22 +10666,17 @@ function selectedUniqueTechGroup(config) {
   const selectedGroups = uniqueTechEntries(config);
   if (selectedGroups.length) return selectedGroups[0];
 
-  // Fallback for legacy presets/outputs that may already contain generated custom names
-  // such as SkinOfTheRhino<CustomGod> or TemporalChaos<CustomGod>.
+  // Fallback for legacy presets/outputs that may already contain generated custom names.
   const ids = new Set([...(config?.uniqueTechs || []), ...uniqueTechNames(config)]);
   return UNIQUE_TECH_GROUPS.find((group) => {
     if (ids.has(group.id) || (group.techs || []).some((tech) => ids.has(tech))) return true;
-    if (group.id === "SkinOfTheRhino") return [...ids].some((id) => String(id).startsWith("SkinOfTheRhino"));
-    if (group.id === "TemporalChaos") return [...ids].some((id) => String(id).startsWith("TemporalChaos"));
-    return false;
+    return [...ids].some((id) => String(id).startsWith(uniqueTechOriginalTechId(group)));
   }) || null;
 }
 
 function selectedUniqueTechRightSideName(config, group) {
   if (!group) return "";
-  if (group.id === "SkinOfTheRhino") return skinOfTheRhinoCustomTechName(config);
-  if (group.id === "TemporalChaos") return temporalChaosCustomTechName(config);
-  return group.techs?.[0] || group.id;
+  return uniqueTechActualTechName(group, config);
 }
 
 function uniqueTechRightSideNodeSpecs(config, block, group) {
@@ -6260,6 +11038,7 @@ function greekFindRightSideNodesForToken(age, tokenNode) {
 }
 
 function greekSelectedMinorNodesForAge(age, config) {
+  if (isCustomMinorGodMode(config)) return customMinorRightSideNodesForAge(age, config, greekFindRightSideNodesForToken);
   const selected = (config.minorGods?.[age] || []).map(canonicalMinorTech);
   const nodes = [];
   for (const minor of selected) {
@@ -7650,6 +12429,7 @@ function egyptianFindRightSideNodesForToken(age, tokenNode) {
 }
 
 function egyptianSelectedMinorNodesForAge(age, config) {
+  if (isCustomMinorGodMode(config)) return customMinorRightSideNodesForAge(age, config, egyptianFindRightSideNodesForToken);
   const selected = (config.minorGods?.[age] || []).map(canonicalMinorTech);
   const nodes = [];
   for (const minor of selected) {
@@ -8565,6 +13345,7 @@ function norseMinorNodeSameBuildingKey(node, contextNodes = []) {
 }
 
 function norsePriorSelectedMinorBuildingKeys(age, config) {
+  if (isCustomMinorGodMode(config)) return customMinorPriorSelectedMinorBuildingKeys(age, config, norseFindRightSideNodesForToken, norseMinorNodeSameBuildingKey);
   const out = new Set();
   const order = ["ClassicalAge", "HeroicAge", "MythicAge"];
   const index = order.indexOf(age);
@@ -8586,6 +13367,17 @@ function norsePriorSelectedMinorBuildingKeys(age, config) {
 }
 
 function norseSelectedMinorNodesForAge(age, config) {
+  if (isCustomMinorGodMode(config)) {
+    const nodes = [];
+    const seenSameBuilding = norsePriorSelectedMinorBuildingKeys(age, config);
+    for (const candidate of customMinorRightSideNodesForAge(age, config, norseFindRightSideNodesForToken)) {
+      const key = norseMinorNodeSameBuildingKey(candidate, [...nodes, candidate]);
+      if (key && seenSameBuilding.has(key)) continue;
+      nodes.push(candidate);
+      if (key) seenSameBuilding.add(key);
+    }
+    return nodes;
+  }
   const selected = (config.minorGods?.[age] || []).map(canonicalMinorTech);
   const nodes = [];
   const seenSameBuilding = norsePriorSelectedMinorBuildingKeys(age, config);
@@ -9693,6 +14485,7 @@ function atlanteanMinorNodeSameBuildingKey(node, contextNodes = []) {
 }
 
 function atlanteanPriorSelectedMinorBuildingKeys(age, config) {
+  if (isCustomMinorGodMode(config)) return customMinorPriorSelectedMinorBuildingKeys(age, config, atlanteanFindRightSideNodesForToken, atlanteanMinorNodeSameBuildingKey);
   const out = new Set();
   const order = ["ClassicalAge", "HeroicAge", "MythicAge"];
   const index = order.indexOf(age);
@@ -9714,6 +14507,17 @@ function atlanteanPriorSelectedMinorBuildingKeys(age, config) {
 }
 
 function atlanteanSelectedMinorNodesForAge(age, config) {
+  if (isCustomMinorGodMode(config)) {
+    const nodes = [];
+    const seenSameBuilding = atlanteanPriorSelectedMinorBuildingKeys(age, config);
+    for (const candidate of customMinorRightSideNodesForAge(age, config, atlanteanFindRightSideNodesForToken)) {
+      const key = atlanteanMinorNodeSameBuildingKey(candidate, [...nodes, candidate]);
+      if (key && seenSameBuilding.has(key)) continue;
+      nodes.push(candidate);
+      if (key) seenSameBuilding.add(key);
+    }
+    return nodes;
+  }
   const selected = (config.minorGods?.[age] || []).map(canonicalMinorTech);
   const nodes = [];
   const seenSameBuilding = atlanteanPriorSelectedMinorBuildingKeys(age, config);
@@ -10936,6 +15740,7 @@ function chineseMinorNodeSameBuildingKey(node, contextNodes = []) {
 }
 
 function chinesePriorSelectedMinorBuildingKeys(age, config) {
+  if (isCustomMinorGodMode(config)) return customMinorPriorSelectedMinorBuildingKeys(age, config, chineseFindRightSideNodesForToken, chineseMinorNodeSameBuildingKey);
   const out = new Set();
   const order = ["ClassicalAge", "HeroicAge", "MythicAge"];
   const index = order.indexOf(age);
@@ -10957,6 +15762,17 @@ function chinesePriorSelectedMinorBuildingKeys(age, config) {
 }
 
 function chineseSelectedMinorNodesForAge(age, config) {
+  if (isCustomMinorGodMode(config)) {
+    const nodes = [];
+    const seenSameBuilding = chinesePriorSelectedMinorBuildingKeys(age, config);
+    for (const candidate of customMinorRightSideNodesForAge(age, config, chineseFindRightSideNodesForToken)) {
+      const key = chineseMinorNodeSameBuildingKey(candidate, [...nodes, candidate]);
+      if (key && seenSameBuilding.has(key)) continue;
+      nodes.push(candidate);
+      if (key) seenSameBuilding.add(key);
+    }
+    return nodes;
+  }
   const selected = (config.minorGods?.[age] || []).map(canonicalMinorTech);
   const nodes = [];
   const seenSameBuilding = chinesePriorSelectedMinorBuildingKeys(age, config);
@@ -11974,6 +16790,7 @@ function japaneseMinorNodeSameBuildingKey(node, contextNodes = []) {
 }
 
 function japanesePriorSelectedMinorBuildingKeys(age, config) {
+  if (isCustomMinorGodMode(config)) return customMinorPriorSelectedMinorBuildingKeys(age, config, japaneseFindRightSideNodesForToken, japaneseMinorNodeSameBuildingKey);
   const out = new Set();
   const order = ["ClassicalAge", "HeroicAge", "MythicAge"];
   const index = order.indexOf(age);
@@ -11995,6 +16812,17 @@ function japanesePriorSelectedMinorBuildingKeys(age, config) {
 }
 
 function japaneseSelectedMinorNodesForAge(age, config) {
+  if (isCustomMinorGodMode(config)) {
+    const nodes = [];
+    const seenSameBuilding = japanesePriorSelectedMinorBuildingKeys(age, config);
+    for (const candidate of customMinorRightSideNodesForAge(age, config, japaneseFindRightSideNodesForToken)) {
+      const key = japaneseMinorNodeSameBuildingKey(candidate, [...nodes, candidate]);
+      if (key && seenSameBuilding.has(key)) continue;
+      nodes.push(candidate);
+      if (key) seenSameBuilding.add(key);
+    }
+    return nodes;
+  }
   const selected = (config.minorGods?.[age] || []).map((tech) => japaneseCanonicalMinorTech(canonicalMinorTech(tech)));
   const nodes = [];
   const seenSameBuilding = japanesePriorSelectedMinorBuildingKeys(age, config);
@@ -12926,6 +17754,7 @@ function aztecMinorNodeSameBuildingKey(node, contextNodes = []) {
 }
 
 function aztecPriorSelectedMinorBuildingKeys(age, config) {
+  if (isCustomMinorGodMode(config)) return customMinorPriorSelectedMinorBuildingKeys(age, config, aztecFindRightSideNodesForToken, aztecMinorNodeSameBuildingKey);
   const out = new Set();
   const order = ["ClassicalAge", "HeroicAge", "MythicAge"];
   const index = order.indexOf(age);
@@ -12947,6 +17776,17 @@ function aztecPriorSelectedMinorBuildingKeys(age, config) {
 }
 
 function aztecSelectedMinorNodesForAge(age, config) {
+  if (isCustomMinorGodMode(config)) {
+    const nodes = [];
+    const seenSameBuilding = aztecPriorSelectedMinorBuildingKeys(age, config);
+    for (const candidate of customMinorRightSideNodesForAge(age, config, aztecFindRightSideNodesForToken)) {
+      const key = aztecMinorNodeSameBuildingKey(candidate, [...nodes, candidate]);
+      if (key && seenSameBuilding.has(key)) continue;
+      nodes.push(candidate);
+      if (key) seenSameBuilding.add(key);
+    }
+    return nodes;
+  }
   const selected = (config.minorGods?.[age] || []).map((tech) => aztecCanonicalMinorTech(canonicalMinorTech(tech)));
   const nodes = [];
   const seenSameBuilding = aztecPriorSelectedMinorBuildingKeys(age, config);
@@ -13816,15 +18656,32 @@ function techTreeBonusTrack(tech, config) {
 
 function generateTechTreeAge(age, config) {
   const techs = config.minorGods[age] || [];
+  const customTracks = techTreeCustomMinorBonusTracksForAge(config, age);
+  const tracks = customTracks.length ? customTracks : techs.map((tech) => techTreeBonusTrack(tech, config));
   const sourceMajor = config.uiTemplateMajor;
   const technologies = techTreeAgeTechnologiesBlock(sourceMajor, age, config);
   return `        <local:TechTreeAge AgeName="${age}">
 
             <local:TechTreeAge.Bonuses>
-${techs.map((tech) => indentBlock(techTreeBonusTrack(tech, config), 4)).join("\n\n")}
+${tracks.map((track) => indentBlock(track, 4)).join("\n\n")}
             </local:TechTreeAge.Bonuses>
 ${technologies ? "\n" + indentBlock(technologies, 3) + "\n" : ""}
         </local:TechTreeAge>`;
+}
+
+const ADVANCED_DEFENSES_UNIT_TRANSFORM_MODS = `<unittransformsmods>
+
+	<transform mergemode="replace">
+		<from>WallConnector</from>
+		<to>SentryTower</to>
+		<tech>ClassicalAgeGeneral</tech>
+		<command>WallConnectorToTower</command>
+	</transform>
+	
+</unittransformsmods>`;
+
+function hasSelectedAdvancedDefensesMinorTech(config) {
+  return selectedMinorHasBaseTech(config, "AdvancedDefenses");
 }
 
 const THOTH_PRIEST_MODS_TACTICS = `<tacticsmods>
@@ -13868,6 +18725,8 @@ function generateReadme(config) {
   const presetFileName = `${config.internalName}-preset.json`;
   const thothTacticsLine = hasSelectedThothMinorGod(config) ? `
 ${config.internalName}/game/data/gameplay/tactics/priest_mods.tactics` : "";
+  const advancedDefensesTransformLine = hasSelectedAdvancedDefensesMinorTech(config) ? `
+${config.internalName}/game/data/gameplay/unit_transform_mods.xml` : "";
   const bonusLines = selectedBonusEntries(config).map((entry) => `- ${entry.sourcePantheon} - ${dynamicBonusLabel(entry, config)}`);
   const bonusDisplayWarning = bonusDisplayWarningText(config);
   const bonusDisplayWarningBlock = bonusDisplayWarning ? `
@@ -13880,7 +18739,7 @@ Major god: ${config.displayName}
 Title: ${config.majorTitle}
 Pantheon: ${config.baseCulture}
 Starting god power: ${config.godPower}${config.godPowerPantheon ? ` (${config.godPowerPantheon})` : ""}
-Unique technology: ${uniqueTechNames(config).map(displayTechName).join(", ") || "None"}
+Unique technology: ${uniqueTechEntries(config).map((group) => group.label || displayTechName(group.id)).join(", ") || "None"}
 God bonuses:
 ${bonusLines.length ? bonusLines.join("\n") : "- None"}
 ${bonusDisplayWarningBlock}
@@ -13896,7 +18755,7 @@ ${config.internalName}/game/data/gameplay/major_gods_mods.xml
 ${config.internalName}/game/data/gameplay/minor_gods_mods.xml
 ${config.internalName}/game/data/gameplay/techtree_mods.xml
 ${config.internalName}/game/data/gameplay/proto_mods.xml
-${config.internalName}/game/data/gameplay/powers_mods.xml${thothTacticsLine}
+${config.internalName}/game/data/gameplay/powers_mods.xml${advancedDefensesTransformLine}${thothTacticsLine}
 ${config.internalName}/game/data/strings/English/stringmods.txt
 ${config.internalName}/game/ui_myth/content/pregame/godpicker/GodPicker_${config.baseCulture}_${config.internalName}.xaml
 ${config.internalName}/game/ui_myth/content/pregame/techtree/TechTree_${config.baseCulture}_${config.internalName}.xaml
@@ -13920,6 +18779,34 @@ async function resizeImageFileToPngBytes(file, width, height) {
     canvas.toBlob((out) => out ? resolve(out) : reject(new Error("Could not resize image.")), "image/png");
   });
   return new Uint8Array(await blob.arrayBuffer());
+}
+
+async function customMinorImageFilesForExport(config) {
+  const out = [];
+  if (config?.minorGodCustomization?.mode !== "custom") return out;
+  const seen = new Set();
+  for (const card of customMinorAllCards(config)) {
+    if (!card.name || !card.godPower || !card.mythUnit) continue;
+    const portraitSource = selectedCustomMinorPortraitFile(card.age, card.slot);
+    const iconSource = selectedCustomMinorIconFile(card.age, card.slot);
+    if (portraitSource) {
+      const fileName = customMinorImageFileName(card, "portrait");
+      const path = `${config.internalName}/game/ui_myth/resources/${config.lowerName}/minor_gods/${fileName}`;
+      if (!seen.has(path)) {
+        seen.add(path);
+        out.push(binaryFile(path, await resizeImageFileToPngBytes(portraitSource, 667, 774)));
+      }
+    }
+    if (iconSource) {
+      const fileName = customMinorImageFileName(card, "icon");
+      const path = `${config.internalName}/game/ui_myth/resources/${config.lowerName}/minor_gods/${fileName}`;
+      if (!seen.has(path)) {
+        seen.add(path);
+        out.push(binaryFile(path, await resizeImageFileToPngBytes(iconSource, 256, 256)));
+      }
+    }
+  }
+  return out;
 }
 
 async function generateFiles(config) {
@@ -13954,6 +18841,9 @@ async function generateFiles(config) {
   files.push(textFile(`${root}game/data/gameplay/techtree_mods.xml`, generateTechTreeMods(config)));
   files.push(textFile(`${root}game/data/gameplay/proto_mods.xml`, generateProtoMods(config)));
   files.push(textFile(`${root}game/data/gameplay/powers_mods.xml`, generatePowersMods(config)));
+  if (hasSelectedAdvancedDefensesMinorTech(config)) {
+    files.push(textFile(`${root}game/data/gameplay/unit_transform_mods.xml`, ADVANCED_DEFENSES_UNIT_TRANSFORM_MODS));
+  }
   files.push(directoryEntry(`${root}game/data/gameplay/tactics/`));
   if (hasSelectedThothMinorGod(config)) {
     files.push(textFile(`${root}game/data/gameplay/tactics/priest_mods.tactics`, THOTH_PRIEST_MODS_TACTICS));
@@ -13963,6 +18853,15 @@ async function generateFiles(config) {
   files.push(textFile(`${root}game/ui_myth/content/pregame/techtree/TechTree_${config.baseCulture}_${config.internalName}.xaml`, generateTechTreeXaml(config)));
   if (portraitBytes) files.push(binaryFile(`${root}game/ui_myth/resources/${config.lowerName}/${portraitName}`, portraitBytes));
   if (iconBytes) files.push(binaryFile(`${root}game/ui_myth/resources/${config.lowerName}/${iconName}`, iconBytes));
+  files.push(...await customMinorImageFilesForExport(config));
+  const argiveIconAsset = selectedArgivePatronageCustomIconAsset(config);
+  if (argiveIconAsset) {
+    files.push(directoryEntry(`${root}game/ui_myth/resources/${config.lowerName}/technologies/`));
+    files.push(binaryFile(
+      `${root}game/ui_myth/resources/${config.lowerName}/technologies/${argiveIconAsset.fileName}`,
+      uint8ArrayFromBase64(argiveIconAsset.dataBase64)
+    ));
+  }
   return files;
 }
 
@@ -14067,6 +18966,7 @@ function presetFromConfig(config) {
     uniqueTechs: config.uniqueTechs || [],
     bonuses: config.bonuses || [],
     minorGods: config.minorGods || {},
+    minorGodCustomization: config.minorGodCustomization || collectMinorCustomization(),
   };
 
   if (config.majorFocus) preset.majorFocus = config.majorFocus;
@@ -14164,6 +19064,7 @@ function applyPreset(preset) {
       }
     }
   }
+  if (preset.minorGodCustomization) applyMinorCustomizationPreset(preset.minorGodCustomization);
   enforceMinorDifference();
   updatePreview();
 }
@@ -14286,6 +19187,24 @@ function currentMajorGodIconPreviewUrl() {
   return previewMajorGodPreviewUrl;
 }
 
+const previewCustomMinorGodImageUrls = new Map();
+
+function currentCustomMinorGodIconPreviewUrl(age, slot) {
+  const key = `${age}_${slot}`;
+  const file = selectedCustomMinorIconFile(age, slot);
+  const previous = previewCustomMinorGodImageUrls.get(key) || null;
+  if (!file) {
+    if (previous?.url) URL.revokeObjectURL(previous.url);
+    previewCustomMinorGodImageUrls.delete(key);
+    return "";
+  }
+  if (previous?.file === file) return previous.url;
+  if (previous?.url) URL.revokeObjectURL(previous.url);
+  const url = URL.createObjectURL(file);
+  previewCustomMinorGodImageUrls.set(key, { file, url });
+  return url;
+}
+
 function makePreviewMajorGodIcon(src, alt) {
   const frame = previewElement("div", "preview-major-god-icon-frame");
   const img = previewImage(src, alt || "Major god icon", "preview-major-god-icon");
@@ -14306,230 +19225,1830 @@ async function selectedMajorGodIconDataUrl() {
 
 
 const PREVIEW_GOD_POWER_ICON_FILES = {
-  'agave_bloom': 'icons/godpowers/agave_bloom_icon_48x48_round.png',
-  'agavebloom': 'icons/godpowers/agave_bloom_icon_48x48_round.png',
-  'ancestors': 'icons/godpowers/ancestors_icon_48x48_round.png',
-  'arcadian_meadow': 'icons/godpowers/arcadian_meadow_icon_48x48_round.png',
-  'arcadianmeadow': 'icons/godpowers/arcadian_meadow_icon_48x48_round.png',
-  'asgardian_bastion': 'icons/godpowers/asgardian_bastion_icon_48x48_round.png',
-  'asgardianbastion': 'icons/godpowers/asgardian_bastion_icon_48x48_round.png',
-  'blazing_prairie': 'icons/godpowers/blazing_prairie_48x48_round.png',
-  'blazingprairie': 'icons/godpowers/blazing_prairie_48x48_round.png',
-  'blood_pact': 'icons/godpowers/blood_pact_icon_48x48_round.png',
-  'bloodpact': 'icons/godpowers/blood_pact_icon_48x48_round.png',
-  'bolt': 'icons/godpowers/bolt_icon_48x48_round.png',
-  'bronze': 'icons/godpowers/bronze_icon_48x48_round.png',
-  'ceasefire': 'icons/godpowers/ceasefire_icon_48x48_round.png',
-  'citadel': 'icons/godpowers/citadel_icon_48x48_round.png',
-  'communal_hearth': 'icons/godpowers/communal_hearth_icon_48x48_round.png',
-  'communalhearth': 'icons/godpowers/communal_hearth_icon_48x48_round.png',
-  'corrupted_ground': 'icons/godpowers/corrupted_ground_icon_48x48_round.png',
-  'corruptedground': 'icons/godpowers/corrupted_ground_icon_48x48_round.png',
-  'creation': 'icons/godpowers/creation_icon_48x48_round.png',
-  'curse': 'icons/godpowers/curse_icon_48x48_round.png',
-  'deconstruction': 'icons/godpowers/deconstruction_icon_48x48_round.png',
-  'divine_slash': 'icons/godpowers/divine_slash_icon_48x48_round.png',
-  'divineslash': 'icons/godpowers/divine_slash_icon_48x48_round.png',
-  'dragon_typhoon': 'icons/godpowers/dragon_typhoon_icon_48x48_round.png',
-  'dragontyphoon': 'icons/godpowers/dragon_typhoon_icon_48x48_round.png',
-  'drought_land': 'icons/godpowers/drought_land_icon_48x48_round.png',
-  'droughtland': 'icons/godpowers/drought_land_icon_48x48_round.png',
-  'dwarven_mine': 'icons/godpowers/dwarven_mine_icon_48x48_round.png',
-  'dwarvenmine': 'icons/godpowers/dwarven_mine_icon_48x48_round.png',
-  'earth_monster': 'icons/godpowers/earth_monster_icon_48x48_round.png',
-  'earth_wall': 'icons/godpowers/earth_wall_power_icon_48x48_round.png',
-  'earth_wall_power': 'icons/godpowers/earth_wall_power_icon_48x48_round.png',
-  'earthmonster': 'icons/godpowers/earth_monster_icon_48x48_round.png',
-  'earthquake': 'icons/godpowers/earthquake_icon_48x48_round.png',
-  'earthwall': 'icons/godpowers/earth_wall_power_icon_48x48_round.png',
-  'earthwallpower': 'icons/godpowers/earth_wall_power_icon_48x48_round.png',
-  'eclipse': 'icons/godpowers/eclipse_icon_48x48_round.png',
-  'fimbulwinter': 'icons/godpowers/fimbulwinter_icon_48x48_round.png',
-  'flaming_weapons': 'icons/godpowers/flaming_weapons_icon_48x48_round.png',
-  'flamingweapons': 'icons/godpowers/flaming_weapons_icon_48x48_round.png',
-  'forest_fire': 'icons/godpowers/forest_fire_icon_48x48_round.png',
-  'forest_protection': 'icons/godpowers/forest_protection_icon_48x48_round.png',
-  'forestfire': 'icons/godpowers/forest_fire_icon_48x48_round.png',
-  'forestprotection': 'icons/godpowers/forest_protection_icon_48x48_round.png',
-  'frost': 'icons/godpowers/frost_icon_48x48_round.png',
-  'gaia_forest': 'icons/godpowers/gaia_forest_icon_48x48_round.png',
-  'gaiaforest': 'icons/godpowers/gaia_forest_icon_48x48_round.png',
-  'goshinboku': 'icons/godpowers/goshinboku_icon_48x48_round.png',
-  'great_flood': 'icons/godpowers/great_flood_icon_48x48_round.png',
-  'great_hunt': 'icons/godpowers/great_hunt_icon_48x48_round.png',
-  'greatflood': 'icons/godpowers/great_flood_icon_48x48_round.png',
-  'greathunt': 'icons/godpowers/great_hunt_icon_48x48_round.png',
-  'gullinbursti': 'icons/godpowers/gullinbursti_icon_48x48_round.png',
-  'hachimans_blessing': 'icons/godpowers/hachimans_blessing_icon_48x48_round.png',
-  'hachimansblessing': 'icons/godpowers/hachimans_blessing_icon_48x48_round.png',
-  'healing_spring': 'icons/godpowers/healing_spring_icon_48x48_round.png',
-  'healingspring': 'icons/godpowers/healing_spring_icon_48x48_round.png',
-  'inferno': 'icons/godpowers/inferno_icon_48x48_round.png',
-  'infestation': 'icons/godpowers/infestation_icon_48x48_round.png',
-  'infested_den': 'icons/godpowers/infested_den_icon_48x48_round.png',
-  'infestedden': 'icons/godpowers/infested_den_icon_48x48_round.png',
-  'kusanagi': 'icons/godpowers/kusanagi_icon_48x48_round.png',
-  'lightning_storm': 'icons/godpowers/lightning_storm_icon_48x48_round.png',
-  'lightning_weapons': 'icons/godpowers/lightning_weapons_icon_48x48_round.png',
-  'lightningstorm': 'icons/godpowers/lightning_storm_icon_48x48_round.png',
-  'lightningweapons': 'icons/godpowers/lightning_weapons_icon_48x48_round.png',
-  'locust_swarm': 'icons/godpowers/locust_swarm_icon_48x48_round.png',
-  'locustswarm': 'icons/godpowers/locust_swarm_icon_48x48_round.png',
-  'lullaby': 'icons/godpowers/lullaby_icon_48x48_round.png',
-  'lure': 'icons/godpowers/lure_icon_48x48_round.png',
-  'meteor': 'icons/godpowers/meteor_icon_48x48_round.png',
-  'new_moon': 'icons/godpowers/new_moon_icon_48x48_round.png',
-  'newmoon': 'icons/godpowers/new_moon_icon_48x48_round.png',
-  'nidhogg': 'icons/godpowers/nidhogg_icon_48x48_round.png',
-  'obsidian_mirror': 'icons/godpowers/obsidian_mirror_icon_48x48_round.png',
-  'obsidianmirror': 'icons/godpowers/obsidian_mirror_icon_48x48_round.png',
-  'pestilence': 'icons/godpowers/pestilence_icon_48x48_round.png',
-  'pillar_of_tlalocan': 'icons/godpowers/pillar_of_tlalocan_icon_48x48_round.png',
-  'pillaroftlalocan': 'icons/godpowers/pillar_of_tlalocan_icon_48x48_round.png',
-  'plague_of_serpents': 'icons/godpowers/plague_of_serpents_icon_48x48_round.png',
-  'plagueofserpents': 'icons/godpowers/plague_of_serpents_icon_48x48_round.png',
-  'plenty_vault': 'icons/godpowers/plenty_vault_icon_48x48_round.png',
-  'plentyvault': 'icons/godpowers/plenty_vault_icon_48x48_round.png',
-  'prosperity': 'icons/godpowers/prosperity_icon_48x48_round.png',
-  'prosperous_seeds': 'icons/godpowers/prosperous_seeds_icon_48x48_round.png',
-  'prosperousseeds': 'icons/godpowers/prosperous_seeds_icon_48x48_round.png',
-  'purge': 'icons/godpowers/purge_icon_48x48_round.png',
-  'ragnarok': 'icons/godpowers/ragnarok_icon_48x48_round.png',
-  'rain': 'icons/godpowers/rain_icon_48x48_round.png',
-  'restoration': 'icons/godpowers/restoration_icon_48x48_round.png',
-  'sacred_gate': 'icons/godpowers/sacred_gate_icon_48x48_round.png',
-  'sacredgate': 'icons/godpowers/sacred_gate_icon_48x48_round.png',
-  'sentinel': 'icons/godpowers/sentinel_icon_48x48_round.png',
-  'shifting_sands': 'icons/godpowers/shifting_sands_icon_48x48_round.png',
-  'shiftingsands': 'icons/godpowers/shifting_sands_icon_48x48_round.png',
-  'shockwave': 'icons/godpowers/shockwave_icon_48x48_round.png',
-  'shogun': 'icons/godpowers/shogun_icon_48x48_round.png',
-  'shrine_of_the_hunt': 'icons/godpowers/shrine_of_the_hunt_icon_48x48_round.png',
-  'shrineofthehunt': 'icons/godpowers/shrine_of_the_hunt_icon_48x48_round.png',
-  'smiting_gust': 'icons/godpowers/smiting_gust_icon_48x48_round.png',
-  'smitinggust': 'icons/godpowers/smiting_gust_icon_48x48_round.png',
-  'solar_shield': 'icons/godpowers/solar_shield_icon_48x48_round.png',
-  'solarshield': 'icons/godpowers/solar_shield_icon_48x48_round.png',
-  'son_of_osiris': 'icons/godpowers/son_of_osiris_icon_48x48_round.png',
-  'sonofosiris': 'icons/godpowers/son_of_osiris_icon_48x48_round.png',
-  'spy': 'icons/godpowers/spy_icon_48x48_round.png',
-  'starfall': 'icons/godpowers/starfall_icon_48x48_round.png',
-  'swampland': 'icons/godpowers/swampland_icon_48x48_round.png',
-  'sword_of_divinity': 'icons/godpowers/sword_of_divinity_icon_48x48_round.png',
-  'swordofdivinity': 'icons/godpowers/sword_of_divinity_icon_48x48_round.png',
-  'tailwind': 'icons/godpowers/tailwind_icon_48x48_round.png',
-  'tempest': 'icons/godpowers/tempest_icon_48x48_round.png',
-  'the_peach_blossom_spring': 'icons/godpowers/the_peach_blossom_spring_power_icon_48x48_round.png',
-  'the_peach_blossom_spring_power': 'icons/godpowers/the_peach_blossom_spring_power_icon_48x48_round.png',
-  'thepeachblossomspring': 'icons/godpowers/the_peach_blossom_spring_power_icon_48x48_round.png',
-  'thepeachblossomspringpower': 'icons/godpowers/the_peach_blossom_spring_power_icon_48x48_round.png',
-  'thunder_burst': 'icons/godpowers/thunder_burst_icon_48x48_round.png',
-  'thunderburst': 'icons/godpowers/thunder_burst_icon_48x48_round.png',
-  'tornado': 'icons/godpowers/tornado_icon_48x48_round.png',
-  'undermine': 'icons/godpowers/undermine_icon_48x48_round.png',
-  'underworld_invasion': 'icons/godpowers/underworld_invasion_icon_48x48_round.png',
-  'underworld_passage': 'icons/godpowers/underworld_passage_icon_48x48_round.png',
-  'underworldinvasion': 'icons/godpowers/underworld_invasion_icon_48x48_round.png',
-  'underworldpassage': 'icons/godpowers/underworld_passage_icon_48x48_round.png',
-  'vanish': 'icons/godpowers/vanish_icon_48x48_round.png',
-  'venom_beast': 'icons/godpowers/venom_beast_icon_48x48_round.png',
-  'venombeast': 'icons/godpowers/venom_beast_icon_48x48_round.png',
-  'vision': 'icons/godpowers/vision_icon_48x48_round.png',
-  'volcano': 'icons/godpowers/volcano_icon_48x48_round.png',
-  'walking_woods': 'icons/godpowers/walking_woods_icon_48x48_round.png',
-  'walkingwoods': 'icons/godpowers/walking_woods_icon_48x48_round.png',
-  'wither': 'icons/godpowers/wither_icon_48x48_round.png',
-  'yinglongs_wrath': 'icons/godpowers/yinglongs_wrath_icon_48x48_round.png',
-  'yinglongswrath': 'icons/godpowers/yinglongs_wrath_icon_48x48_round.png'
+  "agave_bloom_icon_48x48_round": "icons/godpowers/agave_bloom_icon_48x48_round.png",
+  "agavebloomicon48x48round": "icons/godpowers/agave_bloom_icon_48x48_round.png",
+  "agave_bloom": "icons/godpowers/agave_bloom_icon_48x48_round.png",
+  "agavebloom": "icons/godpowers/agave_bloom_icon_48x48_round.png",
+  "ancestorsicon48x48round": "icons/godpowers/ancestors_icon_48x48_round.png",
+  "ancestors_icon_48x48_round": "icons/godpowers/ancestors_icon_48x48_round.png",
+  "ancestors": "icons/godpowers/ancestors_icon_48x48_round.png",
+  "arcadianmeadow": "icons/godpowers/arcadian_meadow_icon_48x48_round.png",
+  "arcadian_meadow": "icons/godpowers/arcadian_meadow_icon_48x48_round.png",
+  "arcadian_meadow_icon_48x48_round": "icons/godpowers/arcadian_meadow_icon_48x48_round.png",
+  "arcadianmeadowicon48x48round": "icons/godpowers/arcadian_meadow_icon_48x48_round.png",
+  "asgardian_bastion_icon_48x48_round": "icons/godpowers/asgardian_bastion_icon_48x48_round.png",
+  "asgardianbastionicon48x48round": "icons/godpowers/asgardian_bastion_icon_48x48_round.png",
+  "asgardianbastion": "icons/godpowers/asgardian_bastion_icon_48x48_round.png",
+  "asgardian_bastion": "icons/godpowers/asgardian_bastion_icon_48x48_round.png",
+  "blazingprairie48x48round": "icons/godpowers/blazing_prairie_48x48_round.png",
+  "blazing_prairie_48x48_round": "icons/godpowers/blazing_prairie_48x48_round.png",
+  "blazing_prairie": "icons/godpowers/blazing_prairie_48x48_round.png",
+  "blazingprairie": "icons/godpowers/blazing_prairie_48x48_round.png",
+  "bloodpacticon48x48round": "icons/godpowers/blood_pact_icon_48x48_round.png",
+  "blood_pact": "icons/godpowers/blood_pact_icon_48x48_round.png",
+  "blood_pact_icon_48x48_round": "icons/godpowers/blood_pact_icon_48x48_round.png",
+  "bloodpact": "icons/godpowers/blood_pact_icon_48x48_round.png",
+  "bolt": "icons/godpowers/bolt_icon_48x48_round.png",
+  "bolticon48x48round": "icons/godpowers/bolt_icon_48x48_round.png",
+  "bolt_icon_48x48_round": "icons/godpowers/bolt_icon_48x48_round.png",
+  "bronze": "icons/godpowers/bronze_icon_48x48_round.png",
+  "bronzeicon48x48round": "icons/godpowers/bronze_icon_48x48_round.png",
+  "bronze_icon_48x48_round": "icons/godpowers/bronze_icon_48x48_round.png",
+  "ceasefire_icon_48x48_round": "icons/godpowers/ceasefire_icon_48x48_round.png",
+  "ceasefire": "icons/godpowers/ceasefire_icon_48x48_round.png",
+  "ceasefireicon48x48round": "icons/godpowers/ceasefire_icon_48x48_round.png",
+  "citadelicon48x48round": "icons/godpowers/citadel_icon_48x48_round.png",
+  "citadel": "icons/godpowers/citadel_icon_48x48_round.png",
+  "citadel_icon_48x48_round": "icons/godpowers/citadel_icon_48x48_round.png",
+  "communal_hearth": "icons/godpowers/communal_hearth_icon_48x48_round.png",
+  "communal_hearth_icon_48x48_round": "icons/godpowers/communal_hearth_icon_48x48_round.png",
+  "communalhearth": "icons/godpowers/communal_hearth_icon_48x48_round.png",
+  "communalhearthicon48x48round": "icons/godpowers/communal_hearth_icon_48x48_round.png",
+  "corrupted_ground_icon_48x48_round": "icons/godpowers/corrupted_ground_icon_48x48_round.png",
+  "corruptedgroundicon48x48round": "icons/godpowers/corrupted_ground_icon_48x48_round.png",
+  "corrupted_ground": "icons/godpowers/corrupted_ground_icon_48x48_round.png",
+  "corruptedground": "icons/godpowers/corrupted_ground_icon_48x48_round.png",
+  "creationicon48x48round": "icons/godpowers/creation_icon_48x48_round.png",
+  "creation": "icons/godpowers/creation_icon_48x48_round.png",
+  "creation_icon_48x48_round": "icons/godpowers/creation_icon_48x48_round.png",
+  "curse_icon_48x48_round": "icons/godpowers/curse_icon_48x48_round.png",
+  "curseicon48x48round": "icons/godpowers/curse_icon_48x48_round.png",
+  "curse": "icons/godpowers/curse_icon_48x48_round.png",
+  "deconstructionicon48x48round": "icons/godpowers/deconstruction_icon_48x48_round.png",
+  "deconstruction": "icons/godpowers/deconstruction_icon_48x48_round.png",
+  "deconstruction_icon_48x48_round": "icons/godpowers/deconstruction_icon_48x48_round.png",
+  "divine_slash": "icons/godpowers/divine_slash_icon_48x48_round.png",
+  "divine_slash_icon_48x48_round": "icons/godpowers/divine_slash_icon_48x48_round.png",
+  "divineslashicon48x48round": "icons/godpowers/divine_slash_icon_48x48_round.png",
+  "divineslash": "icons/godpowers/divine_slash_icon_48x48_round.png",
+  "dragontyphoonicon48x48round": "icons/godpowers/dragon_typhoon_icon_48x48_round.png",
+  "dragontyphoon": "icons/godpowers/dragon_typhoon_icon_48x48_round.png",
+  "dragon_typhoon_icon_48x48_round": "icons/godpowers/dragon_typhoon_icon_48x48_round.png",
+  "dragon_typhoon": "icons/godpowers/dragon_typhoon_icon_48x48_round.png",
+  "drought_land": "icons/godpowers/drought_land_icon_48x48_round.png",
+  "droughtlandicon48x48round": "icons/godpowers/drought_land_icon_48x48_round.png",
+  "droughtland": "icons/godpowers/drought_land_icon_48x48_round.png",
+  "drought_land_icon_48x48_round": "icons/godpowers/drought_land_icon_48x48_round.png",
+  "dwarvenmineicon48x48round": "icons/godpowers/dwarven_mine_icon_48x48_round.png",
+  "dwarven_mine": "icons/godpowers/dwarven_mine_icon_48x48_round.png",
+  "dwarven_mine_icon_48x48_round": "icons/godpowers/dwarven_mine_icon_48x48_round.png",
+  "dwarvenmine": "icons/godpowers/dwarven_mine_icon_48x48_round.png",
+  "earthmonster": "icons/godpowers/earth_monster_icon_48x48_round.png",
+  "earthmonstericon48x48round": "icons/godpowers/earth_monster_icon_48x48_round.png",
+  "earth_monster_icon_48x48_round": "icons/godpowers/earth_monster_icon_48x48_round.png",
+  "earth_monster": "icons/godpowers/earth_monster_icon_48x48_round.png",
+  "earth_wall_power": "icons/godpowers/earth_wall_power_icon_48x48_round.png",
+  "earthwallpower": "icons/godpowers/earth_wall_power_icon_48x48_round.png",
+  "earth_wall_power_icon_48x48_round": "icons/godpowers/earth_wall_power_icon_48x48_round.png",
+  "earthwallpowericon48x48round": "icons/godpowers/earth_wall_power_icon_48x48_round.png",
+  "earthquakeicon48x48round": "icons/godpowers/earthquake_icon_48x48_round.png",
+  "earthquake": "icons/godpowers/earthquake_icon_48x48_round.png",
+  "earthquake_icon_48x48_round": "icons/godpowers/earthquake_icon_48x48_round.png",
+  "eclipse": "icons/godpowers/eclipse_icon_48x48_round.png",
+  "eclipse_icon_48x48_round": "icons/godpowers/eclipse_icon_48x48_round.png",
+  "eclipseicon48x48round": "icons/godpowers/eclipse_icon_48x48_round.png",
+  "fimbulwinter": "icons/godpowers/fimbulwinter_icon_48x48_round.png",
+  "fimbulwinter_icon_48x48_round": "icons/godpowers/fimbulwinter_icon_48x48_round.png",
+  "fimbulwintericon48x48round": "icons/godpowers/fimbulwinter_icon_48x48_round.png",
+  "flaming_weapons_icon_48x48_round": "icons/godpowers/flaming_weapons_icon_48x48_round.png",
+  "flamingweaponsicon48x48round": "icons/godpowers/flaming_weapons_icon_48x48_round.png",
+  "flaming_weapons": "icons/godpowers/flaming_weapons_icon_48x48_round.png",
+  "flamingweapons": "icons/godpowers/flaming_weapons_icon_48x48_round.png",
+  "forest_fire_icon_48x48_round": "icons/godpowers/forest_fire_icon_48x48_round.png",
+  "forestfire": "icons/godpowers/forest_fire_icon_48x48_round.png",
+  "forest_fire": "icons/godpowers/forest_fire_icon_48x48_round.png",
+  "forestfireicon48x48round": "icons/godpowers/forest_fire_icon_48x48_round.png",
+  "forestprotection": "icons/godpowers/forest_protection_icon_48x48_round.png",
+  "forestprotectionicon48x48round": "icons/godpowers/forest_protection_icon_48x48_round.png",
+  "forest_protection_icon_48x48_round": "icons/godpowers/forest_protection_icon_48x48_round.png",
+  "forest_protection": "icons/godpowers/forest_protection_icon_48x48_round.png",
+  "frosticon48x48round": "icons/godpowers/frost_icon_48x48_round.png",
+  "frost_icon_48x48_round": "icons/godpowers/frost_icon_48x48_round.png",
+  "frost": "icons/godpowers/frost_icon_48x48_round.png",
+  "gaia_forest_icon_48x48_round": "icons/godpowers/gaia_forest_icon_48x48_round.png",
+  "gaiaforesticon48x48round": "icons/godpowers/gaia_forest_icon_48x48_round.png",
+  "gaia_forest": "icons/godpowers/gaia_forest_icon_48x48_round.png",
+  "gaiaforest": "icons/godpowers/gaia_forest_icon_48x48_round.png",
+  "goshinboku": "icons/godpowers/goshinboku_icon_48x48_round.png",
+  "goshinbokuicon48x48round": "icons/godpowers/goshinboku_icon_48x48_round.png",
+  "goshinboku_icon_48x48_round": "icons/godpowers/goshinboku_icon_48x48_round.png",
+  "greatflood": "icons/godpowers/great_flood_icon_48x48_round.png",
+  "great_flood_icon_48x48_round": "icons/godpowers/great_flood_icon_48x48_round.png",
+  "great_flood": "icons/godpowers/great_flood_icon_48x48_round.png",
+  "greatfloodicon48x48round": "icons/godpowers/great_flood_icon_48x48_round.png",
+  "great_hunt": "icons/godpowers/great_hunt_icon_48x48_round.png",
+  "great_hunt_icon_48x48_round": "icons/godpowers/great_hunt_icon_48x48_round.png",
+  "greathunticon48x48round": "icons/godpowers/great_hunt_icon_48x48_round.png",
+  "greathunt": "icons/godpowers/great_hunt_icon_48x48_round.png",
+  "gullinbursti_icon_48x48_round": "icons/godpowers/gullinbursti_icon_48x48_round.png",
+  "gullinburstiicon48x48round": "icons/godpowers/gullinbursti_icon_48x48_round.png",
+  "gullinbursti": "icons/godpowers/gullinbursti_icon_48x48_round.png",
+  "hachimans_blessing_icon_48x48_round": "icons/godpowers/hachimans_blessing_icon_48x48_round.png",
+  "hachimans_blessing": "icons/godpowers/hachimans_blessing_icon_48x48_round.png",
+  "hachimansblessingicon48x48round": "icons/godpowers/hachimans_blessing_icon_48x48_round.png",
+  "hachimansblessing": "icons/godpowers/hachimans_blessing_icon_48x48_round.png",
+  "healingspring": "icons/godpowers/healing_spring_icon_48x48_round.png",
+  "healingspringicon48x48round": "icons/godpowers/healing_spring_icon_48x48_round.png",
+  "healing_spring": "icons/godpowers/healing_spring_icon_48x48_round.png",
+  "healing_spring_icon_48x48_round": "icons/godpowers/healing_spring_icon_48x48_round.png",
+  "inferno": "icons/godpowers/inferno_icon_48x48_round.png",
+  "infernoicon48x48round": "icons/godpowers/inferno_icon_48x48_round.png",
+  "inferno_icon_48x48_round": "icons/godpowers/inferno_icon_48x48_round.png",
+  "infestationicon48x48round": "icons/godpowers/infestation_icon_48x48_round.png",
+  "infestation": "icons/godpowers/infestation_icon_48x48_round.png",
+  "infestation_icon_48x48_round": "icons/godpowers/infestation_icon_48x48_round.png",
+  "infested_den_icon_48x48_round": "icons/godpowers/infested_den_icon_48x48_round.png",
+  "infestedden": "icons/godpowers/infested_den_icon_48x48_round.png",
+  "infesteddenicon48x48round": "icons/godpowers/infested_den_icon_48x48_round.png",
+  "infested_den": "icons/godpowers/infested_den_icon_48x48_round.png",
+  "kusanagi": "icons/godpowers/kusanagi_icon_48x48_round.png",
+  "kusanagiicon48x48round": "icons/godpowers/kusanagi_icon_48x48_round.png",
+  "kusanagi_icon_48x48_round": "icons/godpowers/kusanagi_icon_48x48_round.png",
+  "lightningstorm": "icons/godpowers/lightning_storm_icon_48x48_round.png",
+  "lightning_storm": "icons/godpowers/lightning_storm_icon_48x48_round.png",
+  "lightningstormicon48x48round": "icons/godpowers/lightning_storm_icon_48x48_round.png",
+  "lightning_storm_icon_48x48_round": "icons/godpowers/lightning_storm_icon_48x48_round.png",
+  "lightningweapons": "icons/godpowers/lightning_weapons_icon_48x48_round.png",
+  "lightning_weapons_icon_48x48_round": "icons/godpowers/lightning_weapons_icon_48x48_round.png",
+  "lightning_weapons": "icons/godpowers/lightning_weapons_icon_48x48_round.png",
+  "lightningweaponsicon48x48round": "icons/godpowers/lightning_weapons_icon_48x48_round.png",
+  "locust_swarm_icon_48x48_round": "icons/godpowers/locust_swarm_icon_48x48_round.png",
+  "locustswarmicon48x48round": "icons/godpowers/locust_swarm_icon_48x48_round.png",
+  "locust_swarm": "icons/godpowers/locust_swarm_icon_48x48_round.png",
+  "locustswarm": "icons/godpowers/locust_swarm_icon_48x48_round.png",
+  "lullaby_icon_48x48_round": "icons/godpowers/lullaby_icon_48x48_round.png",
+  "lullaby": "icons/godpowers/lullaby_icon_48x48_round.png",
+  "lullabyicon48x48round": "icons/godpowers/lullaby_icon_48x48_round.png",
+  "lure": "icons/godpowers/lure_icon_48x48_round.png",
+  "lureicon48x48round": "icons/godpowers/lure_icon_48x48_round.png",
+  "lure_icon_48x48_round": "icons/godpowers/lure_icon_48x48_round.png",
+  "meteor_icon_48x48_round": "icons/godpowers/meteor_icon_48x48_round.png",
+  "meteoricon48x48round": "icons/godpowers/meteor_icon_48x48_round.png",
+  "meteor": "icons/godpowers/meteor_icon_48x48_round.png",
+  "newmoon": "icons/godpowers/new_moon_icon_48x48_round.png",
+  "new_moon": "icons/godpowers/new_moon_icon_48x48_round.png",
+  "newmoonicon48x48round": "icons/godpowers/new_moon_icon_48x48_round.png",
+  "new_moon_icon_48x48_round": "icons/godpowers/new_moon_icon_48x48_round.png",
+  "nidhogg_icon_48x48_round": "icons/godpowers/nidhogg_icon_48x48_round.png",
+  "nidhoggicon48x48round": "icons/godpowers/nidhogg_icon_48x48_round.png",
+  "nidhogg": "icons/godpowers/nidhogg_icon_48x48_round.png",
+  "obsidianmirroricon48x48round": "icons/godpowers/obsidian_mirror_icon_48x48_round.png",
+  "obsidian_mirror_icon_48x48_round": "icons/godpowers/obsidian_mirror_icon_48x48_round.png",
+  "obsidian_mirror": "icons/godpowers/obsidian_mirror_icon_48x48_round.png",
+  "obsidianmirror": "icons/godpowers/obsidian_mirror_icon_48x48_round.png",
+  "pestilenceicon48x48round": "icons/godpowers/pestilence_icon_48x48_round.png",
+  "pestilence_icon_48x48_round": "icons/godpowers/pestilence_icon_48x48_round.png",
+  "pestilence": "icons/godpowers/pestilence_icon_48x48_round.png",
+  "pillaroftlalocan": "icons/godpowers/pillar_of_tlalocan_icon_48x48_round.png",
+  "pillaroftlalocanicon48x48round": "icons/godpowers/pillar_of_tlalocan_icon_48x48_round.png",
+  "pillar_of_tlalocan_icon_48x48_round": "icons/godpowers/pillar_of_tlalocan_icon_48x48_round.png",
+  "pillar_of_tlalocan": "icons/godpowers/pillar_of_tlalocan_icon_48x48_round.png",
+  "plagueofserpents": "icons/godpowers/plague_of_serpents_icon_48x48_round.png",
+  "plague_of_serpents_icon_48x48_round": "icons/godpowers/plague_of_serpents_icon_48x48_round.png",
+  "plague_of_serpents": "icons/godpowers/plague_of_serpents_icon_48x48_round.png",
+  "plagueofserpentsicon48x48round": "icons/godpowers/plague_of_serpents_icon_48x48_round.png",
+  "plentyvault": "icons/godpowers/plenty_vault_icon_48x48_round.png",
+  "plentyvaulticon48x48round": "icons/godpowers/plenty_vault_icon_48x48_round.png",
+  "plenty_vault": "icons/godpowers/plenty_vault_icon_48x48_round.png",
+  "plenty_vault_icon_48x48_round": "icons/godpowers/plenty_vault_icon_48x48_round.png",
+  "prosperityicon48x48round": "icons/godpowers/prosperity_icon_48x48_round.png",
+  "prosperity": "icons/godpowers/prosperity_icon_48x48_round.png",
+  "prosperity_icon_48x48_round": "icons/godpowers/prosperity_icon_48x48_round.png",
+  "prosperousseeds": "icons/godpowers/prosperous_seeds_icon_48x48_round.png",
+  "prosperous_seeds_icon_48x48_round": "icons/godpowers/prosperous_seeds_icon_48x48_round.png",
+  "prosperous_seeds": "icons/godpowers/prosperous_seeds_icon_48x48_round.png",
+  "prosperousseedsicon48x48round": "icons/godpowers/prosperous_seeds_icon_48x48_round.png",
+  "purge_icon_48x48_round": "icons/godpowers/purge_icon_48x48_round.png",
+  "purgeicon48x48round": "icons/godpowers/purge_icon_48x48_round.png",
+  "purge": "icons/godpowers/purge_icon_48x48_round.png",
+  "ragnarok_icon_48x48_round": "icons/godpowers/ragnarok_icon_48x48_round.png",
+  "ragnarokicon48x48round": "icons/godpowers/ragnarok_icon_48x48_round.png",
+  "ragnarok": "icons/godpowers/ragnarok_icon_48x48_round.png",
+  "rain_icon_48x48_round": "icons/godpowers/rain_icon_48x48_round.png",
+  "rain": "icons/godpowers/rain_icon_48x48_round.png",
+  "rainicon48x48round": "icons/godpowers/rain_icon_48x48_round.png",
+  "restoration_icon_48x48_round": "icons/godpowers/restoration_icon_48x48_round.png",
+  "restoration": "icons/godpowers/restoration_icon_48x48_round.png",
+  "restorationicon48x48round": "icons/godpowers/restoration_icon_48x48_round.png",
+  "sacred_gate_icon_48x48_round": "icons/godpowers/sacred_gate_icon_48x48_round.png",
+  "sacredgate": "icons/godpowers/sacred_gate_icon_48x48_round.png",
+  "sacred_gate": "icons/godpowers/sacred_gate_icon_48x48_round.png",
+  "sacredgateicon48x48round": "icons/godpowers/sacred_gate_icon_48x48_round.png",
+  "sentinel": "icons/godpowers/sentinel_icon_48x48_round.png",
+  "sentinelicon48x48round": "icons/godpowers/sentinel_icon_48x48_round.png",
+  "sentinel_icon_48x48_round": "icons/godpowers/sentinel_icon_48x48_round.png",
+  "shiftingsands": "icons/godpowers/shifting_sands_icon_48x48_round.png",
+  "shiftingsandsicon48x48round": "icons/godpowers/shifting_sands_icon_48x48_round.png",
+  "shifting_sands_icon_48x48_round": "icons/godpowers/shifting_sands_icon_48x48_round.png",
+  "shifting_sands": "icons/godpowers/shifting_sands_icon_48x48_round.png",
+  "shockwave_icon_48x48_round": "icons/godpowers/shockwave_icon_48x48_round.png",
+  "shockwaveicon48x48round": "icons/godpowers/shockwave_icon_48x48_round.png",
+  "shockwave": "icons/godpowers/shockwave_icon_48x48_round.png",
+  "shogunicon48x48round": "icons/godpowers/shogun_icon_48x48_round.png",
+  "shogun_icon_48x48_round": "icons/godpowers/shogun_icon_48x48_round.png",
+  "shogun": "icons/godpowers/shogun_icon_48x48_round.png",
+  "shrine_of_the_hunt_icon_48x48_round": "icons/godpowers/shrine_of_the_hunt_icon_48x48_round.png",
+  "shrineofthehunt": "icons/godpowers/shrine_of_the_hunt_icon_48x48_round.png",
+  "shrine_of_the_hunt": "icons/godpowers/shrine_of_the_hunt_icon_48x48_round.png",
+  "shrineofthehunticon48x48round": "icons/godpowers/shrine_of_the_hunt_icon_48x48_round.png",
+  "smitinggusticon48x48round": "icons/godpowers/smiting_gust_icon_48x48_round.png",
+  "smitinggust": "icons/godpowers/smiting_gust_icon_48x48_round.png",
+  "smiting_gust": "icons/godpowers/smiting_gust_icon_48x48_round.png",
+  "smiting_gust_icon_48x48_round": "icons/godpowers/smiting_gust_icon_48x48_round.png",
+  "solar_shield_icon_48x48_round": "icons/godpowers/solar_shield_icon_48x48_round.png",
+  "solarshieldicon48x48round": "icons/godpowers/solar_shield_icon_48x48_round.png",
+  "solar_shield": "icons/godpowers/solar_shield_icon_48x48_round.png",
+  "solarshield": "icons/godpowers/solar_shield_icon_48x48_round.png",
+  "sonofosirisicon48x48round": "icons/godpowers/son_of_osiris_icon_48x48_round.png",
+  "sonofosiris": "icons/godpowers/son_of_osiris_icon_48x48_round.png",
+  "son_of_osiris_icon_48x48_round": "icons/godpowers/son_of_osiris_icon_48x48_round.png",
+  "son_of_osiris": "icons/godpowers/son_of_osiris_icon_48x48_round.png",
+  "spyicon48x48round": "icons/godpowers/spy_icon_48x48_round.png",
+  "spy_icon_48x48_round": "icons/godpowers/spy_icon_48x48_round.png",
+  "spy": "icons/godpowers/spy_icon_48x48_round.png",
+  "starfall": "icons/godpowers/starfall_icon_48x48_round.png",
+  "starfall_icon_48x48_round": "icons/godpowers/starfall_icon_48x48_round.png",
+  "starfallicon48x48round": "icons/godpowers/starfall_icon_48x48_round.png",
+  "swampland_icon_48x48_round": "icons/godpowers/swampland_icon_48x48_round.png",
+  "swampland": "icons/godpowers/swampland_icon_48x48_round.png",
+  "swamplandicon48x48round": "icons/godpowers/swampland_icon_48x48_round.png",
+  "sword_of_divinity": "icons/godpowers/sword_of_divinity_icon_48x48_round.png",
+  "swordofdivinityicon48x48round": "icons/godpowers/sword_of_divinity_icon_48x48_round.png",
+  "swordofdivinity": "icons/godpowers/sword_of_divinity_icon_48x48_round.png",
+  "sword_of_divinity_icon_48x48_round": "icons/godpowers/sword_of_divinity_icon_48x48_round.png",
+  "tailwind_icon_48x48_round": "icons/godpowers/tailwind_icon_48x48_round.png",
+  "tailwind": "icons/godpowers/tailwind_icon_48x48_round.png",
+  "tailwindicon48x48round": "icons/godpowers/tailwind_icon_48x48_round.png",
+  "tempest": "icons/godpowers/tempest_icon_48x48_round.png",
+  "tempest_icon_48x48_round": "icons/godpowers/tempest_icon_48x48_round.png",
+  "tempesticon48x48round": "icons/godpowers/tempest_icon_48x48_round.png",
+  "the_peach_blossom_spring_power": "icons/godpowers/the_peach_blossom_spring_power_icon_48x48_round.png",
+  "the_peach_blossom_spring_power_icon_48x48_round": "icons/godpowers/the_peach_blossom_spring_power_icon_48x48_round.png",
+  "thepeachblossomspringpowericon48x48round": "icons/godpowers/the_peach_blossom_spring_power_icon_48x48_round.png",
+  "thepeachblossomspringpower": "icons/godpowers/the_peach_blossom_spring_power_icon_48x48_round.png",
+  "thunder_burst_icon_48x48_round": "icons/godpowers/thunder_burst_icon_48x48_round.png",
+  "thunderburst": "icons/godpowers/thunder_burst_icon_48x48_round.png",
+  "thunder_burst": "icons/godpowers/thunder_burst_icon_48x48_round.png",
+  "thunderbursticon48x48round": "icons/godpowers/thunder_burst_icon_48x48_round.png",
+  "tornado": "icons/godpowers/tornado_icon_48x48_round.png",
+  "tornado_icon_48x48_round": "icons/godpowers/tornado_icon_48x48_round.png",
+  "tornadoicon48x48round": "icons/godpowers/tornado_icon_48x48_round.png",
+  "undermine": "icons/godpowers/undermine_icon_48x48_round.png",
+  "undermineicon48x48round": "icons/godpowers/undermine_icon_48x48_round.png",
+  "undermine_icon_48x48_round": "icons/godpowers/undermine_icon_48x48_round.png",
+  "underworld_invasion_icon_48x48_round": "icons/godpowers/underworld_invasion_icon_48x48_round.png",
+  "underworld_invasion": "icons/godpowers/underworld_invasion_icon_48x48_round.png",
+  "underworldinvasion": "icons/godpowers/underworld_invasion_icon_48x48_round.png",
+  "underworldinvasionicon48x48round": "icons/godpowers/underworld_invasion_icon_48x48_round.png",
+  "underworld_passage_icon_48x48_round": "icons/godpowers/underworld_passage_icon_48x48_round.png",
+  "underworld_passage": "icons/godpowers/underworld_passage_icon_48x48_round.png",
+  "underworldpassage": "icons/godpowers/underworld_passage_icon_48x48_round.png",
+  "underworldpassageicon48x48round": "icons/godpowers/underworld_passage_icon_48x48_round.png",
+  "vanish_icon_48x48_round": "icons/godpowers/vanish_icon_48x48_round.png",
+  "vanish": "icons/godpowers/vanish_icon_48x48_round.png",
+  "vanishicon48x48round": "icons/godpowers/vanish_icon_48x48_round.png",
+  "venombeasticon48x48round": "icons/godpowers/venom_beast_icon_48x48_round.png",
+  "venom_beast_icon_48x48_round": "icons/godpowers/venom_beast_icon_48x48_round.png",
+  "venom_beast": "icons/godpowers/venom_beast_icon_48x48_round.png",
+  "venombeast": "icons/godpowers/venom_beast_icon_48x48_round.png",
+  "vision_icon_48x48_round": "icons/godpowers/vision_icon_48x48_round.png",
+  "vision": "icons/godpowers/vision_icon_48x48_round.png",
+  "visionicon48x48round": "icons/godpowers/vision_icon_48x48_round.png",
+  "volcanoicon48x48round": "icons/godpowers/volcano_icon_48x48_round.png",
+  "volcano_icon_48x48_round": "icons/godpowers/volcano_icon_48x48_round.png",
+  "volcano": "icons/godpowers/volcano_icon_48x48_round.png",
+  "walking_woods": "icons/godpowers/walking_woods_icon_48x48_round.png",
+  "walkingwoodsicon48x48round": "icons/godpowers/walking_woods_icon_48x48_round.png",
+  "walkingwoods": "icons/godpowers/walking_woods_icon_48x48_round.png",
+  "walking_woods_icon_48x48_round": "icons/godpowers/walking_woods_icon_48x48_round.png",
+  "withericon48x48round": "icons/godpowers/wither_icon_48x48_round.png",
+  "wither": "icons/godpowers/wither_icon_48x48_round.png",
+  "wither_icon_48x48_round": "icons/godpowers/wither_icon_48x48_round.png",
+  "yinglongswrathicon48x48round": "icons/godpowers/yinglongs_wrath_icon_48x48_round.png",
+  "yinglongswrath": "icons/godpowers/yinglongs_wrath_icon_48x48_round.png",
+  "yinglongs_wrath_icon_48x48_round": "icons/godpowers/yinglongs_wrath_icon_48x48_round.png",
+  "yinglongs_wrath": "icons/godpowers/yinglongs_wrath_icon_48x48_round.png"
 };
 
 const PREVIEW_TECH_ICON_FILES = {
-  'celestial_weapons': 'icons/technologies/celestial_weapons_icon_48x48_round.png',
-  'celestialweapons': 'icons/technologies/celestial_weapons_icon_48x48_round.png',
-  'channels': 'icons/technologies/channels_icon_48x48_round.png',
-  'clairvoyance': 'icons/technologies/clairvoyance_icon_48x48_round.png',
-  'crushing_waves': 'icons/technologies/crushing_waves_icon_48x48_round.png',
-  'crushingwaves': 'icons/technologies/crushing_waves_icon_48x48_round.png',
-  'divine_labor': 'icons/technologies/divine_labor_icon_48x48_round.png',
-  'divinelabor': 'icons/technologies/divine_labor_icon_48x48_round.png',
-  'empyrean_speed': 'icons/technologies/empyrean_speed_icon_48x48_round.png',
-  'empyreanspeed': 'icons/technologies/empyrean_speed_icon_48x48_round.png',
-  'eyes_in_the_forest': 'icons/technologies/eyes_in_the_forest_icon_48x48_round.png',
-  'eyesintheforest': 'icons/technologies/eyes_in_the_forest_icon_48x48_round.png',
-  'feast_of_tlaxochimaco': 'icons/technologies/feast_of_tlaxochimaco_icon_48x48_round.png',
-  'feastoftlaxochimaco': 'icons/technologies/feast_of_tlaxochimaco_icon_48x48_round.png',
-  'flood_of_the_nile': 'icons/technologies/flood_of_the_nile_icon_48x48_round.png',
-  'floodofthenile': 'icons/technologies/flood_of_the_nile_icon_48x48_round.png',
-  'freyrs_gift': 'icons/technologies/freyrs_gift_icon_48x48_round.png',
-  'freyrsgift': 'icons/technologies/freyrs_gift_icon_48x48_round.png',
-  'hamask': 'icons/technologies/hamask_icon_48x48_round.png',
-  'hammer_of_thunder': 'icons/technologies/hammer_of_thunder_icon_48x48_round.png',
-  'hammerofthunder': 'icons/technologies/hammer_of_thunder_icon_48x48_round.png',
-  'herbal_medicine': 'icons/technologies/herbal_medicine_icon_48x48_round.png',
-  'herbalmedicine': 'icons/technologies/herbal_medicine_icon_48x48_round.png',
-  'kagura': 'icons/technologies/kagura_icon_48x48_round.png',
-  'kuafu_chieftain': 'icons/technologies/kuafu_chieftain_icon_48x48_round.png',
-  'kuafuchieftain': 'icons/technologies/kuafu_chieftain_icon_48x48_round.png',
-  'lord_of_horses': 'icons/technologies/lord_of_horses_icon_48x48_round.png',
-  'lordofhorses': 'icons/technologies/lord_of_horses_icon_48x48_round.png',
-  'mountainous_might': 'icons/technologies/mountainous_might_icon_48x48_round.png',
-  'mountainousmight': 'icons/technologies/mountainous_might_icon_48x48_round.png',
-  'olympian_parentage': 'icons/technologies/olympian_parentage_icon_48x48_round.png',
-  'olympianparentage': 'icons/technologies/olympian_parentage_icon_48x48_round.png',
-  'peach_of_immortality': 'icons/technologies/peach_of_immortality_icon_48x48_round.png',
-  'peachofimmortality': 'icons/technologies/peach_of_immortality_icon_48x48_round.png',
-  'skin_of_the_rhino': 'icons/technologies/skin_of_the_rhino_icon_48x48_round.png',
-  'skinoftherhino': 'icons/technologies/skin_of_the_rhino_icon_48x48_round.png',
-  'tai_chi': 'icons/technologies/tai_chi_icon_48x48_round.png',
-  'taichi': 'icons/technologies/tai_chi_icon_48x48_round.png',
-  'temporal_chaos': 'icons/technologies/temporal_chaos_icon_48x48_round.png',
-  'temporalchaos': 'icons/technologies/temporal_chaos_icon_48x48_round.png',
-  'tenshu': 'icons/technologies/tenshu_icon_48x48_round.png',
-  'tepeyollotls_reach': 'icons/technologies/tepeyollotls_reach_icon_48x48_round.png',
-  'tepeyollotlsreach': 'icons/technologies/tepeyollotls_reach_icon_48x48_round.png',
-  'vaults_of_erebus': 'icons/technologies/vaults_of_erebus_icon_48x48_round.png',
-  'vaultsoferebus': 'icons/technologies/vaults_of_erebus_icon_48x48_round.png',
-  'wings_of_the_south': 'icons/technologies/wings_of_the_south_icon_48x48_round.png',
-  'wingsofthesouth': 'icons/technologies/wings_of_the_south_icon_48x48_round.png'
+  "abumpergrainharvesticon48x48round": "icons/technologies/a_bumper_grain_harvest_icon_48x48_round.png",
+  "a_bumper_grain_harvest": "icons/technologies/a_bumper_grain_harvest_icon_48x48_round.png",
+  "abumpergrainharvest": "icons/technologies/a_bumper_grain_harvest_icon_48x48_round.png",
+  "a_bumper_grain_harvest_icon_48x48_round": "icons/technologies/a_bumper_grain_harvest_icon_48x48_round.png",
+  "abundance_icon_48x48_round": "icons/technologies/abundance_icon_48x48_round.png",
+  "abundanceicon48x48round": "icons/technologies/abundance_icon_48x48_round.png",
+  "abundance": "icons/technologies/abundance_icon_48x48_round.png",
+  "adze_of_wepwawet_icon_48x48_round": "icons/technologies/adze_of_wepwawet_icon_48x48_round.png",
+  "adze_of_wepwawet": "icons/technologies/adze_of_wepwawet_icon_48x48_round.png",
+  "adzeofwepwaweticon48x48round": "icons/technologies/adze_of_wepwawet_icon_48x48_round.png",
+  "adzeofwepwawet": "icons/technologies/adze_of_wepwawet_icon_48x48_round.png",
+  "aegis_shield": "icons/technologies/aegis_shield_icon_48x48_round.png",
+  "aegisshieldicon48x48round": "icons/technologies/aegis_shield_icon_48x48_round.png",
+  "aegisshield": "icons/technologies/aegis_shield_icon_48x48_round.png",
+  "aegis_shield_icon_48x48_round": "icons/technologies/aegis_shield_icon_48x48_round.png",
+  "alluvialclay": "icons/technologies/alluvial_clay_icon_48x48_round.png",
+  "alluvial_clay_icon_48x48_round": "icons/technologies/alluvial_clay_icon_48x48_round.png",
+  "alluvialclayicon48x48round": "icons/technologies/alluvial_clay_icon_48x48_round.png",
+  "alluvial_clay": "icons/technologies/alluvial_clay_icon_48x48_round.png",
+  "anastropheicon48x48round": "icons/technologies/anastrophe_icon_48x48_round.png",
+  "anastrophe": "icons/technologies/anastrophe_icon_48x48_round.png",
+  "anastrophe_icon_48x48_round": "icons/technologies/anastrophe_icon_48x48_round.png",
+  "arcticgaleicon48x48round": "icons/technologies/arctic_gale_icon_48x48_round.png",
+  "arcticgale": "icons/technologies/arctic_gale_icon_48x48_round.png",
+  "arctic_gale": "icons/technologies/arctic_gale_icon_48x48_round.png",
+  "arctic_gale_icon_48x48_round": "icons/technologies/arctic_gale_icon_48x48_round.png",
+  "arcticwindsicon48x48round": "icons/technologies/arctic_winds_icon_48x48_round.png",
+  "arctic_winds_icon_48x48_round": "icons/technologies/arctic_winds_icon_48x48_round.png",
+  "arcticwinds": "icons/technologies/arctic_winds_icon_48x48_round.png",
+  "arctic_winds": "icons/technologies/arctic_winds_icon_48x48_round.png",
+  "argive_patronage_demeter": "icons/technologies/argive_patronage_demeter_icon_48x48_round.png",
+  "argive_patronage_demeter_icon_48x48_round": "icons/technologies/argive_patronage_demeter_icon_48x48_round.png",
+  "argivepatronagedemetericon48x48round": "icons/technologies/argive_patronage_demeter_icon_48x48_round.png",
+  "argivepatronagedemeter": "icons/technologies/argive_patronage_demeter_icon_48x48_round.png",
+  "argivepatronagegastraphetoros": "icons/technologies/argive_patronage_gastraphetoros_icon.png",
+  "argive_patronage_gastraphetoros": "icons/technologies/argive_patronage_gastraphetoros_icon.png",
+  "argivepatronagegastraphetorosicon": "icons/technologies/argive_patronage_gastraphetoros_icon.png",
+  "argive_patronage_gastraphetoros_icon": "icons/technologies/argive_patronage_gastraphetoros_icon.png",
+  "argive_patronage_hetairos_icon": "icons/technologies/argive_patronage_hetairos_icon.png",
+  "argive_patronage_hetairos": "icons/technologies/argive_patronage_hetairos_icon.png",
+  "argivepatronagehetairos": "icons/technologies/argive_patronage_hetairos_icon.png",
+  "argivepatronagehetairosicon": "icons/technologies/argive_patronage_hetairos_icon.png",
+  "argive_patronage_icon_48x48_round": "icons/technologies/argive_patronage_icon_48x48_round.png",
+  "argive_patronage": "icons/technologies/argive_patronage_icon_48x48_round.png",
+  "argivepatronageicon48x48round": "icons/technologies/argive_patronage_icon_48x48_round.png",
+  "argivepatronage": "icons/technologies/argive_patronage_icon_48x48_round.png",
+  "argonauts": "icons/technologies/argonauts_icon_48x48_round.png",
+  "argonautsicon48x48round": "icons/technologies/argonauts_icon_48x48_round.png",
+  "argonauts_icon_48x48_round": "icons/technologies/argonauts_icon_48x48_round.png",
+  "asceticpractices": "icons/technologies/ascetic_practices_icon_48x48_round.png",
+  "ascetic_practices_icon_48x48_round": "icons/technologies/ascetic_practices_icon_48x48_round.png",
+  "asceticpracticesicon48x48round": "icons/technologies/ascetic_practices_icon_48x48_round.png",
+  "ascetic_practices": "icons/technologies/ascetic_practices_icon_48x48_round.png",
+  "asper_blood": "icons/technologies/asper_blood_icon_48x48_round.png",
+  "asperbloodicon48x48round": "icons/technologies/asper_blood_icon_48x48_round.png",
+  "asper_blood_icon_48x48_round": "icons/technologies/asper_blood_icon_48x48_round.png",
+  "asperblood": "icons/technologies/asper_blood_icon_48x48_round.png",
+  "asymmetrical_bows": "icons/technologies/asymmetrical_bows_icon_48x48_round.png",
+  "asymmetricalbows": "icons/technologies/asymmetrical_bows_icon_48x48_round.png",
+  "asymmetrical_bows_icon_48x48_round": "icons/technologies/asymmetrical_bows_icon_48x48_round.png",
+  "asymmetricalbowsicon48x48round": "icons/technologies/asymmetrical_bows_icon_48x48_round.png",
+  "atefcrown": "icons/technologies/atef_crown_icon_48x48_round.png",
+  "atef_crown_icon_48x48_round": "icons/technologies/atef_crown_icon_48x48_round.png",
+  "atefcrownicon48x48round": "icons/technologies/atef_crown_icon_48x48_round.png",
+  "atef_crown": "icons/technologies/atef_crown_icon_48x48_round.png",
+  "autumnofabundance": "icons/technologies/autumn_of_abundance_icon_48x48_round.png",
+  "autumn_of_abundance": "icons/technologies/autumn_of_abundance_icon_48x48_round.png",
+  "autumn_of_abundance_icon_48x48_round": "icons/technologies/autumn_of_abundance_icon_48x48_round.png",
+  "autumnofabundanceicon48x48round": "icons/technologies/autumn_of_abundance_icon_48x48_round.png",
+  "avenging_spirit_icon_48x48_round": "icons/technologies/avenging_spirit_icon_48x48_round.png",
+  "avengingspiriticon48x48round": "icons/technologies/avenging_spirit_icon_48x48_round.png",
+  "avenging_spirit": "icons/technologies/avenging_spirit_icon_48x48_round.png",
+  "avengingspirit": "icons/technologies/avenging_spirit_icon_48x48_round.png",
+  "axe_of_vengeance_icon_48x48_round": "icons/technologies/axe_of_vengeance_icon_48x48_round.png",
+  "axeofvengeanceicon48x48round": "icons/technologies/axe_of_vengeance_icon_48x48_round.png",
+  "axeofvengeance": "icons/technologies/axe_of_vengeance_icon_48x48_round.png",
+  "axe_of_vengeance": "icons/technologies/axe_of_vengeance_icon_48x48_round.png",
+  "beast_slayer_icon_48x48_round": "icons/technologies/beast_slayer_icon_48x48_round.png",
+  "beast_slayer": "icons/technologies/beast_slayer_icon_48x48_round.png",
+  "beastslayericon48x48round": "icons/technologies/beast_slayer_icon_48x48_round.png",
+  "beastslayer": "icons/technologies/beast_slayer_icon_48x48_round.png",
+  "berserkergang_icon_48x48_round": "icons/technologies/berserkergang_icon_48x48_round.png",
+  "berserkergang": "icons/technologies/berserkergang_icon_48x48_round.png",
+  "berserkergangicon48x48round": "icons/technologies/berserkergang_icon_48x48_round.png",
+  "biteofthesharkicon48x48round": "icons/technologies/bite_of_the_shark_icon_48x48_round.png",
+  "bite_of_the_shark": "icons/technologies/bite_of_the_shark_icon_48x48_round.png",
+  "biteoftheshark": "icons/technologies/bite_of_the_shark_icon_48x48_round.png",
+  "bite_of_the_shark_icon_48x48_round": "icons/technologies/bite_of_the_shark_icon_48x48_round.png",
+  "bone_bow_icon_48x48_round": "icons/technologies/bone_bow_icon_48x48_round.png",
+  "bonebowicon48x48round": "icons/technologies/bone_bow_icon_48x48_round.png",
+  "bone_bow": "icons/technologies/bone_bow_icon_48x48_round.png",
+  "bonebow": "icons/technologies/bone_bow_icon_48x48_round.png",
+  "bookofthothicon48x48round": "icons/technologies/book_of_thoth_icon_48x48_round.png",
+  "book_of_thoth": "icons/technologies/book_of_thoth_icon_48x48_round.png",
+  "book_of_thoth_icon_48x48_round": "icons/technologies/book_of_thoth_icon_48x48_round.png",
+  "bookofthoth": "icons/technologies/book_of_thoth_icon_48x48_round.png",
+  "bottomless_stomach": "icons/technologies/bottomless_stomach_icon_48x48_round.png",
+  "bottomlessstomach": "icons/technologies/bottomless_stomach_icon_48x48_round.png",
+  "bottomless_stomach_icon_48x48_round": "icons/technologies/bottomless_stomach_icon_48x48_round.png",
+  "bottomlessstomachicon48x48round": "icons/technologies/bottomless_stomach_icon_48x48_round.png",
+  "bravery": "icons/technologies/bravery_icon_48x48_round.png",
+  "bravery_icon_48x48_round": "icons/technologies/bravery_icon_48x48_round.png",
+  "braveryicon48x48round": "icons/technologies/bravery_icon_48x48_round.png",
+  "burning_malevolence_icon_48x48_round": "icons/technologies/burning_malevolence_icon_48x48_round.png",
+  "burning_malevolence": "icons/technologies/burning_malevolence_icon_48x48_round.png",
+  "burningmalevolenceicon48x48round": "icons/technologies/burning_malevolence_icon_48x48_round.png",
+  "burningmalevolence": "icons/technologies/burning_malevolence_icon_48x48_round.png",
+  "burnt_water_icon_48x48_round": "icons/technologies/burnt_water_icon_48x48_round.png",
+  "burnt_water": "icons/technologies/burnt_water_icon_48x48_round.png",
+  "burntwatericon48x48round": "icons/technologies/burnt_water_icon_48x48_round.png",
+  "burntwater": "icons/technologies/burnt_water_icon_48x48_round.png",
+  "call_of_valhalla": "icons/technologies/call_of_valhalla_icon_48x48_round.png",
+  "call_of_valhalla_icon_48x48_round": "icons/technologies/call_of_valhalla_icon_48x48_round.png",
+  "callofvalhallaicon48x48round": "icons/technologies/call_of_valhalla_icon_48x48_round.png",
+  "callofvalhalla": "icons/technologies/call_of_valhalla_icon_48x48_round.png",
+  "cavetroll": "icons/technologies/cave_troll_icon_48x48_round.png",
+  "cave_troll_icon_48x48_round": "icons/technologies/cave_troll_icon_48x48_round.png",
+  "cavetrollicon48x48round": "icons/technologies/cave_troll_icon_48x48_round.png",
+  "cave_troll": "icons/technologies/cave_troll_icon_48x48_round.png",
+  "celerityicon48x48round": "icons/technologies/celerity_icon_48x48_round.png",
+  "celerity_icon_48x48_round": "icons/technologies/celerity_icon_48x48_round.png",
+  "celerity": "icons/technologies/celerity_icon_48x48_round.png",
+  "celestialweapons": "icons/technologies/celestial_weapons_icon_48x48_round.png",
+  "celestial_weapons_icon_48x48_round": "icons/technologies/celestial_weapons_icon_48x48_round.png",
+  "celestial_weapons": "icons/technologies/celestial_weapons_icon_48x48_round.png",
+  "celestialweaponsicon48x48round": "icons/technologies/celestial_weapons_icon_48x48_round.png",
+  "centzonhuitznahuaicon48x48round": "icons/technologies/centzon_huitznahua_icon_48x48_round.png",
+  "centzonhuitznahua": "icons/technologies/centzon_huitznahua_icon_48x48_round.png",
+  "centzon_huitznahua": "icons/technologies/centzon_huitznahua_icon_48x48_round.png",
+  "centzon_huitznahua_icon_48x48_round": "icons/technologies/centzon_huitznahua_icon_48x48_round.png",
+  "channels": "icons/technologies/channels_icon_48x48_round.png",
+  "channelsicon48x48round": "icons/technologies/channels_icon_48x48_round.png",
+  "channels_icon_48x48_round": "icons/technologies/channels_icon_48x48_round.png",
+  "chasingthesunicon48x48round": "icons/technologies/chasing_the_sun_icon_48x48_round.png",
+  "chasing_the_sun_icon_48x48_round": "icons/technologies/chasing_the_sun_icon_48x48_round.png",
+  "chasingthesun": "icons/technologies/chasing_the_sun_icon_48x48_round.png",
+  "chasing_the_sun": "icons/technologies/chasing_the_sun_icon_48x48_round.png",
+  "chthonicritesicon48x48round": "icons/technologies/chthonic_rites_icon_48x48_round.png",
+  "chthonicrites": "icons/technologies/chthonic_rites_icon_48x48_round.png",
+  "chthonic_rites_icon_48x48_round": "icons/technologies/chthonic_rites_icon_48x48_round.png",
+  "chthonic_rites": "icons/technologies/chthonic_rites_icon_48x48_round.png",
+  "cipactlisscalesicon48x48round": "icons/technologies/cipactlis_scales_icon_48x48_round.png",
+  "cipactlis_scales_icon_48x48_round": "icons/technologies/cipactlis_scales_icon_48x48_round.png",
+  "cipactlis_scales": "icons/technologies/cipactlis_scales_icon_48x48_round.png",
+  "cipactlisscales": "icons/technologies/cipactlis_scales_icon_48x48_round.png",
+  "clairvoyance": "icons/technologies/clairvoyance_icon_48x48_round.png",
+  "clairvoyanceicon48x48round": "icons/technologies/clairvoyance_icon_48x48_round.png",
+  "clairvoyance_icon_48x48_round": "icons/technologies/clairvoyance_icon_48x48_round.png",
+  "coatepecshrinesicon48x48round": "icons/technologies/coatepec_shrines_icon_48x48_round.png",
+  "coatepecshrines": "icons/technologies/coatepec_shrines_icon_48x48_round.png",
+  "coatepec_shrines": "icons/technologies/coatepec_shrines_icon_48x48_round.png",
+  "coatepec_shrines_icon_48x48_round": "icons/technologies/coatepec_shrines_icon_48x48_round.png",
+  "condemnedsoul": "icons/technologies/condemned_soul_icon_48x48_round.png",
+  "condemnedsoulicon48x48round": "icons/technologies/condemned_soul_icon_48x48_round.png",
+  "condemned_soul": "icons/technologies/condemned_soul_icon_48x48_round.png",
+  "condemned_soul_icon_48x48_round": "icons/technologies/condemned_soul_icon_48x48_round.png",
+  "coyolxauhquistone": "icons/technologies/coyolxauhqui_stone_icon_48x48_round.png",
+  "coyolxauhquistoneicon48x48round": "icons/technologies/coyolxauhqui_stone_icon_48x48_round.png",
+  "coyolxauhqui_stone_icon_48x48_round": "icons/technologies/coyolxauhqui_stone_icon_48x48_round.png",
+  "coyolxauhqui_stone": "icons/technologies/coyolxauhqui_stone_icon_48x48_round.png",
+  "crimson_linen_icon_48x48_round": "icons/technologies/crimson_linen_icon_48x48_round.png",
+  "crimsonlinen": "icons/technologies/crimson_linen_icon_48x48_round.png",
+  "crimsonlinenicon48x48round": "icons/technologies/crimson_linen_icon_48x48_round.png",
+  "crimson_linen": "icons/technologies/crimson_linen_icon_48x48_round.png",
+  "criosphinx": "icons/technologies/criosphinx_icon_48x48_round.png",
+  "criosphinxicon48x48round": "icons/technologies/criosphinx_icon_48x48_round.png",
+  "criosphinx_icon_48x48_round": "icons/technologies/criosphinx_icon_48x48_round.png",
+  "crocodilopolisicon48x48round": "icons/technologies/crocodilopolis_icon_48x48_round.png",
+  "crocodilopolis": "icons/technologies/crocodilopolis_icon_48x48_round.png",
+  "crocodilopolis_icon_48x48_round": "icons/technologies/crocodilopolis_icon_48x48_round.png",
+  "crushing_waves": "icons/technologies/crushing_waves_icon_48x48_round.png",
+  "crushingwavesicon48x48round": "icons/technologies/crushing_waves_icon_48x48_round.png",
+  "crushing_waves_icon_48x48_round": "icons/technologies/crushing_waves_icon_48x48_round.png",
+  "crushingwaves": "icons/technologies/crushing_waves_icon_48x48_round.png",
+  "cuicacalli_training_icon_48x48_round": "icons/technologies/cuicacalli_training_icon_48x48_round.png",
+  "cuicacalli_training": "icons/technologies/cuicacalli_training_icon_48x48_round.png",
+  "cuicacallitrainingicon48x48round": "icons/technologies/cuicacalli_training_icon_48x48_round.png",
+  "cuicacallitraining": "icons/technologies/cuicacalli_training_icon_48x48_round.png",
+  "daktyloi": "icons/technologies/daktyloi_icon_48x48_round.png",
+  "daktyloiicon48x48round": "icons/technologies/daktyloi_icon_48x48_round.png",
+  "daktyloi_icon_48x48_round": "icons/technologies/daktyloi_icon_48x48_round.png",
+  "dannouratacticsicon48x48round": "icons/technologies/dan_no_ura_tactics_icon_48x48_round.png",
+  "dan_no_ura_tactics_icon_48x48_round": "icons/technologies/dan_no_ura_tactics_icon_48x48_round.png",
+  "dannouratactics": "icons/technologies/dan_no_ura_tactics_icon_48x48_round.png",
+  "dan_no_ura_tactics": "icons/technologies/dan_no_ura_tactics_icon_48x48_round.png",
+  "dark_water_icon_48x48_round": "icons/technologies/dark_water_icon_48x48_round.png",
+  "dark_water": "icons/technologies/dark_water_icon_48x48_round.png",
+  "darkwatericon48x48round": "icons/technologies/dark_water_icon_48x48_round.png",
+  "darkwater": "icons/technologies/dark_water_icon_48x48_round.png",
+  "daughters_of_the_sea_icon_48x48_round": "icons/technologies/daughters_of_the_sea_icon_48x48_round.png",
+  "daughtersofthesea": "icons/technologies/daughters_of_the_sea_icon_48x48_round.png",
+  "daughtersoftheseaicon48x48round": "icons/technologies/daughters_of_the_sea_icon_48x48_round.png",
+  "daughters_of_the_sea": "icons/technologies/daughters_of_the_sea_icon_48x48_round.png",
+  "deadlyrageicon48x48round": "icons/technologies/deadly_rage_icon_48x48_round.png",
+  "deadly_rage_icon_48x48_round": "icons/technologies/deadly_rage_icon_48x48_round.png",
+  "deadly_rage": "icons/technologies/deadly_rage_icon_48x48_round.png",
+  "deadlyrage": "icons/technologies/deadly_rage_icon_48x48_round.png",
+  "deadlysnare": "icons/technologies/deadly_snare_icon_48x48_round.png",
+  "deadlysnareicon48x48round": "icons/technologies/deadly_snare_icon_48x48_round.png",
+  "deadly_snare": "icons/technologies/deadly_snare_icon_48x48_round.png",
+  "deadly_snare_icon_48x48_round": "icons/technologies/deadly_snare_icon_48x48_round.png",
+  "deimosswordofdreadicon48x48round": "icons/technologies/deimos_sword_of_dread_icon_48x48_round.png",
+  "deimos_sword_of_dread_icon_48x48_round": "icons/technologies/deimos_sword_of_dread_icon_48x48_round.png",
+  "deimosswordofdread": "icons/technologies/deimos_sword_of_dread_icon_48x48_round.png",
+  "deimos_sword_of_dread": "icons/technologies/deimos_sword_of_dread_icon_48x48_round.png",
+  "den_den_drums_icon_48x48_round": "icons/technologies/den_den_drums_icon_48x48_round.png",
+  "den_den_drums": "icons/technologies/den_den_drums_icon_48x48_round.png",
+  "dendendrums": "icons/technologies/den_den_drums_icon_48x48_round.png",
+  "dendendrumsicon48x48round": "icons/technologies/den_den_drums_icon_48x48_round.png",
+  "desertwind": "icons/technologies/desert_wind_icon_48x48_round.png",
+  "desertwindicon48x48round": "icons/technologies/desert_wind_icon_48x48_round.png",
+  "desert_wind": "icons/technologies/desert_wind_icon_48x48_round.png",
+  "desert_wind_icon_48x48_round": "icons/technologies/desert_wind_icon_48x48_round.png",
+  "devotees_of_atlas_icon_48x48_round": "icons/technologies/devotees_of_atlas_icon_48x48_round.png",
+  "devoteesofatlas": "icons/technologies/devotees_of_atlas_icon_48x48_round.png",
+  "devotees_of_atlas": "icons/technologies/devotees_of_atlas_icon_48x48_round.png",
+  "devoteesofatlasicon48x48round": "icons/technologies/devotees_of_atlas_icon_48x48_round.png",
+  "dionysiaicon48x48round": "icons/technologies/dionysia_icon_48x48_round.png",
+  "dionysia_icon_48x48_round": "icons/technologies/dionysia_icon_48x48_round.png",
+  "dionysia": "icons/technologies/dionysia_icon_48x48_round.png",
+  "disabloticon48x48round": "icons/technologies/disablot_icon_48x48_round.png",
+  "disablot_icon_48x48_round": "icons/technologies/disablot_icon_48x48_round.png",
+  "disablot": "icons/technologies/disablot_icon_48x48_round.png",
+  "divinebloodicon48x48round": "icons/technologies/divine_blood_icon_48x48_round.png",
+  "divineblood": "icons/technologies/divine_blood_icon_48x48_round.png",
+  "divine_blood_icon_48x48_round": "icons/technologies/divine_blood_icon_48x48_round.png",
+  "divine_blood": "icons/technologies/divine_blood_icon_48x48_round.png",
+  "divine_books": "icons/technologies/divine_books_icon_48x48_round.png",
+  "divinebooksicon48x48round": "icons/technologies/divine_books_icon_48x48_round.png",
+  "divine_books_icon_48x48_round": "icons/technologies/divine_books_icon_48x48_round.png",
+  "divinebooks": "icons/technologies/divine_books_icon_48x48_round.png",
+  "divinejudgementicon48x48round": "icons/technologies/divine_judgement_icon_48x48_round.png",
+  "divine_judgement_icon_48x48_round": "icons/technologies/divine_judgement_icon_48x48_round.png",
+  "divinejudgement": "icons/technologies/divine_judgement_icon_48x48_round.png",
+  "divine_judgement": "icons/technologies/divine_judgement_icon_48x48_round.png",
+  "divinelabor": "icons/technologies/divine_labor_icon_48x48_round.png",
+  "divine_labor_icon_48x48_round": "icons/technologies/divine_labor_icon_48x48_round.png",
+  "divine_labor": "icons/technologies/divine_labor_icon_48x48_round.png",
+  "divinelaboricon48x48round": "icons/technologies/divine_labor_icon_48x48_round.png",
+  "divinelight": "icons/technologies/divine_light_icon_48x48_round.png",
+  "divinelighticon48x48round": "icons/technologies/divine_light_icon_48x48_round.png",
+  "divine_light": "icons/technologies/divine_light_icon_48x48_round.png",
+  "divine_light_icon_48x48_round": "icons/technologies/divine_light_icon_48x48_round.png",
+  "divineprefecture": "icons/technologies/divine_prefecture_icon_48x48_round.png",
+  "divine_prefecture": "icons/technologies/divine_prefecture_icon_48x48_round.png",
+  "divineprefectureicon48x48round": "icons/technologies/divine_prefecture_icon_48x48_round.png",
+  "divine_prefecture_icon_48x48_round": "icons/technologies/divine_prefecture_icon_48x48_round.png",
+  "droughtships": "icons/technologies/drought_ships_icon_48x48_round.png",
+  "drought_ships_icon_48x48_round": "icons/technologies/drought_ships_icon_48x48_round.png",
+  "droughtshipsicon48x48round": "icons/technologies/drought_ships_icon_48x48_round.png",
+  "drought_ships": "icons/technologies/drought_ships_icon_48x48_round.png",
+  "dwarven_auger_icon_48x48_round": "icons/technologies/dwarven_auger_icon_48x48_round.png",
+  "dwarvenauger": "icons/technologies/dwarven_auger_icon_48x48_round.png",
+  "dwarven_auger": "icons/technologies/dwarven_auger_icon_48x48_round.png",
+  "dwarvenaugericon48x48round": "icons/technologies/dwarven_auger_icon_48x48_round.png",
+  "dwarvenbreastplateicon48x48round": "icons/technologies/dwarven_breastplate_icon_48x48_round.png",
+  "dwarven_breastplate": "icons/technologies/dwarven_breastplate_icon_48x48_round.png",
+  "dwarven_breastplate_icon_48x48_round": "icons/technologies/dwarven_breastplate_icon_48x48_round.png",
+  "dwarvenbreastplate": "icons/technologies/dwarven_breastplate_icon_48x48_round.png",
+  "east_wind_icon_48x48_round": "icons/technologies/east_wind_icon_48x48_round.png",
+  "eastwindicon48x48round": "icons/technologies/east_wind_icon_48x48_round.png",
+  "eastwind": "icons/technologies/east_wind_icon_48x48_round.png",
+  "east_wind": "icons/technologies/east_wind_icon_48x48_round.png",
+  "eightbannersicon48x48round": "icons/technologies/eight_banners_icon_48x48_round.png",
+  "eightbanners": "icons/technologies/eight_banners_icon_48x48_round.png",
+  "eight_banners": "icons/technologies/eight_banners_icon_48x48_round.png",
+  "eight_banners_icon_48x48_round": "icons/technologies/eight_banners_icon_48x48_round.png",
+  "electrumbulletsicon48x48round": "icons/technologies/electrum_bullets_icon_48x48_round.png",
+  "electrum_bullets_icon_48x48_round": "icons/technologies/electrum_bullets_icon_48x48_round.png",
+  "electrum_bullets": "icons/technologies/electrum_bullets_icon_48x48_round.png",
+  "electrumbullets": "icons/technologies/electrum_bullets_icon_48x48_round.png",
+  "empyreanspeedicon48x48round": "icons/technologies/empyrean_speed_icon_48x48_round.png",
+  "empyrean_speed_icon_48x48_round": "icons/technologies/empyrean_speed_icon_48x48_round.png",
+  "empyrean_speed": "icons/technologies/empyrean_speed_icon_48x48_round.png",
+  "empyreanspeed": "icons/technologies/empyrean_speed_icon_48x48_round.png",
+  "enchanted_hymn_icon_48x48_round": "icons/technologies/enchanted_hymn_icon_48x48_round.png",
+  "enchanted_hymn": "icons/technologies/enchanted_hymn_icon_48x48_round.png",
+  "enchantedhymnicon48x48round": "icons/technologies/enchanted_hymn_icon_48x48_round.png",
+  "enchantedhymn": "icons/technologies/enchanted_hymn_icon_48x48_round.png",
+  "enyosbowofhorroricon48x48round": "icons/technologies/enyos_bow_of_horror_icon_48x48_round.png",
+  "enyos_bow_of_horror_icon_48x48_round": "icons/technologies/enyos_bow_of_horror_icon_48x48_round.png",
+  "enyos_bow_of_horror": "icons/technologies/enyos_bow_of_horror_icon_48x48_round.png",
+  "enyosbowofhorror": "icons/technologies/enyos_bow_of_horror_icon_48x48_round.png",
+  "eternalhaunting": "icons/technologies/eternal_haunting_icon_48x48_round.png",
+  "eternalhauntingicon48x48round": "icons/technologies/eternal_haunting_icon_48x48_round.png",
+  "eternal_haunting": "icons/technologies/eternal_haunting_icon_48x48_round.png",
+  "eternal_haunting_icon_48x48_round": "icons/technologies/eternal_haunting_icon_48x48_round.png",
+  "eveningstaricon48x48round": "icons/technologies/evening_star_icon_48x48_round.png",
+  "evening_star": "icons/technologies/evening_star_icon_48x48_round.png",
+  "evening_star_icon_48x48_round": "icons/technologies/evening_star_icon_48x48_round.png",
+  "eveningstar": "icons/technologies/evening_star_icon_48x48_round.png",
+  "eyesintheforesticon48x48round": "icons/technologies/eyes_in_the_forest_icon_48x48_round.png",
+  "eyesintheforest": "icons/technologies/eyes_in_the_forest_icon_48x48_round.png",
+  "eyes_in_the_forest": "icons/technologies/eyes_in_the_forest_icon_48x48_round.png",
+  "eyes_in_the_forest_icon_48x48_round": "icons/technologies/eyes_in_the_forest_icon_48x48_round.png",
+  "faceofthegorgonicon48x48round": "icons/technologies/face_of_the_gorgon_icon_48x48_round.png",
+  "faceofthegorgon": "icons/technologies/face_of_the_gorgon_icon_48x48_round.png",
+  "face_of_the_gorgon_icon_48x48_round": "icons/technologies/face_of_the_gorgon_icon_48x48_round.png",
+  "face_of_the_gorgon": "icons/technologies/face_of_the_gorgon_icon_48x48_round.png",
+  "fatedarrowsicon48x48round": "icons/technologies/fated_arrows_icon_48x48_round.png",
+  "fated_arrows_icon_48x48_round": "icons/technologies/fated_arrows_icon_48x48_round.png",
+  "fated_arrows": "icons/technologies/fated_arrows_icon_48x48_round.png",
+  "fatedarrows": "icons/technologies/fated_arrows_icon_48x48_round.png",
+  "feast_of_tlaxochimaco_icon_48x48_round": "icons/technologies/feast_of_tlaxochimaco_icon_48x48_round.png",
+  "feastoftlaxochimacoicon48x48round": "icons/technologies/feast_of_tlaxochimaco_icon_48x48_round.png",
+  "feast_of_tlaxochimaco": "icons/technologies/feast_of_tlaxochimaco_icon_48x48_round.png",
+  "feastoftlaxochimaco": "icons/technologies/feast_of_tlaxochimaco_icon_48x48_round.png",
+  "feastsofrenown": "icons/technologies/feasts_of_renown_icon_48x48_round.png",
+  "feasts_of_renown_icon_48x48_round": "icons/technologies/feasts_of_renown_icon_48x48_round.png",
+  "feasts_of_renown": "icons/technologies/feasts_of_renown_icon_48x48_round.png",
+  "feastsofrenownicon48x48round": "icons/technologies/feasts_of_renown_icon_48x48_round.png",
+  "feetofthejackal": "icons/technologies/feet_of_the_jackal_icon_48x48_round.png",
+  "feetofthejackalicon48x48round": "icons/technologies/feet_of_the_jackal_icon_48x48_round.png",
+  "feet_of_the_jackal": "icons/technologies/feet_of_the_jackal_icon_48x48_round.png",
+  "feet_of_the_jackal_icon_48x48_round": "icons/technologies/feet_of_the_jackal_icon_48x48_round.png",
+  "fishbasket": "icons/technologies/fish_basket_icon_48x48_round.png",
+  "fish_basket": "icons/technologies/fish_basket_icon_48x48_round.png",
+  "fish_basket_icon_48x48_round": "icons/technologies/fish_basket_icon_48x48_round.png",
+  "fishbasketicon48x48round": "icons/technologies/fish_basket_icon_48x48_round.png",
+  "flames_of_typhon": "icons/technologies/flames_of_typhon_icon_48x48_round.png",
+  "flamesoftyphon": "icons/technologies/flames_of_typhon_icon_48x48_round.png",
+  "flamesoftyphonicon48x48round": "icons/technologies/flames_of_typhon_icon_48x48_round.png",
+  "flames_of_typhon_icon_48x48_round": "icons/technologies/flames_of_typhon_icon_48x48_round.png",
+  "flaming_blood_icon_48x48_round": "icons/technologies/flaming_blood_icon_48x48_round.png",
+  "flamingblood": "icons/technologies/flaming_blood_icon_48x48_round.png",
+  "flaming_blood": "icons/technologies/flaming_blood_icon_48x48_round.png",
+  "flamingbloodicon48x48round": "icons/technologies/flaming_blood_icon_48x48_round.png",
+  "floodofthenileicon48x48round": "icons/technologies/flood_of_the_nile_icon_48x48_round.png",
+  "flood_of_the_nile_icon_48x48_round": "icons/technologies/flood_of_the_nile_icon_48x48_round.png",
+  "flood_of_the_nile": "icons/technologies/flood_of_the_nile_icon_48x48_round.png",
+  "floodofthenile": "icons/technologies/flood_of_the_nile_icon_48x48_round.png",
+  "flowery_wars": "icons/technologies/flowery_wars_icon_48x48_round.png",
+  "flowerywars": "icons/technologies/flowery_wars_icon_48x48_round.png",
+  "flowery_wars_icon_48x48_round": "icons/technologies/flowery_wars_icon_48x48_round.png",
+  "flowerywarsicon48x48round": "icons/technologies/flowery_wars_icon_48x48_round.png",
+  "force_of_the_west_wind_icon_48x48_round": "icons/technologies/force_of_the_west_wind_icon_48x48_round.png",
+  "force_of_the_west_wind": "icons/technologies/force_of_the_west_wind_icon_48x48_round.png",
+  "forceofthewestwind": "icons/technologies/force_of_the_west_wind_icon_48x48_round.png",
+  "forceofthewestwindicon48x48round": "icons/technologies/force_of_the_west_wind_icon_48x48_round.png",
+  "forgeofolympusicon48x48round": "icons/technologies/forge_of_olympus_icon_48x48_round.png",
+  "forge_of_olympus": "icons/technologies/forge_of_olympus_icon_48x48_round.png",
+  "forge_of_olympus_icon_48x48_round": "icons/technologies/forge_of_olympus_icon_48x48_round.png",
+  "forgeofolympus": "icons/technologies/forge_of_olympus_icon_48x48_round.png",
+  "fourjars": "icons/technologies/four_jars_icon_48x48_round.png",
+  "four_jars_icon_48x48_round": "icons/technologies/four_jars_icon_48x48_round.png",
+  "four_jars": "icons/technologies/four_jars_icon_48x48_round.png",
+  "fourjarsicon48x48round": "icons/technologies/four_jars_icon_48x48_round.png",
+  "frenzieddashicon48x48round": "icons/technologies/frenzied_dash_icon_48x48_round.png",
+  "frenzied_dash": "icons/technologies/frenzied_dash_icon_48x48_round.png",
+  "frenzied_dash_icon_48x48_round": "icons/technologies/frenzied_dash_icon_48x48_round.png",
+  "frenzieddash": "icons/technologies/frenzied_dash_icon_48x48_round.png",
+  "freyrsgifticon48x48round": "icons/technologies/freyrs_gift_icon_48x48_round.png",
+  "freyrs_gift": "icons/technologies/freyrs_gift_icon_48x48_round.png",
+  "freyrsgift": "icons/technologies/freyrs_gift_icon_48x48_round.png",
+  "freyrs_gift_icon_48x48_round": "icons/technologies/freyrs_gift_icon_48x48_round.png",
+  "frontline_heroics": "icons/technologies/frontline_heroics_icon_48x48_round.png",
+  "frontlineheroicsicon48x48round": "icons/technologies/frontline_heroics_icon_48x48_round.png",
+  "frontlineheroics": "icons/technologies/frontline_heroics_icon_48x48_round.png",
+  "frontline_heroics_icon_48x48_round": "icons/technologies/frontline_heroics_icon_48x48_round.png",
+  "funeral_barge_icon_48x48_round": "icons/technologies/funeral_barge_icon_48x48_round.png",
+  "funeralbargeicon48x48round": "icons/technologies/funeral_barge_icon_48x48_round.png",
+  "funeralbarge": "icons/technologies/funeral_barge_icon_48x48_round.png",
+  "funeral_barge": "icons/technologies/funeral_barge_icon_48x48_round.png",
+  "funeralrites": "icons/technologies/funeral_rites_icon_48x48_round.png",
+  "funeral_rites_icon_48x48_round": "icons/technologies/funeral_rites_icon_48x48_round.png",
+  "funeralritesicon48x48round": "icons/technologies/funeral_rites_icon_48x48_round.png",
+  "funeral_rites": "icons/technologies/funeral_rites_icon_48x48_round.png",
+  "fury_of_the_fallen": "icons/technologies/fury_of_the_fallen_icon_48x48_round.png",
+  "fury_of_the_fallen_icon_48x48_round": "icons/technologies/fury_of_the_fallen_icon_48x48_round.png",
+  "furyofthefallenicon48x48round": "icons/technologies/fury_of_the_fallen_icon_48x48_round.png",
+  "furyofthefallen": "icons/technologies/fury_of_the_fallen_icon_48x48_round.png",
+  "galesfury": "icons/technologies/gales_fury_icon_48x48_round.png",
+  "gales_fury": "icons/technologies/gales_fury_icon_48x48_round.png",
+  "galesfuryicon48x48round": "icons/technologies/gales_fury_icon_48x48_round.png",
+  "gales_fury_icon_48x48_round": "icons/technologies/gales_fury_icon_48x48_round.png",
+  "geminiicon48x48round": "icons/technologies/gemini_icon_48x48_round.png",
+  "gemini_icon_48x48_round": "icons/technologies/gemini_icon_48x48_round.png",
+  "gemini": "icons/technologies/gemini_icon_48x48_round.png",
+  "giants_favor": "icons/technologies/giants_favor_icon_48x48_round.png",
+  "giantsfavoricon48x48round": "icons/technologies/giants_favor_icon_48x48_round.png",
+  "giants_favor_icon_48x48_round": "icons/technologies/giants_favor_icon_48x48_round.png",
+  "giantsfavor": "icons/technologies/giants_favor_icon_48x48_round.png",
+  "gilded_shields_icon_48x48_round": "icons/technologies/gilded_shields_icon_48x48_round.png",
+  "gildedshieldsicon48x48round": "icons/technologies/gilded_shields_icon_48x48_round.png",
+  "gildedshields": "icons/technologies/gilded_shields_icon_48x48_round.png",
+  "gilded_shields": "icons/technologies/gilded_shields_icon_48x48_round.png",
+  "gjallarhorn_icon_48x48_round": "icons/technologies/gjallarhorn_icon_48x48_round.png",
+  "gjallarhornicon48x48round": "icons/technologies/gjallarhorn_icon_48x48_round.png",
+  "gjallarhorn": "icons/technologies/gjallarhorn_icon_48x48_round.png",
+  "gohei_wands": "icons/technologies/gohei_wands_icon_48x48_round.png",
+  "goheiwandsicon48x48round": "icons/technologies/gohei_wands_icon_48x48_round.png",
+  "gohei_wands_icon_48x48_round": "icons/technologies/gohei_wands_icon_48x48_round.png",
+  "goheiwands": "icons/technologies/gohei_wands_icon_48x48_round.png",
+  "golden_apples": "icons/technologies/golden_apples_icon_48x48_round.png",
+  "golden_apples_icon_48x48_round": "icons/technologies/golden_apples_icon_48x48_round.png",
+  "goldenapples": "icons/technologies/golden_apples_icon_48x48_round.png",
+  "goldenapplesicon48x48round": "icons/technologies/golden_apples_icon_48x48_round.png",
+  "goldenkiteicon48x48round": "icons/technologies/golden_kite_icon_48x48_round.png",
+  "golden_kite": "icons/technologies/golden_kite_icon_48x48_round.png",
+  "golden_kite_icon_48x48_round": "icons/technologies/golden_kite_icon_48x48_round.png",
+  "goldenkite": "icons/technologies/golden_kite_icon_48x48_round.png",
+  "gracioushospitalityicon48x48round": "icons/technologies/gracious_hospitality_icon_48x48_round.png",
+  "gracious_hospitality": "icons/technologies/gracious_hospitality_icon_48x48_round.png",
+  "gracious_hospitality_icon_48x48_round": "icons/technologies/gracious_hospitality_icon_48x48_round.png",
+  "gracioushospitality": "icons/technologies/gracious_hospitality_icon_48x48_round.png",
+  "granite_blood": "icons/technologies/granite_blood_icon_48x48_round.png",
+  "granitebloodicon48x48round": "icons/technologies/granite_blood_icon_48x48_round.png",
+  "granite_blood_icon_48x48_round": "icons/technologies/granite_blood_icon_48x48_round.png",
+  "graniteblood": "icons/technologies/granite_blood_icon_48x48_round.png",
+  "granite_maw_icon_48x48_round": "icons/technologies/granite_maw_icon_48x48_round.png",
+  "granitemawicon48x48round": "icons/technologies/granite_maw_icon_48x48_round.png",
+  "granite_maw": "icons/technologies/granite_maw_icon_48x48_round.png",
+  "granitemaw": "icons/technologies/granite_maw_icon_48x48_round.png",
+  "grasp_of_ran": "icons/technologies/grasp_of_ran_icon_48x48_round.png",
+  "graspofranicon48x48round": "icons/technologies/grasp_of_ran_icon_48x48_round.png",
+  "graspofran": "icons/technologies/grasp_of_ran_icon_48x48_round.png",
+  "grasp_of_ran_icon_48x48_round": "icons/technologies/grasp_of_ran_icon_48x48_round.png",
+  "greatestoffifty": "icons/technologies/greatest_of_fifty_icon_48x48_round.png",
+  "greatest_of_fifty": "icons/technologies/greatest_of_fifty_icon_48x48_round.png",
+  "greatestoffiftyicon48x48round": "icons/technologies/greatest_of_fifty_icon_48x48_round.png",
+  "greatest_of_fifty_icon_48x48_round": "icons/technologies/greatest_of_fifty_icon_48x48_round.png",
+  "guardian_of_io_icon_48x48_round": "icons/technologies/guardian_of_io_icon_48x48_round.png",
+  "guardianofioicon48x48round": "icons/technologies/guardian_of_io_icon_48x48_round.png",
+  "guardianofio": "icons/technologies/guardian_of_io_icon_48x48_round.png",
+  "guardian_of_io": "icons/technologies/guardian_of_io_icon_48x48_round.png",
+  "guiding_flame_icon_48x48_round": "icons/technologies/guiding_flame_icon_48x48_round.png",
+  "guiding_flame": "icons/technologies/guiding_flame_icon_48x48_round.png",
+  "guidingflame": "icons/technologies/guiding_flame_icon_48x48_round.png",
+  "guidingflameicon48x48round": "icons/technologies/guiding_flame_icon_48x48_round.png",
+  "hallofthanes": "icons/technologies/hall_of_thanes_icon_48x48_round.png",
+  "hall_of_thanes": "icons/technologies/hall_of_thanes_icon_48x48_round.png",
+  "hall_of_thanes_icon_48x48_round": "icons/technologies/hall_of_thanes_icon_48x48_round.png",
+  "hallofthanesicon48x48round": "icons/technologies/hall_of_thanes_icon_48x48_round.png",
+  "hallowedwoodlands": "icons/technologies/hallowed_woodlands_icon_48x48_round.png",
+  "hallowed_woodlands": "icons/technologies/hallowed_woodlands_icon_48x48_round.png",
+  "hallowed_woodlands_icon_48x48_round": "icons/technologies/hallowed_woodlands_icon_48x48_round.png",
+  "hallowedwoodlandsicon48x48round": "icons/technologies/hallowed_woodlands_icon_48x48_round.png",
+  "halo_of_the_sun": "icons/technologies/halo_of_the_sun_icon_48x48_round.png",
+  "halo_of_the_sun_icon_48x48_round": "icons/technologies/halo_of_the_sun_icon_48x48_round.png",
+  "haloofthesun": "icons/technologies/halo_of_the_sun_icon_48x48_round.png",
+  "haloofthesunicon48x48round": "icons/technologies/halo_of_the_sun_icon_48x48_round.png",
+  "hamadnadabilitysiphon": "icons/technologies/hamadnad_ability_siphon_icon_48x48_round.png",
+  "hamadnadabilitysiphonicon48x48round": "icons/technologies/hamadnad_ability_siphon_icon_48x48_round.png",
+  "hamadnad_ability_siphon_icon_48x48_round": "icons/technologies/hamadnad_ability_siphon_icon_48x48_round.png",
+  "hamadnad_ability_siphon": "icons/technologies/hamadnad_ability_siphon_icon_48x48_round.png",
+  "hamaskicon48x48round": "icons/technologies/hamask_icon_48x48_round.png",
+  "hamask_icon_48x48_round": "icons/technologies/hamask_icon_48x48_round.png",
+  "hamask": "icons/technologies/hamask_icon_48x48_round.png",
+  "hammerofthundericon48x48round": "icons/technologies/hammer_of_thunder_icon_48x48_round.png",
+  "hammerofthunder": "icons/technologies/hammer_of_thunder_icon_48x48_round.png",
+  "hammer_of_thunder_icon_48x48_round": "icons/technologies/hammer_of_thunder_icon_48x48_round.png",
+  "hammer_of_thunder": "icons/technologies/hammer_of_thunder_icon_48x48_round.png",
+  "hand_of_talos": "icons/technologies/hand_of_talos_icon_48x48_round.png",
+  "handoftalosicon48x48round": "icons/technologies/hand_of_talos_icon_48x48_round.png",
+  "handoftalos": "icons/technologies/hand_of_talos_icon_48x48_round.png",
+  "hand_of_talos_icon_48x48_round": "icons/technologies/hand_of_talos_icon_48x48_round.png",
+  "hands_of_the_pharaoh": "icons/technologies/hands_of_the_pharaoh_icon_48x48_round.png",
+  "handsofthepharaohicon48x48round": "icons/technologies/hands_of_the_pharaoh_icon_48x48_round.png",
+  "hands_of_the_pharaoh_icon_48x48_round": "icons/technologies/hands_of_the_pharaoh_icon_48x48_round.png",
+  "handsofthepharaoh": "icons/technologies/hands_of_the_pharaoh_icon_48x48_round.png",
+  "hannyamaskicon48x48round": "icons/technologies/hannya_mask_icon_48x48_round.png",
+  "hannya_mask_icon_48x48_round": "icons/technologies/hannya_mask_icon_48x48_round.png",
+  "hannyamask": "icons/technologies/hannya_mask_icon_48x48_round.png",
+  "hannya_mask": "icons/technologies/hannya_mask_icon_48x48_round.png",
+  "harvestofsoulsicon48x48round": "icons/technologies/harvest_of_souls_icon_48x48_round.png",
+  "harvest_of_souls": "icons/technologies/harvest_of_souls_icon_48x48_round.png",
+  "harvestofsouls": "icons/technologies/harvest_of_souls_icon_48x48_round.png",
+  "harvest_of_souls_icon_48x48_round": "icons/technologies/harvest_of_souls_icon_48x48_round.png",
+  "heartofthetitans": "icons/technologies/heart_of_the_titans_icon_48x48_round.png",
+  "heart_of_the_titans": "icons/technologies/heart_of_the_titans_icon_48x48_round.png",
+  "heartofthetitansicon48x48round": "icons/technologies/heart_of_the_titans_icon_48x48_round.png",
+  "heart_of_the_titans_icon_48x48_round": "icons/technologies/heart_of_the_titans_icon_48x48_round.png",
+  "heavenly_barrage": "icons/technologies/heavenly_barrage_icon_48x48_round.png",
+  "heavenlybarrageicon48x48round": "icons/technologies/heavenly_barrage_icon_48x48_round.png",
+  "heavenly_barrage_icon_48x48_round": "icons/technologies/heavenly_barrage_icon_48x48_round.png",
+  "heavenlybarrage": "icons/technologies/heavenly_barrage_icon_48x48_round.png",
+  "hephaestusrevenge": "icons/technologies/hephaestus_revenge_icon_48x48_round.png",
+  "hephaestus_revenge_icon_48x48_round": "icons/technologies/hephaestus_revenge_icon_48x48_round.png",
+  "hephaestusrevengeicon48x48round": "icons/technologies/hephaestus_revenge_icon_48x48_round.png",
+  "hephaestus_revenge": "icons/technologies/hephaestus_revenge_icon_48x48_round.png",
+  "herbal_medicine": "icons/technologies/herbal_medicine_icon_48x48_round.png",
+  "herbalmedicineicon48x48round": "icons/technologies/herbal_medicine_icon_48x48_round.png",
+  "herbalmedicine": "icons/technologies/herbal_medicine_icon_48x48_round.png",
+  "herbal_medicine_icon_48x48_round": "icons/technologies/herbal_medicine_icon_48x48_round.png",
+  "heroicrenewal": "icons/technologies/heroic_renewal_icon_48x48_round.png",
+  "heroic_renewal_icon_48x48_round": "icons/technologies/heroic_renewal_icon_48x48_round.png",
+  "heroicrenewalicon48x48round": "icons/technologies/heroic_renewal_icon_48x48_round.png",
+  "heroic_renewal": "icons/technologies/heroic_renewal_icon_48x48_round.png",
+  "hieracosphinxicon48x48round": "icons/technologies/hieracosphinx_icon_48x48_round.png",
+  "hieracosphinx_icon_48x48_round": "icons/technologies/hieracosphinx_icon_48x48_round.png",
+  "hieracosphinx": "icons/technologies/hieracosphinx_icon_48x48_round.png",
+  "hoovesofthewindicon48x48round": "icons/technologies/hooves_of_the_wind_icon_48x48_round.png",
+  "hoovesofthewind": "icons/technologies/hooves_of_the_wind_icon_48x48_round.png",
+  "hooves_of_the_wind_icon_48x48_round": "icons/technologies/hooves_of_the_wind_icon_48x48_round.png",
+  "hooves_of_the_wind": "icons/technologies/hooves_of_the_wind_icon_48x48_round.png",
+  "horns_of_consecration_icon_48x48_round": "icons/technologies/horns_of_consecration_icon_48x48_round.png",
+  "hornsofconsecrationicon48x48round": "icons/technologies/horns_of_consecration_icon_48x48_round.png",
+  "hornsofconsecration": "icons/technologies/horns_of_consecration_icon_48x48_round.png",
+  "horns_of_consecration": "icons/technologies/horns_of_consecration_icon_48x48_round.png",
+  "huntersstrengthicon48x48round": "icons/technologies/hunters_strength_icon_48x48_round.png",
+  "hunters_strength_icon_48x48_round": "icons/technologies/hunters_strength_icon_48x48_round.png",
+  "huntersstrength": "icons/technologies/hunters_strength_icon_48x48_round.png",
+  "hunters_strength": "icons/technologies/hunters_strength_icon_48x48_round.png",
+  "huntress_axe": "icons/technologies/huntress_axe_icon_48x48_round.png",
+  "huntress_axe_icon_48x48_round": "icons/technologies/huntress_axe_icon_48x48_round.png",
+  "huntressaxe": "icons/technologies/huntress_axe_icon_48x48_round.png",
+  "huntressaxeicon48x48round": "icons/technologies/huntress_axe_icon_48x48_round.png",
+  "hymn_of_the_wildwood_icon_48x48_round": "icons/technologies/hymn_of_the_wildwood_icon_48x48_round.png",
+  "hymnofthewildwood": "icons/technologies/hymn_of_the_wildwood_icon_48x48_round.png",
+  "hymnofthewildwoodicon48x48round": "icons/technologies/hymn_of_the_wildwood_icon_48x48_round.png",
+  "hymn_of_the_wildwood": "icons/technologies/hymn_of_the_wildwood_icon_48x48_round.png",
+  "imperial_order_icon_48x48_round": "icons/technologies/imperial_order_icon_48x48_round.png",
+  "imperialordericon48x48round": "icons/technologies/imperial_order_icon_48x48_round.png",
+  "imperialorder": "icons/technologies/imperial_order_icon_48x48_round.png",
+  "imperial_order": "icons/technologies/imperial_order_icon_48x48_round.png",
+  "iron_grip_icon_48x48_round": "icons/technologies/iron_grip_icon_48x48_round.png",
+  "irongripicon48x48round": "icons/technologies/iron_grip_icon_48x48_round.png",
+  "irongrip": "icons/technologies/iron_grip_icon_48x48_round.png",
+  "iron_grip": "icons/technologies/iron_grip_icon_48x48_round.png",
+  "ivorynetsukeicon48x48round": "icons/technologies/ivory_netsuke_icon_48x48_round.png",
+  "ivory_netsuke_icon_48x48_round": "icons/technologies/ivory_netsuke_icon_48x48_round.png",
+  "ivory_netsuke": "icons/technologies/ivory_netsuke_icon_48x48_round.png",
+  "ivorynetsuke": "icons/technologies/ivory_netsuke_icon_48x48_round.png",
+  "jotunsicon48x48round": "icons/technologies/jotuns_icon_48x48_round.png",
+  "jotuns_icon_48x48_round": "icons/technologies/jotuns_icon_48x48_round.png",
+  "jotuns": "icons/technologies/jotuns_icon_48x48_round.png",
+  "kagura": "icons/technologies/kagura_icon_48x48_round.png",
+  "kaguraicon48x48round": "icons/technologies/kagura_icon_48x48_round.png",
+  "kagura_icon_48x48_round": "icons/technologies/kagura_icon_48x48_round.png",
+  "katagi_icon_48x48_round": "icons/technologies/katagi_icon_48x48_round.png",
+  "katagiicon48x48round": "icons/technologies/katagi_icon_48x48_round.png",
+  "katagi": "icons/technologies/katagi_icon_48x48_round.png",
+  "kuafu_chieftain": "icons/technologies/kuafu_chieftain_icon_48x48_round.png",
+  "kuafuchieftainicon48x48round": "icons/technologies/kuafu_chieftain_icon_48x48_round.png",
+  "kuafuchieftain": "icons/technologies/kuafu_chieftain_icon_48x48_round.png",
+  "kuafu_chieftain_icon_48x48_round": "icons/technologies/kuafu_chieftain_icon_48x48_round.png",
+  "kumikiicon48x48round": "icons/technologies/kumiki_icon_48x48_round.png",
+  "kumiki_icon_48x48_round": "icons/technologies/kumiki_icon_48x48_round.png",
+  "kumiki": "icons/technologies/kumiki_icon_48x48_round.png",
+  "labyrinthofminos": "icons/technologies/labyrinth_of_minos_icon_48x48_round.png",
+  "labyrinthofminosicon48x48round": "icons/technologies/labyrinth_of_minos_icon_48x48_round.png",
+  "labyrinth_of_minos_icon_48x48_round": "icons/technologies/labyrinth_of_minos_icon_48x48_round.png",
+  "labyrinth_of_minos": "icons/technologies/labyrinth_of_minos_icon_48x48_round.png",
+  "lance_of_stone_icon_48x48_round": "icons/technologies/lance_of_stone_icon_48x48_round.png",
+  "lanceofstone": "icons/technologies/lance_of_stone_icon_48x48_round.png",
+  "lanceofstoneicon48x48round": "icons/technologies/lance_of_stone_icon_48x48_round.png",
+  "lance_of_stone": "icons/technologies/lance_of_stone_icon_48x48_round.png",
+  "land_consolidation_icon_48x48_round": "icons/technologies/land_consolidation_icon_48x48_round.png",
+  "landconsolidationicon48x48round": "icons/technologies/land_consolidation_icon_48x48_round.png",
+  "land_consolidation": "icons/technologies/land_consolidation_icon_48x48_round.png",
+  "landconsolidation": "icons/technologies/land_consolidation_icon_48x48_round.png",
+  "laststand": "icons/technologies/last_stand_icon_48x48_round.png",
+  "last_stand": "icons/technologies/last_stand_icon_48x48_round.png",
+  "last_stand_icon_48x48_round": "icons/technologies/last_stand_icon_48x48_round.png",
+  "laststandicon48x48round": "icons/technologies/last_stand_icon_48x48_round.png",
+  "leather_frame_shield": "icons/technologies/leather_frame_shield_icon_48x48_round.png",
+  "leatherframeshieldicon48x48round": "icons/technologies/leather_frame_shield_icon_48x48_round.png",
+  "leather_frame_shield_icon_48x48_round": "icons/technologies/leather_frame_shield_icon_48x48_round.png",
+  "leatherframeshield": "icons/technologies/leather_frame_shield_icon_48x48_round.png",
+  "leizus_silk_icon_48x48_round": "icons/technologies/leizus_silk_icon_48x48_round.png",
+  "leizussilk": "icons/technologies/leizus_silk_icon_48x48_round.png",
+  "leizussilkicon48x48round": "icons/technologies/leizus_silk_icon_48x48_round.png",
+  "leizus_silk": "icons/technologies/leizus_silk_icon_48x48_round.png",
+  "long_serpent": "icons/technologies/long_serpent_icon_48x48_round.png",
+  "longserpent": "icons/technologies/long_serpent_icon_48x48_round.png",
+  "longserpenticon48x48round": "icons/technologies/long_serpent_icon_48x48_round.png",
+  "long_serpent_icon_48x48_round": "icons/technologies/long_serpent_icon_48x48_round.png",
+  "longevityblessingicon48x48round": "icons/technologies/longevity_blessing_icon_48x48_round.png",
+  "longevityblessing": "icons/technologies/longevity_blessing_icon_48x48_round.png",
+  "longevity_blessing": "icons/technologies/longevity_blessing_icon_48x48_round.png",
+  "longevity_blessing_icon_48x48_round": "icons/technologies/longevity_blessing_icon_48x48_round.png",
+  "lord_of_horses_icon_48x48_round": "icons/technologies/lord_of_horses_icon_48x48_round.png",
+  "lordofhorses": "icons/technologies/lord_of_horses_icon_48x48_round.png",
+  "lord_of_horses": "icons/technologies/lord_of_horses_icon_48x48_round.png",
+  "lordofhorsesicon48x48round": "icons/technologies/lord_of_horses_icon_48x48_round.png",
+  "lotus_eaters_icon_48x48_round": "icons/technologies/lotus_eaters_icon_48x48_round.png",
+  "lotuseaters": "icons/technologies/lotus_eaters_icon_48x48_round.png",
+  "lotuseatersicon48x48round": "icons/technologies/lotus_eaters_icon_48x48_round.png",
+  "lotus_eaters": "icons/technologies/lotus_eaters_icon_48x48_round.png",
+  "maelstrom": "icons/technologies/maelstrom_icon_48x48_round.png",
+  "maelstrom_icon_48x48_round": "icons/technologies/maelstrom_icon_48x48_round.png",
+  "maelstromicon48x48round": "icons/technologies/maelstrom_icon_48x48_round.png",
+  "magueycultivationicon48x48round": "icons/technologies/maguey_cultivation_icon_48x48_round.png",
+  "magueycultivation": "icons/technologies/maguey_cultivation_icon_48x48_round.png",
+  "maguey_cultivation": "icons/technologies/maguey_cultivation_icon_48x48_round.png",
+  "maguey_cultivation_icon_48x48_round": "icons/technologies/maguey_cultivation_icon_48x48_round.png",
+  "masterofweaponry": "icons/technologies/master_of_weaponry_icon_48x48_round.png",
+  "master_of_weaponry": "icons/technologies/master_of_weaponry_icon_48x48_round.png",
+  "masterofweaponryicon48x48round": "icons/technologies/master_of_weaponry_icon_48x48_round.png",
+  "master_of_weaponry_icon_48x48_round": "icons/technologies/master_of_weaponry_icon_48x48_round.png",
+  "mechanicalartisans": "icons/technologies/mechanical_artisans_icon_48x48_round.png",
+  "mechanicalartisansicon48x48round": "icons/technologies/mechanical_artisans_icon_48x48_round.png",
+  "mechanical_artisans": "icons/technologies/mechanical_artisans_icon_48x48_round.png",
+  "mechanical_artisans_icon_48x48_round": "icons/technologies/mechanical_artisans_icon_48x48_round.png",
+  "medjay": "icons/technologies/medjay_icon_48x48_round.png",
+  "medjayicon48x48round": "icons/technologies/medjay_icon_48x48_round.png",
+  "medjay_icon_48x48_round": "icons/technologies/medjay_icon_48x48_round.png",
+  "metzliapan": "icons/technologies/metzliapan_icon_48x48_round.png",
+  "metzliapan_icon_48x48_round": "icons/technologies/metzliapan_icon_48x48_round.png",
+  "metzliapanicon48x48round": "icons/technologies/metzliapan_icon_48x48_round.png",
+  "mictecah": "icons/technologies/mictecah_icon_48x48_round.png",
+  "mictecahicon48x48round": "icons/technologies/mictecah_icon_48x48_round.png",
+  "mictecah_icon_48x48_round": "icons/technologies/mictecah_icon_48x48_round.png",
+  "monstrousrage": "icons/technologies/monstrous_rage_icon_48x48_round.png",
+  "monstrous_rage_icon_48x48_round": "icons/technologies/monstrous_rage_icon_48x48_round.png",
+  "monstrousrageicon48x48round": "icons/technologies/monstrous_rage_icon_48x48_round.png",
+  "monstrous_rage": "icons/technologies/monstrous_rage_icon_48x48_round.png",
+  "mountainous_might": "icons/technologies/mountainous_might_icon_48x48_round.png",
+  "mountainousmight": "icons/technologies/mountainous_might_icon_48x48_round.png",
+  "mountainousmighticon48x48round": "icons/technologies/mountainous_might_icon_48x48_round.png",
+  "mountainous_might_icon_48x48_round": "icons/technologies/mountainous_might_icon_48x48_round.png",
+  "mythic_rejuvenation": "icons/technologies/mythic_rejuvenation_icon_48x48_round.png",
+  "mythicrejuvenation": "icons/technologies/mythic_rejuvenation_icon_48x48_round.png",
+  "mythic_rejuvenation_icon_48x48_round": "icons/technologies/mythic_rejuvenation_icon_48x48_round.png",
+  "mythicrejuvenationicon48x48round": "icons/technologies/mythic_rejuvenation_icon_48x48_round.png",
+  "nahuallatolliicon48x48round": "icons/technologies/nahuallatolli_icon_48x48_round.png",
+  "nahuallatolli": "icons/technologies/nahuallatolli_icon_48x48_round.png",
+  "nahuallatolli_icon_48x48_round": "icons/technologies/nahuallatolli_icon_48x48_round.png",
+  "nebty": "icons/technologies/nebty_icon_48x48_round.png",
+  "nebtyicon48x48round": "icons/technologies/nebty_icon_48x48_round.png",
+  "nebty_icon_48x48_round": "icons/technologies/nebty_icon_48x48_round.png",
+  "necklaceofeyeballsicon48x48round": "icons/technologies/necklace_of_eyeballs_icon_48x48_round.png",
+  "necklaceofeyeballs": "icons/technologies/necklace_of_eyeballs_icon_48x48_round.png",
+  "necklace_of_eyeballs_icon_48x48_round": "icons/technologies/necklace_of_eyeballs_icon_48x48_round.png",
+  "necklace_of_eyeballs": "icons/technologies/necklace_of_eyeballs_icon_48x48_round.png",
+  "necropolis": "icons/technologies/necropolis_icon_48x48_round.png",
+  "necropolis_icon_48x48_round": "icons/technologies/necropolis_icon_48x48_round.png",
+  "necropolisicon48x48round": "icons/technologies/necropolis_icon_48x48_round.png",
+  "newkingdom": "icons/technologies/new_kingdom_icon_48x48_round.png",
+  "newkingdomicon48x48round": "icons/technologies/new_kingdom_icon_48x48_round.png",
+  "new_kingdom_icon_48x48_round": "icons/technologies/new_kingdom_icon_48x48_round.png",
+  "new_kingdom": "icons/technologies/new_kingdom_icon_48x48_round.png",
+  "nine_waves": "icons/technologies/nine_waves_icon_48x48_round.png",
+  "ninewaves": "icons/technologies/nine_waves_icon_48x48_round.png",
+  "ninewavesicon48x48round": "icons/technologies/nine_waves_icon_48x48_round.png",
+  "nine_waves_icon_48x48_round": "icons/technologies/nine_waves_icon_48x48_round.png",
+  "obsidianknapping": "icons/technologies/obsidian_knapping_icon_48x48_round.png",
+  "obsidian_knapping": "icons/technologies/obsidian_knapping_icon_48x48_round.png",
+  "obsidianknappingicon48x48round": "icons/technologies/obsidian_knapping_icon_48x48_round.png",
+  "obsidian_knapping_icon_48x48_round": "icons/technologies/obsidian_knapping_icon_48x48_round.png",
+  "ocpatliinfusions": "icons/technologies/ocpatli_infusions_icon_48x48_round.png",
+  "ocpatliinfusionsicon48x48round": "icons/technologies/ocpatli_infusions_icon_48x48_round.png",
+  "ocpatli_infusions": "icons/technologies/ocpatli_infusions_icon_48x48_round.png",
+  "ocpatli_infusions_icon_48x48_round": "icons/technologies/ocpatli_infusions_icon_48x48_round.png",
+  "old_coyotes_spirit_icon_48x48_round": "icons/technologies/old_coyotes_spirit_icon_48x48_round.png",
+  "oldcoyotesspirit": "icons/technologies/old_coyotes_spirit_icon_48x48_round.png",
+  "oldcoyotesspiriticon48x48round": "icons/technologies/old_coyotes_spirit_icon_48x48_round.png",
+  "old_coyotes_spirit": "icons/technologies/old_coyotes_spirit_icon_48x48_round.png",
+  "olympian_parentage_icon_48x48_round": "icons/technologies/olympian_parentage_icon_48x48_round.png",
+  "olympianparentage": "icons/technologies/olympian_parentage_icon_48x48_round.png",
+  "olympian_parentage": "icons/technologies/olympian_parentage_icon_48x48_round.png",
+  "olympianparentageicon48x48round": "icons/technologies/olympian_parentage_icon_48x48_round.png",
+  "olympian_weapons": "icons/technologies/olympian_weapons_icon_48x48_round.png",
+  "olympianweapons": "icons/technologies/olympian_weapons_icon_48x48_round.png",
+  "olympianweaponsicon48x48round": "icons/technologies/olympian_weapons_icon_48x48_round.png",
+  "olympian_weapons_icon_48x48_round": "icons/technologies/olympian_weapons_icon_48x48_round.png",
+  "omenofdeath": "icons/technologies/omen_of_death_icon_48x48_round.png",
+  "omen_of_death": "icons/technologies/omen_of_death_icon_48x48_round.png",
+  "omen_of_death_icon_48x48_round": "icons/technologies/omen_of_death_icon_48x48_round.png",
+  "omenofdeathicon48x48round": "icons/technologies/omen_of_death_icon_48x48_round.png",
+  "omenofmalinalcoicon48x48round": "icons/technologies/omen_of_malinalco_icon_48x48_round.png",
+  "omenofmalinalco": "icons/technologies/omen_of_malinalco_icon_48x48_round.png",
+  "omen_of_malinalco_icon_48x48_round": "icons/technologies/omen_of_malinalco_icon_48x48_round.png",
+  "omen_of_malinalco": "icons/technologies/omen_of_malinalco_icon_48x48_round.png",
+  "ometochtlisrevelryicon48x48round": "icons/technologies/ometochtlis_revelry_icon_48x48_round.png",
+  "ometochtlisrevelry": "icons/technologies/ometochtlis_revelry_icon_48x48_round.png",
+  "ometochtlis_revelry": "icons/technologies/ometochtlis_revelry_icon_48x48_round.png",
+  "ometochtlis_revelry_icon_48x48_round": "icons/technologies/ometochtlis_revelry_icon_48x48_round.png",
+  "oni_mask_icon_48x48_round": "icons/technologies/oni_mask_icon_48x48_round.png",
+  "oni_mask": "icons/technologies/oni_mask_icon_48x48_round.png",
+  "onimask": "icons/technologies/oni_mask_icon_48x48_round.png",
+  "onimaskicon48x48round": "icons/technologies/oni_mask_icon_48x48_round.png",
+  "onmyodo_icon_48x48_round": "icons/technologies/onmyodo_icon_48x48_round.png",
+  "onmyodo": "icons/technologies/onmyodo_icon_48x48_round.png",
+  "onmyodoicon48x48round": "icons/technologies/onmyodo_icon_48x48_round.png",
+  "opportunetimeicon48x48round": "icons/technologies/opportune_time_icon_48x48_round.png",
+  "opportune_time": "icons/technologies/opportune_time_icon_48x48_round.png",
+  "opportunetime": "icons/technologies/opportune_time_icon_48x48_round.png",
+  "opportune_time_icon_48x48_round": "icons/technologies/opportune_time_icon_48x48_round.png",
+  "oracleicon48x48round": "icons/technologies/oracle_icon_48x48_round.png",
+  "oracle": "icons/technologies/oracle_icon_48x48_round.png",
+  "oracle_icon_48x48_round": "icons/technologies/oracle_icon_48x48_round.png",
+  "orichalcum_mail": "icons/technologies/orichalcum_mail_icon_48x48_round.png",
+  "orichalcummailicon48x48round": "icons/technologies/orichalcum_mail_icon_48x48_round.png",
+  "orichalcum_mail_icon_48x48_round": "icons/technologies/orichalcum_mail_icon_48x48_round.png",
+  "orichalcummail": "icons/technologies/orichalcum_mail_icon_48x48_round.png",
+  "panspioneersicon48x48round": "icons/technologies/pans_pioneers_icon_48x48_round.png",
+  "panspioneers": "icons/technologies/pans_pioneers_icon_48x48_round.png",
+  "pans_pioneers": "icons/technologies/pans_pioneers_icon_48x48_round.png",
+  "pans_pioneers_icon_48x48_round": "icons/technologies/pans_pioneers_icon_48x48_round.png",
+  "peachofimmortalityicon48x48round": "icons/technologies/peach_of_immortality_icon_48x48_round.png",
+  "peachofimmortality": "icons/technologies/peach_of_immortality_icon_48x48_round.png",
+  "peach_of_immortality_icon_48x48_round": "icons/technologies/peach_of_immortality_icon_48x48_round.png",
+  "peach_of_immortality": "icons/technologies/peach_of_immortality_icon_48x48_round.png",
+  "perception": "icons/technologies/perception_icon_48x48_round.png",
+  "perception_icon_48x48_round": "icons/technologies/perception_icon_48x48_round.png",
+  "perceptionicon48x48round": "icons/technologies/perception_icon_48x48_round.png",
+  "petrificationicon48x48round": "icons/technologies/petrification_icon_48x48_round.png",
+  "petrification_icon_48x48_round": "icons/technologies/petrification_icon_48x48_round.png",
+  "petrification": "icons/technologies/petrification_icon_48x48_round.png",
+  "phobosspearofpanicicon48x48round": "icons/technologies/phobos_spear_of_panic_icon_48x48_round.png",
+  "phobos_spear_of_panic_icon_48x48_round": "icons/technologies/phobos_spear_of_panic_icon_48x48_round.png",
+  "phobos_spear_of_panic": "icons/technologies/phobos_spear_of_panic_icon_48x48_round.png",
+  "phobosspearofpanic": "icons/technologies/phobos_spear_of_panic_icon_48x48_round.png",
+  "pioneeroftheskiesicon48x48round": "icons/technologies/pioneer_of_the_skies_icon_48x48_round.png",
+  "pioneeroftheskies": "icons/technologies/pioneer_of_the_skies_icon_48x48_round.png",
+  "pioneer_of_the_skies": "icons/technologies/pioneer_of_the_skies_icon_48x48_round.png",
+  "pioneer_of_the_skies_icon_48x48_round": "icons/technologies/pioneer_of_the_skies_icon_48x48_round.png",
+  "pious_sacrifice": "icons/technologies/pious_sacrifice_icon_48x48_round.png",
+  "pioussacrificeicon48x48round": "icons/technologies/pious_sacrifice_icon_48x48_round.png",
+  "pious_sacrifice_icon_48x48_round": "icons/technologies/pious_sacrifice_icon_48x48_round.png",
+  "pioussacrifice": "icons/technologies/pious_sacrifice_icon_48x48_round.png",
+  "poseidons_secret_icon_48x48_round": "icons/technologies/poseidons_secret_icon_48x48_round.png",
+  "poseidons_secret": "icons/technologies/poseidons_secret_icon_48x48_round.png",
+  "poseidonssecreticon48x48round": "icons/technologies/poseidons_secret_icon_48x48_round.png",
+  "poseidonssecret": "icons/technologies/poseidons_secret_icon_48x48_round.png",
+  "powerofchaosicon48x48round": "icons/technologies/power_of_chaos_icon_48x48_round.png",
+  "power_of_chaos": "icons/technologies/power_of_chaos_icon_48x48_round.png",
+  "powerofchaos": "icons/technologies/power_of_chaos_icon_48x48_round.png",
+  "power_of_chaos_icon_48x48_round": "icons/technologies/power_of_chaos_icon_48x48_round.png",
+  "precious_bones_icon_48x48_round": "icons/technologies/precious_bones_icon_48x48_round.png",
+  "precious_bones": "icons/technologies/precious_bones_icon_48x48_round.png",
+  "preciousbones": "icons/technologies/precious_bones_icon_48x48_round.png",
+  "preciousbonesicon48x48round": "icons/technologies/precious_bones_icon_48x48_round.png",
+  "predatory_instinct_icon_48x48_round": "icons/technologies/predatory_instinct_icon_48x48_round.png",
+  "predatoryinstinct": "icons/technologies/predatory_instinct_icon_48x48_round.png",
+  "predatoryinstincticon48x48round": "icons/technologies/predatory_instinct_icon_48x48_round.png",
+  "predatory_instinct": "icons/technologies/predatory_instinct_icon_48x48_round.png",
+  "prophetic_sight": "icons/technologies/prophetic_sight_icon_48x48_round.png",
+  "propheticsighticon48x48round": "icons/technologies/prophetic_sight_icon_48x48_round.png",
+  "propheticsight": "icons/technologies/prophetic_sight_icon_48x48_round.png",
+  "prophetic_sight_icon_48x48_round": "icons/technologies/prophetic_sight_icon_48x48_round.png",
+  "qilins_blessing_icon_48x48_round": "icons/technologies/qilins_blessing_icon_48x48_round.png",
+  "qilinsblessingicon48x48round": "icons/technologies/qilins_blessing_icon_48x48_round.png",
+  "qilinsblessing": "icons/technologies/qilins_blessing_icon_48x48_round.png",
+  "qilins_blessing": "icons/technologies/qilins_blessing_icon_48x48_round.png",
+  "rage_of_slaughter": "icons/technologies/rage_of_slaughter_icon_48x48_round.png",
+  "rage_of_slaughter_icon_48x48_round": "icons/technologies/rage_of_slaughter_icon_48x48_round.png",
+  "rageofslaughter": "icons/technologies/rage_of_slaughter_icon_48x48_round.png",
+  "rageofslaughtericon48x48round": "icons/technologies/rage_of_slaughter_icon_48x48_round.png",
+  "rampage_icon_48x48_round": "icons/technologies/rampage_icon_48x48_round.png",
+  "rampageicon48x48round": "icons/technologies/rampage_icon_48x48_round.png",
+  "rampage": "icons/technologies/rampage_icon_48x48_round.png",
+  "redcliffsfleeticon48x48round": "icons/technologies/red_cliffs_fleet_icon_48x48_round.png",
+  "red_cliffs_fleet": "icons/technologies/red_cliffs_fleet_icon_48x48_round.png",
+  "redcliffsfleet": "icons/technologies/red_cliffs_fleet_icon_48x48_round.png",
+  "red_cliffs_fleet_icon_48x48_round": "icons/technologies/red_cliffs_fleet_icon_48x48_round.png",
+  "reincarnationicon48x48round": "icons/technologies/reincarnation_icon_48x48_round.png",
+  "reincarnation_icon_48x48_round": "icons/technologies/reincarnation_icon_48x48_round.png",
+  "reincarnation": "icons/technologies/reincarnation_icon_48x48_round.png",
+  "restlessarmyicon48x48round": "icons/technologies/restless_army_icon_48x48_round.png",
+  "restlessarmy": "icons/technologies/restless_army_icon_48x48_round.png",
+  "restless_army": "icons/technologies/restless_army_icon_48x48_round.png",
+  "restless_army_icon_48x48_round": "icons/technologies/restless_army_icon_48x48_round.png",
+  "rheiasgift": "icons/technologies/rheias_gift_icon_48x48_round.png",
+  "rheias_gift": "icons/technologies/rheias_gift_icon_48x48_round.png",
+  "rheiasgifticon48x48round": "icons/technologies/rheias_gift_icon_48x48_round.png",
+  "rheias_gift_icon_48x48_round": "icons/technologies/rheias_gift_icon_48x48_round.png",
+  "rigsthula": "icons/technologies/rigsthula_icon_48x48_round.png",
+  "rigsthulaicon48x48round": "icons/technologies/rigsthula_icon_48x48_round.png",
+  "rigsthula_icon_48x48_round": "icons/technologies/rigsthula_icon_48x48_round.png",
+  "rime_icon_48x48_round": "icons/technologies/rime_icon_48x48_round.png",
+  "rimeicon48x48round": "icons/technologies/rime_icon_48x48_round.png",
+  "rime": "icons/technologies/rime_icon_48x48_round.png",
+  "ringgiver": "icons/technologies/ring_giver_icon_48x48_round.png",
+  "ring_giver_icon_48x48_round": "icons/technologies/ring_giver_icon_48x48_round.png",
+  "ring_giver": "icons/technologies/ring_giver_icon_48x48_round.png",
+  "ringgivericon48x48round": "icons/technologies/ring_giver_icon_48x48_round.png",
+  "ringoathicon48x48round": "icons/technologies/ring_oath_icon_48x48_round.png",
+  "ringoath": "icons/technologies/ring_oath_icon_48x48_round.png",
+  "ring_oath": "icons/technologies/ring_oath_icon_48x48_round.png",
+  "ring_oath_icon_48x48_round": "icons/technologies/ring_oath_icon_48x48_round.png",
+  "risingtideicon48x48round": "icons/technologies/rising_tide_icon_48x48_round.png",
+  "risingtide": "icons/technologies/rising_tide_icon_48x48_round.png",
+  "rising_tide_icon_48x48_round": "icons/technologies/rising_tide_icon_48x48_round.png",
+  "rising_tide": "icons/technologies/rising_tide_icon_48x48_round.png",
+  "roar_of_orthus": "icons/technologies/roar_of_orthus_icon_48x48_round.png",
+  "roar_of_orthus_icon_48x48_round": "icons/technologies/roar_of_orthus_icon_48x48_round.png",
+  "roaroforthusicon48x48round": "icons/technologies/roar_of_orthus_icon_48x48_round.png",
+  "roaroforthus": "icons/technologies/roar_of_orthus_icon_48x48_round.png",
+  "rock_solid_icon_48x48_round": "icons/technologies/rock_solid_icon_48x48_round.png",
+  "rocksolidicon48x48round": "icons/technologies/rock_solid_icon_48x48_round.png",
+  "rocksolid": "icons/technologies/rock_solid_icon_48x48_round.png",
+  "rock_solid": "icons/technologies/rock_solid_icon_48x48_round.png",
+  "sacredcats": "icons/technologies/sacred_cats_icon_48x48_round.png",
+  "sacred_cats": "icons/technologies/sacred_cats_icon_48x48_round.png",
+  "sacred_cats_icon_48x48_round": "icons/technologies/sacred_cats_icon_48x48_round.png",
+  "sacredcatsicon48x48round": "icons/technologies/sacred_cats_icon_48x48_round.png",
+  "sacred_custodians": "icons/technologies/sacred_custodians_icon_48x48_round.png",
+  "sacred_custodians_icon_48x48_round": "icons/technologies/sacred_custodians_icon_48x48_round.png",
+  "sacredcustodiansicon48x48round": "icons/technologies/sacred_custodians_icon_48x48_round.png",
+  "sacredcustodians": "icons/technologies/sacred_custodians_icon_48x48_round.png",
+  "sacredlandicon48x48round": "icons/technologies/sacred_land_icon_48x48_round.png",
+  "sacredland": "icons/technologies/sacred_land_icon_48x48_round.png",
+  "sacred_land": "icons/technologies/sacred_land_icon_48x48_round.png",
+  "sacred_land_icon_48x48_round": "icons/technologies/sacred_land_icon_48x48_round.png",
+  "safeguard": "icons/technologies/safeguard_icon_48x48_round.png",
+  "safeguardicon48x48round": "icons/technologies/safeguard_icon_48x48_round.png",
+  "safeguard_icon_48x48_round": "icons/technologies/safeguard_icon_48x48_round.png",
+  "sakura_gardens_icon_48x48_round": "icons/technologies/sakura_gardens_icon_48x48_round.png",
+  "sakuragardensicon48x48round": "icons/technologies/sakura_gardens_icon_48x48_round.png",
+  "sakura_gardens": "icons/technologies/sakura_gardens_icon_48x48_round.png",
+  "sakuragardens": "icons/technologies/sakura_gardens_icon_48x48_round.png",
+  "saltwaterspringicon48x48round": "icons/technologies/saltwater_spring_icon_48x48_round.png",
+  "saltwater_spring": "icons/technologies/saltwater_spring_icon_48x48_round.png",
+  "saltwaterspring": "icons/technologies/saltwater_spring_icon_48x48_round.png",
+  "saltwater_spring_icon_48x48_round": "icons/technologies/saltwater_spring_icon_48x48_round.png",
+  "sarissa": "icons/technologies/sarissa_icon_48x48_round.png",
+  "sarissaicon48x48round": "icons/technologies/sarissa_icon_48x48_round.png",
+  "sarissa_icon_48x48_round": "icons/technologies/sarissa_icon_48x48_round.png",
+  "sashimonobannermen": "icons/technologies/sashimono_bannermen_icon_48x48_round.png",
+  "sashimonobannermenicon48x48round": "icons/technologies/sashimono_bannermen_icon_48x48_round.png",
+  "sashimono_bannermen": "icons/technologies/sashimono_bannermen_icon_48x48_round.png",
+  "sashimono_bannermen_icon_48x48_round": "icons/technologies/sashimono_bannermen_icon_48x48_round.png",
+  "scallopedaxeicon48x48round": "icons/technologies/scalloped_axe_icon_48x48_round.png",
+  "scalloped_axe": "icons/technologies/scalloped_axe_icon_48x48_round.png",
+  "scallopedaxe": "icons/technologies/scalloped_axe_icon_48x48_round.png",
+  "scalloped_axe_icon_48x48_round": "icons/technologies/scalloped_axe_icon_48x48_round.png",
+  "scorchingfeathersicon48x48round": "icons/technologies/scorching_feathers_icon_48x48_round.png",
+  "scorchingfeathers": "icons/technologies/scorching_feathers_icon_48x48_round.png",
+  "scorching_feathers": "icons/technologies/scorching_feathers_icon_48x48_round.png",
+  "scorching_feathers_icon_48x48_round": "icons/technologies/scorching_feathers_icon_48x48_round.png",
+  "seaside_infiltration_icon_48x48_round": "icons/technologies/seaside_infiltration_icon_48x48_round.png",
+  "seaside_infiltration": "icons/technologies/seaside_infiltration_icon_48x48_round.png",
+  "seasideinfiltrationicon48x48round": "icons/technologies/seaside_infiltration_icon_48x48_round.png",
+  "seasideinfiltration": "icons/technologies/seaside_infiltration_icon_48x48_round.png",
+  "serpentskirticon48x48round": "icons/technologies/serpent_skirt_icon_48x48_round.png",
+  "serpent_skirt": "icons/technologies/serpent_skirt_icon_48x48_round.png",
+  "serpent_skirt_icon_48x48_round": "icons/technologies/serpent_skirt_icon_48x48_round.png",
+  "serpentskirt": "icons/technologies/serpent_skirt_icon_48x48_round.png",
+  "serpentspear": "icons/technologies/serpent_spear_icon_48x48_round.png",
+  "serpentspearicon48x48round": "icons/technologies/serpent_spear_icon_48x48_round.png",
+  "serpent_spear": "icons/technologies/serpent_spear_icon_48x48_round.png",
+  "serpent_spear_icon_48x48_round": "icons/technologies/serpent_spear_icon_48x48_round.png",
+  "servants_of_glory_icon_48x48_round": "icons/technologies/servants_of_glory_icon_48x48_round.png",
+  "servantsofgloryicon48x48round": "icons/technologies/servants_of_glory_icon_48x48_round.png",
+  "servants_of_glory": "icons/technologies/servants_of_glory_icon_48x48_round.png",
+  "servantsofglory": "icons/technologies/servants_of_glory_icon_48x48_round.png",
+  "sessrumnir_icon_48x48_round": "icons/technologies/sessrumnir_icon_48x48_round.png",
+  "sessrumniricon48x48round": "icons/technologies/sessrumnir_icon_48x48_round.png",
+  "sessrumnir": "icons/technologies/sessrumnir_icon_48x48_round.png",
+  "shaduficon48x48round": "icons/technologies/shaduf_icon_48x48_round.png",
+  "shaduf_icon_48x48_round": "icons/technologies/shaduf_icon_48x48_round.png",
+  "shaduf": "icons/technologies/shaduf_icon_48x48_round.png",
+  "shafts_of_plague_icon_48x48_round": "icons/technologies/shafts_of_plague_icon_48x48_round.png",
+  "shaftsofplague": "icons/technologies/shafts_of_plague_icon_48x48_round.png",
+  "shafts_of_plague": "icons/technologies/shafts_of_plague_icon_48x48_round.png",
+  "shaftsofplagueicon48x48round": "icons/technologies/shafts_of_plague_icon_48x48_round.png",
+  "shaker_of_heaven": "icons/technologies/shaker_of_heaven_icon_48x48_round.png",
+  "shakerofheavenicon48x48round": "icons/technologies/shaker_of_heaven_icon_48x48_round.png",
+  "shaker_of_heaven_icon_48x48_round": "icons/technologies/shaker_of_heaven_icon_48x48_round.png",
+  "shakerofheaven": "icons/technologies/shaker_of_heaven_icon_48x48_round.png",
+  "shardsofitztli": "icons/technologies/shards_of_itztli_icon_48x48_round.png",
+  "shardsofitztliicon48x48round": "icons/technologies/shards_of_itztli_icon_48x48_round.png",
+  "shards_of_itztli": "icons/technologies/shards_of_itztli_icon_48x48_round.png",
+  "shards_of_itztli_icon_48x48_round": "icons/technologies/shards_of_itztli_icon_48x48_round.png",
+  "shield_blessing_48x48_round": "icons/technologies/shield_blessing_48x48_round.png",
+  "shieldblessing": "icons/technologies/shield_blessing_48x48_round.png",
+  "shield_blessing": "icons/technologies/shield_blessing_48x48_round.png",
+  "shieldblessing48x48round": "icons/technologies/shield_blessing_48x48_round.png",
+  "shoulder_of_talos_icon_48x48_round": "icons/technologies/shoulder_of_talos_icon_48x48_round.png",
+  "shoulder_of_talos": "icons/technologies/shoulder_of_talos_icon_48x48_round.png",
+  "shoulderoftalosicon48x48round": "icons/technologies/shoulder_of_talos_icon_48x48_round.png",
+  "shoulderoftalos": "icons/technologies/shoulder_of_talos_icon_48x48_round.png",
+  "silentresolve": "icons/technologies/silent_resolve_icon_48x48_round.png",
+  "silent_resolve": "icons/technologies/silent_resolve_icon_48x48_round.png",
+  "silentresolveicon48x48round": "icons/technologies/silent_resolve_icon_48x48_round.png",
+  "silent_resolve_icon_48x48_round": "icons/technologies/silent_resolve_icon_48x48_round.png",
+  "silk_road": "icons/technologies/silk_road_icon_48x48_round.png",
+  "silkroad": "icons/technologies/silk_road_icon_48x48_round.png",
+  "silk_road_icon_48x48_round": "icons/technologies/silk_road_icon_48x48_round.png",
+  "silkroadicon48x48round": "icons/technologies/silk_road_icon_48x48_round.png",
+  "sinisterdefianceicon48x48round": "icons/technologies/sinister_defiance_icon_48x48_round.png",
+  "sinister_defiance_icon_48x48_round": "icons/technologies/sinister_defiance_icon_48x48_round.png",
+  "sinisterdefiance": "icons/technologies/sinister_defiance_icon_48x48_round.png",
+  "sinister_defiance": "icons/technologies/sinister_defiance_icon_48x48_round.png",
+  "skin_of_the_rhino_icon_48x48_round": "icons/technologies/skin_of_the_rhino_icon_48x48_round.png",
+  "skinoftherhinoicon48x48round": "icons/technologies/skin_of_the_rhino_icon_48x48_round.png",
+  "skinoftherhino": "icons/technologies/skin_of_the_rhino_icon_48x48_round.png",
+  "skin_of_the_rhino": "icons/technologies/skin_of_the_rhino_icon_48x48_round.png",
+  "skyfire": "icons/technologies/sky_fire_icon_48x48_round.png",
+  "sky_fire_icon_48x48_round": "icons/technologies/sky_fire_icon_48x48_round.png",
+  "skyfireicon48x48round": "icons/technologies/sky_fire_icon_48x48_round.png",
+  "sky_fire": "icons/technologies/sky_fire_icon_48x48_round.png",
+  "slash_and_burn": "icons/technologies/slash_and_burn_icon_48x48_round.png",
+  "slash_and_burn_icon_48x48_round": "icons/technologies/slash_and_burn_icon_48x48_round.png",
+  "slashandburn": "icons/technologies/slash_and_burn_icon_48x48_round.png",
+  "slashandburnicon48x48round": "icons/technologies/slash_and_burn_icon_48x48_round.png",
+  "slingsofthesunicon48x48round": "icons/technologies/slings_of_the_sun_icon_48x48_round.png",
+  "slings_of_the_sun_icon_48x48_round": "icons/technologies/slings_of_the_sun_icon_48x48_round.png",
+  "slingsofthesun": "icons/technologies/slings_of_the_sun_icon_48x48_round.png",
+  "slings_of_the_sun": "icons/technologies/slings_of_the_sun_icon_48x48_round.png",
+  "sojutsuicon48x48round": "icons/technologies/sojutsu_icon_48x48_round.png",
+  "sojutsu": "icons/technologies/sojutsu_icon_48x48_round.png",
+  "sojutsu_icon_48x48_round": "icons/technologies/sojutsu_icon_48x48_round.png",
+  "solar_barque": "icons/technologies/solar_barque_icon_48x48_round.png",
+  "solarbarque": "icons/technologies/solar_barque_icon_48x48_round.png",
+  "solar_barque_icon_48x48_round": "icons/technologies/solar_barque_icon_48x48_round.png",
+  "solarbarqueicon48x48round": "icons/technologies/solar_barque_icon_48x48_round.png",
+  "sonofloongicon48x48round": "icons/technologies/son_of_loong_icon_48x48_round.png",
+  "son_of_loong": "icons/technologies/son_of_loong_icon_48x48_round.png",
+  "sonofloong": "icons/technologies/son_of_loong_icon_48x48_round.png",
+  "son_of_loong_icon_48x48_round": "icons/technologies/son_of_loong_icon_48x48_round.png",
+  "song_of_midsummer": "icons/technologies/song_of_midsummer_icon_48x48_round.png",
+  "songofmidsummericon48x48round": "icons/technologies/song_of_midsummer_icon_48x48_round.png",
+  "songofmidsummer": "icons/technologies/song_of_midsummer_icon_48x48_round.png",
+  "song_of_midsummer_icon_48x48_round": "icons/technologies/song_of_midsummer_icon_48x48_round.png",
+  "sonsofsleipnir": "icons/technologies/sons_of_sleipnir_icon_48x48_round.png",
+  "sonsofsleipniricon48x48round": "icons/technologies/sons_of_sleipnir_icon_48x48_round.png",
+  "sons_of_sleipnir_icon_48x48_round": "icons/technologies/sons_of_sleipnir_icon_48x48_round.png",
+  "sons_of_sleipnir": "icons/technologies/sons_of_sleipnir_icon_48x48_round.png",
+  "sonsofthesun": "icons/technologies/sons_of_the_sun_icon_48x48_round.png",
+  "sons_of_the_sun": "icons/technologies/sons_of_the_sun_icon_48x48_round.png",
+  "sonsofthesunicon48x48round": "icons/technologies/sons_of_the_sun_icon_48x48_round.png",
+  "sons_of_the_sun_icon_48x48_round": "icons/technologies/sons_of_the_sun_icon_48x48_round.png",
+  "southernfire": "icons/technologies/southern_fire_icon_48x48_round.png",
+  "southern_fire_icon_48x48_round": "icons/technologies/southern_fire_icon_48x48_round.png",
+  "southern_fire": "icons/technologies/southern_fire_icon_48x48_round.png",
+  "southernfireicon48x48round": "icons/technologies/southern_fire_icon_48x48_round.png",
+  "spearofhorusicon48x48round": "icons/technologies/spear_of_horus_icon_48x48_round.png",
+  "spear_of_horus": "icons/technologies/spear_of_horus_icon_48x48_round.png",
+  "spearofhorus": "icons/technologies/spear_of_horus_icon_48x48_round.png",
+  "spear_of_horus_icon_48x48_round": "icons/technologies/spear_of_horus_icon_48x48_round.png",
+  "spiritofmaaticon48x48round": "icons/technologies/spirit_of_maat_icon_48x48_round.png",
+  "spirit_of_maat_icon_48x48_round": "icons/technologies/spirit_of_maat_icon_48x48_round.png",
+  "spirit_of_maat": "icons/technologies/spirit_of_maat_icon_48x48_round.png",
+  "spiritofmaat": "icons/technologies/spirit_of_maat_icon_48x48_round.png",
+  "spirited_charge": "icons/technologies/spirited_charge_icon_48x48_round.png",
+  "spiritedchargeicon48x48round": "icons/technologies/spirited_charge_icon_48x48_round.png",
+  "spiritedcharge": "icons/technologies/spirited_charge_icon_48x48_round.png",
+  "spirited_charge_icon_48x48_round": "icons/technologies/spirited_charge_icon_48x48_round.png",
+  "spoilsofwaricon48x48round": "icons/technologies/spoils_of_war_icon_48x48_round.png",
+  "spoilsofwar": "icons/technologies/spoils_of_war_icon_48x48_round.png",
+  "spoils_of_war": "icons/technologies/spoils_of_war_icon_48x48_round.png",
+  "spoils_of_war_icon_48x48_round": "icons/technologies/spoils_of_war_icon_48x48_round.png",
+  "sting_of_yappan_icon_48x48_round": "icons/technologies/sting_of_yappan_icon_48x48_round.png",
+  "stingofyappanicon48x48round": "icons/technologies/sting_of_yappan_icon_48x48_round.png",
+  "sting_of_yappan": "icons/technologies/sting_of_yappan_icon_48x48_round.png",
+  "stingofyappan": "icons/technologies/sting_of_yappan_icon_48x48_round.png",
+  "stoneskinquinametzinicon48x48round": "icons/technologies/stoneskin_quinametzin_icon_48x48_round.png",
+  "stoneskin_quinametzin_icon_48x48_round": "icons/technologies/stoneskin_quinametzin_icon_48x48_round.png",
+  "stoneskin_quinametzin": "icons/technologies/stoneskin_quinametzin_icon_48x48_round.png",
+  "stoneskinquinametzin": "icons/technologies/stoneskin_quinametzin_icon_48x48_round.png",
+  "stringofheartsicon48x48round": "icons/technologies/string_of_hearts_icon_48x48_round.png",
+  "string_of_hearts_icon_48x48_round": "icons/technologies/string_of_hearts_icon_48x48_round.png",
+  "string_of_hearts": "icons/technologies/string_of_hearts_icon_48x48_round.png",
+  "stringofhearts": "icons/technologies/string_of_hearts_icon_48x48_round.png",
+  "sumo_training_icon_48x48_round": "icons/technologies/sumo_training_icon_48x48_round.png",
+  "sumo_training": "icons/technologies/sumo_training_icon_48x48_round.png",
+  "sumotraining": "icons/technologies/sumo_training_icon_48x48_round.png",
+  "sumotrainingicon48x48round": "icons/technologies/sumo_training_icon_48x48_round.png",
+  "sun_ray": "icons/technologies/sun_ray_icon_48x48_round.png",
+  "sunray": "icons/technologies/sun_ray_icon_48x48_round.png",
+  "sunrayicon48x48round": "icons/technologies/sun_ray_icon_48x48_round.png",
+  "sun_ray_icon_48x48_round": "icons/technologies/sun_ray_icon_48x48_round.png",
+  "sundriedmudbrick": "icons/technologies/sundried_mud_brick_icon_48x48_round.png",
+  "sundried_mud_brick": "icons/technologies/sundried_mud_brick_icon_48x48_round.png",
+  "sundried_mud_brick_icon_48x48_round": "icons/technologies/sundried_mud_brick_icon_48x48_round.png",
+  "sundriedmudbrickicon48x48round": "icons/technologies/sundried_mud_brick_icon_48x48_round.png",
+  "swine_array": "icons/technologies/swine_array_icon_48x48_round.png",
+  "swinearray": "icons/technologies/swine_array_icon_48x48_round.png",
+  "swine_array_icon_48x48_round": "icons/technologies/swine_array_icon_48x48_round.png",
+  "swinearrayicon48x48round": "icons/technologies/swine_array_icon_48x48_round.png",
+  "sylvan_lore": "icons/technologies/sylvan_lore_icon_48x48_round.png",
+  "sylvanloreicon48x48round": "icons/technologies/sylvan_lore_icon_48x48_round.png",
+  "sylvan_lore_icon_48x48_round": "icons/technologies/sylvan_lore_icon_48x48_round.png",
+  "sylvanlore": "icons/technologies/sylvan_lore_icon_48x48_round.png",
+  "taichi": "icons/technologies/tai_chi_icon_48x48_round.png",
+  "taichiicon48x48round": "icons/technologies/tai_chi_icon_48x48_round.png",
+  "tai_chi_icon_48x48_round": "icons/technologies/tai_chi_icon_48x48_round.png",
+  "tai_chi": "icons/technologies/tai_chi_icon_48x48_round.png",
+  "tecciztecatls_penance_icon_48x48_round": "icons/technologies/tecciztecatls_penance_icon_48x48_round.png",
+  "tecciztecatlspenance": "icons/technologies/tecciztecatls_penance_icon_48x48_round.png",
+  "tecciztecatlspenanceicon48x48round": "icons/technologies/tecciztecatls_penance_icon_48x48_round.png",
+  "tecciztecatls_penance": "icons/technologies/tecciztecatls_penance_icon_48x48_round.png",
+  "temiminaloyan_trials": "icons/technologies/temiminaloyan_trials_icon_48x48_round.png",
+  "temiminaloyantrialsicon48x48round": "icons/technologies/temiminaloyan_trials_icon_48x48_round.png",
+  "temiminaloyantrials": "icons/technologies/temiminaloyan_trials_icon_48x48_round.png",
+  "temiminaloyan_trials_icon_48x48_round": "icons/technologies/temiminaloyan_trials_icon_48x48_round.png",
+  "tempestuous_storm_icon_48x48_round": "icons/technologies/tempestuous_storm_icon_48x48_round.png",
+  "tempestuousstorm": "icons/technologies/tempestuous_storm_icon_48x48_round.png",
+  "tempestuous_storm": "icons/technologies/tempestuous_storm_icon_48x48_round.png",
+  "tempestuousstormicon48x48round": "icons/technologies/tempestuous_storm_icon_48x48_round.png",
+  "temple_of_healing_icon_48x48_round": "icons/technologies/temple_of_healing_icon_48x48_round.png",
+  "templeofhealing": "icons/technologies/temple_of_healing_icon_48x48_round.png",
+  "temple_of_healing": "icons/technologies/temple_of_healing_icon_48x48_round.png",
+  "templeofhealingicon48x48round": "icons/technologies/temple_of_healing_icon_48x48_round.png",
+  "temple_of_heaven": "icons/technologies/temple_of_heaven_icon_48x48_round.png",
+  "temple_of_heaven_icon_48x48_round": "icons/technologies/temple_of_heaven_icon_48x48_round.png",
+  "templeofheavenicon48x48round": "icons/technologies/temple_of_heaven_icon_48x48_round.png",
+  "templeofheaven": "icons/technologies/temple_of_heaven_icon_48x48_round.png",
+  "temporalchaosicon48x48round": "icons/technologies/temporal_chaos_icon_48x48_round.png",
+  "temporal_chaos_icon_48x48_round": "icons/technologies/temporal_chaos_icon_48x48_round.png",
+  "temporal_chaos": "icons/technologies/temporal_chaos_icon_48x48_round.png",
+  "temporalchaos": "icons/technologies/temporal_chaos_icon_48x48_round.png",
+  "tenfistswordicon48x48round": "icons/technologies/ten_fist_sword_icon_48x48_round.png",
+  "ten_fist_sword_icon_48x48_round": "icons/technologies/ten_fist_sword_icon_48x48_round.png",
+  "tenfistsword": "icons/technologies/ten_fist_sword_icon_48x48_round.png",
+  "ten_fist_sword": "icons/technologies/ten_fist_sword_icon_48x48_round.png",
+  "tenshu_icon_48x48_round": "icons/technologies/tenshu_icon_48x48_round.png",
+  "tenshuicon48x48round": "icons/technologies/tenshu_icon_48x48_round.png",
+  "tenshu": "icons/technologies/tenshu_icon_48x48_round.png",
+  "tepeyollotls_reach_icon_48x48_round": "icons/technologies/tepeyollotls_reach_icon_48x48_round.png",
+  "tepeyollotls_reach": "icons/technologies/tepeyollotls_reach_icon_48x48_round.png",
+  "tepeyollotlsreach": "icons/technologies/tepeyollotls_reach_icon_48x48_round.png",
+  "tepeyollotlsreachicon48x48round": "icons/technologies/tepeyollotls_reach_icon_48x48_round.png",
+  "teponaztli_drums": "icons/technologies/teponaztli_drums_icon_48x48_round.png",
+  "teponaztlidrumsicon48x48round": "icons/technologies/teponaztli_drums_icon_48x48_round.png",
+  "teponaztlidrums": "icons/technologies/teponaztli_drums_icon_48x48_round.png",
+  "teponaztli_drums_icon_48x48_round": "icons/technologies/teponaztli_drums_icon_48x48_round.png",
+  "theftoffire": "icons/technologies/theft_of_fire_icon_48x48_round.png",
+  "theft_of_fire_icon_48x48_round": "icons/technologies/theft_of_fire_icon_48x48_round.png",
+  "theftoffireicon48x48round": "icons/technologies/theft_of_fire_icon_48x48_round.png",
+  "theft_of_fire": "icons/technologies/theft_of_fire_icon_48x48_round.png",
+  "thorned_walls": "icons/technologies/thorned_walls_icon_48x48_round.png",
+  "thornedwallsicon48x48round": "icons/technologies/thorned_walls_icon_48x48_round.png",
+  "thorned_walls_icon_48x48_round": "icons/technologies/thorned_walls_icon_48x48_round.png",
+  "thornedwalls": "icons/technologies/thorned_walls_icon_48x48_round.png",
+  "thracian_horses_icon_48x48_round": "icons/technologies/thracian_horses_icon_48x48_round.png",
+  "thracianhorses": "icons/technologies/thracian_horses_icon_48x48_round.png",
+  "thracianhorsesicon48x48round": "icons/technologies/thracian_horses_icon_48x48_round.png",
+  "thracian_horses": "icons/technologies/thracian_horses_icon_48x48_round.png",
+  "thundering_hooves_icon_48x48_round": "icons/technologies/thundering_hooves_icon_48x48_round.png",
+  "thunderinghoovesicon48x48round": "icons/technologies/thundering_hooves_icon_48x48_round.png",
+  "thunderinghooves": "icons/technologies/thundering_hooves_icon_48x48_round.png",
+  "thundering_hooves": "icons/technologies/thundering_hooves_icon_48x48_round.png",
+  "thunderousprescence": "icons/technologies/thunderous_prescence_icon_48x48_round.png",
+  "thunderous_prescence_icon_48x48_round": "icons/technologies/thunderous_prescence_icon_48x48_round.png",
+  "thunderous_prescence": "icons/technologies/thunderous_prescence_icon_48x48_round.png",
+  "thunderousprescenceicon48x48round": "icons/technologies/thunderous_prescence_icon_48x48_round.png",
+  "thurisaz_rune": "icons/technologies/thurisaz_rune_icon_48x48_round.png",
+  "thurisazrune": "icons/technologies/thurisaz_rune_icon_48x48_round.png",
+  "thurisazruneicon48x48round": "icons/technologies/thurisaz_rune_icon_48x48_round.png",
+  "thurisaz_rune_icon_48x48_round": "icons/technologies/thurisaz_rune_icon_48x48_round.png",
+  "titanshieldicon48x48round": "icons/technologies/titan_shield_icon_48x48_round.png",
+  "titan_shield_icon_48x48_round": "icons/technologies/titan_shield_icon_48x48_round.png",
+  "titanshield": "icons/technologies/titan_shield_icon_48x48_round.png",
+  "titan_shield": "icons/technologies/titan_shield_icon_48x48_round.png",
+  "titanomachy": "icons/technologies/titanomachy_icon_48x48_round.png",
+  "titanomachyicon48x48round": "icons/technologies/titanomachy_icon_48x48_round.png",
+  "titanomachy_icon_48x48_round": "icons/technologies/titanomachy_icon_48x48_round.png",
+  "tlaloquesicon48x48round": "icons/technologies/tlaloques_icon_48x48_round.png",
+  "tlaloques": "icons/technologies/tlaloques_icon_48x48_round.png",
+  "tlaloques_icon_48x48_round": "icons/technologies/tlaloques_icon_48x48_round.png",
+  "toloachetrance": "icons/technologies/toloache_trance_icon_48x48_round.png",
+  "toloache_trance": "icons/technologies/toloache_trance_icon_48x48_round.png",
+  "toloachetranceicon48x48round": "icons/technologies/toloache_trance_icon_48x48_round.png",
+  "toloache_trance_icon_48x48_round": "icons/technologies/toloache_trance_icon_48x48_round.png",
+  "tonacatepetlicon48x48round": "icons/technologies/tonacatepetl_icon_48x48_round.png",
+  "tonacatepetl": "icons/technologies/tonacatepetl_icon_48x48_round.png",
+  "tonacatepetl_icon_48x48_round": "icons/technologies/tonacatepetl_icon_48x48_round.png",
+  "torch_of_misfortune": "icons/technologies/torch_of_misfortune_icon_48x48_round.png",
+  "torchofmisfortuneicon48x48round": "icons/technologies/torch_of_misfortune_icon_48x48_round.png",
+  "torchofmisfortune": "icons/technologies/torch_of_misfortune_icon_48x48_round.png",
+  "torch_of_misfortune_icon_48x48_round": "icons/technologies/torch_of_misfortune_icon_48x48_round.png",
+  "tradingseason": "icons/technologies/trading_season_icon_48x48_round.png",
+  "tradingseasonicon48x48round": "icons/technologies/trading_season_icon_48x48_round.png",
+  "trading_season": "icons/technologies/trading_season_icon_48x48_round.png",
+  "trading_season_icon_48x48_round": "icons/technologies/trading_season_icon_48x48_round.png",
+  "tusks_of_apedemak": "icons/technologies/tusks_of_apedemak_icon_48x48_round.png",
+  "tusksofapedemakicon48x48round": "icons/technologies/tusks_of_apedemak_icon_48x48_round.png",
+  "tusksofapedemak": "icons/technologies/tusks_of_apedemak_icon_48x48_round.png",
+  "tusks_of_apedemak_icon_48x48_round": "icons/technologies/tusks_of_apedemak_icon_48x48_round.png",
+  "twilightofthegods": "icons/technologies/twilight_of_the_gods_icon_48x48_round.png",
+  "twilight_of_the_gods": "icons/technologies/twilight_of_the_gods_icon_48x48_round.png",
+  "twilightofthegodsicon48x48round": "icons/technologies/twilight_of_the_gods_icon_48x48_round.png",
+  "twilight_of_the_gods_icon_48x48_round": "icons/technologies/twilight_of_the_gods_icon_48x48_round.png",
+  "twistedlimbs": "icons/technologies/twisted_limbs_icon_48x48_round.png",
+  "twistedlimbsicon48x48round": "icons/technologies/twisted_limbs_icon_48x48_round.png",
+  "twisted_limbs": "icons/technologies/twisted_limbs_icon_48x48_round.png",
+  "twisted_limbs_icon_48x48_round": "icons/technologies/twisted_limbs_icon_48x48_round.png",
+  "valgaldr": "icons/technologies/valgaldr_icon_48x48_round.png",
+  "valgaldricon48x48round": "icons/technologies/valgaldr_icon_48x48_round.png",
+  "valgaldr_icon_48x48_round": "icons/technologies/valgaldr_icon_48x48_round.png",
+  "valleyofthekingsicon48x48round": "icons/technologies/valley_of_the_kings_icon_48x48_round.png",
+  "valleyofthekings": "icons/technologies/valley_of_the_kings_icon_48x48_round.png",
+  "valley_of_the_kings_icon_48x48_round": "icons/technologies/valley_of_the_kings_icon_48x48_round.png",
+  "valley_of_the_kings": "icons/technologies/valley_of_the_kings_icon_48x48_round.png",
+  "vaults_of_erebus_icon_48x48_round": "icons/technologies/vaults_of_erebus_icon_48x48_round.png",
+  "vaults_of_erebus": "icons/technologies/vaults_of_erebus_icon_48x48_round.png",
+  "vaultsoferebus": "icons/technologies/vaults_of_erebus_icon_48x48_round.png",
+  "vaultsoferebusicon48x48round": "icons/technologies/vaults_of_erebus_icon_48x48_round.png",
+  "vengeful_rebirth": "icons/technologies/vengeful_rebirth_icon_48x48_round.png",
+  "vengefulrebirthicon48x48round": "icons/technologies/vengeful_rebirth_icon_48x48_round.png",
+  "vengefulrebirth": "icons/technologies/vengeful_rebirth_icon_48x48_round.png",
+  "vengeful_rebirth_icon_48x48_round": "icons/technologies/vengeful_rebirth_icon_48x48_round.png",
+  "vibrant_land": "icons/technologies/vibrant_land_icon_48x48_round.png",
+  "vibrantlandicon48x48round": "icons/technologies/vibrant_land_icon_48x48_round.png",
+  "vibrant_land_icon_48x48_round": "icons/technologies/vibrant_land_icon_48x48_round.png",
+  "vibrantland": "icons/technologies/vibrant_land_icon_48x48_round.png",
+  "vikingsicon48x48round": "icons/technologies/vikings_icon_48x48_round.png",
+  "vikings": "icons/technologies/vikings_icon_48x48_round.png",
+  "vikings_icon_48x48_round": "icons/technologies/vikings_icon_48x48_round.png",
+  "volcanicforge": "icons/technologies/volcanic_forge_icon_48x48_round.png",
+  "volcanic_forge": "icons/technologies/volcanic_forge_icon_48x48_round.png",
+  "volcanic_forge_icon_48x48_round": "icons/technologies/volcanic_forge_icon_48x48_round.png",
+  "volcanicforgeicon48x48round": "icons/technologies/volcanic_forge_icon_48x48_round.png",
+  "weightlessmaceicon48x48round": "icons/technologies/weightless_mace_icon_48x48_round.png",
+  "weightless_mace_icon_48x48_round": "icons/technologies/weightless_mace_icon_48x48_round.png",
+  "weightless_mace": "icons/technologies/weightless_mace_icon_48x48_round.png",
+  "weightlessmace": "icons/technologies/weightless_mace_icon_48x48_round.png",
+  "willofkronosicon48x48round": "icons/technologies/will_of_kronos_icon_48x48_round.png",
+  "will_of_kronos": "icons/technologies/will_of_kronos_icon_48x48_round.png",
+  "will_of_kronos_icon_48x48_round": "icons/technologies/will_of_kronos_icon_48x48_round.png",
+  "willofkronos": "icons/technologies/will_of_kronos_icon_48x48_round.png",
+  "windsicklesicon48x48round": "icons/technologies/wind_sickles_icon_48x48_round.png",
+  "windsickles": "icons/technologies/wind_sickles_icon_48x48_round.png",
+  "wind_sickles_icon_48x48_round": "icons/technologies/wind_sickles_icon_48x48_round.png",
+  "wind_sickles": "icons/technologies/wind_sickles_icon_48x48_round.png",
+  "wingedmessengericon48x48round": "icons/technologies/winged_messenger_icon_48x48_round.png",
+  "winged_messenger_icon_48x48_round": "icons/technologies/winged_messenger_icon_48x48_round.png",
+  "winged_messenger": "icons/technologies/winged_messenger_icon_48x48_round.png",
+  "wingedmessenger": "icons/technologies/winged_messenger_icon_48x48_round.png",
+  "wings_of_itzpapalotl": "icons/technologies/wings_of_itzpapalotl_icon_48x48_round.png",
+  "wingsofitzpapalotl": "icons/technologies/wings_of_itzpapalotl_icon_48x48_round.png",
+  "wingsofitzpapalotlicon48x48round": "icons/technologies/wings_of_itzpapalotl_icon_48x48_round.png",
+  "wings_of_itzpapalotl_icon_48x48_round": "icons/technologies/wings_of_itzpapalotl_icon_48x48_round.png",
+  "wingsofthesouth": "icons/technologies/wings_of_the_south_icon_48x48_round.png",
+  "wingsofthesouthicon48x48round": "icons/technologies/wings_of_the_south_icon_48x48_round.png",
+  "wings_of_the_south": "icons/technologies/wings_of_the_south_icon_48x48_round.png",
+  "wings_of_the_south_icon_48x48_round": "icons/technologies/wings_of_the_south_icon_48x48_round.png",
+  "winter_harvest_icon_48x48_round": "icons/technologies/winter_harvest_icon_48x48_round.png",
+  "winterharvesticon48x48round": "icons/technologies/winter_harvest_icon_48x48_round.png",
+  "winterharvest": "icons/technologies/winter_harvest_icon_48x48_round.png",
+  "winter_harvest": "icons/technologies/winter_harvest_icon_48x48_round.png",
+  "wisdom_of_nine": "icons/technologies/wisdom_of_nine_icon_48x48_round.png",
+  "wisdomofnine": "icons/technologies/wisdom_of_nine_icon_48x48_round.png",
+  "wisdomofnineicon48x48round": "icons/technologies/wisdom_of_nine_icon_48x48_round.png",
+  "wisdom_of_nine_icon_48x48_round": "icons/technologies/wisdom_of_nine_icon_48x48_round.png",
+  "wrathofthedeep": "icons/technologies/wrath_of_the_deep_icon_48x48_round.png",
+  "wrathofthedeepicon48x48round": "icons/technologies/wrath_of_the_deep_icon_48x48_round.png",
+  "wrath_of_the_deep": "icons/technologies/wrath_of_the_deep_icon_48x48_round.png",
+  "wrath_of_the_deep_icon_48x48_round": "icons/technologies/wrath_of_the_deep_icon_48x48_round.png",
+  "xuanyuansbloodlineicon48x48round": "icons/technologies/xuanyuans_bloodline_icon_48x48_round.png",
+  "xuanyuansbloodline": "icons/technologies/xuanyuans_bloodline_icon_48x48_round.png",
+  "xuanyuans_bloodline_icon_48x48_round": "icons/technologies/xuanyuans_bloodline_icon_48x48_round.png",
+  "xuanyuans_bloodline": "icons/technologies/xuanyuans_bloodline_icon_48x48_round.png",
+  "ydalir_icon_48x48_round": "icons/technologies/ydalir_icon_48x48_round.png",
+  "ydaliricon48x48round": "icons/technologies/ydalir_icon_48x48_round.png",
+  "ydalir": "icons/technologies/ydalir_icon_48x48_round.png"
+};
+
+const PREVIEW_MYTH_UNIT_ICON_FILES = {
+  "ahuizotl_icon_48x48_round": "icons/myth_units/ahuizotl_icon_48x48_round.png",
+  "ahuizotl": "icons/myth_units/ahuizotl_icon_48x48_round.png",
+  "ahuizotlicon48x48round": "icons/myth_units/ahuizotl_icon_48x48_round.png",
+  "anubiteicon48x48round": "icons/myth_units/anubite_icon_48x48_round.png",
+  "anubite": "icons/myth_units/anubite_icon_48x48_round.png",
+  "anubite_icon_48x48_round": "icons/myth_units/anubite_icon_48x48_round.png",
+  "argus_icon_48x48_round": "icons/myth_units/argus_icon_48x48_round.png",
+  "argusicon48x48round": "icons/myth_units/argus_icon_48x48_round.png",
+  "argus": "icons/myth_units/argus_icon_48x48_round.png",
+  "automaton_icon_48x48_round": "icons/myth_units/automaton_icon_48x48_round.png",
+  "automaton": "icons/myth_units/automaton_icon_48x48_round.png",
+  "automatonicon48x48round": "icons/myth_units/automaton_icon_48x48_round.png",
+  "avenger": "icons/myth_units/avenger_icon_48x48_round.png",
+  "avengericon48x48round": "icons/myth_units/avenger_icon_48x48_round.png",
+  "avenger_icon_48x48_round": "icons/myth_units/avenger_icon_48x48_round.png",
+  "axolotlicon48x48round": "icons/myth_units/axolotl_icon_48x48_round.png",
+  "axolotl": "icons/myth_units/axolotl_icon_48x48_round.png",
+  "axolotl_icon_48x48_round": "icons/myth_units/axolotl_icon_48x48_round.png",
+  "axolotlmutanticon48x48round": "icons/myth_units/axolotl_mutant_icon_48x48_round.png",
+  "axolotl_mutant": "icons/myth_units/axolotl_mutant_icon_48x48_round.png",
+  "axolotlmutant": "icons/myth_units/axolotl_mutant_icon_48x48_round.png",
+  "axolotl_mutant_icon_48x48_round": "icons/myth_units/axolotl_mutant_icon_48x48_round.png",
+  "ayotochtli": "icons/myth_units/ayotochtli_icon_48x48_round.png",
+  "ayotochtliicon48x48round": "icons/myth_units/ayotochtli_icon_48x48_round.png",
+  "ayotochtli_icon_48x48_round": "icons/myth_units/ayotochtli_icon_48x48_round.png",
+  "battle_boar": "icons/myth_units/battle_boar_icon_48x48_round.png",
+  "battleboar": "icons/myth_units/battle_boar_icon_48x48_round.png",
+  "battle_boar_icon_48x48_round": "icons/myth_units/battle_boar_icon_48x48_round.png",
+  "battleboaricon48x48round": "icons/myth_units/battle_boar_icon_48x48_round.png",
+  "behemoth_icon_48x48_round": "icons/myth_units/behemoth_icon_48x48_round.png",
+  "behemothicon48x48round": "icons/myth_units/behemoth_icon_48x48_round.png",
+  "behemoth": "icons/myth_units/behemoth_icon_48x48_round.png",
+  "caladriaicon48x48round": "icons/myth_units/caladria_icon_48x48_round.png",
+  "caladria": "icons/myth_units/caladria_icon_48x48_round.png",
+  "caladria_icon_48x48_round": "icons/myth_units/caladria_icon_48x48_round.png",
+  "carcinos_icon_48x48_round": "icons/myth_units/carcinos_icon_48x48_round.png",
+  "carcinosicon48x48round": "icons/myth_units/carcinos_icon_48x48_round.png",
+  "carcinos": "icons/myth_units/carcinos_icon_48x48_round.png",
+  "centauricon48x48round": "icons/myth_units/centaur_icon_48x48_round.png",
+  "centaur_icon_48x48_round": "icons/myth_units/centaur_icon_48x48_round.png",
+  "centaur": "icons/myth_units/centaur_icon_48x48_round.png",
+  "centimanus_icon_48x48_round": "icons/myth_units/centimanus_icon_48x48_round.png",
+  "centimanus": "icons/myth_units/centimanus_icon_48x48_round.png",
+  "centimanusicon48x48round": "icons/myth_units/centimanus_icon_48x48_round.png",
+  "centzonicon48x48round": "icons/myth_units/centzon_icon_48x48_round.png",
+  "centzon_icon_48x48_round": "icons/myth_units/centzon_icon_48x48_round.png",
+  "centzon": "icons/myth_units/centzon_icon_48x48_round.png",
+  "chaneque_icon_48x48_round": "icons/myth_units/chaneque_icon_48x48_round.png",
+  "chanequeicon48x48round": "icons/myth_units/chaneque_icon_48x48_round.png",
+  "chaneque": "icons/myth_units/chaneque_icon_48x48_round.png",
+  "chimera": "icons/myth_units/chimera_icon_48x48_round.png",
+  "chimera_icon_48x48_round": "icons/myth_units/chimera_icon_48x48_round.png",
+  "chimeraicon48x48round": "icons/myth_units/chimera_icon_48x48_round.png",
+  "colossus": "icons/myth_units/colossus_icon_48x48_round.png",
+  "colossusicon48x48round": "icons/myth_units/colossus_icon_48x48_round.png",
+  "colossus_icon_48x48_round": "icons/myth_units/colossus_icon_48x48_round.png",
+  "cyclops": "icons/myth_units/cyclops_icon_48x48_round.png",
+  "cyclops_icon_48x48_round": "icons/myth_units/cyclops_icon_48x48_round.png",
+  "cyclopsicon48x48round": "icons/myth_units/cyclops_icon_48x48_round.png",
+  "draugr_icon_48x48_round": "icons/myth_units/draugr_icon_48x48_round.png",
+  "draugricon48x48round": "icons/myth_units/draugr_icon_48x48_round.png",
+  "draugr": "icons/myth_units/draugr_icon_48x48_round.png",
+  "einheriicon48x48round": "icons/myth_units/einheri_icon_48x48_round.png",
+  "einheri": "icons/myth_units/einheri_icon_48x48_round.png",
+  "einheri_icon_48x48_round": "icons/myth_units/einheri_icon_48x48_round.png",
+  "fafnir": "icons/myth_units/fafnir_icon_48x48_round.png",
+  "fafnir_icon_48x48_round": "icons/myth_units/fafnir_icon_48x48_round.png",
+  "fafniricon48x48round": "icons/myth_units/fafnir_icon_48x48_round.png",
+  "fenriswolfbroodicon48x48round": "icons/myth_units/fenris_wolf_brood_icon_48x48_round.png",
+  "fenris_wolf_brood": "icons/myth_units/fenris_wolf_brood_icon_48x48_round.png",
+  "fenris_wolf_brood_icon_48x48_round": "icons/myth_units/fenris_wolf_brood_icon_48x48_round.png",
+  "fenriswolfbrood": "icons/myth_units/fenris_wolf_brood_icon_48x48_round.png",
+  "firegianticon48x48round": "icons/myth_units/fire_giant_icon_48x48_round.png",
+  "fire_giant_icon_48x48_round": "icons/myth_units/fire_giant_icon_48x48_round.png",
+  "firegiant": "icons/myth_units/fire_giant_icon_48x48_round.png",
+  "fire_giant": "icons/myth_units/fire_giant_icon_48x48_round.png",
+  "frost_giant_icon_48x48_round": "icons/myth_units/frost_giant_icon_48x48_round.png",
+  "frost_giant": "icons/myth_units/frost_giant_icon_48x48_round.png",
+  "frostgiant": "icons/myth_units/frost_giant_icon_48x48_round.png",
+  "frostgianticon48x48round": "icons/myth_units/frost_giant_icon_48x48_round.png",
+  "hamadryad_icon_48x48_round": "icons/myth_units/hamadryad_icon_48x48_round.png",
+  "hamadryad": "icons/myth_units/hamadryad_icon_48x48_round.png",
+  "hamadryadicon48x48round": "icons/myth_units/hamadryad_icon_48x48_round.png",
+  "harpyicon48x48round": "icons/myth_units/harpy_icon_48x48_round.png",
+  "harpy_icon_48x48_round": "icons/myth_units/harpy_icon_48x48_round.png",
+  "harpy": "icons/myth_units/harpy_icon_48x48_round.png",
+  "hydraicon48x48round": "icons/myth_units/hydra_icon_48x48_round.png",
+  "hydra_icon_48x48_round": "icons/myth_units/hydra_icon_48x48_round.png",
+  "hydra": "icons/myth_units/hydra_icon_48x48_round.png",
+  "jormun_elver": "icons/myth_units/jormun_elver_icon_48x48_round.png",
+  "jormun_elver_icon_48x48_round": "icons/myth_units/jormun_elver_icon_48x48_round.png",
+  "jormunelvericon48x48round": "icons/myth_units/jormun_elver_icon_48x48_round.png",
+  "jormunelver": "icons/myth_units/jormun_elver_icon_48x48_round.png",
+  "krakenicon48x48round": "icons/myth_units/kraken_icon_48x48_round.png",
+  "kraken_icon_48x48_round": "icons/myth_units/kraken_icon_48x48_round.png",
+  "kraken": "icons/myth_units/kraken_icon_48x48_round.png",
+  "lampadesicon48x48round": "icons/myth_units/lampades_icon_48x48_round.png",
+  "lampades_icon_48x48_round": "icons/myth_units/lampades_icon_48x48_round.png",
+  "lampades": "icons/myth_units/lampades_icon_48x48_round.png",
+  "leviathan": "icons/myth_units/leviathan_icon_48x48_round.png",
+  "leviathanicon48x48round": "icons/myth_units/leviathan_icon_48x48_round.png",
+  "leviathan_icon_48x48_round": "icons/myth_units/leviathan_icon_48x48_round.png",
+  "lykaon_icon_48x48_round": "icons/myth_units/lykaon_icon_48x48_round.png",
+  "lykaon": "icons/myth_units/lykaon_icon_48x48_round.png",
+  "lykaonicon48x48round": "icons/myth_units/lykaon_icon_48x48_round.png",
+  "man_o_war_icon_48x48_round": "icons/myth_units/man_o_war_icon_48x48_round.png",
+  "man_o_war": "icons/myth_units/man_o_war_icon_48x48_round.png",
+  "manowar": "icons/myth_units/man_o_war_icon_48x48_round.png",
+  "manowaricon48x48round": "icons/myth_units/man_o_war_icon_48x48_round.png",
+  "manticore_icon_48x48_round": "icons/myth_units/manticore_icon_48x48_round.png",
+  "manticore": "icons/myth_units/manticore_icon_48x48_round.png",
+  "manticoreicon48x48round": "icons/myth_units/manticore_icon_48x48_round.png",
+  "maquizcoatl_icon_48x48_round": "icons/myth_units/maquizcoatl_icon_48x48_round.png",
+  "maquizcoatl": "icons/myth_units/maquizcoatl_icon_48x48_round.png",
+  "maquizcoatlicon48x48round": "icons/myth_units/maquizcoatl_icon_48x48_round.png",
+  "medusa_icon_48x48_round": "icons/myth_units/medusa_icon_48x48_round.png",
+  "medusaicon48x48round": "icons/myth_units/medusa_icon_48x48_round.png",
+  "medusa": "icons/myth_units/medusa_icon_48x48_round.png",
+  "minotaur_icon_48x48_round": "icons/myth_units/minotaur_icon_48x48_round.png",
+  "minotaur": "icons/myth_units/minotaur_icon_48x48_round.png",
+  "minotauricon48x48round": "icons/myth_units/minotaur_icon_48x48_round.png",
+  "mountain_giant_icon_48x48_round": "icons/myth_units/mountain_giant_icon_48x48_round.png",
+  "mountaingiant": "icons/myth_units/mountain_giant_icon_48x48_round.png",
+  "mountain_giant": "icons/myth_units/mountain_giant_icon_48x48_round.png",
+  "mountaingianticon48x48round": "icons/myth_units/mountain_giant_icon_48x48_round.png",
+  "mummyicon48x48round": "icons/myth_units/mummy_icon_48x48_round.png",
+  "mummy_icon_48x48_round": "icons/myth_units/mummy_icon_48x48_round.png",
+  "mummy": "icons/myth_units/mummy_icon_48x48_round.png",
+  "nemeanlion": "icons/myth_units/nemean_lion_icon_48x48_round.png",
+  "nemeanlionicon48x48round": "icons/myth_units/nemean_lion_icon_48x48_round.png",
+  "nemean_lion": "icons/myth_units/nemean_lion_icon_48x48_round.png",
+  "nemean_lion_icon_48x48_round": "icons/myth_units/nemean_lion_icon_48x48_round.png",
+  "nereid_icon_48x48_round": "icons/myth_units/nereid_icon_48x48_round.png",
+  "nereidicon48x48round": "icons/myth_units/nereid_icon_48x48_round.png",
+  "nereid": "icons/myth_units/nereid_icon_48x48_round.png",
+  "obsidianbutterfly": "icons/myth_units/obsidian_butterfly_icon_48x48_round.png",
+  "obsidianbutterflyicon48x48round": "icons/myth_units/obsidian_butterfly_icon_48x48_round.png",
+  "obsidian_butterfly": "icons/myth_units/obsidian_butterfly_icon_48x48_round.png",
+  "obsidian_butterfly_icon_48x48_round": "icons/myth_units/obsidian_butterfly_icon_48x48_round.png",
+  "petsuchos": "icons/myth_units/petsuchos_icon_48x48_round.png",
+  "petsuchosicon48x48round": "icons/myth_units/petsuchos_icon_48x48_round.png",
+  "petsuchos_icon_48x48_round": "icons/myth_units/petsuchos_icon_48x48_round.png",
+  "phoenix": "icons/myth_units/phoenix_icon_48x48_round.png",
+  "phoenixicon48x48round": "icons/myth_units/phoenix_icon_48x48_round.png",
+  "phoenix_icon_48x48_round": "icons/myth_units/phoenix_icon_48x48_round.png",
+  "promethean": "icons/myth_units/promethean_icon_48x48_round.png",
+  "promethean_icon_48x48_round": "icons/myth_units/promethean_icon_48x48_round.png",
+  "prometheanicon48x48round": "icons/myth_units/promethean_icon_48x48_round.png",
+  "rocicon48x48round": "icons/myth_units/roc_icon_48x48_round.png",
+  "roc_icon_48x48_round": "icons/myth_units/roc_icon_48x48_round.png",
+  "roc": "icons/myth_units/roc_icon_48x48_round.png",
+  "rockgianticon48x48round": "icons/myth_units/rock_giant_icon_48x48_round.png",
+  "rock_giant": "icons/myth_units/rock_giant_icon_48x48_round.png",
+  "rock_giant_icon_48x48_round": "icons/myth_units/rock_giant_icon_48x48_round.png",
+  "rockgiant": "icons/myth_units/rock_giant_icon_48x48_round.png",
+  "satyr": "icons/myth_units/satyr_icon_48x48_round.png",
+  "satyr_icon_48x48_round": "icons/myth_units/satyr_icon_48x48_round.png",
+  "satyricon48x48round": "icons/myth_units/satyr_icon_48x48_round.png",
+  "scarab_icon_48x48_round": "icons/myth_units/scarab_icon_48x48_round.png",
+  "scarab": "icons/myth_units/scarab_icon_48x48_round.png",
+  "scarabicon48x48round": "icons/myth_units/scarab_icon_48x48_round.png",
+  "scorpionman": "icons/myth_units/scorpion_man_icon_48x48_round.png",
+  "scorpion_man": "icons/myth_units/scorpion_man_icon_48x48_round.png",
+  "scorpionmanicon48x48round": "icons/myth_units/scorpion_man_icon_48x48_round.png",
+  "scorpion_man_icon_48x48_round": "icons/myth_units/scorpion_man_icon_48x48_round.png",
+  "scylla": "icons/myth_units/scylla_icon_48x48_round.png",
+  "scylla_icon_48x48_round": "icons/myth_units/scylla_icon_48x48_round.png",
+  "scyllaicon48x48round": "icons/myth_units/scylla_icon_48x48_round.png",
+  "servant_icon_48x48_round": "icons/myth_units/servant_icon_48x48_round.png",
+  "servant": "icons/myth_units/servant_icon_48x48_round.png",
+  "servanticon48x48round": "icons/myth_units/servant_icon_48x48_round.png",
+  "siren": "icons/myth_units/siren_icon_48x48_round.png",
+  "siren_icon_48x48_round": "icons/myth_units/siren_icon_48x48_round.png",
+  "sirenicon48x48round": "icons/myth_units/siren_icon_48x48_round.png",
+  "soul_guide": "icons/myth_units/soul_guide_icon_48x48_round.png",
+  "soulguide": "icons/myth_units/soul_guide_icon_48x48_round.png",
+  "soulguideicon48x48round": "icons/myth_units/soul_guide_icon_48x48_round.png",
+  "soul_guide_icon_48x48_round": "icons/myth_units/soul_guide_icon_48x48_round.png",
+  "sphinx": "icons/myth_units/sphinx_icon_48x48_round.png",
+  "sphinxicon48x48round": "icons/myth_units/sphinx_icon_48x48_round.png",
+  "sphinx_icon_48x48_round": "icons/myth_units/sphinx_icon_48x48_round.png",
+  "stymphalianbird": "icons/myth_units/stymphalian_bird_icon_48x48_round.png",
+  "stymphalianbirdicon48x48round": "icons/myth_units/stymphalian_bird_icon_48x48_round.png",
+  "stymphalian_bird": "icons/myth_units/stymphalian_bird_icon_48x48_round.png",
+  "stymphalian_bird_icon_48x48_round": "icons/myth_units/stymphalian_bird_icon_48x48_round.png",
+  "trollicon48x48round": "icons/myth_units/troll_icon_48x48_round.png",
+  "troll_icon_48x48_round": "icons/myth_units/troll_icon_48x48_round.png",
+  "troll": "icons/myth_units/troll_icon_48x48_round.png",
+  "tunkuluchuicon48x48round": "icons/myth_units/tunkuluchu_icon_48x48_round.png",
+  "tunkuluchu": "icons/myth_units/tunkuluchu_icon_48x48_round.png",
+  "tunkuluchu_icon_48x48_round": "icons/myth_units/tunkuluchu_icon_48x48_round.png",
+  "tzitzimitl_icon_48x48_round": "icons/myth_units/tzitzimitl_icon_48x48_round.png",
+  "tzitzimitl": "icons/myth_units/tzitzimitl_icon_48x48_round.png",
+  "tzitzimitlicon48x48round": "icons/myth_units/tzitzimitl_icon_48x48_round.png",
+  "valkyrie": "icons/myth_units/valkyrie_icon_48x48_round.png",
+  "valkyrieicon48x48round": "icons/myth_units/valkyrie_icon_48x48_round.png",
+  "valkyrie_icon_48x48_round": "icons/myth_units/valkyrie_icon_48x48_round.png",
+  "wadjet_icon_48x48_round": "icons/myth_units/wadjet_icon_48x48_round.png",
+  "wadjet": "icons/myth_units/wadjet_icon_48x48_round.png",
+  "wadjeticon48x48round": "icons/myth_units/wadjet_icon_48x48_round.png",
+  "warturtle": "icons/myth_units/war_turtle_icon_48x48_round.png",
+  "war_turtle_icon_48x48_round": "icons/myth_units/war_turtle_icon_48x48_round.png",
+  "war_turtle": "icons/myth_units/war_turtle_icon_48x48_round.png",
+  "warturtleicon48x48round": "icons/myth_units/war_turtle_icon_48x48_round.png",
+  "lykaonvillager": "icons/myth_units/lykaon_icon_48x48_round.png",
+  "lykaon_villager": "icons/myth_units/lykaon_icon_48x48_round.png"
 };
 
 const PREVIEW_UNIT_ICON_FILES = {
-  'achilles': 'icons/units/achilles_icon_48x48_square.png',
-  'ajax': 'icons/units/ajax_icon_48x48_square.png',
-  'amazonarcher': 'icons/units/amazonarcher_icon_48x48_square.png',
-  'atalanta': 'icons/units/atalanta_icon_48x48_square.png',
-  'bellerophon': 'icons/units/bellerophon_icon_48x48_square.png',
-  'chiron': 'icons/units/chiron_icon_48x48_square.png',
-  'gastraphetoros': 'icons/units/gastraphetoros_icon_48x48_square.png',
-  'heracles': 'icons/units/heracles_icon_48x48_square.png',
-  'hetairos': 'icons/units/hetairos_icon_48x48_square.png',
-  'hippolyta': 'icons/units/hippolyta_icon_48x48_square.png',
-  'huitzilopochtli': 'icons/units/huitzilopochtli_icon_48x48_square.png',
-  'icarus': 'icons/units/icarus_icon_48x48_square.png',
-  'iolaus': 'icons/units/iolaus_icon_48x48_square.png',
-  'jason': 'icons/units/jason_icon_48x48_square.png',
-  'li_jing': 'icons/units/li_jing_icon_48x48_square.png',
-  'lijing': 'icons/units/li_jing_icon_48x48_square.png',
-  'midas': 'icons/units/midas_icon_48x48_square.png',
-  'myrmidon': 'icons/units/myrmidon_icon_48x48_square.png',
-  'odysseus': 'icons/units/odysseus_icon_48x48_square.png',
-  'orpheus': 'icons/units/orpheus_icon_48x48_square.png',
-  'perseus': 'icons/units/perseus_icon_48x48_square.png',
-  'polyphemus': 'icons/units/polyphemus_icon_48x48_square.png',
-  'quetzalcoatl': 'icons/units/quetzalcoatl_icon_48x48_square.png',
-  'teixiptla_huitz': 'icons/units/teixiptla_huitz_icon_48x48_square.png',
-  'teixiptla_quetz': 'icons/units/teixiptla_quetz_icon_48x48_square.png',
-  'teixiptla_tezca': 'icons/units/teixiptla_tezca_icon_48x48_square.png',
-  'teixiptlahuitz': 'icons/units/teixiptla_huitz_icon_48x48_square.png',
-  'teixiptlaquetz': 'icons/units/teixiptla_quetz_icon_48x48_square.png',
-  'teixiptlatezca': 'icons/units/teixiptla_tezca_icon_48x48_square.png',
-  'tezcatlipoca': 'icons/units/tezcatlipoca_icon_48x48_square.png',
-  'theseus': 'icons/units/theseus_icon_48x48_square.png',
-  'wen_zhong': 'icons/units/wen_zhong_icon_48x48_square.png',
-  'wenzhong': 'icons/units/wen_zhong_icon_48x48_square.png',
-  'yang_jian': 'icons/units/yang_jian_icon_48x48_square.png',
-  'yangjian': 'icons/units/yang_jian_icon_48x48_square.png'
+  "achillesicon48x48square": "icons/units/achilles_icon_48x48_square.png",
+  "achilles_icon_48x48_square": "icons/units/achilles_icon_48x48_square.png",
+  "achilles": "icons/units/achilles_icon_48x48_square.png",
+  "ajax_icon_48x48_square": "icons/units/ajax_icon_48x48_square.png",
+  "ajaxicon48x48square": "icons/units/ajax_icon_48x48_square.png",
+  "ajax": "icons/units/ajax_icon_48x48_square.png",
+  "amazonarcher": "icons/units/amazonarcher_icon_48x48_square.png",
+  "amazonarcher_icon_48x48_square": "icons/units/amazonarcher_icon_48x48_square.png",
+  "amazonarchericon48x48square": "icons/units/amazonarcher_icon_48x48_square.png",
+  "atalanta": "icons/units/atalanta_icon_48x48_square.png",
+  "atalantaicon48x48square": "icons/units/atalanta_icon_48x48_square.png",
+  "atalanta_icon_48x48_square": "icons/units/atalanta_icon_48x48_square.png",
+  "bellerophon": "icons/units/bellerophon_icon_48x48_square.png",
+  "bellerophon_icon_48x48_square": "icons/units/bellerophon_icon_48x48_square.png",
+  "bellerophonicon48x48square": "icons/units/bellerophon_icon_48x48_square.png",
+  "chiron_icon_48x48_square": "icons/units/chiron_icon_48x48_square.png",
+  "chiron": "icons/units/chiron_icon_48x48_square.png",
+  "chironicon48x48square": "icons/units/chiron_icon_48x48_square.png",
+  "gastraphetorosicon48x48square": "icons/units/gastraphetoros_icon_48x48_square.png",
+  "gastraphetoros_icon_48x48_square": "icons/units/gastraphetoros_icon_48x48_square.png",
+  "gastraphetoros": "icons/units/gastraphetoros_icon_48x48_square.png",
+  "heracles": "icons/units/heracles_icon_48x48_square.png",
+  "heracles_icon_48x48_square": "icons/units/heracles_icon_48x48_square.png",
+  "heraclesicon48x48square": "icons/units/heracles_icon_48x48_square.png",
+  "hetairos": "icons/units/hetairos_icon_48x48_square.png",
+  "hetairos_icon_48x48_square": "icons/units/hetairos_icon_48x48_square.png",
+  "hetairosicon48x48square": "icons/units/hetairos_icon_48x48_square.png",
+  "hippolyta": "icons/units/hippolyta_icon_48x48_square.png",
+  "hippolyta_icon_48x48_square": "icons/units/hippolyta_icon_48x48_square.png",
+  "hippolytaicon48x48square": "icons/units/hippolyta_icon_48x48_square.png",
+  "huitzilopochtli": "icons/units/huitzilopochtli_icon_48x48_square.png",
+  "huitzilopochtliicon48x48square": "icons/units/huitzilopochtli_icon_48x48_square.png",
+  "huitzilopochtli_icon_48x48_square": "icons/units/huitzilopochtli_icon_48x48_square.png",
+  "icarus": "icons/units/icarus_icon_48x48_square.png",
+  "icarus_icon_48x48_square": "icons/units/icarus_icon_48x48_square.png",
+  "icarusicon48x48square": "icons/units/icarus_icon_48x48_square.png",
+  "iolausicon48x48square": "icons/units/iolaus_icon_48x48_square.png",
+  "iolaus_icon_48x48_square": "icons/units/iolaus_icon_48x48_square.png",
+  "iolaus": "icons/units/iolaus_icon_48x48_square.png",
+  "jasonicon48x48square": "icons/units/jason_icon_48x48_square.png",
+  "jason_icon_48x48_square": "icons/units/jason_icon_48x48_square.png",
+  "jason": "icons/units/jason_icon_48x48_square.png",
+  "li_jing": "icons/units/li_jing_icon_48x48_square.png",
+  "lijing": "icons/units/li_jing_icon_48x48_square.png",
+  "li_jing_icon_48x48_square": "icons/units/li_jing_icon_48x48_square.png",
+  "lijingicon48x48square": "icons/units/li_jing_icon_48x48_square.png",
+  "midasicon48x48square": "icons/units/midas_icon_48x48_square.png",
+  "midas_icon_48x48_square": "icons/units/midas_icon_48x48_square.png",
+  "midas": "icons/units/midas_icon_48x48_square.png",
+  "myrmidon_icon_48x48_square": "icons/units/myrmidon_icon_48x48_square.png",
+  "myrmidonicon48x48square": "icons/units/myrmidon_icon_48x48_square.png",
+  "myrmidon": "icons/units/myrmidon_icon_48x48_square.png",
+  "odysseusicon48x48square": "icons/units/odysseus_icon_48x48_square.png",
+  "odysseus_icon_48x48_square": "icons/units/odysseus_icon_48x48_square.png",
+  "odysseus": "icons/units/odysseus_icon_48x48_square.png",
+  "orpheus": "icons/units/orpheus_icon_48x48_square.png",
+  "orpheusicon48x48square": "icons/units/orpheus_icon_48x48_square.png",
+  "orpheus_icon_48x48_square": "icons/units/orpheus_icon_48x48_square.png",
+  "perseus": "icons/units/perseus_icon_48x48_square.png",
+  "perseusicon48x48square": "icons/units/perseus_icon_48x48_square.png",
+  "perseus_icon_48x48_square": "icons/units/perseus_icon_48x48_square.png",
+  "polyphemusicon48x48square": "icons/units/polyphemus_icon_48x48_square.png",
+  "polyphemus_icon_48x48_square": "icons/units/polyphemus_icon_48x48_square.png",
+  "polyphemus": "icons/units/polyphemus_icon_48x48_square.png",
+  "quetzalcoatl_icon_48x48_square": "icons/units/quetzalcoatl_icon_48x48_square.png",
+  "quetzalcoatl": "icons/units/quetzalcoatl_icon_48x48_square.png",
+  "quetzalcoatlicon48x48square": "icons/units/quetzalcoatl_icon_48x48_square.png",
+  "teixiptla_huitz": "icons/units/teixiptla_huitz_icon_48x48_square.png",
+  "teixiptlahuitz": "icons/units/teixiptla_huitz_icon_48x48_square.png",
+  "teixiptlahuitzicon48x48square": "icons/units/teixiptla_huitz_icon_48x48_square.png",
+  "teixiptla_huitz_icon_48x48_square": "icons/units/teixiptla_huitz_icon_48x48_square.png",
+  "teixiptlaquetz": "icons/units/teixiptla_quetz_icon_48x48_square.png",
+  "teixiptla_quetz_icon_48x48_square": "icons/units/teixiptla_quetz_icon_48x48_square.png",
+  "teixiptlaquetzicon48x48square": "icons/units/teixiptla_quetz_icon_48x48_square.png",
+  "teixiptla_quetz": "icons/units/teixiptla_quetz_icon_48x48_square.png",
+  "teixiptla_tezca_icon_48x48_square": "icons/units/teixiptla_tezca_icon_48x48_square.png",
+  "teixiptlatezca": "icons/units/teixiptla_tezca_icon_48x48_square.png",
+  "teixiptlatezcaicon48x48square": "icons/units/teixiptla_tezca_icon_48x48_square.png",
+  "teixiptla_tezca": "icons/units/teixiptla_tezca_icon_48x48_square.png",
+  "tezcatlipocaicon48x48square": "icons/units/tezcatlipoca_icon_48x48_square.png",
+  "tezcatlipoca_icon_48x48_square": "icons/units/tezcatlipoca_icon_48x48_square.png",
+  "tezcatlipoca": "icons/units/tezcatlipoca_icon_48x48_square.png",
+  "theseus_icon_48x48_square": "icons/units/theseus_icon_48x48_square.png",
+  "theseusicon48x48square": "icons/units/theseus_icon_48x48_square.png",
+  "theseus": "icons/units/theseus_icon_48x48_square.png",
+  "wenzhong": "icons/units/wen_zhong_icon_48x48_square.png",
+  "wen_zhong": "icons/units/wen_zhong_icon_48x48_square.png",
+  "wenzhongicon48x48square": "icons/units/wen_zhong_icon_48x48_square.png",
+  "wen_zhong_icon_48x48_square": "icons/units/wen_zhong_icon_48x48_square.png",
+  "yang_jian_icon_48x48_square": "icons/units/yang_jian_icon_48x48_square.png",
+  "yangjian": "icons/units/yang_jian_icon_48x48_square.png",
+  "yangjianicon48x48square": "icons/units/yang_jian_icon_48x48_square.png",
+  "yang_jian": "icons/units/yang_jian_icon_48x48_square.png"
 };
+
+Object.assign(PREVIEW_GOD_POWER_ICON_FILES, {
+  earth_wall: PREVIEW_GOD_POWER_ICON_FILES.earth_wall_power,
+  earthwall: PREVIEW_GOD_POWER_ICON_FILES.earthwallpower,
+  monolith_of_tlaloc: PREVIEW_GOD_POWER_ICON_FILES.pillar_of_tlalocan,
+  monolithoftlaloc: PREVIEW_GOD_POWER_ICON_FILES.pillaroftlalocan,
+  pillar_of_tlalocan: PREVIEW_GOD_POWER_ICON_FILES.pillar_of_tlalocan,
+});
+
+Object.assign(PREVIEW_TECH_ICON_FILES, {
+  thunderous_presence: PREVIEW_TECH_ICON_FILES.thunderous_prescence,
+  thunderouspresence: PREVIEW_TECH_ICON_FILES.thunderousprescence,
+  seaside_infiltrators: PREVIEW_TECH_ICON_FILES.seaside_infiltration,
+  seasideinfiltrators: PREVIEW_TECH_ICON_FILES.seasideinfiltration,
+});
+
+
+// Added from remaining_missing_stuff_48_round_optimized.zip
+Object.assign(PREVIEW_GOD_POWER_ICON_FILES, {
+  spider_lair: "icons/godpowers/spider_lair_icon_48x48_round.png",
+  spiderlair: "icons/godpowers/spider_lair_icon_48x48_round.png",
+  carnivora: "icons/godpowers/carnivora_icon_48x48_round.png",
+  valor: "icons/godpowers/valor_icon_48x48_round.png",
+  chaos: "icons/godpowers/chaos_icon_48x48_round.png",
+  traitor: "icons/godpowers/traitor_icon_48x48_round.png",
+  hesperides_tree: "icons/godpowers/hesperides_icon_48x48_round.png",
+  hesperidestree: "icons/godpowers/hesperides_icon_48x48_round.png",
+  hesperides: "icons/godpowers/hesperides_icon_48x48_round.png",
+  implode: "icons/godpowers/implode_icon_48x48_round.png",
+  tartarian_gate: "icons/godpowers/tartarian_gate_icon_48x48_round.png",
+  tartariangate: "icons/godpowers/tartarian_gate_icon_48x48_round.png",
+  vortex: "icons/godpowers/vortex_icon_48x48_round.png",
+});
+
+Object.assign(PREVIEW_MYTH_UNIT_ICON_FILES, {
+  ya_zi: "icons/myth_units/yazi_icon_48x48_round.png",
+  yazi: "icons/myth_units/yazi_icon_48x48_round.png",
+  qiong_qi: "icons/myth_units/qiongqi_icon_48x48_round.png",
+  qiongqi: "icons/myth_units/qiongqi_icon_48x48_round.png",
+  qi_lin: "icons/myth_units/qilin_icon_48x48_round.png",
+  qilin: "icons/myth_units/qilin_icon_48x48_round.png",
+  tao_wu: "icons/myth_units/taowu_icon_48x48_round.png",
+  taowu: "icons/myth_units/taowu_icon_48x48_round.png",
+  tao_tie: "icons/myth_units/taotie_icon_48x48_round.png",
+  taotie: "icons/myth_units/taotie_icon_48x48_round.png",
+  bai_hu: "icons/myth_units/baihu_icon_48x48_round.png",
+  baihu: "icons/myth_units/baihu_icon_48x48_round.png",
+  qing_long: "icons/myth_units/qinglong_icon_48x48_round.png",
+  qinglong: "icons/myth_units/qinglong_icon_48x48_round.png",
+  hun_dun: "icons/myth_units/hundun_icon_48x48_round.png",
+  hundun: "icons/myth_units/hundun_icon_48x48_round.png",
+  zhu_que: "icons/myth_units/zhuque_icon_48x48_round.png",
+  zhuque: "icons/myth_units/zhuque_icon_48x48_round.png",
+  kamaitachi: "icons/myth_units/kamaitachi_icon_48x48_round.png",
+  jorogumo: "icons/myth_units/jorogumo_icon_48x48_round.png",
+  wanyudo: "icons/myth_units/wanyudo_icon_48x48_round.png",
+  wanyuudou: "icons/myth_units/wanyudo_icon_48x48_round.png",
+  oni: "icons/myth_units/oni_icon_48x48_round.png",
+  tengu: "icons/myth_units/tengu_icon_48x48_round.png",
+  raiju: "icons/myth_units/raiju_icon_48x48_round.png",
+  onmoraki: "icons/myth_units/onmoraki_icon_48x48_round.png",
+  asura: "icons/myth_units/asura_icon_48x48_round.png",
+  shinigami: "icons/myth_units/shinigami_icon_48x48_round.png",
+  centzon_totochtin: "icons/myth_units/centzon_icon_48x48_round.png",
+  centzontotochtin: "icons/myth_units/centzon_icon_48x48_round.png",
+  centzon: "icons/myth_units/centzon_icon_48x48_round.png",
+});
+
+Object.assign(PREVIEW_TECH_ICON_FILES, {
+  advanced_defenses: "icons/technologies/advanced_defenses_icon_48x48_round.png",
+  advanceddefenses: "icons/technologies/advanced_defenses_icon_48x48_round.png",
+});
 
 function previewIconSlug(value) {
   return String(value || "")
@@ -14540,57 +21059,121 @@ function previewIconSlug(value) {
     .replace(/\s+/g, "_");
 }
 
-function previewIconLookupKeys(value) {
-  const raw = String(value || "").trim();
-  const displayed = displayTechName(raw);
-  const keys = [previewIconSlug(raw), previewIconSlug(displayed)];
+function previewIconLookupKeys(...values) {
+  const seeds = [];
+  for (const value of values.flat()) {
+    const raw = String(value || "").trim();
+    if (!raw) continue;
+    seeds.push(raw, displayTechName(raw));
+  }
+  const keys = seeds.map(previewIconSlug).filter(Boolean);
   return Array.from(new Set(keys.flatMap((key) => [key, key.replace(/_/g, "")]).filter(Boolean)));
 }
 
-function previewIconPathFromMap(map, value) {
-  for (const key of previewIconLookupKeys(value)) {
+function previewIconPathFromMap(map, ...values) {
+  for (const key of previewIconLookupKeys(...values)) {
     if (map[key]) return map[key];
   }
   return "";
 }
 
-function previewGodPowerIconPath(value) {
-  return previewIconPathFromMap(PREVIEW_GOD_POWER_ICON_FILES, value);
+function previewGodPowerIconPath(value, displayName = "") {
+  return previewIconPathFromMap(PREVIEW_GOD_POWER_ICON_FILES, value, displayName);
 }
 
-function previewTechIconPath(value) {
-  return previewIconPathFromMap(PREVIEW_TECH_ICON_FILES, value);
+function previewTechIconPath(value, displayName = "") {
+  return previewIconPathFromMap(PREVIEW_TECH_ICON_FILES, value, displayName);
 }
 
-function previewUnitIconPath(value) {
-  return previewIconPathFromMap(PREVIEW_UNIT_ICON_FILES, value);
+function previewArgivePatronageIconPath(config = {}) {
+  const unit = config?.greekUniqueUnit || "";
+  if (unit === "Gastraphetoros") return "icons/technologies/argive_patronage_gastraphetoros_icon.png";
+  if (unit === "Hetairos") return "icons/technologies/argive_patronage_hetairos_icon.png";
+  if (unit === "AmazonArcher") return previewTechIconPath("ArgivePatronageDemeter", "Argive Patronage");
+  return previewTechIconPath("ArgivePatronage", "Argive Patronage");
+}
+
+function previewMinorTechnologyIconPath(value, displayName = "", config = {}) {
+  if (String(value || "") === "ArgivePatronage") return previewArgivePatronageIconPath(config);
+  return previewTechIconPath(value, displayName);
+}
+
+function previewMythUnitIconPath(value, displayName = "") {
+  return previewIconPathFromMap(PREVIEW_MYTH_UNIT_ICON_FILES, value, displayName) || previewUnitIconPath(value, displayName);
+}
+
+function previewUnitIconPath(value, displayName = "") {
+  return previewIconPathFromMap(PREVIEW_UNIT_ICON_FILES, value, displayName) || previewIconPathFromMap(PREVIEW_MYTH_UNIT_ICON_FILES, value, displayName);
 }
 
 function previewMinorGodIconPath(god) {
   const rawName = String(god?.name || "");
   const key = rawName.toLowerCase().replace(/[^a-z0-9]/g, "");
   const file = PREVIEW_MINOR_GOD_ICON_FILES[key] || `${key}_icon_48x48_round.png`;
-  return `icons/${file}`;
+  return `icons/minor_gods/${file}`;
 }
 
-function previewMinorGodData(tech) {
+function previewMinorGodData(tech, config = {}) {
   const god = getMinorByTech(tech);
   if (god) {
+    const details = originalMinorDetails(tech);
+    const mythNames = (details?.mythUnits || []).map((entry) => techBrowserDisplayName(entry.internalName, entry.displayName)).filter(Boolean);
+    const firstMythUnit = (details?.mythUnits || [])[0];
+    const techEntries = (details?.techs || []).slice(0, 4).map((entry) => ({
+      name: techBrowserDisplayName(entry.internalName, entry.displayName),
+      icon: previewMinorTechnologyIconPath(entry.internalName, techBrowserDisplayName(entry.internalName, entry.displayName), config),
+    })).filter((entry) => entry.name);
     return {
       name: displayGodName(god.name),
       icon: previewMinorGodIconPath(god),
+      power: details?.power?.displayName || "",
+      powerIcon: previewGodPowerIconPath(details?.power?.internalName, details?.power?.displayName),
+      mythUnit: mythNames.join(", "),
+      mythUnitIcon: previewMythUnitIconPath(firstMythUnit?.internalName, firstMythUnit?.displayName),
+      techs: techEntries,
     };
   }
   return {
-    name: displayTechName(canonicalMinorTech(tech)),
+    name: techBrowserDisplayName(canonicalMinorTech(tech)),
     icon: "",
+    power: "",
+    mythUnit: "",
+    techs: [],
   };
+}
+
+function previewMiniEntry(label, value, iconSrc = "") {
+  const row = previewElement("div", "preview-minor-detail");
+  if (iconSrc) row.appendChild(previewImage(iconSrc, value || label, "preview-minor-detail-icon"));
+  const text = previewElement("div", "preview-minor-detail-text");
+  text.appendChild(previewElement("span", "preview-minor-detail-label", label));
+  text.appendChild(previewElement("span", "preview-minor-detail-value", value || "—"));
+  row.appendChild(text);
+  return row;
+}
+
+function previewMinorDetailEntries(minor) {
+  const entries = [];
+  if (minor?.power) entries.push({ label: "Power", value: minor.power, icon: minor.powerIcon || "" });
+  if (minor?.mythUnit) entries.push({ label: "Myth unit", value: minor.mythUnit, icon: minor.mythUnitIcon || "" });
+  (minor?.techs || []).forEach((tech, index) => {
+    if (tech?.name) entries.push({ label: `Tech ${index + 1}`, value: tech.name, icon: tech.icon || "" });
+  });
+  return entries;
 }
 
 function previewMinorGodTile(minor) {
   const tile = previewElement("div", "preview-minor-god-tile");
-  if (minor?.icon) tile.appendChild(previewImage(minor.icon, minor.name, "preview-minor-god-icon"));
-  tile.appendChild(previewElement("span", "preview-minor-god-name", minor?.name || "—"));
+  const header = previewElement("div", minor?.icon ? "preview-minor-god-tile-header" : "preview-minor-god-tile-header no-icon");
+  if (minor?.icon) header.appendChild(previewImage(minor.icon, minor.name, "preview-minor-god-icon"));
+  header.appendChild(previewElement("span", "preview-minor-god-name", minor?.name || "—"));
+  tile.appendChild(header);
+  const detailEntries = previewMinorDetailEntries(minor);
+  if (detailEntries.length) {
+    const details = previewElement("div", "preview-minor-god-details");
+    for (const entry of detailEntries) details.appendChild(previewMiniEntry(entry.label, entry.value, entry.icon));
+    tile.appendChild(details);
+  }
   return tile;
 }
 
@@ -14765,17 +21348,18 @@ function waitForCanvasImage(src) {
   if (!src) return Promise.resolve(null);
   return new Promise((resolve) => {
     const rawSrc = String(src || "");
-    const dataUrl = /^data:/i.test(rawSrc) ? rawSrc : previewIconDataUrlForCanvas(rawSrc);
+    const isDataUrl = /^data:/i.test(rawSrc);
+    const isObjectUrl = /^blob:/i.test(rawSrc);
+    const dataUrl = isDataUrl ? rawSrc : previewIconDataUrlForCanvas(rawSrc);
     // When index.html is opened directly with file://, drawing file:// images to
-    // canvas can taint it and block toBlob(). Use embedded data URLs for the
-    // bundled preview icons and for the user-selected major-god icon, and skip
-    // unknown local images rather than tainting the export canvas.
-    if (!dataUrl && window.location?.protocol === "file:") return resolve(null);
+    // canvas can taint it and block toBlob(). Use embedded data URLs for bundled
+    // preview icons and allow same-page blob URLs for user-selected images.
+    if (!dataUrl && !isObjectUrl && window.location?.protocol === "file:") return resolve(null);
     const img = new Image();
     img.onload = () => resolve(img);
     img.onerror = () => resolve(null);
-    if (!dataUrl) img.crossOrigin = "anonymous";
-    img.src = dataUrl || new URL(rawSrc, document.baseURI).href;
+    if (!dataUrl && !isObjectUrl) img.crossOrigin = "anonymous";
+    img.src = dataUrl || (isObjectUrl ? rawSrc : new URL(rawSrc, document.baseURI).href);
   });
 }
 
@@ -14868,12 +21452,37 @@ function drawCircleImage(ctx, img, cx, cy, size) {
   ctx.restore();
 }
 
+function canvasMinorTileHeight(minor) {
+  return 62 + previewMinorDetailEntries(minor).length * 36;
+}
+
+function drawCanvasMinorDetail(ctx, entry, x, y, maxWidth, iconMap, colors) {
+  const icon = entry.icon ? iconMap.get(entry.icon) : null;
+  if (icon) drawCircleImage(ctx, icon, x + 15, y + 18, 30);
+  const textX = icon ? x + 40 : x;
+  drawLeftText(ctx, String(entry.label || "").toUpperCase(), textX, y + 10, maxWidth - (textX - x), canvasFont(11, 900), colors.label, "middle");
+  drawLeftText(ctx, entry.value || "", textX, y + 26, maxWidth - (textX - x), canvasFont(15, 850), colors.text, "middle");
+}
+
+function drawCanvasMinorTile(ctx, minor, x, y, width, height, minorIcons, detailIcons, colors) {
+  fillRoundRect(ctx, x, y, width, height, 14, colors.row, colors.softStroke);
+  const hasIcon = !!minor?.icon;
+  const icon = hasIcon ? minorIcons.get(minor.icon) : null;
+  if (icon) drawCircleImage(ctx, icon, x + 29, y + 30, 42);
+  drawLeftText(ctx, minor?.name || "—", x + (icon ? 58 : 14), y + 30, width - (icon ? 72 : 28), canvasFont(21, 900), colors.text);
+  let detailY = y + 54;
+  for (const entry of previewMinorDetailEntries(minor)) {
+    drawCanvasMinorDetail(ctx, entry, x + 12, detailY, width - 24, detailIcons, colors);
+    detailY += 36;
+  }
+}
+
 function previewExportRowsForConfig(config) {
   const rows = [];
   rows.push({ label: "Pantheon", value: config.baseCulture || "—", icon: "" });
   rows.push({ label: "God power", value: selectedGodPowerDisplay(config) || "—", icon: previewGodPowerIconPath(config.godPower) });
   const uniqueEntries = uniqueTechEntries(config);
-  const uniqueNames = uniqueEntries.map((group) => displayTechName(group.label || group.id));
+  const uniqueNames = uniqueEntries.map((group) => uniqueTechGroupDisplayName(group));
   const uniqueIcon = uniqueEntries.length === 1 ? previewTechIconPath(uniqueEntries[0].id || uniqueEntries[0].label) : "";
   rows.push({ label: "Unique tech", value: uniqueNames.join(", ") || "None", icon: uniqueIcon });
   return rows;
@@ -14881,8 +21490,9 @@ function previewExportRowsForConfig(config) {
 
 function previewExportAgesForConfig(config) {
   return PREVIEW_AGES.map((age) => {
-    const minors = age === "ArchaicAge" ? [] : (config.minorGods[age] || []).map(previewMinorGodData).filter((minor) => minor?.name);
+    const minors = age === "ArchaicAge" ? [] : collectPreviewMinorGods(config, age);
     const extras = [
+      ...customMinorExtraRowsForAge(config, age),
       ...previewGreekHeroForAge(config, age),
       ...previewChineseSpecialForAge(config, age),
       ...previewAztecSpecialForAge(config, age),
@@ -14933,6 +21543,11 @@ async function exportGodPreviewImage() {
     const minorIconEntries = [];
     for (const age of ages) for (const minor of age.minors || []) if (minor.icon) minorIconEntries.push([minor.icon, await waitForCanvasImage(minor.icon)]);
     const minorIcons = new Map(minorIconEntries);
+    const detailIconEntries = [];
+    for (const age of ages) for (const minor of age.minors || []) {
+      for (const detail of previewMinorDetailEntries(minor)) if (detail.icon) detailIconEntries.push([detail.icon, await waitForCanvasImage(detail.icon)]);
+    }
+    const detailIcons = new Map(detailIconEntries);
     const extraIconEntries = [];
     for (const age of ages) for (const extra of age.extras || []) {
       const parts = previewExportSplitExtra(extra);
@@ -14964,12 +21579,9 @@ async function exportGodPreviewImage() {
       const minors = entry.minors || [];
       const extras = entry.extras || [];
       const extraHeight = extras.length ? extras.length * 48 : 0;
-      // Rows with minor-god tiles need room for the two tiles plus the extra
-      // choice rows underneath. Archaic Greek has no minor gods, so it should
-      // stay compact and center its hero row vertically instead of reserving
-      // the empty tile area used by later ages.
-      if (!minors.length) return Math.max(108, 28 + extraHeight);
-      return Math.max(132, 116 + extraHeight + (extras.length ? 10 : 0));
+      if (!minors.length) return Math.max(108, 80 + extraHeight);
+      const minorBlockHeight = Math.max(...minors.slice(0, 2).map(canvasMinorTileHeight), 120);
+      return Math.max(150, 88 + minorBlockHeight + extraHeight + (extras.length ? 10 : 0));
     });
     const agesHeight = ages.length ? 62 + ageRowHeights.reduce((a, b) => a + b, 0) + Math.max(0, ages.length - 1) * 12 + 20 : 0;
     const headerHeight = config.majorFocus ? 198 : 176;
@@ -15074,41 +21686,35 @@ async function exportGodPreviewImage() {
       ages.forEach((entry, index) => {
         const rowH = ageRowHeights[index];
         fillRoundRect(ctx, pad + 20, ageY, innerWidth - 40, rowH, 14, "#211d17", colors.softStroke);
-        const leftW = 150;
-        const leftX = pad + 20;
-        const bodyX = leftX + leftW + 18;
-        drawCircleImage(ctx, ageIcons[entry.age], leftX + leftW / 2, ageY + 48, 54);
-        drawCenteredText(ctx, ageDisplayName(entry.age), leftX + leftW / 2, ageY + 92, leftW - 12, canvasFont(18, 850), colors.gold);
+        const rowX = pad + 20;
+        const rowW = innerWidth - 40;
+        drawCircleImage(ctx, ageIcons[entry.age], rowX + rowW / 2 - 72, ageY + 35, 48);
+        drawCenteredText(ctx, ageDisplayName(entry.age), rowX + rowW / 2 + 10, ageY + 35, rowW - 130, canvasFont(18, 850), colors.gold);
 
         const minors = entry.minors || [];
         const tileGap = 18;
-        const bodyW = innerWidth - 40 - leftW - 30;
+        const bodyX = rowX + 20;
+        const bodyW = rowW - 40;
         const tileW = (bodyW - tileGap) / 2;
+        const tileY = ageY + 70;
+        let minorBlockHeight = 0;
         if (minors.length) {
+          minorBlockHeight = Math.max(...minors.slice(0, 2).map(canvasMinorTileHeight), 132);
           minors.slice(0, 2).forEach((minor, i) => {
             const tx = bodyX + i * (tileW + tileGap);
-            fillRoundRect(ctx, tx, ageY + 16, tileW, 82, 14, colors.row, colors.softStroke);
-            // Match the browser preview tile balance: icon sits a little lower
-            // in the tile, with the name centered underneath it.
-            drawCircleImage(ctx, minorIcons.get(minor.icon), tx + tileW / 2, ageY + 52, 48);
-            drawCenteredText(ctx, minor.name, tx + tileW / 2, ageY + 86, tileW - 14, canvasFont(18, 850), colors.text);
+            drawCanvasMinorTile(ctx, minor, tx, tileY, tileW, minorBlockHeight, minorIcons, detailIcons, colors);
           });
         }
         const extras = entry.extras || [];
         const extraBlockHeight = extras.length ? (extras.length * 42 + Math.max(0, extras.length - 1) * 6) : 0;
-        let extraY = minors.length ? ageY + 110 : ageY + Math.max(18, (rowH - extraBlockHeight) / 2);
+        let extraY = minors.length ? tileY + minorBlockHeight + 10 : ageY + Math.max(70, (rowH - extraBlockHeight) / 2);
         for (const extra of extras) {
           const parts = previewExportSplitExtra(extra);
           fillRoundRect(ctx, bodyX, extraY, bodyW, 42, 12, colors.row, colors.softStroke);
           drawLeftText(ctx, parts.label.toUpperCase(), bodyX + 16, extraY + 21, 150, canvasFont(14, 900), colors.label);
           const extraIcon = parts.icon ? extraIcons.get(parts.icon) : null;
           const valueFont = canvasFont(18, 800);
-          // Canvas export has to reproduce the browser's flex layout manually.
-          // In the browser, the hero / special rows visually start close to the
-          // right edge of the first minor-god tile, not immediately after the
-          // label and not centered across the whole remaining row. Anchor the
-          // icon there so it lines up with the tile layout across wide exports.
-          const anchorIconX = minors.length ? (bodyX + tileW - 44) : (bodyX + Math.min(bodyW * 0.42, 360));
+          const anchorIconX = bodyX + Math.min(bodyW * 0.42, 360);
           const extraValueW = Math.max(80, bodyX + bodyW - anchorIconX - 24);
           if (extraIcon) {
             drawCircleImage(ctx, extraIcon, anchorIconX, extraY + 21, 32);
@@ -15164,7 +21770,7 @@ function updatePreview() {
   identity.appendChild(previewRow("Pantheon", config.baseCulture));
   identity.appendChild(previewRow("God power", selectedGodPowerDisplay(config), previewGodPowerIconPath(config.godPower)));
   const uniqueEntriesForPreview = uniqueTechEntries(config);
-  const uniqueNames = uniqueEntriesForPreview.map((group) => displayTechName(group.label || group.id));
+  const uniqueNames = uniqueEntriesForPreview.map((group) => uniqueTechGroupDisplayName(group));
   const uniqueIcon = uniqueEntriesForPreview.length === 1 ? previewTechIconPath(uniqueEntriesForPreview[0].id || uniqueEntriesForPreview[0].label) : "";
   identity.appendChild(previewRow("Unique tech", uniqueNames.join(", ") || "None", uniqueIcon));
   root.appendChild(identity);
@@ -15176,8 +21782,9 @@ function updatePreview() {
   const agesCard = previewCard("Minor gods and age choices");
   const ageGrid = previewElement("div", "preview-age-grid preview-age-rows");
   for (const age of PREVIEW_AGES) {
-    const minors = age === "ArchaicAge" ? [] : (config.minorGods[age] || []).map(previewMinorGodData).filter((minor) => minor?.name);
+    const minors = age === "ArchaicAge" ? [] : collectPreviewMinorGods(config, age);
     const extras = [
+      ...customMinorExtraRowsForAge(config, age),
       ...previewGreekHeroForAge(config, age),
       ...previewChineseSpecialForAge(config, age),
       ...previewAztecSpecialForAge(config, age),
@@ -15220,6 +21827,8 @@ function maybeShowUpdateNotice() {
 function wireEvents() {
   els.baseMajor.addEventListener("change", () => { initGreekSpecificSelects(true); initChineseSpecificSelects(true); initAztecSpecificSelects(true); initGodPowerSelect(true); initUniqueTechSelects(true); initBonusSelects(true); refreshMinorOptions(true); });
   if (els.sameCultureOnly) els.sameCultureOnly.addEventListener("change", () => refreshMinorOptions(true));
+  if (els.minorModeOriginal) els.minorModeOriginal.addEventListener("click", () => setMinorCustomizationMode("original"));
+  if (els.minorModeCustom) els.minorModeCustom.addEventListener("click", () => setMinorCustomizationMode("custom"));
   els.displayName.addEventListener("input", updatePreview);
   if (els.majorTitle) els.majorTitle.addEventListener("input", updatePreview);
   if (els.majorFocus) {
@@ -15230,12 +21839,27 @@ function wireEvents() {
   if (els.portraitFile) els.portraitFile.addEventListener("change", updatePreview);
   els.iconFile.addEventListener("change", updatePreview);
   els.godPower.addEventListener("change", () => { initUniqueTechSelects(true); updatePreview(); });
-  for (const select of [els.greekHeroArchaic, els.greekHeroClassical, els.greekHeroHeroic, els.greekHeroMythic, els.greekUniqueUnit, els.chineseMythicHero, els.aztecClassicalForm, els.aztecMythicArrival]) {
-    if (select) select.addEventListener("change", updatePreview);
+  for (const select of [els.greekHeroArchaic, els.greekHeroClassical, els.greekHeroHeroic, els.greekUniqueUnit, els.chineseMythicHero, els.aztecClassicalForm, els.aztecMythicArrival]) {
+    if (select) select.addEventListener("change", () => {
+      if (select === els.greekUniqueUnit) refreshCustomMinorOptions(true);
+      updatePreview();
+    });
   }
   els.uniqueTech1.addEventListener("change", (event) => { enforceUniqueTechDifference(event.target); enforceChannelsGaiaLushBonusLock(); updatePreview(); });
   if (els.bonusPickers) els.bonusPickers.addEventListener("change", (event) => { enforceBonusDifference(event.target); enforceChannelsGaiaLushBonusLock(); updatePreview(); });
-  els.minorPickers.addEventListener("change", (event) => { enforceMinorDifference(event.target); updatePreview(); });
+  els.minorPickers.addEventListener("change", (event) => {
+    if (event.target?.closest?.("#minorOriginalPanel")) enforceMinorDifference(event.target);
+    if (event.target?.closest?.("#minorCustomPanel") && event.target?.tagName === "SELECT") {
+      const kind = event.target.dataset?.customKind || "";
+      if (kind === "godPowers" || kind === "mythUnits" || kind === "technologies") refreshCustomMinorOptions(true);
+    }
+    refreshMinorOptionDetails();
+    updatePreview();
+  });
+  els.minorPickers.addEventListener("input", () => {
+    refreshCustomMinorDetails();
+    updatePreview();
+  });
   els.downloadZip.addEventListener("click", handleDownload);
   const openPresetFilePicker = () => {
     if (!els.presetFile) return setMessage("Preset file input is unavailable.", true);
