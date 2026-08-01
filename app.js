@@ -178,13 +178,13 @@ const REVIEWED_MINOR_TECH_DESCRIPTIONS = Object.freeze({
   "AdvancedDefenses": [
     {
       "condition": "Default",
-      "text": "CustomMinorGod shares her defensive knowledge, improving Tower andFortress-type buildings damage, range, and line of sight, and also allowing you to upgrade wall towers into ranged towers."
+      "text": "CustomMinorGod shares their defensive knowledge, improving Towers and Fortress-type buildings damage, range, and line of sight, and also allowing you to upgrade wall towers into ranged towers."
     }
   ],
   "AdzeOfWepwawet": [
     {
       "condition": "Default",
-      "text": "CustomMinorGod lendsVillagers the Adze of Wepwawet, allowing them to fell trees and gather Wood faster."
+      "text": "CustomMinorGod lends Villagers the Adze of Wepwawet, allowing them to fell trees and gather Wood faster."
     }
   ],
   "AegisShield": [
@@ -358,7 +358,7 @@ const REVIEWED_MINOR_TECH_DESCRIPTIONS = Object.freeze({
   "ChasingTheSun": [
     {
       "condition": "Default",
-      "text": "CustomMinorGod imbuesVillagers with a strong work ethic, causing them to build faster."
+      "text": "CustomMinorGod imbues Villagers with a strong work ethic, causing them to build faster."
     }
   ],
   "ChthonicRites": [
@@ -504,7 +504,7 @@ const REVIEWED_MINOR_TECH_DESCRIPTIONS = Object.freeze({
   "DivineBooks": [
     {
       "condition": "Default",
-      "text": "CustomMinorGod shares her divine books, whose knowledge makes your Training Yards cheaper and train units faster."
+      "text": "CustomMinorGod shares their divine books, whose knowledge makes your Training Yards cheaper and train units faster."
     }
   ],
   "DivineJudgement": [
@@ -618,19 +618,19 @@ const REVIEWED_MINOR_TECH_DESCRIPTIONS = Object.freeze({
   "ForceOfTheWestWind": [
     {
       "condition": "Default",
-      "text": "CustomMinorGod enables you to construct Catapults an age early, and her breath imbues your Scarabs and siege weapons with the destructive power of the desert winds."
+      "text": "CustomMinorGod enables you to construct Catapults an age early, and their breath imbues your Scarabs and siege weapons with the destructive power of the desert winds."
     }
   ],
   "ForgeOfOlympus": [
     {
       "condition": "Default",
-      "text": "CustomMinorGod uses his Forge of Olympus to reduce the costs of all Armory improvements, and armories research technologies faster."
+      "text": "CustomMinorGod uses their Forge of Olympus to reduce the costs of all Armory improvements, and armories research technologies faster."
     }
   ],
   "FourJars": [
     {
       "condition": "Default",
-      "text": "CustomMinorGod pours abundance from his jars, reducing the cost of Fortress-type buildings and allowing them to support population."
+      "text": "CustomMinorGod pours abundance from their jars, reducing the cost of Fortress-type buildings and allowing them to support population."
     }
   ],
   "FrenziedDash": [
@@ -830,7 +830,7 @@ const REVIEWED_MINOR_TECH_DESCRIPTIONS = Object.freeze({
   "HornsOfConsecration": [
     {
       "condition": "Default",
-      "text": "CustomMinorGod gifts your Fanatics her blessing, enabling them to be trained an age early and train faster."
+      "text": "CustomMinorGod gifts your Fanatics their blessing, enabling them to be trained an age early and train faster."
     }
   ],
   "HuntersStrength": [
@@ -912,7 +912,7 @@ const REVIEWED_MINOR_TECH_DESCRIPTIONS = Object.freeze({
   "LeizusSilk": [
     {
       "condition": "Default",
-      "text": "CustomMinorGod gifts you his wife's divine silk, improving all human units' hitpoints and hack armor."
+      "text": "CustomMinorGod gifts you their divine silk, improving all human units' hitpoints and hack armor."
     }
   ],
   "LongSerpent": [
@@ -1208,7 +1208,7 @@ const REVIEWED_MINOR_TECH_DESCRIPTIONS = Object.freeze({
   "RingOath": [
     {
       "condition": "Default",
-      "text": "CustomMinorGod vows to defend the realm of men, allowing his Asgardian Bastion God Power to be recast with a greatly reduced Favor cost."
+      "text": "CustomMinorGod vows to defend the realm of men, allowing their Asgardian Bastion God Power to be recast with a greatly reduced Favor cost."
     }
   ],
   "RisingTide": [
@@ -1320,7 +1320,7 @@ const REVIEWED_MINOR_TECH_DESCRIPTIONS = Object.freeze({
   "ShaftsOfPlague": [
     {
       "condition": "Default",
-      "text": "CustomMinorGod sends your ranged soldiers her Shafts of Plague, increasing their attack and causing them to poison enemies."
+      "text": "CustomMinorGod sends your ranged soldiers their Shafts of Plague, increasing their attack and causing them to poison enemies."
     }
   ],
   "ShakerOfHeaven": [
@@ -1332,7 +1332,7 @@ const REVIEWED_MINOR_TECH_DESCRIPTIONS = Object.freeze({
   "ShardsOfItztli": [
     {
       "condition": "Default",
-      "text": "CustomMinorGod studs archer ships with her obsidian, increasing their attack."
+      "text": "CustomMinorGod studs archer ships with their obsidian, increasing their attack."
     }
   ],
   "ShoulderOfTalos": [
@@ -1410,7 +1410,7 @@ const REVIEWED_MINOR_TECH_DESCRIPTIONS = Object.freeze({
   "SpearOfHorus": [
     {
       "condition": "Default",
-      "text": "CustomMinorGod lends {counter-cavalry infantry} his weapon of retribution, increasing their attack and allowing them to counter cavalry more effectively."
+      "text": "CustomMinorGod lends {counter-cavalry infantry} their weapon of retribution, increasing their attack and allowing them to counter cavalry more effectively."
     }
   ],
   "SpiritOfMaat": [
@@ -1698,7 +1698,7 @@ const REVIEWED_MINOR_TECH_DESCRIPTIONS = Object.freeze({
   "Ydalir": [
     {
       "condition": "Default",
-      "text": "CustomMinorGod gifts you his famed yew dales, enabling Portable Rams an age earlier, and improving the work speed of all Hill Forts."
+      "text": "CustomMinorGod gifts you their famed yew dales, enabling Portable Rams an age earlier, and improving the work speed of all Hill Forts."
     }
   ]
 });
@@ -6544,6 +6544,30 @@ function uniqueMinorCustomizationEntries(entries) {
   return unique;
 }
 
+const CUSTOM_MINOR_GOD_POWER_PANTHEON_RESTRICTIONS = Object.freeze({
+  Valor: "Atlantean",
+  ShrineOfTheHunt: "Japanese",
+  Shogun: "Japanese",
+  SonOfOsiris: "Egyptian",
+  Ragnarok: "Norse",
+});
+
+function customMinorGodPowerRequiredPantheon(powerName) {
+  return CUSTOM_MINOR_GOD_POWER_PANTHEON_RESTRICTIONS[powerName] || "";
+}
+
+function customMinorGodPowerAvailableForPantheon(powerName, pantheon) {
+  const requiredPantheon = customMinorGodPowerRequiredPantheon(powerName);
+  return !requiredPantheon || requiredPantheon === pantheon;
+}
+
+function customMinorMythUnitAvailableForAge(entry, age) {
+  if (!entry?.internalName) return false;
+  const unitId = minorCustomizationIdentifier(entry.internalName);
+  if ((unitId === minorCustomizationIdentifier("MountainGiant") || unitId === minorCustomizationIdentifier("FrostGiant")) && age === "MythicAge") return false;
+  return true;
+}
+
 function customMinorSelectedValuesFromState(kind, current, except = {}) {
   const selected = new Set();
   const custom = current?.custom || collectMinorCustomization().custom || {};
@@ -7452,8 +7476,10 @@ function refreshCustomMinorOptions(keep = true, presetLike = null) {
   const current = presetLike || (keep ? collectMinorCustomization() : null);
   const researchPantheon = selectedPantheon();
   for (const age of AGES) {
-    const powers = uniqueMinorCustomizationEntries(minorCustomizationEntries("godPowers", age));
-    const units = uniqueMinorCustomizationEntries(minorCustomizationEntries("mythUnits", age));
+    const powers = uniqueMinorCustomizationEntries(minorCustomizationEntries("godPowers", age))
+      .filter((entry) => customMinorGodPowerAvailableForPantheon(entry.internalName, researchPantheon));
+    const units = uniqueMinorCustomizationEntries(minorCustomizationEntries("mythUnits", age))
+      .filter((entry) => customMinorMythUnitAvailableForAge(entry, age));
     const baseTechs = uniqueMinorCustomizationEntries(minorCustomizationEntries("technologies", age))
       .filter((entry) => entry.internalName && entry.enableStatus !== "active")
       .filter((entry) => minorTechHasResearchLocation(entry.internalName, researchPantheon, { baseCulture: researchPantheon, minorGodCustomization: current }));
@@ -7733,12 +7759,19 @@ function validateCustomMinorGodTechSelections(config) {
       if (card.godPower) {
         const powerEntry = getSelectedMinorCustomizationEntry("godPowers", age, card.godPower);
         const powerLabel = powerEntry?.displayName || displayTechName(card.godPower);
+        const requiredPowerPantheon = customMinorGodPowerRequiredPantheon(card.godPower);
+        if (requiredPowerPantheon && requiredPowerPantheon !== config.baseCulture) {
+          errors.push(`${powerLabel} god power is ${requiredPowerPantheon}-only.`);
+        }
         if (seenPowers.has(card.godPower)) errors.push(`${powerLabel} god power can only be selected once across custom minor gods.`);
         else seenPowers.set(card.godPower, label);
       }
       if (card.mythUnit) {
         const mythEntry = getSelectedMinorCustomizationEntry("mythUnits", age, card.mythUnit);
         const mythLabel = mythEntry?.displayName || displayTechName(card.mythUnit);
+        if (!customMinorMythUnitAvailableForAge({ internalName: card.mythUnit }, age)) {
+          errors.push(`${mythLabel} is a Heroic Age myth unit and cannot be selected as a Mythic Age custom minor-god myth unit.`);
+        }
         if (seenMythUnits.has(card.mythUnit)) errors.push(`${mythLabel} myth unit can only be selected once across custom minor gods.`);
         else seenMythUnits.set(card.mythUnit, label);
       }

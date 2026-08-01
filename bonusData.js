@@ -674,7 +674,7 @@ window.AOM_BONUS_DATA = [
     "id": "bonus_49",
     "sourcePantheon": "Norse",
     "sourceMajor": "Freyr",
-    "label": "Fortress-type building units deal +10% damage.",
+    "label": "Fortress-type buildings and their units deal +10% damage.",
     "allowedPantheons": [
       "All"
     ],
@@ -754,9 +754,9 @@ window.AOM_BONUS_DATA = [
       "All"
     ],
     "files": "techtree.xml",
-    "notes": "Sets resource return rates on AbstractSiegeWeapon and MythUnit.",
+    "notes": "Sets resource return rates on AbstractSiegeWeapon and LogicalTypeTrainableMythUnit.",
     "majorXml": "",
-    "techEffects": "<effect type=\"Data\" amount=\"0.20\" subtype=\"ResourceReturnRate\" resource=\"Wood\" relativity=\"Absolute\">\n\t<target type=\"ProtoUnit\">AbstractSiegeWeapon</target>\n</effect>\n<effect type=\"Data\" amount=\"0.20\" subtype=\"ResourceReturnRate\" resource=\"Gold\" relativity=\"Absolute\">\n\t<target type=\"ProtoUnit\">AbstractSiegeWeapon</target>\n</effect>\n<effect type=\"Data\" amount=\"0.20\" subtype=\"ResourceReturnRate\" resource=\"Food\" relativity=\"Absolute\">\n\t<target type=\"ProtoUnit\">MythUnit</target>\n</effect>\n<effect type=\"Data\" amount=\"0.20\" subtype=\"ResourceReturnRate\" resource=\"Wood\" relativity=\"Absolute\">\n\t<target type=\"ProtoUnit\">MythUnit</target>\n</effect>\n<effect type=\"Data\" amount=\"0.20\" subtype=\"ResourceReturnRate\" resource=\"Gold\" relativity=\"Absolute\">\n\t<target type=\"ProtoUnit\">MythUnit</target>\n</effect>\n<effect type=\"Data\" amount=\"0.20\" subtype=\"ResourceReturnRate\" resource=\"Favor\" relativity=\"Absolute\">\n\t<target type=\"ProtoUnit\">MythUnit</target>\n</effect>\n<effect type=\"Data\" amount=\"0.0\" subtype=\"ResourceReturnRate\" resource=\"Favor\" relativity=\"Assign\">\n\t<target type=\"ProtoUnit\">PrometheanOffspring</target>\n</effect>\n<effect type=\"Data\" amount=\"0.0\" subtype=\"ResourceReturnRate\" resource=\"Food\" relativity=\"Assign\">\n\t<target type=\"ProtoUnit\">PrometheanOffspring</target>\n</effect>"
+    "techEffects": "<effect type=\"Data\" amount=\"0.20\" subtype=\"ResourceReturnRate\" resource=\"Wood\" relativity=\"Absolute\">\n\t<target type=\"ProtoUnit\">AbstractSiegeWeapon</target>\n</effect>\n<effect type=\"Data\" amount=\"0.20\" subtype=\"ResourceReturnRate\" resource=\"Gold\" relativity=\"Absolute\">\n\t<target type=\"ProtoUnit\">AbstractSiegeWeapon</target>\n</effect>\n<effect type=\"Data\" amount=\"0.20\" subtype=\"ResourceReturnRate\" resource=\"Food\" relativity=\"Absolute\">\n\t<target type=\"ProtoUnit\">LogicalTypeTrainableMythUnit</target>\n</effect>\n<effect type=\"Data\" amount=\"0.20\" subtype=\"ResourceReturnRate\" resource=\"Wood\" relativity=\"Absolute\">\n\t<target type=\"ProtoUnit\">LogicalTypeTrainableMythUnit</target>\n</effect>\n<effect type=\"Data\" amount=\"0.20\" subtype=\"ResourceReturnRate\" resource=\"Gold\" relativity=\"Absolute\">\n\t<target type=\"ProtoUnit\">LogicalTypeTrainableMythUnit</target>\n</effect>\n<effect type=\"Data\" amount=\"0.20\" subtype=\"ResourceReturnRate\" resource=\"Favor\" relativity=\"Absolute\">\n\t<target type=\"ProtoUnit\">LogicalTypeTrainableMythUnit</target>\n</effect>"
   },
 
   // Atlantean — Oranos
