@@ -18778,7 +18778,7 @@ ${bonusLines.length ? bonusLines.join("\n") : "- None"}
 ${bonusDisplayWarningBlock}
 How to install:
 1. Unzip the generated mod folder.
-2. Go to C:\Users\UserName\Games\Age of Mythology Retold\SteamID\mods\local
+2. Go to C:\\Users\\UserName\\Games\\Age of Mythology Retold\\SteamID\\mods\\local
 3. Drop the unzipped mod folder there.
 4. Start the game and enjoy!
 
