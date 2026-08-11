@@ -3,10 +3,6 @@ AoM:R Major God Builder Changelog
 Version 2.0.1
 
 Main fixes:
-- Improved generated ZIP structure:
-  - The ZIP now opens directly to the mod contents.
-  - No extra parent folder is created before the game folder, README, and preset file.
-
 - Fixed Kronos resource-return bonus:
   - Destroyed-unit refund now targets LogicalTypeTrainableMythUnit.
   - Non-trainable myth units are no longer affected.

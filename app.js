@@ -18803,7 +18803,7 @@ How to install:
 1. Generate the mod ZIP.
 2. Unzip the folder.
 3. Go to \`C:\\Users\\UserName\\Games\\Age of Mythology Retold\\SteamID\\mods\\local\`.
-4. Drop the unzipped mod folder there.
+4. Drop the unzipped mod folder there — final path: \`mods\\local\\MyCustomMajorGod\\game\`.
 5. Start the game and enjoy!
 
 Generated files:
@@ -18889,7 +18889,7 @@ async function generateFiles(config) {
     iconBytes = await resizeImageFileToPngBytes(iconSource, 256, 256);
   }
 
-  const root = "";
+  const root = `${config.internalName}/`;
   const files = [];
   files.push(textFile(`${root}README_INSTALL.txt`, generateReadme(config)));
   files.push(textFile(`${root}${config.internalName}-preset.json`, JSON.stringify(presetFromConfig(config), null, 2)));
