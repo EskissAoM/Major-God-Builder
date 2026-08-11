@@ -2953,6 +2953,16 @@ function setComboDisplay(select, label) {
   input.title = select.title || input.title || "Type to search, then choose a suggestion.";
 }
 
+function uniqueTechSearchDescription(group) {
+  const source = UNIQUE_TECH_CUSTOM_ROLLOVERS[uniqueTechOriginalTechId(group)] || "";
+  return source
+    .replace(/CustomGod's/gi, "")
+    .replace(/CustomGod’/gi, "")
+    .replace(/CustomGod/gi, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function uniqueTechSearchText(group) {
   const sourcePantheon = uniqueTechSourcePantheon(group);
   const allowedText = group.pantheon === "All" ? "All pantheons" : `${group.pantheon} only`;
@@ -2963,7 +2973,7 @@ function uniqueTechSearchText(group) {
     allowedText,
     ...(group.techs || []).map((tech) => techBrowserDisplayName(tech)),
     ...(group.techs || []),
-    uniqueTechUiDescription(group),
+    uniqueTechSearchDescription(group),
     group.requiresGodPower ? `requires ${group.requiresGodPower}` : "",
   ].join("\n");
 }
@@ -5143,6 +5153,13 @@ function selectedHasBonusLabel(config, label) {
   return selectedHasBonusId(config, currentEntry.id);
 }
 
+function kronosTimeshiftAztecCommandRemoveEffect(config) {
+  if (config?.baseCulture !== "Aztec") return "";
+  return `<effect type="Data" amount="1.00" subtype="CommandRemove" command="AutoAssignDevotedUnits" relativity="Assign">
+	<target type="ProtoUnit">Temple</target>
+</effect>`;
+}
+
 function bonusTechEffects(config) {
   return selectedBonusEntries(config)
     .map((entry) => {
@@ -5156,6 +5173,7 @@ function bonusTechEffects(config) {
       if (entry.id === BONUS_IDS.HADES_RANGED_TECH_DISCOUNT) return hadesRangedTechDiscountEffects(config);
       if (entry.id === BONUS_IDS.LOKI_COUNTER_DAMAGE || entry.id === "bonus_44") return lokiCounterDamageEffects(config);
       if (entry.id === BONUS_IDS.LOKI_MILITARY_BUILD || entry.id === "bonus_45") return lokiMilitaryBuildEffects(config);
+      if (entry.id === BONUS_IDS.KRONOS_TIMESHIFT) return kronosTimeshiftAztecCommandRemoveEffect(config);
       if (entry.id === BONUS_IDS.KRONOS_TEMPORAL_SCAFFOLDING || entry.id === "bonus_53") return kronosTemporalScaffoldingEffects(config);
       if (entry.id === BONUS_IDS.HUITZ_CONSTRUCTION_REFUND || entry.id === "bonus_87") return huitzConstructionRefundEffects(config);
       if (entry.id === BONUS_IDS.QUETZ_DROPSITE_DISCOUNT || entry.id === "bonus_95") return quetzDropsiteDiscountEffects(config);
@@ -8700,6 +8718,11 @@ function thorDwarfSpawnTechName(config) {
 
 function thorDwarfSpawnArchaicEffects(config) {
   const effects = [`<effect type="SetOnTechResearchedTech" amount="1.00" techtype="ArmoryTechnology">${escapeXml(thorDwarfSpawnTechName(config))}</effect>`];
+  if (!selectedHasBonusId(config, THOR_DWARVEN_ARMORY_BONUS_ID)) {
+    effects.push(`<effect type="Data" amount="1.00" subtype="ProtoUnitFlag" flag="HasGatherPoint" relativity="Absolute">
+	<target type="ProtoUnit">Armory</target>
+</effect>`);
+  }
   if (config.baseCulture === "Atlantean") {
     effects.push(`<effect type="Data" amount="1.00" subtype="Enable" relativity="Absolute">
 	<target type="ProtoUnit">OxCartBuilding</target>
@@ -18757,9 +18780,9 @@ function hasSelectedThothMinorGod(config) {
 function generateReadme(config) {
   const presetFileName = `${config.internalName}-preset.json`;
   const thothTacticsLine = hasSelectedThothMinorGod(config) ? `
-${config.internalName}/game/data/gameplay/tactics/priest_mods.tactics` : "";
+game/data/gameplay/tactics/priest_mods.tactics` : "";
   const advancedDefensesTransformLine = hasSelectedAdvancedDefensesMinorTech(config) ? `
-${config.internalName}/game/data/gameplay/unit_transform_mods.xml` : "";
+game/data/gameplay/unit_transform_mods.xml` : "";
   const bonusLines = selectedBonusEntries(config).map((entry) => `- ${entry.sourcePantheon} - ${dynamicBonusLabel(entry, config)}`);
   const bonusDisplayWarning = bonusDisplayWarningText(config);
   const bonusDisplayWarningBlock = bonusDisplayWarning ? `
@@ -18777,21 +18800,20 @@ God bonuses:
 ${bonusLines.length ? bonusLines.join("\n") : "- None"}
 ${bonusDisplayWarningBlock}
 How to install:
-1. Unzip the generated mod folder.
-2. Go to C:\\Users\\UserName\\Games\\Age of Mythology Retold\\SteamID\\mods\\local
-3. Drop the unzipped mod folder there.
-4. Start the game and enjoy!
+1. Create a folder named ${config.internalName} in C:\Users\UserName\Games\Age of Mythology Retold\SteamID\mods\local
+2. Unzip the generated ZIP directly into that folder.
+3. Start the game and enjoy!
 
 Generated files:
-${config.internalName}/${presetFileName}
-${config.internalName}/game/data/gameplay/major_gods_mods.xml
-${config.internalName}/game/data/gameplay/minor_gods_mods.xml
-${config.internalName}/game/data/gameplay/techtree_mods.xml
-${config.internalName}/game/data/gameplay/proto_mods.xml
-${config.internalName}/game/data/gameplay/powers_mods.xml${advancedDefensesTransformLine}${thothTacticsLine}
-${config.internalName}/game/data/strings/English/stringmods.txt
-${config.internalName}/game/ui_myth/content/pregame/godpicker/GodPicker_${config.baseCulture}_${config.internalName}.xaml
-${config.internalName}/game/ui_myth/content/pregame/techtree/TechTree_${config.baseCulture}_${config.internalName}.xaml
+${presetFileName}
+game/data/gameplay/major_gods_mods.xml
+game/data/gameplay/minor_gods_mods.xml
+game/data/gameplay/techtree_mods.xml
+game/data/gameplay/proto_mods.xml
+game/data/gameplay/powers_mods.xml${advancedDefensesTransformLine}${thothTacticsLine}
+game/data/strings/English/stringmods.txt
+game/ui_myth/content/pregame/godpicker/GodPicker_${config.baseCulture}_${config.internalName}.xaml
+game/ui_myth/content/pregame/techtree/TechTree_${config.baseCulture}_${config.internalName}.xaml
 `;
 }
 
@@ -18824,7 +18846,7 @@ async function customMinorImageFilesForExport(config) {
     const iconSource = selectedCustomMinorIconFile(card.age, card.slot);
     if (portraitSource) {
       const fileName = customMinorImageFileName(card, "portrait");
-      const path = `${config.internalName}/game/ui_myth/resources/${config.lowerName}/minor_gods/${fileName}`;
+      const path = `game/ui_myth/resources/${config.lowerName}/minor_gods/${fileName}`;
       if (!seen.has(path)) {
         seen.add(path);
         out.push(binaryFile(path, await resizeImageFileToPngBytes(portraitSource, 667, 774)));
@@ -18832,7 +18854,7 @@ async function customMinorImageFilesForExport(config) {
     }
     if (iconSource) {
       const fileName = customMinorImageFileName(card, "icon");
-      const path = `${config.internalName}/game/ui_myth/resources/${config.lowerName}/minor_gods/${fileName}`;
+      const path = `game/ui_myth/resources/${config.lowerName}/minor_gods/${fileName}`;
       if (!seen.has(path)) {
         seen.add(path);
         out.push(binaryFile(path, await resizeImageFileToPngBytes(iconSource, 256, 256)));
@@ -18865,7 +18887,7 @@ async function generateFiles(config) {
     iconBytes = await resizeImageFileToPngBytes(iconSource, 256, 256);
   }
 
-  const root = `${config.internalName}/`;
+  const root = "";
   const files = [];
   files.push(textFile(`${root}README_INSTALL.txt`, generateReadme(config)));
   files.push(textFile(`${root}${config.internalName}-preset.json`, JSON.stringify(presetFromConfig(config), null, 2)));
