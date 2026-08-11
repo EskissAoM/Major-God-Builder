@@ -18800,9 +18800,11 @@ God bonuses:
 ${bonusLines.length ? bonusLines.join("\n") : "- None"}
 ${bonusDisplayWarningBlock}
 How to install:
-1. Create a folder named ${config.internalName} in C:\Users\UserName\Games\Age of Mythology Retold\SteamID\mods\local
-2. Unzip the generated ZIP directly into that folder.
-3. Start the game and enjoy!
+1. Generate the mod ZIP.
+2. Unzip the folder.
+3. Go to \`C:\\Users\\UserName\\Games\\Age of Mythology Retold\\SteamID\\mods\\local\`.
+4. Drop the unzipped mod folder there.
+5. Start the game and enjoy!
 
 Generated files:
 ${presetFileName}

@@ -19,15 +19,11 @@ It lets users choose a pantheon, god power, unique technology, bonuses, minor go
 
 ## Installing a generated mod
 
-1. Generate and download the mod ZIP.
+1. Generate the mod ZIP.
 2. Unzip the folder.
-3. Move the unzipped mod folder to:
-
-   ```text
-   C:\Users\UserName\Games\Age of Mythology Retold\SteamID\mods\local
-   ```
-
-4. Start Age of Mythology: Retold and enjoy.
+3. Go to `C:\Users\UserName\Games\Age of Mythology Retold\SteamID\mods\local`.
+4. Drop the unzipped mod folder there.
+5. Start the game and enjoy!
 
 ## Status
 
