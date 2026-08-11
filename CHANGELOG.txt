@@ -1,5 +1,27 @@
 AoM:R Major God Builder Changelog
 
+Version 2.0.1
+
+Main fixes:
+- Improved generated ZIP structure:
+  - The ZIP now opens directly to the mod contents.
+  - No extra parent folder is created before the game folder, README, and preset file.
+
+- Fixed Kronos resource-return bonus:
+  - Destroyed-unit refund now targets LogicalTypeTrainableMythUnit.
+  - Non-trainable myth units are no longer affected.
+  - Removed the Promethean Offspring exceptions that are no longer needed.
+
+- Fixed Aztec + Kronos building time-shift:
+  - Aztec Temple can now be time-shifted correctly.
+  - The Temple auto-devote command is removed when the time-shift bonus is selected.
+
+- Fixed Thor Armory dwarf-spawn bonus:
+  - Armory now receives a gather point when the Dwarven Armory bonus is not selected.
+
+Other fixes:
+- Fixed various technology descriptions.
+
 Version 2.0
 
 Main feature:

@@ -4,7 +4,7 @@
 const AGES = ["ClassicalAge", "HeroicAge", "MythicAge"];
 const PREVIEW_AGES = ["ArchaicAge", ...AGES];
 const MAX_BONUS_CHOICES = 4;
-const APP_VERSION = "2.0";
+const APP_VERSION = "2.0.1";
 const UPDATE_NOTICE_STORAGE_KEY = "aomrBuilderSeenVersion";
 const EXCLUDED_MINOR_GOD_NAMES = new Set(["malinalxochitldummy"]);
 
