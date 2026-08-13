@@ -3499,7 +3499,7 @@ const ORANOS_SKY_PASSAGE_ARCHAIC_EFFECTS = `<effect type="Data" amount="1.00" su
 
 const ORANOS_SKY_PASSAGE_BUILDERS_BY_PANTHEON = {
   Greek: ["VillagerGreek", "LykaonVillager"],
-  Egyptian: ["VillagerEgyptian"],
+  Egyptian: ["Priest"],
   Norse: ["Berserk", "Hirdman", "ThrowingAxeman", "Huskarl", "Hersir", "Godi"],
   Chinese: ["VillagerChinese", "VillagerChineseClay", "Kuafu"],
   Japanese: ["VillagerJapanese"],
