@@ -2564,7 +2564,7 @@ function uniqueTechNames(configOrIds) {
 }
 
 const UNIQUE_TECH_UI_BUILDINGS_BY_TECH = {
-  CelestialWeapons: { Greek: ["Armory"], Egyptian: ["Armory"], Norse: ["Armory"], Atlantean: ["Armory"], Chinese: ["Armory"], Japanese: ["Armory"], Aztec: ["Armory"] },
+  CelestialWeapons: { Greek: ["Armory"], Egyptian: ["Armory"], Norse: ["Armory"], Atlantean: ["Armory"], Chinese: ["Armory", "ImperialAcademy"], Japanese: ["Armory"], Aztec: ["Armory"] },
   Channels: { Greek: ["TownCenter", "VillageCenter", "Temple", "CitadelCenter"], Egyptian: ["TownCenter", "VillageCenter", "Temple", "CitadelCenter"], Norse: ["TownCenter", "VillageCenter", "Temple", "CitadelCenter"], Atlantean: ["TownCenter", "VillageCenter", "Temple", "CitadelCenter"], Chinese: ["TownCenter", "VillageCenter", "Temple", "CitadelCenter"], Japanese: ["TownCenter", "VillageCenter", "Temple", "CitadelCenter"], Aztec: ["TownCenter", "VillageCenter", "Temple", "CitadelCenter"] },
   Clairvoyance: { Greek: ["Temple"], Egyptian: ["Temple"], Norse: ["Temple"], Atlantean: ["Temple"], Chinese: ["Temple"], Japanese: ["Temple"], Aztec: ["Temple"] },
   CrushingWaves: { Greek: ["Temple"], Egyptian: ["Temple"], Norse: ["Temple"], Atlantean: ["Temple"], Chinese: ["Temple"], Japanese: ["Temple"], Aztec: ["Temple"] },
@@ -2574,16 +2574,22 @@ const UNIQUE_TECH_UI_BUILDINGS_BY_TECH = {
   FeastOfTlaxochimaco: { Greek: ["Temple"], Egyptian: ["Temple"], Norse: ["Temple"], Atlantean: ["Temple"], Chinese: ["Temple"], Japanese: ["Temple"], Aztec: ["Temple"] },
   FloodOfTheNile: { Greek: ["Granary"], Egyptian: ["Granary"], Norse: ["OxCart"], Atlantean: ["EconomicGuild"], Chinese: ["Silo"], Japanese: ["WaterMill"], Aztec: ["Calpulli", "CalpulliLivestockPen", "CalpulliLumberOutpost", "CalpulliCraftWorkshop"] },
   FreyrsGift: { Greek: ["TownCenter", "VillageCenter", "CitadelCenter"], Egyptian: ["TownCenter", "VillageCenter", "CitadelCenter"], Norse: ["TownCenter", "VillageCenter", "CitadelCenter"], Atlantean: ["TownCenter", "VillageCenter", "CitadelCenter"], Chinese: ["TownCenter", "VillageCenter", "CitadelCenter"], Japanese: ["TownCenter", "VillageCenter", "CitadelCenter"], Aztec: ["TownCenter", "VillageCenter", "CitadelCenter"] },
+  Hamask: { Norse: ["Longhouse"] },
   HammerOfThunder: { Norse: ["Armory"] },
+  HerbalMedicine: { Chinese: ["ImperialAcademy"] },
+  Kagura: { Japanese: ["ShrineJapanese", "ShrineOfTheHunt"] },
   KuafuChieftain: { Greek: ["TownCenter", "VillageCenter", "CitadelCenter"], Egyptian: ["TownCenter", "VillageCenter", "CitadelCenter"], Norse: ["TownCenter", "VillageCenter", "CitadelCenter"], Atlantean: ["TownCenter", "VillageCenter", "CitadelCenter"], Chinese: ["TownCenter", "VillageCenter", "CitadelCenter"], Japanese: ["TownCenter", "VillageCenter", "CitadelCenter"], Aztec: ["TownCenter", "VillageCenter", "CitadelCenter"] },
   LordOfHorses: { Greek: ["Stable"], Egyptian: ["Temple"], Norse: ["Temple"], Atlantean: ["Temple"], Chinese: ["Temple"], Japanese: ["StableJapanese"], Aztec: ["Temple"] },
+  MountainousMight: { Chinese: ["Silo"] },
   OlympianParentage: { Greek: ["Temple"], Egyptian: ["Temple"], Norse: ["Temple"], Atlantean: ["Temple"], Chinese: ["Temple"], Japanese: ["Temple"], Aztec: ["Temple"] },
-  PeachOfImmortality: { Greek: ["Temple"], Egyptian: ["Temple"], Norse: ["Temple"], Atlantean: ["Temple"], Chinese: [], Japanese: ["Temple"], Aztec: ["Temple"] },
+  PeachOfImmortality: { Greek: ["Temple"], Egyptian: ["Temple"], Norse: ["Temple"], Atlantean: ["Temple"], Chinese: ["ImperialAcademy"], Japanese: ["Temple"], Aztec: ["Temple"] },
   SkinOfTheRhino: { Greek: ["TownCenter", "VillageCenter", "CitadelCenter"], Egyptian: ["TownCenter", "VillageCenter", "CitadelCenter"], Norse: ["TownCenter", "VillageCenter", "CitadelCenter"], Atlantean: ["TownCenter", "VillageCenter", "CitadelCenter"], Chinese: ["TownCenter", "VillageCenter", "CitadelCenter"], Japanese: ["TownCenter", "VillageCenter", "CitadelCenter"], Aztec: ["TownCenter", "VillageCenter", "CitadelCenter"] },
-  TaiChi: { Greek: ["Temple"], Egyptian: ["Temple"], Norse: ["Temple"], Atlantean: ["Temple"], Chinese: [], Japanese: ["Temple"], Aztec: ["Temple"] },
+  TaiChi: { Greek: ["Temple"], Egyptian: ["Temple"], Norse: ["Temple"], Atlantean: ["Temple"], Chinese: ["ImperialAcademy"], Japanese: ["Temple"], Aztec: ["Temple"] },
   TemporalChaos: { Greek: ["Temple"], Egyptian: ["Temple"], Norse: ["Temple"], Atlantean: ["Temple"], Chinese: ["Temple"], Japanese: ["Temple"], Aztec: ["Temple"] },
   Tenshu: { Greek: ["SentryTower"], Egyptian: ["SentryTower"], Norse: ["SentryTower"], Atlantean: ["SentryTower"], Chinese: ["SentryTower"], Japanese: ["SentryTower"], Aztec: ["SentryTower"] },
+  TepeyollotlsReach: { Aztec: ["NoblesHut", "GreatTemple"] },
   VaultsOfErebus: { Greek: ["Storehouse"], Egyptian: ["MiningCamp"], Norse: ["OxCart"], Atlantean: ["EconomicGuild"], Chinese: ["Silo"], Japanese: ["MiningCampJapanese"], Aztec: ["Calpulli", "CalpulliLivestockPen", "CalpulliLumberOutpost", "CalpulliCraftWorkshop"] },
+  WingsOfTheSouth: { Aztec: ["WarHut"] },
 };
 
 function uniqueTechActualTechName(group, config) {
@@ -2594,6 +2600,11 @@ function uniqueTechActualTechName(group, config) {
 }
 
 function uniqueTechUiBuildingPosition(building, pantheon) {
+  if (building === "Longhouse") return { row: 2, column: 0 };
+  if (building === "ImperialAcademy") return { row: 1, column: 1 };
+  if (["ShrineJapanese", "ShrineOfTheHunt"].includes(building)) return { row: 1, column: 0 };
+  if (building === "WarHut") return { row: 2, column: 0 };
+  if (["NoblesHut", "GreatTemple"].includes(building)) return { row: 2, column: 0 };
   if (building === "Temple") {
     if (pantheon === "Atlantean") return { row: 1, column: 0 };
     if (pantheon === "Norse") return { row: 2, column: 0 };
@@ -5478,8 +5489,7 @@ const TECH_UI_BUILDING_ALIASES = Object.freeze({
   GreatHall: "GreatHall",
   Guardhouse: "GuardHouse",
   GuardHouse: "GuardHouse",
-  Longhouse: "LongHouse",
-  LongHouse: "LongHouse",
+  Longhouse: "Longhouse",
   LumberCamp: "LumberCamp",
   MachineWorkshop: "MachineWorkshop",
   MachineWorkshopTower: "MachineWorkshop",
@@ -5493,8 +5503,8 @@ const TECH_UI_BUILDING_ALIASES = Object.freeze({
   NoblesHut: "NoblesHut",
   OxCart: "OxCart",
   SentryTower: "SentryTower",
-  ShrineJapanese: "Shrine",
-  ShrineOfTheHunt: "Shrine",
+  ShrineJapanese: "ShrineJapanese",
+  ShrineOfTheHunt: "ShrineJapanese",
   SiegeWorks: "SiegeWorks",
   Silo: "Silo",
   Stable: "Stable",
@@ -5523,7 +5533,7 @@ function techUiCommandTargetBuilding(building) {
     fortress: "Fortress",
     Fortress: "Fortress",
     Guardhouse: "GuardHouse",
-    Longhouse: "LongHouse",
+    Longhouse: "Longhouse",
     Watermill: "WaterMill",
   };
   return canonicalTarget[id] || id;
@@ -5783,11 +5793,6 @@ function uniqueTechFixedPosition(building, pantheon) {
   return uniqueTechUiBuildingPosition(building, pantheon);
 }
 
-function fixedPositionIsInPool(position, pool) {
-  if (!position) return false;
-  return (pool || []).some((candidate) => techUiPositionsOverlap(position, candidate));
-}
-
 function buildUniqueTechUiPlacements(config, allocator) {
   const pantheon = config.baseCulture;
   const placements = [];
@@ -5802,14 +5807,13 @@ function buildUniqueTechUiPlacements(config, allocator) {
       seenPlacements.add(dedupeKey);
       let pool = techUiLocationPools(item.canonical, "UniqueTech", config);
       if (!pool.length) pool = techUiLocationPools(item.canonical, "AnyAge", config);
-      if (!pool.length) continue;
       const fixed = uniqueTechFixedPosition(item.building, pantheon);
       let position = null;
-      if (fixedPositionIsInPool(fixed, pool)) {
+      if (fixed) {
         const candidate = { type: "unique", techName, position: fixed };
         if (allocator.reserve(target, candidate)) position = fixed;
       }
-      if (!position) position = allocator.allocate(target, pool, { type: "unique", techName });
+      if (!position && pool.length) position = allocator.allocate(target, pool, { type: "unique", techName });
       if (!position) continue;
       placements.push({ techName, target, position, type: "unique" });
     }
@@ -10345,13 +10349,11 @@ function techTreeParentNameForUiTarget(target, config = null, sourceBuilding = "
     CalpulliCraftWorkshop: "Calpulli",
     OxCart: "OxCartBuilding",
     OxCartBuilding: "OxCartBuilding",
-    LongHouse: "Longhouse",
     Longhouse: "Longhouse",
     GuardHouse: "Guardhouse",
     Guardhouse: "Guardhouse",
     WaterMill: "Watermill",
     Watermill: "Watermill",
-    Shrine: "ShrineJapanese",
     ShrineJapanese: "ShrineJapanese",
     ShrineOfTheHunt: "ShrineJapanese",
     TzompantliTower: "TzompantliTowerTechTree",
@@ -10887,8 +10889,30 @@ function uniqueTechRightSideNodeSpecs(config, block, group) {
       add("Temple", ["18,1", "19,1", "20,1"], 18);
       break;
     case "CelestialWeapons":
-      add("Armory", ["28,0", "28,1", "29,0"], 28);
-      if (culture === "Chinese") add("ImperialAcademy", ["44,0", "44,1", "45,0"], 44);
+      if (culture === "Chinese") {
+        add("Armory", ["28,0", "28,1", "29,0"], 28);
+        add("ImperialAcademy", ["44,0", "44,1", "45,0"], 44);
+      } else {
+        add("Armory", ["28,0", "28,1", "29,0"], 28);
+      }
+      break;
+    case "Hamask":
+      if (culture === "Norse") add("Longhouse", ["3,1"], 3);
+      break;
+    case "MountainousMight":
+      if (culture === "Chinese") add("Silo", ["2,1"], 2);
+      break;
+    case "Kagura":
+      if (culture === "Japanese") add("ShrineJapanese", ["1,1"], 1);
+      break;
+    case "WingsOfTheSouth":
+      if (culture === "Aztec") add("WarHut", ["1,1"], 1);
+      break;
+    case "TepeyollotlsReach":
+      if (culture === "Aztec") {
+        add("NoblesHut", ["2,1"], 2);
+        add("GreatTemple", ["5,1"], 5);
+      }
       break;
     case "TaiChi":
       add(culture === "Chinese" ? "ImperialAcademy" : "Temple", culture === "Chinese" ? ["45,0", "45,1", "46,0"] : ["19,1", "20,1", "21,1"], culture === "Chinese" ? 45 : 19);

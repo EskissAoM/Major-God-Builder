@@ -9,6 +9,9 @@ Main fixes:
 - Fixed unintended Japanese Bushido inheritance:
   - Japanese custom gods no longer receive Bushido bounty/combat XP data unless a Bushido bonus is selected.
 
+- Fixed missing major unique tech placement:
+  - Pantheon-exclusive major unique techs, for example Hamask, now receive their CommandAdd entries correctly.
+
 - Fixed Gaia Lush coverage:
   - Lush now affects all drop-off buildings except Ox Cart.
 
