@@ -9381,7 +9381,7 @@ function norseMythicExtraEffects(config) {
 }
 
 function godPowerEffect(power) {
-  return `			<effect type="Data" subtype="GodPower" power="${escapeXml(power)}" amount="1.0" cooldown="60.0" relativity="Absolute">
+  return `			<effect type="Data" subtype="GodPower" power="${escapeXml(power)}" amount="1.0" cooldown="${escapeXml(godPowerCooldown(power))}" relativity="Absolute">
 				<target type="Player"></target>
 			</effect>`;
 }
