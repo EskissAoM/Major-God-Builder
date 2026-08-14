@@ -5361,7 +5361,7 @@ function sanitizeBonusTechEffects(xml) {
 
 function bonusMajorXml(config) {
   return selectedBonusEntries(config)
-    .filter((entry) => ![ZEUS_STARTING_FAVOR_BONUS_ID, KRONOS_TIMESHIFT_BONUS_ID, HUITZ_TONALLI_RESOURCES_BONUS_ID, HUITZ_SHORN_TONALLI_BONUS_ID, NUWA_FAVORED_LAND_FARTHER_BONUS_ID, SET_ANIMALS_BONUS_ID, SET_PRIEST_CONVERT_ANIMALS_BONUS_ID, SUSANOO_POWER_COST_FACTOR_BONUS_ID, SUSANOO_BUSHIDO_MYTH_XP_BONUS_ID, TSUKUYOMI_RESEARCH_BUSHIDO_XP_BONUS_ID, ODIN_GREAT_HALL_FAVOR_BONUS_ID, BONUS_IDS.AMATERASU_BUSHIDO, BONUS_IDS.TSUKUYOMI_BUSHIDO, BONUS_IDS.SUSANOO_BUSHIDO].includes(entry.id))
+    .filter((entry) => ![ZEUS_STARTING_FAVOR_BONUS_ID, KRONOS_TIMESHIFT_BONUS_ID, BONUS_IDS.GAIA_LUSH, HUITZ_TONALLI_RESOURCES_BONUS_ID, HUITZ_SHORN_TONALLI_BONUS_ID, NUWA_FAVORED_LAND_FARTHER_BONUS_ID, SET_ANIMALS_BONUS_ID, SET_PRIEST_CONVERT_ANIMALS_BONUS_ID, SUSANOO_POWER_COST_FACTOR_BONUS_ID, SUSANOO_BUSHIDO_MYTH_XP_BONUS_ID, TSUKUYOMI_RESEARCH_BUSHIDO_XP_BONUS_ID, ODIN_GREAT_HALL_FAVOR_BONUS_ID, BONUS_IDS.AMATERASU_BUSHIDO, BONUS_IDS.TSUKUYOMI_BUSHIDO, BONUS_IDS.SUSANOO_BUSHIDO].includes(entry.id))
     .map((entry) => entry.majorXml || "")
     .filter(Boolean)
     .join("\n");
@@ -7976,6 +7976,56 @@ function ensureIvoryNetsukeBountyResourceEarning(doc, civ, config) {
   ensureDirectChildText(doc, bounty, "bountydamagegoal", "1.0");
 }
 
+
+const GAIA_LUSH_BASE_CREEP_UNITS = Object.freeze(["TownCenter", "VillageCenter", "CitadelCenter", "Market"]);
+const GAIA_LUSH_PANTHEON_CREEP_UNITS = Object.freeze({
+  Atlantean: ["TownCenter", "VillageCenter", "CitadelCenter", "Manor", "EconomicGuild", "Market"],
+  Greek: ["House", "Granary", "Storehouse"],
+  Egyptian: ["House", "Granary", "LumberCamp", "MiningCamp"],
+  Norse: ["House"],
+  Chinese: ["House", "Silo"],
+  Japanese: ["House", "Watermill", "MiningCampJapanese"],
+  Aztec: ["House", "Calpulli", "CalpulliLivestockPen", "CalpulliLumberOutpost", "CalpulliCraftWorkshop"],
+});
+
+function gaiaLushCreepUnits(config) {
+  const culture = config?.baseCulture || "";
+  const units = culture === "Atlantean"
+    ? (GAIA_LUSH_PANTHEON_CREEP_UNITS.Atlantean || [])
+    : [...GAIA_LUSH_BASE_CREEP_UNITS, ...(GAIA_LUSH_PANTHEON_CREEP_UNITS[culture] || ["House"])];
+  const seen = new Set();
+  return units.filter((unit) => {
+    if (!unit || seen.has(unit)) return false;
+    seen.add(unit);
+    return true;
+  });
+}
+
+function addGaiaLushTerrainCreeps(doc, civ, config) {
+  if (!selectedHasBonusId(config, BONUS_IDS.GAIA_LUSH)) return;
+  for (const oldNode of Array.from(civ.querySelectorAll("terraincreeps"))) oldNode.remove();
+
+  const terrainCreeps = doc.createElement("terraincreeps");
+  const creep = doc.createElement("terraincreep");
+  creep.setAttribute("creep", "GaiaCreep");
+  creep.setAttribute("maxradius", "24.0");
+  creep.setAttribute("growthrate", "0.50");
+  creep.setAttribute("decayrate", "0.5");
+  creep.setAttribute("minupdateinterval", "3.0");
+  creep.setAttribute("maxupdateinterval", "4.0");
+  creep.setAttribute("avoidunbuildable", "");
+  creep.setAttribute("avoidimpassable", "");
+
+  for (const unit of gaiaLushCreepUnits(config)) {
+    const node = doc.createElement("protounit");
+    node.textContent = unit;
+    creep.appendChild(node);
+  }
+
+  terrainCreeps.appendChild(creep);
+  insertMajorGodDataNode(civ, terrainCreeps, "buildingchain, bountyresourceearning, timeshifting, oncastpowercostfactor");
+}
+
 function applyMajorGodSpecialBonusPatches(doc, civ, config) {
   removeChineseTemplateBountyResourceEarning(civ, config);
   if (config.baseCulture === "Chinese" && hasSelectedChiyouMinorGod(config) && !hasSelectedBushidoBonus(config)) {
@@ -7987,6 +8037,7 @@ function applyMajorGodSpecialBonusPatches(doc, civ, config) {
   if (selectedHasBonusId(config, BONUS_IDS.GAIA_HERO_CITIZENS)) {
     replaceAtlanteanStartingCitizensWithHeroes(civ);
   }
+  addGaiaLushTerrainCreeps(doc, civ, config);
   applyFavoredLandBuildingChainPatch(doc, civ, config);
   ensureIvoryNetsukeBountyResourceEarning(doc, civ, config);
   if (hasSelectedBushidoBonus(config)) {

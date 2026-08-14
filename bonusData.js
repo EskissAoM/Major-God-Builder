@@ -815,8 +815,8 @@ window.AOM_BONUS_DATA = [
       "All"
     ],
     "files": "major_gods.xml",
-    "notes": "Inserts Gaia terraincreeps block on economic buildings; available to all pantheons.",
-    "majorXml": "<terraincreeps>\n\t<terraincreep creep=\"GaiaCreep\" maxradius=\"24.0\" growthrate=\"0.50\" decayrate=\"0.5\" minupdateinterval=\"3.0\" maxupdateinterval=\"4.0\" avoidunbuildable=\"\" avoidimpassable=\"\">\n\t\t<protounit>TownCenter</protounit>\n\t\t<protounit>VillageCenter</protounit>\n\t\t<protounit>CitadelCenter</protounit>\n\t\t<protounit>Manor</protounit>\n\t\t<protounit>EconomicGuild</protounit>\n\t\t<protounit>Market</protounit>\n\t\t<protounit>House</protounit>\n\t</terraincreep>\n</terraincreeps>",
+    "notes": "Handled by app.js dynamic GaiaCreep generator. Atlantean keeps its economic list without House; other pantheons get House plus their pantheon-specific economic/drop-off buildings.",
+    "majorXml": "",
     "techEffects": ""
   },
   {

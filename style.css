@@ -1127,6 +1127,11 @@ h3.preview-god-name {
   display: grid;
   gap: 8px;
 }
+
+.minor-original-choice select,
+.minor-original-choice select option {
+  font-weight: 800;
+}
 .minor-choice-details {
   display: grid;
   gap: 6px;
