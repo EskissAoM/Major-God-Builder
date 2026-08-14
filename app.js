@@ -6259,10 +6259,14 @@ function asgardianHillFortBuilderCommandTargets(config) {
   if (config?.baseCulture !== "Norse") {
     targets.push(...(ASGARDIAN_HILL_FORT_BUILDERS_BY_PANTHEON[config?.baseCulture] || []));
   }
-  // Creation / Kuafu Chieftain can add extra Chinese-style builders to any pantheon,
-  // including Norse, so they also receive the Asgardian Hill Fort build command.
-  if (String(config?.godPower || "") === "Creation") targets.push("VillagerChineseClay");
-  if ((config?.uniqueTechs || []).includes("KuafuChieftain")) targets.push("KuafuHero");
+  // Custom minor gods can safely grant the extra builders here because this is
+  // injected into the custom minor age tech itself. Original minor gods use the
+  // custom ArchaicAge / KuafuChieftain techs instead, to avoid patching vanilla
+  // age techs such as ClassicalAgeUllr.
+  if (isCustomMinorGodMode(config)) {
+    if (String(config?.godPower || "") === "Creation") targets.push("VillagerChineseClay");
+    if ((config?.uniqueTechs || []).includes("KuafuChieftain")) targets.push("KuafuHero");
+  }
   return [...new Set(targets.filter(Boolean))];
 }
 
@@ -6289,6 +6293,29 @@ function asgardianHillFortCommandAddEffectsForCard(config, card) {
   }
   return effects.join("\n");
 }
+
+function originalAsgardianBastionAgeTechPatches(config) {
+  if (isCustomMinorGodMode(config) || !hasAsgardianBastion(config)) return "";
+  const patches = [];
+  for (const age of AGES) {
+    for (const minorTech of config?.minorGods?.[age] || []) {
+      if (!matchingCustomMinorEntries("godPowers", age, minorTech).some((entry) => entry.internalName === "AsgardianBastion")) continue;
+      const card = { age, godPower: "AsgardianBastion" };
+      const effects = [
+        asgardianHillFortBuilderCommandEffectsForCard(config, card),
+        asgardianHillFortCommandAddEffectsForCard(config, card),
+      ].filter((xml) => xml && String(xml).trim()).join("\n");
+      if (!effects) continue;
+      patches.push(`	<tech name="${escapeXml(minorTech)}">
+		<effects>
+${indentTabBlock(effects, 3)}
+		</effects>
+	</tech>`);
+    }
+  }
+  return patches.join("\n\n");
+}
+
 
 
 function argonautsDockCommandAddEffectForCard(config, card) {
@@ -8565,6 +8592,13 @@ function chineseCreationBuildingCommandEffects(config) {
   return effects.join("\n");
 }
 
+
+function originalAsgardianBastionCreationBuilderCommandEffects(config) {
+  if (isCustomMinorGodMode(config) || String(config?.godPower || "") !== "Creation" || !hasAsgardianBastion(config)) return "";
+  return `<effect type="Data" amount="1.00" subtype="CommandAdd" proto="AsgardianHillFort" row="100" column="100" relativity="Assign">
+	<target type="ProtoUnit">VillagerChineseClay</target>
+</effect>`;
+}
 function thorDwarvenArmoryCoatepecShrinesTech(config) {
   if (isCustomMinorGodMode(config)) return "";
   if (!(selectedHasBonusId(config, THOR_DWARVEN_ARMORY_BONUS_ID) || hasProsperousSeedsGodPower(config))) return "";
@@ -9624,6 +9658,9 @@ function kuafuChieftainBuilderCommandEffects(config) {
     const slot = chineseCreationSkyPassageCommandSlot(config);
     rules.push({ proto: "SkyPassage", row: slot.row, column: slot.column });
   }
+  if (!isCustomMinorGodMode(config) && hasAsgardianBastion(config)) {
+    rules.push({ proto: "AsgardianHillFort", row: 100, column: 100 });
+  }
   const seen = new Set();
   return rules.map((rule) => {
     const key = `${rule.proto}|${rule.row}|${rule.column}`;
@@ -9754,6 +9791,7 @@ ${indentTabBlock(uniqueTechSetNameEffects(config), 3)}
 ${indentTabBlock(uniqueTechUiPlacementEffects(config), 3)}
 ${useCustomMinorGods ? indentTabBlock(customMinorTechUiPlacementEffects(config), 3) : ""}
 ${indentTabBlock(chineseCreationBuildingCommandEffects(config), 3)}
+${indentTabBlock(originalAsgardianBastionCreationBuilderCommandEffects(config), 3)}
 ${indentTabBlock(bonusTechEffects(config), 3)}
 			<effect type="TechStatus" status="active">ArchaicAgeWeakenUnits</effect>
 ${uniqueTechEntries(config).some((group) => group.extraArchaicEffect === "FreyrTechCostBonus") ? `			<effect type="SetOnTechResearchedTech" amount="1.00">FreyrTechCostBonus</effect>
