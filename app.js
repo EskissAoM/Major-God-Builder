@@ -8055,6 +8055,7 @@ function addGaiaLushTerrainCreeps(doc, civ, config) {
 
 function applyMajorGodSpecialBonusPatches(doc, civ, config) {
   removeChineseTemplateBountyResourceEarning(civ, config);
+  removeJapaneseTemplateBushidoData(civ, config);
   if (config.baseCulture === "Chinese" && hasSelectedChiyouMinorGod(config) && !hasSelectedBushidoBonus(config)) {
     replaceChineseChiyouBountyResourceEarning(doc, civ, config);
   }
@@ -8210,6 +8211,14 @@ function removeChineseTemplateBountyResourceEarning(civ, config) {
   const active = (bounty.querySelector("active")?.textContent || "").trim().toLowerCase();
   const hasCoinBurst = Array.from(bounty.children || []).some((node) => String(node.tagName || "").toLowerCase() === "vfx" && (node.textContent || "").trim() === "VFXCoinBurst");
   if (active === "false" || hasCoinBurst) bounty.remove();
+}
+
+function removeJapaneseTemplateBushidoData(civ, config) {
+  if (config?.baseCulture !== "Japanese" || hasSelectedBushidoBonus(config)) return;
+  const bounty = civ.querySelector("bountyresourceearning");
+  if (bounty) bounty.remove();
+  const combatXp = civ.querySelector("combatxp");
+  if (combatXp) combatXp.remove();
 }
 
 function ensureBushidoCombatXpMajorGodData(doc, civ, config) {

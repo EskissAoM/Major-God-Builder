@@ -6,6 +6,9 @@ Main fixes:
 - Fixed god power cooldowns not applying correctly:
   - Starting major-god god powers now use the cooldown values from the techtree instead of a hardcoded 60.0 value.
 
+- Fixed unintended Japanese Bushido inheritance:
+  - Japanese custom gods no longer receive Bushido bounty/combat XP data unless a Bushido bonus is selected.
+
 - Fixed Gaia Lush coverage:
   - Lush now affects all drop-off buildings except Ox Cart.
 
