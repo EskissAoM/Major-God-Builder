@@ -1,5 +1,16 @@
 AoM:R Major God Builder Changelog
 
+Version 2.1
+
+Expanded customization:
+- Major gods can now choose up to 2 unique technologies and 10 god bonuses.
+- Custom minor gods can now choose up to 2 myth units and 4 technologies each.
+- Updated preset import/export and UI placement systems to support the expanded selections.
+
+Bug fixes:
+- Fixed Zeus infantry bonus damage against buildings so it applies to all attack actions.
+- Improved Chinese Favored Land support and added the relevant god-power buildings to Favored Land when selected.
+
 Version 2.0.2
 
 Main fixes:

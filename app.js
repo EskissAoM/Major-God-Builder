@@ -9,7 +9,7 @@ const MAX_CUSTOM_MINOR_MYTH_UNIT_SLOTS = 2;
 
 const PREVIEW_AGES = ["ArchaicAge", ...AGES];
 const MAX_BONUS_CHOICES = 10;
-const APP_VERSION = "2.0.2";
+const APP_VERSION = "2.1";
 const UPDATE_NOTICE_STORAGE_KEY = "aomrBuilderSeenVersion";
 const EXCLUDED_MINOR_GOD_NAMES = new Set(["malinalxochitldummy"]);
 
