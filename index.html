@@ -111,39 +111,29 @@
         </label>
 
         <h2>2. Unique technologies</h2>
-        <p class="muted">Choose one major-god unique technology. The list is filtered by the selected pantheon, with special availability rules where needed.</p>
-        <div class="minor-grid single-choice-grid">
-          <label>
-            Unique technology
+        <p class="muted">Add up to two optional major-god unique technologies. The list is filtered by the selected pantheon, with special availability rules where needed.</p>
+        <div id="uniqueTechPickers" class="minor-grid single-choice-grid dynamic-choice-grid">
+          <label class="dynamic-choice-row" data-slot="1">
+            Unique technology 1
             <select id="uniqueTech1"></select>
           </label>
         </div>
+        <button type="button" id="addUniqueTech" class="secondary add-choice-button">+ Add major god technology</button>
 
 
         <h2>3. God bonuses</h2>
-        <p class="muted">Choose up to four major-god bonuses.</p>
+        <p class="muted">Add up to ten optional major-god bonuses.</p>
         <div id="bonusCombinationWarning" class="bonus-combination-warning" hidden></div>
-        <div id="bonusPickers" class="minor-grid">
-          <label>
+        <div id="bonusPickers" class="minor-grid dynamic-choice-grid">
+          <label class="dynamic-choice-row" data-slot="1">
             God bonus 1
             <select id="bonus1"></select>
           </label>
-          <label>
-            God bonus 2
-            <select id="bonus2"></select>
-          </label>
-          <label>
-            God bonus 3
-            <select id="bonus3"></select>
-          </label>
-          <label>
-            God bonus 4
-            <select id="bonus4"></select>
-          </label>
         </div>
+        <button type="button" id="addBonus" class="secondary add-choice-button">+ Add god bonus</button>
 
         <h2>4. Minor gods</h2>
-        <p class="muted">Choose exactly two minor gods for each age. Original minor gods are restricted to the selected pantheon; Custom minor gods can mix powers, myth units, and technologies freely.</p>
+        <p class="muted">Choose minor gods for each age. Original minor gods are restricted to the selected pantheon; Custom minor gods can mix powers, myth units, and technologies freely. Custom minor myth units and technologies are optional and expandable.</p>
         <div id="minorPickers" class="minor-customization-shell">
           <div class="minor-mode-tabs" role="tablist" aria-label="Minor god selection mode">
             <button type="button" id="minorModeOriginal" class="minor-mode-tab active" aria-selected="true">Original</button>
@@ -156,6 +146,7 @@
 
           <section id="minorCustomPanel" class="minor-mode-panel" hidden>
             <p class="muted preview-only-note">Custom minor gods export their age techs, selected powers, units, technologies, and optional portrait/icon images.</p>
+            <div id="minorSlotWarning" class="bonus-combination-warning" hidden></div>
             <div id="minorCustomPickers" class="minor-custom-ages"></div>
           </section>
         </div>

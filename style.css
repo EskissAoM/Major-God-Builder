@@ -1387,3 +1387,20 @@ h3.preview-god-name {
   display: none !important;
 }
 
+
+.dynamic-choice-grid {
+  margin-bottom: 8px;
+}
+.dynamic-choice-row {
+  position: relative;
+}
+.add-choice-button {
+  margin: 2px 0 10px;
+}
+.custom-minor-add-button {
+  justify-self: start;
+  margin-top: 2px;
+}
+.custom-minor-myth-fields {
+  margin-top: 12px;
+}

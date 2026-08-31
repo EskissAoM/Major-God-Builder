@@ -56,9 +56,9 @@ window.AOM_BONUS_DATA = [
       "All"
     ],
     "files": "techtree.xml",
-    "notes": "Adds +0.60 absolute building damage bonus on AbstractInfantry HandAttack.",
+    "notes": "Adds +0.60 absolute building damage bonus to all AbstractInfantry actions.",
     "majorXml": "",
-    "techEffects": "<effect type=\"Data\" action=\"HandAttack\" amount=\"0.60\" subtype=\"Damagebonus\" unittype=\"Building\" relativity=\"Absolute\">\n\t<target type=\"ProtoUnit\">AbstractInfantry</target>\n</effect>"
+    "techEffects": "<effect type=\"Data\" allactions=\"1\" amount=\"0.60\" subtype=\"Damagebonus\" unittype=\"Building\" relativity=\"Absolute\">\n\t<target type=\"ProtoUnit\">AbstractInfantry</target>\n</effect>"
   },
   {
     "id": "bonus_5",

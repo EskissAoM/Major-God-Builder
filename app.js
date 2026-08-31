@@ -2,8 +2,13 @@
    This is intentionally backend-free. All files are generated locally in the browser. */
 
 const AGES = ["ClassicalAge", "HeroicAge", "MythicAge"];
+const MAX_UNIQUE_TECH_SLOTS = 2;
+const MAX_BONUS_SLOTS = 10;
+const MAX_CUSTOM_MINOR_TECH_SLOTS = 4;
+const MAX_CUSTOM_MINOR_MYTH_UNIT_SLOTS = 2;
+
 const PREVIEW_AGES = ["ArchaicAge", ...AGES];
-const MAX_BONUS_CHOICES = 4;
+const MAX_BONUS_CHOICES = 10;
 const APP_VERSION = "2.0.2";
 const UPDATE_NOTICE_STORAGE_KEY = "aomrBuilderSeenVersion";
 const EXCLUDED_MINOR_GOD_NAMES = new Set(["malinalxochitldummy"]);
@@ -2207,9 +2212,12 @@ const els = {
   aztecClassicalForm: $("aztecClassicalForm"),
   aztecMythicArrival: $("aztecMythicArrival"),
   godPower: $("godPower"),
+  uniqueTechPickers: $("uniqueTechPickers"),
+  addUniqueTech: $("addUniqueTech"),
   uniqueTech1: $("uniqueTech1"),
   uniqueTech2: $("uniqueTech2"),
   bonusPickers: $("bonusPickers"),
+  addBonus: $("addBonus"),
   bonusCombinationWarning: $("bonusCombinationWarning"),
   bonus1: $("bonus1"),
   bonus2: $("bonus2"),
@@ -2225,6 +2233,7 @@ const els = {
   minorCustomPanel: $("minorCustomPanel"),
   minorOriginalPickers: $("minorOriginalPickers"),
   minorCustomPickers: $("minorCustomPickers"),
+  minorSlotWarning: $("minorSlotWarning"),
   downloadZip: $("downloadZip"),
   loadPreset: $("loadPreset"),
   loadPresetTop: $("loadPresetTop"),
@@ -2458,10 +2467,92 @@ function rawSelectedHasBonusLabel(label) {
   return rawSelectedBonusEntries().some((entry) => entry.label === label);
 }
 
+
+function ensureUniqueTechSlot(slot) {
+  if (!els.uniqueTechPickers || slot < 1 || slot > MAX_UNIQUE_TECH_SLOTS) return null;
+  let select = $(`uniqueTech${slot}`);
+  if (select) return select;
+  const label = document.createElement("label");
+  label.className = "dynamic-choice-row";
+  label.dataset.slot = String(slot);
+  label.textContent = `Unique technology ${slot}`;
+  select = document.createElement("select");
+  select.id = `uniqueTech${slot}`;
+  label.appendChild(select);
+  els.uniqueTechPickers.appendChild(label);
+  els[`uniqueTech${slot}`] = select;
+  select.addEventListener("change", (event) => { enforceUniqueTechDifference(event.target); enforceChannelsGaiaLushBonusLock(); updatePreview(); });
+  return select;
+}
+
+function uniqueTechSelects(includeAll = false) {
+  const selects = [];
+  for (let slot = 1; slot <= MAX_UNIQUE_TECH_SLOTS; slot += 1) {
+    const select = $(`uniqueTech${slot}`) || (includeAll ? ensureUniqueTechSlot(slot) : null);
+    if (select) selects.push(select);
+  }
+  return selects;
+}
+
+function visibleUniqueTechSlotCount() {
+  return Math.max(1, uniqueTechSelects().length);
+}
+
+function setUniqueTechSlotCount(count, keep = true) {
+  const target = Math.max(1, Math.min(MAX_UNIQUE_TECH_SLOTS, count));
+  for (let slot = 1; slot <= target; slot += 1) ensureUniqueTechSlot(slot);
+  for (let slot = target + 1; slot <= MAX_UNIQUE_TECH_SLOTS; slot += 1) {
+    const select = $(`uniqueTech${slot}`);
+    const row = select?.closest?.(".dynamic-choice-row");
+    if (row) row.remove();
+    if (els[`uniqueTech${slot}`] === select) els[`uniqueTech${slot}`] = null;
+  }
+  if (els.addUniqueTech) els.addUniqueTech.hidden = target >= MAX_UNIQUE_TECH_SLOTS;
+  initUniqueTechSelects(keep);
+}
+
+function ensureBonusSlot(slot) {
+  if (!els.bonusPickers || slot < 1 || slot > MAX_BONUS_SLOTS) return null;
+  let select = $(`bonus${slot}`);
+  if (select) return select;
+  const label = document.createElement("label");
+  label.className = "dynamic-choice-row";
+  label.dataset.slot = String(slot);
+  label.textContent = `God bonus ${slot}`;
+  select = document.createElement("select");
+  select.id = `bonus${slot}`;
+  label.appendChild(select);
+  els.bonusPickers.appendChild(label);
+  els[`bonus${slot}`] = select;
+  return select;
+}
+
+function visibleBonusSlotCount() {
+  return Math.max(1, bonusSelects().length);
+}
+
+function setBonusSlotCount(count, keep = true) {
+  const target = Math.max(1, Math.min(MAX_BONUS_SLOTS, count));
+  for (let slot = 1; slot <= target; slot += 1) ensureBonusSlot(slot);
+  for (let slot = target + 1; slot <= MAX_BONUS_SLOTS; slot += 1) {
+    const select = $(`bonus${slot}`);
+    const row = select?.closest?.(".dynamic-choice-row");
+    if (row) row.remove();
+    if (els[`bonus${slot}`] === select) els[`bonus${slot}`] = null;
+  }
+  if (els.addBonus) els.addBonus.hidden = target >= MAX_BONUS_SLOTS;
+  initBonusSelects(keep);
+}
+
+function countFilledOrVisible(values, fallbackCount, maxCount) {
+  const filled = Array.isArray(values) ? values.reduce((last, value, index) => value ? index + 1 : last, 0) : 0;
+  return Math.max(1, Math.min(maxCount, Math.max(fallbackCount || 1, filled)));
+}
+
 function availableUniqueTechGroups() {
   const pantheon = selectedPantheon();
   const godPower = els.godPower.value;
-  const currentUniqueIds = [els.uniqueTech1?.value || ""];
+  const currentUniqueIds = selectedUniqueTechGroups();
   return UNIQUE_TECH_GROUPS.filter((group) => {
     if (group.pantheon !== "All" && group.pantheon !== pantheon) return false;
     if (group.requiresGodPower && group.requiresGodPower !== godPower) return false;
@@ -2470,7 +2561,7 @@ function availableUniqueTechGroups() {
 }
 
 function selectedUniqueTechGroups() {
-  return [els.uniqueTech1?.value || ""].filter(Boolean);
+  return uniqueTechSelects().map((select) => select.value || "").filter(Boolean);
 }
 
 function getUniqueTechGroup(id) {
@@ -2599,27 +2690,37 @@ function uniqueTechActualTechName(group, config) {
     : (uniqueTechNames([group.id])[0] || group.techs?.[0] || group.id);
 }
 
-function uniqueTechUiBuildingPosition(building, pantheon) {
-  if (building === "Longhouse") return { row: 2, column: 0 };
-  if (building === "ImperialAcademy") return { row: 1, column: 1 };
-  if (["ShrineJapanese", "ShrineOfTheHunt"].includes(building)) return { row: 1, column: 0 };
-  if (building === "WarHut") return { row: 2, column: 0 };
-  if (["NoblesHut", "GreatTemple"].includes(building)) return { row: 2, column: 0 };
+function uniqueTechUiBuildingPreferredPositions(building, pantheon) {
   if (building === "Temple") {
-    if (pantheon === "Atlantean") return { row: 1, column: 0 };
-    if (pantheon === "Norse") return { row: 2, column: 0 };
-    return { row: 1, column: 5 };
+    if (pantheon === "Atlantean") return [{ row: 1, column: 0 }, { row: 2, column: 5 }];
+    if (pantheon === "Norse") return [{ row: 2, column: 0 }, { row: 2, column: 5 }];
+    return [{ row: 1, column: 5 }, { row: 2, column: 5 }];
   }
+  if (["Armory", "DwarvenArmory"].includes(building)) return [{ row: 1, column: 5 }, { row: 2, column: 5 }];
   if (["TownCenter", "VillageCenter", "CitadelCenter"].includes(building)) {
-    return pantheon === "Egyptian" ? { row: 1, column: 0 } : { row: 1, column: 3 };
+    return pantheon === "Egyptian"
+      ? [{ row: 1, column: 0 }, { row: 2, column: 3 }]
+      : [{ row: 1, column: 3 }, { row: 2, column: 3 }];
   }
-  if (building === "SentryTower") return { row: 1, column: 5 };
-  if (["Armory", "DwarvenArmory"].includes(building)) return { row: 1, column: 5 };
-  if (["Granary", "Storehouse", "MiningCamp", "OxCart", "EconomicGuild", "Silo", "MiningCampJapanese", "WaterMill", "Calpulli", "CalpulliLivestockPen", "CalpulliLumberOutpost", "CalpulliCraftWorkshop"].includes(building)) {
-    return { row: 0, column: 5 };
+  if (building === "SentryTower") return [{ row: 1, column: 5 }, { row: 2, column: 5 }];
+  if (["Granary", "Storehouse", "MiningCamp", "OxCart", "EconomicGuild", "Silo", "MiningCampJapanese", "WaterMill"].includes(building)) {
+    return [{ row: 0, column: 5 }, { row: 1, column: 5 }];
   }
-  if (["Stable", "StableJapanese"].includes(building)) return { row: 1, column: 5 };
-  return null;
+  if (["Calpulli", "CalpulliLivestockPen", "CalpulliLumberOutpost", "CalpulliCraftWorkshop"].includes(building)) {
+    return [{ row: 0, column: 5 }, { row: 2, column: 5 }];
+  }
+  if (["Stable", "StableJapanese"].includes(building)) return [{ row: 1, column: 5 }, { row: 2, column: 5 }];
+  if (building === "Longhouse") return [{ row: 0, column: 5 }, { row: 1, column: 5 }];
+  if (building === "ImperialAcademy") return [{ row: 1, column: 5 }, { row: 2, column: 5 }];
+  if (["ShrineJapanese", "ShrineOfTheHunt"].includes(building)) return [{ row: 0, column: 5 }, { row: 1, column: 5 }];
+  if (building === "WarHut") return [{ row: 0, column: 5 }, { row: 1, column: 5 }];
+  if (building === "NoblesHut") return [{ row: 0, column: 5 }, { row: 1, column: 5 }];
+  if (building === "GreatTemple") return [{ row: 0, column: 4 }, { row: 0, column: 5 }];
+  return [];
+}
+
+function uniqueTechUiBuildingPosition(building, pantheon) {
+  return uniqueTechUiBuildingPreferredPositions(building, pantheon)[0] || null;
 }
 
 function uniqueTechCommandTargetBuilding(building) {
@@ -2639,6 +2740,10 @@ function uniqueTechCommandEffectsForBuilding(techName, building, pantheon) {
 
 function uniqueTechUiPlacementEffects(config) {
   const allocator = makeTechUiSlotAllocator();
+  if (isCustomMinorGodMode(config)) {
+    buildCustomMinorMythUnitUiPlacements(config, allocator);
+    reserveCustomMinorSpecialUiCommands(config, allocator);
+  }
   return buildUniqueTechUiPlacements(config, allocator)
     .map((placement) => techUiCommandAddEffect(placement.techName, placement.target, placement.position))
     .join("\n");
@@ -2649,11 +2754,15 @@ function uniqueTechAegirTempleRepositionEffects(config) {
   if (config.baseCulture !== "Norse") return "";
   if (!(config.minorGods?.HeroicAge || []).includes("HeroicAgeAegir")) return "";
   const effects = [];
+  const preferredPositions = [{ row: 1, column: 4 }, { row: 2, column: 5 }];
+  let templeTechIndex = 0;
   for (const group of uniqueTechEntries(config)) {
     const techName = uniqueTechActualTechName(group, config);
     const buildings = UNIQUE_TECH_UI_BUILDINGS_BY_TECH[group.id]?.Norse || [];
     if (!buildings.includes("Temple")) continue;
-    effects.push(`<effect type="Data" amount="1.00" subtype="CommandAdd" tech="${escapeXml(techName)}" row="1" column="4" relativity="Assign">
+    const position = preferredPositions[Math.min(templeTechIndex, preferredPositions.length - 1)];
+    templeTechIndex += 1;
+    effects.push(`<effect type="Data" amount="1.00" subtype="CommandAdd" tech="${escapeXml(techName)}" row="${position.row}" column="${position.column}" relativity="Assign">
 	<target type="ProtoUnit">Temple</target>
 </effect>`);
   }
@@ -3012,7 +3121,7 @@ function uniqueTechComboLabel(group) {
 function initUniqueTechSelects(keep = true) {
   const previous = keep ? selectedUniqueTechGroups() : [];
   const allOptions = availableUniqueTechGroups();
-  for (const [index, select] of [els.uniqueTech1].entries()) {
+  for (const [index, select] of uniqueTechSelects().entries()) {
     if (!select) continue;
     const filterInput = ensureSelectFilterInput(select, "unique", "Type to search unique technologies...");
     const rawQuery = selectFilterQuery(select);
@@ -3074,12 +3183,24 @@ function initUniqueTechSelects(keep = true) {
   enforceUniqueTechDifference();
 }
 function enforceUniqueTechDifference(changedSelect) {
-  if (!els.uniqueTech1) return;
-  setComboDisplay(els.uniqueTech1, els.uniqueTech1.value ? uniqueTechComboLabel(getUniqueTechGroup(els.uniqueTech1.value)) : "");
+  const selects = uniqueTechSelects();
+  if (!selects.length) return;
+  const seen = new Set();
+  for (const select of selects) {
+    const value = select.value || "";
+    if (value && seen.has(value)) select.value = "";
+    if (select.value) seen.add(select.value);
+    setComboDisplay(select, select.value ? uniqueTechComboLabel(getUniqueTechGroup(select.value)) : "");
+  }
 }
 
 function bonusSelects() {
-  return [els.bonus1, els.bonus2, els.bonus3, els.bonus4].filter(Boolean);
+  const selects = [];
+  for (let slot = 1; slot <= MAX_BONUS_SLOTS; slot += 1) {
+    const select = $(`bonus${slot}`);
+    if (select) selects.push(select);
+  }
+  return selects;
 }
 
 function bonusAllowedForPantheon(entry, pantheon) {
@@ -3786,9 +3907,18 @@ const FUXI_NEZHA_MYTHIC_EFFECTS = `<effect type="Data" amount="0.00" subtype="En
 
 function fuxiNezhaTempleCommandEffects(config) {
   if (config.baseCulture === "Chinese") return "";
-  const row = config.baseCulture === "Norse" ? "1" : "0";
-  return ["NezhaChild", "NezhaYouth", "Nezha"].map((proto) => `<effect type="Data" amount="1.00" subtype="CommandAdd" proto="${proto}" row="${row}" column="5" relativity="Assign">
-	<target type="ProtoUnit">Temple</target>
+  const preferred = config.baseCulture === "Norse"
+    ? [{ row: 1, column: 5 }, { row: 2, column: 5 }, { row: 1, column: 4 }, { row: 2, column: 4 }, { row: 0, column: 5 }]
+    : [{ row: 0, column: 5 }, { row: 1, column: 5 }, { row: 2, column: 5 }, { row: 1, column: 4 }, { row: 2, column: 4 }];
+  let position = preferred[0];
+  if (isCustomMinorGodMode(config)) {
+    const allocator = makeTechUiSlotAllocator();
+    buildCustomMinorMythUnitUiPlacements(config, allocator);
+    const specials = buildCustomMinorSpecialUiPlacements(config, allocator);
+    position = specials.find((entry) => entry.name === "Nezha")?.position || preferred[0];
+  }
+  return ["NezhaChild", "NezhaYouth", "Nezha"].map((proto) => `<effect type="Data" amount="1.00" subtype="CommandAdd" proto="${proto}" row="${position.row}" column="${position.column}" relativity="Assign">
+\t<target type="ProtoUnit">Temple</target>
 </effect>`).join("\n");
 }
 
@@ -5321,15 +5451,17 @@ function kronosExtraMythUnitPlans(config) {
 function kronosExtraCustomMinorMythUnitPlans(config) {
   const ownerAgeByMinorAge = { ClassicalAge: "ArchaicAge", HeroicAge: "ClassicalAge", MythicAge: "HeroicAge" };
   const usedNames = new Set();
-  return customMinorAllCards(config)
-    .filter((card) => card.name && card.godPower && card.mythUnit && ownerAgeByMinorAge[card.age])
-    .map((card) => {
-      const mythUnit = card.mythUnit;
+  const plans = [];
+  for (const card of customMinorAllCards(config)) {
+    if (!card.name || !card.godPower || !ownerAgeByMinorAge[card.age]) continue;
+    for (const mythUnit of customMinorCardMythUnits(card)) {
       let techName = `${config.internalName}Extra${mythUnit}`;
       if (usedNames.has(techName)) techName = `${techName}For${customMinorAgeTechName(card)}`;
       usedNames.add(techName);
-      return { ownerAge: ownerAgeByMinorAge[card.age], minorTech: customMinorAgeTechName(card), mythUnit, techName };
-    });
+      plans.push({ ownerAge: ownerAgeByMinorAge[card.age], minorTech: customMinorAgeTechName(card), mythUnit, techName });
+    }
+  }
+  return plans;
 }
 
 function kronosExtraMythUnitStatusEffects(config, ownerAge) {
@@ -5415,16 +5547,16 @@ function pairedMythUnitsForTech(techName, age = "") {
     .filter(Boolean);
 }
 
-function isMinorTechAllowedForMythUnit(techEntry, selectedMythUnit, age = "") {
+function isMinorTechAllowedForMythUnit(techEntry, selectedMythUnits, age = "") {
   const pairedUnits = pairedMythUnitsForTech(techEntry?.internalName, age);
   if (!pairedUnits.length) return true;
-  if (!selectedMythUnit) return false;
-  const selectedId = minorCustomizationIdentifier(selectedMythUnit);
-  return pairedUnits.some((unit) => minorCustomizationIdentifier(unit) === selectedId);
+  const selected = (Array.isArray(selectedMythUnits) ? selectedMythUnits : [selectedMythUnits]).filter(Boolean).map(minorCustomizationIdentifier);
+  if (!selected.length) return false;
+  return pairedUnits.some((unit) => selected.includes(minorCustomizationIdentifier(unit)));
 }
 
-function filterMinorTechnologiesForMythUnit(techs, selectedMythUnit, age = "") {
-  return (techs || []).filter((tech) => isMinorTechAllowedForMythUnit(tech, selectedMythUnit, age));
+function filterMinorTechnologiesForMythUnit(techs, selectedMythUnits, age = "") {
+  return (techs || []).filter((tech) => isMinorTechAllowedForMythUnit(tech, selectedMythUnits, age));
 }
 
 
@@ -5529,6 +5661,7 @@ function techUiCanonicalBuilding(building) {
 function techUiCommandTargetBuilding(building) {
   const id = String(building || "").trim();
   if (["Armory", "DwarvenArmory", "AbstractArmory"].includes(id)) return "AbstractArmory";
+  if (["TownCenter", "VillageCenter", "CitadelCenter", "AbstractTownCenter"].includes(id)) return "AbstractTownCenter";
   const canonicalTarget = {
     fortress: "Fortress",
     Fortress: "Fortress",
@@ -5590,16 +5723,103 @@ function shouldAddAsgardianHillFortUiTarget(config, canonical) {
   return canonical === asgardianHillFortLocationCanonicalForPantheon(config.baseCulture);
 }
 
+function customMinorCardMythUnits(card) {
+  const source = Array.isArray(card?.mythUnits) ? card.mythUnits : [card?.mythUnit || ""];
+  const seen = new Set();
+  return source.map((unit) => String(unit || "").trim()).filter((unit) => {
+    if (!unit) return false;
+    const key = minorCustomizationIdentifier(unit);
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 function customMinorUsesMythUnit(config, mythUnitName) {
   const target = minorCustomizationIdentifier(mythUnitName);
   if (!target || config?.minorGodCustomization?.mode !== "custom") return false;
   for (const card of customMinorAllCards(config)) {
-    if (minorCustomizationIdentifier(card.mythUnit) === target) return true;
+    if (customMinorCardMythUnits(card).some((unit) => minorCustomizationIdentifier(unit) === target)) return true;
   }
   return false;
 }
 
+function customMinorFilterUnavailableTechSlots(pool, config) {
+  const out = Array.isArray(pool) ? pool : [];
+  if (!selectedHasBonusId(config, KRONOS_TIMESHIFT_BONUS_ID)) return out;
+  return out.filter((position) => !(position.row === 3 && position.column === 2));
+}
+
+function customMinorTechUiPool(building, slotKind, config = null) {
+  if (!isCustomMinorGodMode(config)) return null;
+  const raw = String(building || "").trim();
+  const canonical = techUiCanonicalBuilding(raw);
+  const pos = (row, column) => ({ row, column });
+  const range = (row, from, to) => Array.from({ length: to - from + 1 }, (_, i) => pos(row, from + i));
+  const finish = (pool) => customMinorFilterUnavailableTechSlots(pool, config);
+
+  if (canonical === "Temple" && ["ClassicalAge", "HeroicAge", "MythicAge", "AnyAge"].includes(slotKind)) {
+    const available = [];
+    if (!["Chinese", "Egyptian"].includes(config?.baseCulture)) available.push(pos(1, 0));
+    available.push(...range(1, 1, 5), ...range(2, 0, 5));
+    if (config?.baseCulture !== "Aztec") available.push(pos(3, 2), pos(3, 3));
+    available.push(pos(3, 4));
+
+    const preferredColumn = { ClassicalAge: 1, HeroicAge: 2, MythicAge: 3 }[slotKind];
+    if (preferredColumn !== undefined) {
+      const preferred = available.find((p) => p.row === 1 && p.column === preferredColumn);
+      const rest = available.filter((p) => !(p.row === 1 && p.column === preferredColumn));
+      return finish(preferred ? [preferred, ...rest] : rest);
+    }
+    return finish(available);
+  }
+
+  if (["Armory", "DwarvenArmory", "AbstractArmory"].includes(raw) || canonical === "Armory") {
+    const ageColumn = { ClassicalAge: 0, HeroicAge: 1, MythicAge: 2 }[slotKind];
+    const ageRow = { ClassicalAge: 1, HeroicAge: 2, MythicAge: 3 }[slotKind];
+    if (ageColumn !== undefined) return finish([pos(1, ageColumn), pos(2, ageColumn), pos(3, ageColumn), pos(ageRow, 4)]);
+  }
+
+  const pools = {
+    Dock: [pos(0,5), pos(1,2), pos(1,3), pos(2,3), pos(2,4), pos(2,5), pos(3,3)],
+    Fortress: [...range(2,2,5), pos(1,5), pos(3,3), ...range(0,3,5)],
+    MilitaryAcademy: [...range(2,0,5), ...range(1,3,5), ...range(3,2,4), ...range(0,3,5)],
+    Stable: [...range(2,0,5), pos(1,1), ...range(1,3,5), ...range(3,2,4), ...range(0,3,5)],
+    Barracks: [...range(2,0,5), ...range(1,3,5), ...range(3,2,4), ...range(0,4,5)],
+    MigdolStronghold: [...range(2,0,5), pos(1,5), pos(3,3), ...range(0,4,5)],
+    HillFort: [...range(2,0,5), pos(1,5), pos(3,3), ...range(0,4,5)],
+    Palace: [...range(2,0,5), pos(1,5), pos(3,3), ...range(0,4,5)],
+    Baolei: [...range(2,0,5), ...range(1,2,3), pos(1,5), pos(3,3), ...range(0,3,5)],
+    Castle: [...range(2,0,5), ...range(1,2,3), pos(1,5), pos(3,3), ...range(0,3,5)],
+    GreatHall: [...range(2,0,5), ...range(1,2,5), ...range(3,2,4), pos(0,5)],
+    Longhouse: [...range(2,0,5), ...range(1,1,2), pos(1,5), ...range(3,2,4), ...range(0,4,5)],
+    MilitaryBarracks: [...range(2,0,5), ...range(1,4,5), ...range(3,2,4), ...range(0,4,5)],
+    MachineWorkshop: [...range(2,0,3), ...range(1,4,5), ...range(3,2,4), pos(0,5)],
+    MilitaryCamp: [...range(2,0,3), pos(1,3), ...range(1,4,5), ...range(3,2,4), ...range(0,4,5)],
+    Silo: [...range(1,0,5), ...range(2,4,5), ...range(3,2,4)],
+    GuardHouse: [...range(2,0,5), ...range(1,1,2), ...range(1,4,5), ...range(3,2,4)],
+    StableJapanese: [...range(2,0,5), ...range(1,1,2), ...range(1,4,5), ...range(3,2,4)],
+    WaterMill: [...range(1,0,5), ...range(2,4,5), ...range(3,2,4)],
+    Calpulli: [...range(1,0,2), ...range(2,0,2), pos(2,5), ...range(3,3,4), pos(0,5)],
+    GreatTemple: [...range(2,0,2), ...range(1,1,3), pos(3,3), ...range(0,4,5)],
+    WarHut: [...range(2,0,5), ...range(1,1,2), ...range(1,4,5), ...range(3,2,4)],
+  };
+
+  if (canonical === "TownCenter") {
+    const pool = [...range(1,0,5), pos(2,3), pos(2,5), pos(3,3)];
+    if (config?.baseCulture !== "Greek") pool.push(pos(0,3), pos(0,4));
+    if (config?.baseCulture !== "Chinese" && !customMinorUsesMythUnit(config, "LykaonVillager") && !customMinorUsesMythUnit(config, "Lykaon")) pool.push(pos(0,5));
+    return finish(pool);
+  }
+
+  if (pools[raw]) return finish(pools[raw]);
+  if (pools[canonical]) return finish(pools[canonical]);
+  return null;
+}
+
 function techUiLocationPools(building, slotKind, config = null) {
+  const customPool = customMinorTechUiPool(building, slotKind, config);
+  if (customPool) return customPool;
   const canonical = techUiCanonicalBuilding(building);
   const data = window.AOM_TECH_COMMAND_LOCATIONS || {};
   const entry = data[canonical];
@@ -5620,13 +5840,14 @@ function techUiLocationPools(building, slotKind, config = null) {
     }
   }
   const seen = new Set();
-  return out.filter((pos) => {
+  const deduped = out.filter((pos) => {
     if (!Number.isFinite(pos.row) || !Number.isFinite(pos.column)) return false;
     const key = `${pos.row}:${pos.column}`;
     if (seen.has(key)) return false;
     seen.add(key);
     return true;
   });
+  return isCustomMinorGodMode(config) ? customMinorFilterUnavailableTechSlots(deduped, config) : deduped;
 }
 
 function minorTechResearchBuildingsForPantheon(baseTechName, pantheon) {
@@ -5663,7 +5884,7 @@ function normalizedTechUiTargetsForBuildings(buildings, config = null) {
 
 function minorTechHasResearchLocation(baseTechName, pantheon, config = null) {
   const buildings = minorTechResearchBuildingsForPantheon(baseTechName, pantheon);
-  return normalizedTechUiTargetsForBuildings(buildings, config).some((item) => techUiLocationPools(item.canonical, "AnyAge", config).length || techUiLocationPools(item.canonical, "ClassicalAge", config).length || techUiLocationPools(item.canonical, "HeroicAge", config).length || techUiLocationPools(item.canonical, "MythicAge", config).length);
+  return normalizedTechUiTargetsForBuildings(buildings, config).some((item) => techUiLocationPools(item.building, "AnyAge", config).length || techUiLocationPools(item.building, "ClassicalAge", config).length || techUiLocationPools(item.building, "HeroicAge", config).length || techUiLocationPools(item.building, "MythicAge", config).length);
 }
 
 function techUiPositionKey(pos) {
@@ -5751,12 +5972,13 @@ function selectedArgivePatronageCustomIconAsset(config) {
 function makeTechUiSlotAllocator() {
   const occupied = new Map();
   const fallbackCursors = new Map();
+  const conflicts = [];
   const entriesForBuilding = (target) => occupied.get(target) || [];
   const fallbackKey = (target, pool, meta = {}) => `${target}|${meta.type || ""}|${meta.age || meta.slotKind || ""}|${(pool || []).map(techUiPositionKey).join(",")}`;
   const canOverlap = (existing, candidate) => {
     if (!techUiPositionsOverlap(existing.position, candidate.position)) return true;
-    if (existing.type === "minor" && candidate.type === "minor") {
-      if (minorTechPairCanShareUiSpot(existing.baseName, candidate.baseName)) return true;
+    if (existing.type === "minor" && candidate.type === "minor" && minorTechPairCanShareUiSpot(existing.baseName, candidate.baseName)) return true;
+    if (["minor", "myth"].includes(existing.type) && ["minor", "myth"].includes(candidate.type)) {
       if (existing.age === candidate.age && existing.slot !== candidate.slot) return true;
     }
     return false;
@@ -5781,16 +6003,116 @@ function makeTechUiSlotAllocator() {
     if (!positions.length) return null;
     const key = fallbackKey(target, positions, meta);
     const cursor = fallbackCursors.get(key) || 0;
-    const position = positions[cursor % positions.length];
+    let fallbackPositions = positions;
+    if (["minor", "unique"].includes(meta?.type)) {
+      const entries = entriesForBuilding(target);
+      const safe = positions.filter((position) => !entries.some((existing) =>
+        ["myth", "special"].includes(existing.type) && techUiPositionsOverlap(existing.position, position)
+      ));
+      if (safe.length) fallbackPositions = safe;
+      else {
+        conflicts.push({ target, position: null, meta: { ...meta, fallback: true, blockedByPriority: true }, poolSize: positions.length });
+        return null;
+      }
+    }
+    const position = fallbackPositions[cursor % fallbackPositions.length];
     fallbackCursors.set(key, cursor + 1);
-    reserve(target, { ...meta, position, fallback: true }, { allowConflict: true });
+    const fallbackMeta = { ...meta, position, fallback: true };
+    reserve(target, fallbackMeta, { allowConflict: true });
+    conflicts.push({ target, position, meta: fallbackMeta, poolSize: positions.length });
     return position;
   };
-  return { allocate, reserve };
+  return { allocate, reserve, conflicts, occupied };
 }
 
 function uniqueTechFixedPosition(building, pantheon) {
   return uniqueTechUiBuildingPosition(building, pantheon);
+}
+
+const CUSTOM_MINOR_PRIMARY_TEMPLE_MYTH_SLOTS = Object.freeze({
+  ClassicalAge: Object.freeze({ row: 0, column: 1 }),
+  HeroicAge: Object.freeze({ row: 0, column: 2 }),
+  MythicAge: Object.freeze({ row: 0, column: 3 }),
+});
+
+const CUSTOM_MINOR_SECONDARY_TEMPLE_MYTH_SLOTS = Object.freeze([
+  Object.freeze({ row: 0, column: 4 }),
+  Object.freeze({ row: 0, column: 5 }),
+  Object.freeze({ row: 1, column: 4 }),
+  Object.freeze({ row: 1, column: 5 }),
+]);
+
+function customMinorMythUnitTrainingBuilding(unit) {
+  const id = minorCustomizationIdentifier(unit);
+  if (id === minorCustomizationIdentifier("PiXiu") || id === minorCustomizationIdentifier("Pixiu")) return "Market";
+  if (id === minorCustomizationIdentifier("Servant")) return "Dock";
+  return "Temple";
+}
+
+function customMinorDockPriorityPool(config) {
+  return config?.baseCulture === "Norse"
+    ? [{ row: 2, column: 4 }, { row: 2, column: 5 }]
+    : [{ row: 0, column: 5 }, { row: 2, column: 5 }];
+}
+
+function buildCustomMinorMythUnitUiPlacements(config, allocator) {
+  if (config?.minorGodCustomization?.mode !== "custom") return [];
+  const placements = [];
+  for (const card of customMinorAllCards(config)) {
+    const units = customMinorCardMythUnits(card);
+    let templeUnitIndex = 0;
+    for (const unit of units) {
+      const building = customMinorMythUnitTrainingBuilding(unit);
+      let pool;
+      if (building === "Market") {
+        pool = [{ row: 0, column: 5 }];
+      } else if (building === "Dock") {
+        pool = customMinorDockPriorityPool(config);
+      } else {
+        pool = templeUnitIndex === 0
+          ? [CUSTOM_MINOR_PRIMARY_TEMPLE_MYTH_SLOTS[card.age]].filter(Boolean)
+          : CUSTOM_MINOR_SECONDARY_TEMPLE_MYTH_SLOTS;
+        templeUnitIndex += 1;
+      }
+      if (!pool.length) continue;
+      const allocatorTarget = building === "Temple" ? "Temple" : building;
+      const position = allocator.allocate(allocatorTarget, pool, { type: "myth", unit, age: card.age, slot: card.slot, building });
+      if (!position) continue;
+      placements.push({ unit, age: card.age, slot: card.slot, building, position, type: "myth" });
+    }
+  }
+  return placements;
+}
+
+function buildCustomMinorSpecialUiPlacements(config, allocator) {
+  if (config?.minorGodCustomization?.mode !== "custom") return [];
+  const placements = [];
+
+  if (config.baseCulture === "Norse") {
+    const kraken = { row: 2, column: 2 };
+    allocator.reserve("Dock", { type: "special", name: "Kraken", position: kraken });
+    placements.push({ type: "special", name: "Kraken", building: "Dock", position: kraken });
+  }
+
+  for (const card of customMinorAllCards(config)) {
+    if (card.age !== "HeroicAge" || !Array.isArray(card.techs) || !card.techs.includes("Argonauts") || config.baseCulture === "Greek") continue;
+    const pool = customMinorDockPriorityPool(config);
+    const position = allocator.allocate("Dock", pool, { type: "special", name: "TheArgo", age: card.age, slot: card.slot, building: "Dock" });
+    if (position) placements.push({ type: "special", name: "TheArgo", age: card.age, slot: card.slot, building: "Dock", position });
+  }
+
+  if (selectedHasBonusId(config, FUXI_NEZHA_BONUS_ID) && config.baseCulture !== "Chinese") {
+    const preferred = config.baseCulture === "Norse"
+      ? [{ row: 1, column: 5 }, { row: 2, column: 5 }, { row: 1, column: 4 }, { row: 2, column: 4 }, { row: 0, column: 5 }]
+      : [{ row: 0, column: 5 }, { row: 1, column: 5 }, { row: 2, column: 5 }, { row: 1, column: 4 }, { row: 2, column: 4 }];
+    const position = allocator.allocate("Temple", preferred, { type: "special", name: "Nezha", building: "Temple" });
+    if (position) placements.push({ type: "special", name: "Nezha", building: "Temple", position });
+  }
+  return placements;
+}
+
+function reserveCustomMinorSpecialUiCommands(config, allocator) {
+  buildCustomMinorSpecialUiPlacements(config, allocator);
 }
 
 function buildUniqueTechUiPlacements(config, allocator) {
@@ -5805,13 +6127,21 @@ function buildUniqueTechUiPlacements(config, allocator) {
       const dedupeKey = `${techName}|${target}|${item.canonical}`;
       if (seenPlacements.has(dedupeKey)) continue;
       seenPlacements.add(dedupeKey);
-      let pool = techUiLocationPools(item.canonical, "UniqueTech", config);
-      if (!pool.length) pool = techUiLocationPools(item.canonical, "AnyAge", config);
-      const fixed = uniqueTechFixedPosition(item.building, pantheon);
+      let pool;
+      if (isCustomMinorGodMode(config)) {
+        pool = techUiLocationPools(item.building, "AnyAge", config);
+      } else {
+        pool = techUiLocationPools(item.canonical, "UniqueTech", config);
+        if (!pool.length) pool = techUiLocationPools(item.canonical, "AnyAge", config);
+      }
+      const preferredPositions = uniqueTechUiBuildingPreferredPositions(item.building, pantheon);
       let position = null;
-      if (fixed) {
-        const candidate = { type: "unique", techName, position: fixed };
-        if (allocator.reserve(target, candidate)) position = fixed;
+      for (const preferred of preferredPositions) {
+        const candidate = { type: "unique", techName, position: preferred };
+        if (allocator.reserve(target, candidate)) {
+          position = preferred;
+          break;
+        }
       }
       if (!position && pool.length) position = allocator.allocate(target, pool, { type: "unique", techName });
       if (!position) continue;
@@ -5828,9 +6158,9 @@ function buildCustomMinorTechUiPlacements(config, allocator) {
   for (const record of selectedCustomMinorTechRecords(config)) {
     const rawBuildings = minorTechResearchBuildingsForPantheon(record.baseName, pantheon);
     for (const item of normalizedTechUiTargetsForBuildings(rawBuildings, config)) {
-      const pool = techUiLocationPools(item.canonical, record.age, config).length
-        ? techUiLocationPools(item.canonical, record.age, config)
-        : techUiLocationPools(item.canonical, "AnyAge", config);
+      const pool = techUiLocationPools(item.building, record.age, config).length
+        ? techUiLocationPools(item.building, record.age, config)
+        : techUiLocationPools(item.building, "AnyAge", config);
       if (!pool.length) continue;
       const position = allocator.allocate(item.target, pool, {
         type: "minor",
@@ -5857,6 +6187,8 @@ function techUiCommandRemoveEffect(techName, target) {
 function customMinorTechUiPlacementEffects(config) {
   if (config?.minorGodCustomization?.mode !== "custom") return "";
   const allocator = makeTechUiSlotAllocator();
+  buildCustomMinorMythUnitUiPlacements(config, allocator);
+  reserveCustomMinorSpecialUiCommands(config, allocator);
   buildUniqueTechUiPlacements(config, allocator);
   return buildCustomMinorTechUiPlacements(config, allocator)
     .map((placement) => techUiCommandAddEffect(placement.techName, placement.target, placement.position))
@@ -6143,13 +6475,13 @@ function customMinorAgeTechName(card) {
 }
 
 function customMinorAgeTechNamesForAge(config, age) {
-  return customMinorAllCards(config).filter((card) => card.age === age && card.name && card.godPower && card.mythUnit).map(customMinorAgeTechName);
+  return customMinorAllCards(config).filter((card) => card.age === age && card.name && card.godPower).map(customMinorAgeTechName);
 }
 
 function customMinorAgeTechCommandAddEffects(config, age) {
   if (config?.minorGodCustomization?.mode !== "custom") return "";
   return customMinorAllCards(config)
-    .filter((card) => card.age === age && card.name && card.godPower && card.mythUnit)
+    .filter((card) => card.age === age && card.name && card.godPower)
     .map((card) => `\t\t\t<effect type="Data" amount="1.00" subtype="CommandAdd" tech="${escapeXml(customMinorAgeTechName(card))}" row="2" column="0" relativity="Assign">\n\t\t\t\t<target type="ProtoUnit">AbstractTownCenter</target>\n\t\t\t</effect>`)
     .join("\n");
 }
@@ -6325,37 +6657,63 @@ ${indentTabBlock(effects, 3)}
 function argonautsDockCommandAddEffectForCard(config, card) {
   if (config?.baseCulture === "Greek" || card?.age !== "HeroicAge") return "";
   if (!Array.isArray(card?.techs) || !card.techs.includes("Argonauts")) return "";
-  return `<effect type="Data" amount="1.00" subtype="CommandAdd" proto="TheArgo" row="1" column="2" relativity="Assign">
-	<target type="ProtoUnit">Dock</target>
+  if (!isCustomMinorGodMode(config)) return `<effect type="Data" amount="1.00" subtype="CommandAdd" proto="TheArgo" row="1" column="2" relativity="Assign">
+\t<target type="ProtoUnit">Dock</target>
+</effect>`;
+  const allocator = makeTechUiSlotAllocator();
+  buildCustomMinorMythUnitUiPlacements(config, allocator);
+  const specials = buildCustomMinorSpecialUiPlacements(config, allocator);
+  const placement = specials.find((entry) => entry.name === "TheArgo" && entry.age === card.age && entry.slot === card.slot);
+  const position = placement?.position || customMinorDockPriorityPool(config)[0];
+  return `<effect type="Data" amount="1.00" subtype="CommandAdd" proto="TheArgo" row="${position.row}" column="${position.column}" relativity="Assign">
+\t<target type="ProtoUnit">Dock</target>
 </effect>`;
 }
 
-const CUSTOM_MINOR_MYTH_UNIT_TEMPLE_SLOTS = Object.freeze({
-  HeroicAge: Object.freeze({
-    MountainGiant: Object.freeze({ row: 0, column: 2 }),
-  }),
-  MythicAge: Object.freeze({
-    FireGiant: Object.freeze({ row: 0, column: 3 }),
-    FenrisWolfBrood: Object.freeze({ row: 0, column: 3 }),
-    Fafnir: Object.freeze({ row: 0, column: 3 }),
-  }),
-});
 
-function customMinorMythUnitTempleSlotEffectForCard(card) {
-  const unit = String(card?.mythUnit || "");
-  const slot = CUSTOM_MINOR_MYTH_UNIT_TEMPLE_SLOTS?.[card?.age]?.[unit];
-  if (!slot) return "";
-  return `<effect type="Data" amount="1.00" subtype="CommandRemove" proto="${escapeXml(unit)}" relativity="Assign">
-	<target type="ProtoUnit">AbstractTemple</target>
+function customMinorMythUnitUiEffectsForCard(config, card) {
+  const allocator = makeTechUiSlotAllocator();
+  const placements = buildCustomMinorMythUnitUiPlacements(config, allocator)
+    .filter((placement) => placement.age === card.age && placement.slot === card.slot);
+  return placements.map((placement) => {
+    const target = placement.building === "Temple" ? "AbstractTemple" : placement.building;
+    return `<effect type="Data" amount="1.00" subtype="CommandRemove" proto="${escapeXml(placement.unit)}" relativity="Assign">
+\t<target type="ProtoUnit">${escapeXml(target)}</target>
 </effect>
-<effect type="Data" amount="1.00" subtype="CommandAdd" proto="${escapeXml(unit)}" row="${slot.row}" column="${slot.column}" relativity="Assign">
-	<target type="ProtoUnit">AbstractTemple</target>
+<effect type="Data" amount="1.00" subtype="CommandAdd" proto="${escapeXml(placement.unit)}" row="${placement.position.row}" column="${placement.position.column}" relativity="Assign">
+\t<target type="ProtoUnit">${escapeXml(target)}</target>
 </effect>`;
+  }).join("\n");
 }
+
+function customMinorTempleFlareRemoveEffect(config) {
+  if (!isCustomMinorGodMode(config)) return "";
+  const effects = [
+    `<effect type="Data" amount="1.00" subtype="CommandRemove" command="FlareAtUnit" relativity="Assign">\n\t<target type="ProtoUnit">Temple</target>\n</effect>`,
+    `<effect type="Data" amount="1.00" subtype="CommandRemove" command="MoveNearbyPriestToUnit" relativity="Assign">\n\t<target type="ProtoUnit">Temple</target>\n</effect>`,
+    `<effect type="Data" amount="1.00" subtype="CommandRemove" command="MoveNearbyTransportShipToUnit" relativity="Assign">\n\t<target type="ProtoUnit">Dock</target>\n</effect>`,
+    `<effect type="Data" amount="1.00" subtype="CommandRemove" command="ResourceUnitConstructFarm" relativity="Assign">\n\t<target type="ProtoUnit">AbstractTownCenter</target>\n</effect>`,
+  ];
+  if (config.baseCulture === "Greek") {
+    effects.push(`<effect type="Data" amount="1.00" subtype="CommandRemove" command="SetVillagerToGather" relativity="Assign">\n\t<target type="ProtoUnit">Temple</target>\n</effect>`);
+  }
+  if (config.baseCulture === "Aztec") {
+    for (const target of ["Calpulli", "CalpulliLivestockPen", "CalpulliLumberOutpost", "CalpulliCraftWorkshop"]) {
+      effects.push(`<effect type="Data" amount="1.00" subtype="CommandRemove" command="SendVillagerToBuildingAndGather" relativity="Assign">\n\t<target type="ProtoUnit">${target}</target>\n</effect>`);
+      effects.push(`<effect type="Data" amount="1.00" subtype="CommandRemove" command="ResourceUnitConstructFarm" relativity="Assign">\n\t<target type="ProtoUnit">${target}</target>\n</effect>`);
+    }
+  }
+  if (config.baseCulture === "Norse") {
+    effects.push(`<effect type="Data" amount="1.00" subtype="CommandRemove" proto="Kraken" relativity="Assign">\n\t<target type="ProtoUnit">Dock</target>\n</effect>`);
+    effects.push(`<effect type="Data" amount="1.00" subtype="CommandAdd" proto="Kraken" row="2" column="2" relativity="Assign">\n\t<target type="ProtoUnit">Dock</target>\n</effect>`);
+  }
+  return effects.join("\n");
+}
+
 
 function buildCustomMinorAgeTechXmlForCard(config, card) {
   const meta = CUSTOM_MINOR_AGE_TECH_META[card.age];
-  if (!meta || !card.name || !card.godPower || !card.mythUnit) return "";
+  if (!meta || !card.name || !card.godPower) return "";
   const stringBase = customMinorAgeTechStringBase(card);
   const techRecords = customMinorCardTechRecords(card);
   const techNames = techRecords.map((record) => record.customName);
@@ -6375,18 +6733,22 @@ function buildCustomMinorAgeTechXmlForCard(config, card) {
   const effects = [];
   effects.push(`<effect type="SetAge">${escapeXml(card.age)}</effect>`);
   effects.push(`<effect type="Data" subtype="GodPower" power="${escapeXml(card.godPower)}" amount="1.0" cooldown="${escapeXml(godPowerCooldown(card.godPower))}" relativity="Absolute">\n\t<target type="Player"></target>\n</effect>`);
-  effects.push(`<effect type="Data" amount="1.00" subtype="Enable" relativity="Absolute">\n\t<target type="ProtoUnit">${escapeXml(card.mythUnit)}</target>\n</effect>`);
-  effects.push(`<effect type="CreateUnit" unit="${escapeXml(card.mythUnit)}" generator="AbstractTemple">\n\t<pattern type="Leaving" speed="0.00" radius="0.00" quantity="1.00" minradius="0.00">\n\t\t<offset x="0.00" y="0.00" z="0.00"></offset>\n\t</pattern>\n</effect>`);
+  const selectedMythUnits = customMinorCardMythUnits(card);
+  for (const mythUnit of selectedMythUnits) {
+    effects.push(`<effect type="Data" amount="1.00" subtype="Enable" relativity="Absolute">\n\t<target type="ProtoUnit">${escapeXml(mythUnit)}</target>\n</effect>`);
+    const createGenerator = minorCustomizationIdentifier(mythUnit) === minorCustomizationIdentifier("Servant") ? "Dock" : "AbstractTemple";
+    effects.push(`<effect type="CreateUnit" unit="${escapeXml(mythUnit)}" generator="${createGenerator}">\n\t<pattern type="Leaving" speed="0.00" radius="0.00" quantity="1.00" minradius="0.00">\n\t\t<offset x="0.00" y="0.00" z="0.00"></offset>\n\t</pattern>\n</effect>`);
+  }
   const asgardianBuilderCommands = asgardianHillFortBuilderCommandEffectsForCard(config, card);
   if (asgardianBuilderCommands) effects.push(asgardianBuilderCommands);
   const asgardianCommands = asgardianHillFortCommandAddEffectsForCard(config, card);
   if (asgardianCommands) effects.push(asgardianCommands);
   const argonautsDockCommand = argonautsDockCommandAddEffectForCard(config, card);
   if (argonautsDockCommand) effects.push(argonautsDockCommand);
-  const mythUnitTempleSlotCommand = customMinorMythUnitTempleSlotEffectForCard(card);
-  if (mythUnitTempleSlotCommand) effects.push(mythUnitTempleSlotCommand);
+  const mythUnitUiCommands = customMinorMythUnitUiEffectsForCard(config, card);
+  if (mythUnitUiCommands) effects.push(mythUnitUiCommands);
   for (const tech of techNames) effects.push(`<effect type="TechStatus" status="obtainable">${escapeXml(tech)}</effect>`);
-  if (["Lykaon", "LykaonVillager"].includes(card.mythUnit)) {
+  if (selectedMythUnits.some((unit) => ["Lykaon", "LykaonVillager"].includes(unit))) {
     effects.push(`<effect type="TechStatus" status="active">LykaonVillagerToWolf</effect>`);
     effects.push(`<effect type="TechStatus" status="active">LykaonWolfToVillager</effect>`);
   }
@@ -6626,7 +6988,11 @@ function customMinorSelectedValuesFromState(kind, current, except = {}) {
       if (except.age === age && except.slot === slotIndex + 1) return;
       let value = "";
       if (kind === "godPowers") value = entry.godPower || "";
-      else if (kind === "mythUnits") value = entry.mythUnit || "";
+      else if (kind === "mythUnits") {
+        const values = Array.isArray(entry.mythUnits) ? entry.mythUnits : [entry.mythUnit || ""];
+        for (const value of values) if (value) selected.add(value);
+        return;
+      }
       if (value) selected.add(value);
     });
   }
@@ -6650,7 +7016,9 @@ function minorCustomizationSearchText(entry) {
 }
 
 function customMinorCardUsesMythUnit(card, unitName) {
-  return minorCustomizationIdentifier(card?.mythUnit) === minorCustomizationIdentifier(unitName);
+  const target = minorCustomizationIdentifier(unitName);
+  const units = Array.isArray(card?.mythUnits) ? card.mythUnits : [card?.mythUnit];
+  return units.some((unit) => minorCustomizationIdentifier(unit) === target);
 }
 
 function customMinorHasBushidoBonus(config = null) {
@@ -6786,7 +7154,7 @@ function selectedMinorGodMythUnits(config = {}) {
   const units = new Set();
   if (config?.minorGodCustomization?.mode === "custom") {
     for (const card of customMinorAllCards(config)) {
-      if (card?.mythUnit) units.add(String(card.mythUnit));
+      for (const mythUnit of customMinorCardMythUnits(card)) units.add(mythUnit);
     }
   } else {
     const mythUnitByAgeTech = window.AOM_MINOR_GOD_MYTH_UNITS || window.AOM_MINOR_GOD_DATA?.mythUnitsByAgeTech || {};
@@ -7254,8 +7622,8 @@ function minorTechnologyAvailableForCustomCard(entry, cardState, config = null) 
   const exportConfig = config || { baseCulture: selectedPantheon(), bonuses: selectedBonusIds() };
   if (entry.internalName === "RingOath" && cardState?.godPower !== "AsgardianBastion") return false;
   if (entry.internalName === "SerpentSpear" && exportConfig?.baseCulture !== "Egyptian") return false;
-  if (entry.internalName === "AutumnOfAbundance" && minorCustomizationIdentifier(cardState?.mythUnit) !== minorCustomizationIdentifier("PiXiu") && minorCustomizationIdentifier(cardState?.mythUnit) !== minorCustomizationIdentifier("Pixiu")) return false;
-  if (entry.internalName === "EternalHaunting" && minorCustomizationIdentifier(cardState?.mythUnit) !== minorCustomizationIdentifier("Shinigami")) return false;
+  if (entry.internalName === "AutumnOfAbundance" && !customMinorCardUsesMythUnit(cardState, "PiXiu") && !customMinorCardUsesMythUnit(cardState, "Pixiu")) return false;
+  if (entry.internalName === "EternalHaunting" && !customMinorCardUsesMythUnit(cardState, "Shinigami")) return false;
   if (entry.internalName === "Abundance") {
     return exportConfig?.baseCulture !== "Norse" && (exportConfig?.baseCulture === "Chinese" || selectedHasFavoredLandBuildingChainBonus(exportConfig));
   }
@@ -7480,8 +7848,25 @@ function makeCustomMinorCard(age, slot) {
 
   const power = createOptionField("God power", customMinorElementId(age, slot, "godPower"), { age, kind: "godPowers" });
   card.appendChild(power.label);
-  const myth = createOptionField("Myth unit", customMinorElementId(age, slot, "mythUnit"), { age, kind: "mythUnits" });
-  card.appendChild(myth.label);
+
+  const mythGroup = document.createElement("div");
+  mythGroup.className = "custom-minor-tech-fields custom-minor-myth-fields";
+  const mythHeading = document.createElement("span");
+  mythHeading.className = "field-heading custom-minor-tech-heading";
+  mythHeading.textContent = "Myth units";
+  mythGroup.appendChild(mythHeading);
+  const mythSelect = createOptionSelect(customMinorElementId(age, slot, "mythUnit"), { age, kind: "mythUnits" });
+  mythSelect.setAttribute("aria-label", "Myth unit 1");
+  mythGroup.appendChild(mythSelect);
+  const addMyth = document.createElement("button");
+  addMyth.type = "button";
+  addMyth.className = "secondary compact add-choice-button custom-minor-add-button";
+  addMyth.dataset.addCustomMinorField = "mythUnit";
+  addMyth.dataset.age = age;
+  addMyth.dataset.slot = String(slot);
+  addMyth.textContent = "+ Add myth unit";
+  mythGroup.appendChild(addMyth);
+  card.appendChild(mythGroup);
 
   const techGroup = document.createElement("div");
   techGroup.className = "custom-minor-tech-fields";
@@ -7489,16 +7874,63 @@ function makeCustomMinorCard(age, slot) {
   techHeading.className = "field-heading custom-minor-tech-heading";
   techHeading.textContent = "Technologies";
   techGroup.appendChild(techHeading);
-  for (const index of [1, 2, 3]) {
-    const techSelect = createOptionSelect(customMinorElementId(age, slot, `tech${index}`), {
-      age,
-      kind: "technologies",
-    });
-    techSelect.setAttribute("aria-label", `Technology ${index}`);
-    techGroup.appendChild(techSelect);
-  }
+  const techSelect = createOptionSelect(customMinorElementId(age, slot, "tech1"), {
+    age,
+    kind: "technologies",
+  });
+  techSelect.setAttribute("aria-label", "Technology 1");
+  techGroup.appendChild(techSelect);
+  const addTech = document.createElement("button");
+  addTech.type = "button";
+  addTech.className = "secondary compact add-choice-button custom-minor-add-button";
+  addTech.dataset.addCustomMinorField = "tech";
+  addTech.dataset.age = age;
+  addTech.dataset.slot = String(slot);
+  addTech.textContent = "+ Add technology";
+  techGroup.appendChild(addTech);
   card.appendChild(techGroup);
   return card;
+}
+
+
+function ensureCustomMinorExtraSelect(age, slot, kind, index) {
+  const max = kind === "mythUnit" ? MAX_CUSTOM_MINOR_MYTH_UNIT_SLOTS : MAX_CUSTOM_MINOR_TECH_SLOTS;
+  if (index < 1 || index > max) return null;
+  const fieldId = kind === "mythUnit" && index === 1 ? "mythUnit" : `${kind}${index}`;
+  let select = $(customMinorElementId(age, slot, fieldId));
+  if (select) return select;
+  const button = els.minorCustomPickers?.querySelector?.(`[data-add-custom-minor-field="${kind}"][data-age="${age}"][data-slot="${slot}"]`);
+  const group = button?.parentElement;
+  if (!group) return null;
+  select = createOptionSelect(customMinorElementId(age, slot, fieldId), {
+    age,
+    kind: kind === "mythUnit" ? "mythUnits" : "technologies",
+  });
+  select.setAttribute("aria-label", `${kind === "mythUnit" ? "Myth unit" : "Technology"} ${index}`);
+  group.insertBefore(select, button);
+  return select;
+}
+
+function setCustomMinorFieldCount(age, slot, kind, count) {
+  const max = kind === "mythUnit" ? MAX_CUSTOM_MINOR_MYTH_UNIT_SLOTS : MAX_CUSTOM_MINOR_TECH_SLOTS;
+  const target = Math.max(1, Math.min(max, count));
+  for (let index = 1; index <= target; index += 1) ensureCustomMinorExtraSelect(age, slot, kind, index);
+  for (let index = target + 1; index <= max; index += 1) {
+    const fieldId = kind === "mythUnit" && index === 1 ? "mythUnit" : `${kind}${index}`;
+    $(customMinorElementId(age, slot, fieldId))?.remove();
+  }
+  const button = els.minorCustomPickers?.querySelector?.(`[data-add-custom-minor-field="${kind}"][data-age="${age}"][data-slot="${slot}"]`);
+  if (button) button.hidden = target >= max;
+}
+
+function customMinorVisibleFieldCount(age, slot, kind) {
+  const max = kind === "mythUnit" ? MAX_CUSTOM_MINOR_MYTH_UNIT_SLOTS : MAX_CUSTOM_MINOR_TECH_SLOTS;
+  let count = 0;
+  for (let index = 1; index <= max; index += 1) {
+    const fieldId = kind === "mythUnit" && index === 1 ? "mythUnit" : `${kind}${index}`;
+    if ($(customMinorElementId(age, slot, fieldId))) count = index;
+  }
+  return Math.max(1, count);
 }
 
 function initCustomMinorPickers(keep = true) {
@@ -7516,6 +7948,14 @@ function initCustomMinorPickers(keep = true) {
     for (const slot of [1, 2]) grid.appendChild(makeCustomMinorCard(age, slot));
     ageCard.appendChild(grid);
     els.minorCustomPickers.appendChild(ageCard);
+  }
+  for (const age of AGES) {
+    for (const slot of [1, 2]) {
+      const existing = current?.custom?.[age]?.[slot - 1] || {};
+      const mythUnits = Array.isArray(existing.mythUnits) ? existing.mythUnits : [existing.mythUnit || ""];
+      setCustomMinorFieldCount(age, slot, "mythUnit", countFilledOrVisible(mythUnits, 1, MAX_CUSTOM_MINOR_MYTH_UNIT_SLOTS));
+      setCustomMinorFieldCount(age, slot, "tech", countFilledOrVisible(existing.techs, 3, MAX_CUSTOM_MINOR_TECH_SLOTS));
+    }
   }
   refreshCustomMinorOptions(false, current);
 }
@@ -7550,23 +7990,35 @@ function refreshCustomMinorOptions(keep = true, presetLike = null) {
         disabledValues: usedPowers,
         disabledReason: "Already selected by another custom minor god",
       });
-      const mythSelect = $(customMinorElementId(age, slot, "mythUnit"));
-      const usedMythUnits = customMinorSelectedValuesFromState("mythUnits", current, { age, slot });
-      fillMinorCustomizationSelect(mythSelect, units, existing.mythUnit || "", {
-        includeNone: true,
-        searchable: true,
-        kind: "mythUnits",
-        age,
-        placeholder: "Type to search myth units...",
-        disabledValues: usedMythUnits,
-        disabledReason: "Already selected by another custom minor god",
-      });
-      const selectedMythUnit = mythSelect?.value || "";
+      const mythUnitsExisting = Array.isArray(existing.mythUnits) ? existing.mythUnits : [existing.mythUnit || ""];
+      const mythSlotCount = customMinorVisibleFieldCount(age, slot, "mythUnit");
       const selectedGodPower = $(customMinorElementId(age, slot, "godPower"))?.value || "";
-      const currentCardForRules = { ...existing, age, slot, godPower: selectedGodPower, mythUnit: selectedMythUnit };
-      const techs = filterMinorTechnologiesForMythUnit(baseTechs, selectedMythUnit, age)
+      for (let index = 1; index <= mythSlotCount; index += 1) {
+        const fieldId = index === 1 ? "mythUnit" : `mythUnit${index}`;
+        const mythSelect = $(customMinorElementId(age, slot, fieldId));
+        const usedMythUnits = customMinorSelectedValuesFromState("mythUnits", current, { age, slot });
+        fillMinorCustomizationSelect(mythSelect, units, mythUnitsExisting[index - 1] || "", {
+          includeNone: true,
+          searchable: true,
+          kind: "mythUnits",
+          age,
+          placeholder: "Type to search myth units...",
+          disabledValues: usedMythUnits,
+          disabledReason: "Already selected by another custom minor god",
+        });
+      }
+      const selectedMythUnits = [];
+      for (let index = 1; index <= mythSlotCount; index += 1) {
+        const fieldId = index === 1 ? "mythUnit" : `mythUnit${index}`;
+        const value = $(customMinorElementId(age, slot, fieldId))?.value || "";
+        if (value) selectedMythUnits.push(value);
+      }
+      const selectedMythUnit = selectedMythUnits[0] || "";
+      const currentCardForRules = { ...existing, age, slot, godPower: selectedGodPower, mythUnit: selectedMythUnit, mythUnits: selectedMythUnits };
+      const techs = filterMinorTechnologiesForMythUnit(baseTechs, selectedMythUnits, age)
         .filter((entry) => minorTechnologyAvailableForCustomCard(entry, currentCardForRules, { baseCulture: researchPantheon, bonuses: selectedBonusIds() }));
-      for (const index of [1, 2, 3]) {
+      const techSlotCount = customMinorVisibleFieldCount(age, slot, "tech");
+      for (let index = 1; index <= techSlotCount; index += 1) {
         const existingTechs = Array.isArray(existing.techs) ? existing.techs : [];
         const existingTech = Object.prototype.hasOwnProperty.call(existingTechs, index - 1) ? existingTechs[index - 1] : "";
         const usedElsewhere = customMinorSelectedTechsFromState(current, { age, slot, index });
@@ -7607,9 +8059,19 @@ function collectMinorCustomization() {
       const portraitFileName = $(customMinorElementId(age, slot, "portrait"))?.files?.[0]?.name || "";
       const iconFileName = $(customMinorElementId(age, slot, "icon"))?.files?.[0]?.name || "";
       const godPower = $(customMinorElementId(age, slot, "godPower"))?.value || "";
-      const mythUnit = $(customMinorElementId(age, slot, "mythUnit"))?.value || "";
-      const techs = [1, 2, 3].map((index) => $(customMinorElementId(age, slot, `tech${index}`))?.value || "");
-      result.custom[age].push({ name, quality, portraitFileName, iconFileName, godPower, mythUnit, techs });
+      const mythUnits = [];
+      for (let index = 1; index <= MAX_CUSTOM_MINOR_MYTH_UNIT_SLOTS; index += 1) {
+        const fieldId = index === 1 ? "mythUnit" : `mythUnit${index}`;
+        const value = $(customMinorElementId(age, slot, fieldId))?.value || "";
+        if (value || index <= customMinorVisibleFieldCount(age, slot, "mythUnit")) mythUnits.push(value);
+      }
+      const mythUnit = mythUnits.find(Boolean) || "";
+      const techs = [];
+      for (let index = 1; index <= MAX_CUSTOM_MINOR_TECH_SLOTS; index += 1) {
+        const value = $(customMinorElementId(age, slot, `tech${index}`))?.value || "";
+        if (value || index <= customMinorVisibleFieldCount(age, slot, "tech")) techs.push(value);
+      }
+      result.custom[age].push({ name, quality, portraitFileName, iconFileName, godPower, mythUnit, mythUnits, techs });
     }
   }
   return result;
@@ -7619,7 +8081,11 @@ function collectPreviewMinorGods(config, age) {
   const customization = config.minorGodCustomization || {};
   if (customization.mode === "custom") {
     return (customization.custom?.[age] || []).map((entry, index) => {
-      const unit = getSelectedMinorCustomizationEntry("mythUnits", age, entry.mythUnit);
+      const selectedMythUnits = customMinorCardMythUnits(entry).map((mythUnit) => {
+        const unitEntry = getSelectedMinorCustomizationEntry("mythUnits", age, mythUnit);
+        const name = techBrowserDisplayName(unitEntry?.internalName || mythUnit, unitEntry?.displayName);
+        return name ? { name, icon: previewMythUnitIconPath(unitEntry?.internalName || mythUnit, unitEntry?.displayName) } : null;
+      }).filter(Boolean);
       const power = getSelectedMinorCustomizationEntry("godPowers", age, entry.godPower);
       const techs = (entry.techs || []).map((tech) => {
         const techEntry = getSelectedMinorCustomizationEntry("technologies", age, tech);
@@ -7631,8 +8097,9 @@ function collectPreviewMinorGods(config, age) {
         icon: currentCustomMinorGodIconPreviewUrl(age, index + 1),
         power: techBrowserDisplayName(power?.internalName || entry.godPower, power?.displayName),
         powerIcon: previewGodPowerIconPath(power?.internalName || entry.godPower, power?.displayName),
-        mythUnit: techBrowserDisplayName(unit?.internalName || entry.mythUnit, unit?.displayName),
-        mythUnitIcon: previewMythUnitIconPath(unit?.internalName || entry.mythUnit, unit?.displayName),
+        mythUnits: selectedMythUnits,
+        mythUnit: selectedMythUnits.map((unit) => unit.name).join(", "),
+        mythUnitIcon: selectedMythUnits[0]?.icon || "",
         techs,
       };
     }).filter((entry) => entry.name);
@@ -7651,7 +8118,31 @@ function refreshCustomMinorDetails() {
 function applyMinorCustomizationPreset(customization) {
   if (!customization) return;
   if (els.sameCultureOnly) els.sameCultureOnly.checked = true;
-  setMinorCustomizationMode(customization.mode === "custom" ? "custom" : "original");
+  const mode = customization.mode === "custom" ? "custom" : "original";
+  setMinorCustomizationMode(mode);
+  if (mode === "custom") {
+    for (const age of AGES) {
+      for (const slot of [1, 2]) {
+        const entry = customization.custom?.[age]?.[slot - 1] || {};
+        const mythUnits = Array.isArray(entry.mythUnits)
+          ? entry.mythUnits
+          : [entry.mythUnit || ""];
+        const techs = Array.isArray(entry.techs) ? entry.techs : [];
+        setCustomMinorFieldCount(
+          age,
+          slot,
+          "mythUnit",
+          countFilledOrVisible(mythUnits, 1, MAX_CUSTOM_MINOR_MYTH_UNIT_SLOTS),
+        );
+        setCustomMinorFieldCount(
+          age,
+          slot,
+          "tech",
+          countFilledOrVisible(techs, 3, MAX_CUSTOM_MINOR_TECH_SLOTS),
+        );
+      }
+    }
+  }
   refreshCustomMinorOptions(false, customization);
 }
 
@@ -7747,7 +8238,6 @@ function validateCustomMinorGodTechSelections(config) {
       const label = `${age.replace("Age", " Age")} custom choice ${slot}`;
       if (!String(card.name || "").trim()) errors.push(`${label}: enter a minor god name.`);
       if (!card.godPower) errors.push(`${label}: choose a god power.`);
-      if (!card.mythUnit) errors.push(`${label}: choose a myth unit.`);
       const techs = Array.isArray(card.techs) ? card.techs : [];
       const selectedTechs = techs.filter(Boolean);
       const cardTechSet = new Set(selectedTechs);
@@ -7780,7 +8270,7 @@ function validateCustomMinorGodTechSelections(config) {
           errors.push(`${uiEntry.displayName || tech}: no valid research building/UI location exists for ${config.baseCulture}.`);
         }
         const pairedUnits = pairedMythUnitsForTech(tech, card.age);
-        if (pairedUnits.length && !pairedUnits.some((unit) => minorCustomizationIdentifier(unit) === minorCustomizationIdentifier(card.mythUnit))) {
+        if (pairedUnits.length && !pairedUnits.some((unit) => customMinorCardUsesMythUnit(card, unit))) {
           errors.push(`${uiEntry.displayName || tech} requires the matching myth unit (${pairedUnits.join(" or ")}) on the same custom minor god.`);
         }
         for (const prereq of definition.prereqTechs || []) {
@@ -7815,14 +8305,14 @@ function validateCustomMinorGodTechSelections(config) {
         if (seenPowers.has(card.godPower)) errors.push(`${powerLabel} god power can only be selected once across custom minor gods.`);
         else seenPowers.set(card.godPower, label);
       }
-      if (card.mythUnit) {
-        const mythEntry = getSelectedMinorCustomizationEntry("mythUnits", age, card.mythUnit);
-        const mythLabel = mythEntry?.displayName || displayTechName(card.mythUnit);
-        if (!customMinorMythUnitAvailableForAge({ internalName: card.mythUnit }, age)) {
+      for (const mythUnit of customMinorCardMythUnits(card)) {
+        const mythEntry = getSelectedMinorCustomizationEntry("mythUnits", age, mythUnit);
+        const mythLabel = mythEntry?.displayName || displayTechName(mythUnit);
+        if (!customMinorMythUnitAvailableForAge({ internalName: mythUnit }, age)) {
           errors.push(`${mythLabel} is a Heroic Age myth unit and cannot be selected as a Mythic Age custom minor-god myth unit.`);
         }
-        if (seenMythUnits.has(card.mythUnit)) errors.push(`${mythLabel} myth unit can only be selected once across custom minor gods.`);
-        else seenMythUnits.set(card.mythUnit, label);
+        if (seenMythUnits.has(mythUnit)) errors.push(`${mythLabel} myth unit can only be selected once across custom minor gods.`);
+        else seenMythUnits.set(mythUnit, label);
       }
     }
   }
@@ -7835,6 +8325,32 @@ function validateCustomMinorGodTechSelections(config) {
     else seenAgeTechs.set(techName, label);
   }
   return errors;
+}
+
+function customMinorUiSlotWarnings(config) {
+  if (!isCustomMinorGodMode(config)) return [];
+  const allocator = makeTechUiSlotAllocator();
+  buildCustomMinorMythUnitUiPlacements(config, allocator);
+  reserveCustomMinorSpecialUiCommands(config, allocator);
+  buildUniqueTechUiPlacements(config, allocator);
+  buildCustomMinorTechUiPlacements(config, allocator);
+  const labels = new Set();
+  for (const conflict of allocator.conflicts) {
+    const meta = conflict.meta || {};
+    if (!["minor", "myth", "unique", "special"].includes(meta.type)) continue;
+    const building = meta.building || conflict.target || "building";
+    const age = meta.age ? meta.age.replace("Age", " Age") : "Custom minor god";
+    labels.add(`${age}: ${building} has more selected myth units/technologies than distinct configured UI slots; extra commands will reuse the pool from its first position.`);
+  }
+  return [...labels];
+}
+
+function updateCustomMinorSlotWarning(config = null) {
+  if (!els.minorSlotWarning) return;
+  const current = config || getConfig();
+  const warnings = customMinorUiSlotWarnings(current);
+  els.minorSlotWarning.textContent = warnings.join(" ");
+  els.minorSlotWarning.hidden = warnings.length === 0;
 }
 
 function validateConfig(config) {
@@ -7862,7 +8378,7 @@ function validateConfig(config) {
   }
   const availableUniqueIds = new Set(availableUniqueTechGroups().map((group) => group.id));
   const uniquePicks = config.uniqueTechs || [];
-  if (uniquePicks.length > 1) errors.push("Choose no more than one unique technology.");
+  if (uniquePicks.length > MAX_UNIQUE_TECH_SLOTS) errors.push(`Choose no more than ${MAX_UNIQUE_TECH_SLOTS} unique technologies.`);
   for (const id of uniquePicks) {
     if (!availableUniqueIds.has(id)) errors.push(`Unique technology ${id} is not available for this pantheon/god-power choice.`);
   }
@@ -8972,7 +9488,6 @@ const FAVORED_LAND_CHAINABLE_BUILDINGS = Object.freeze({
     { unit: "MilitaryCampTrainingYard", radius: 10.0 },
     { unit: "ImperialAcademy", radius: 12.0 },
     { unit: "Baolei", radius: 25.0 },
-    { unit: "ThePeachBlossomSpring", radius: 15.0 },
   ],
   Japanese: [
     { unit: "Watermill", radius: 6.0 },
@@ -9012,6 +9527,11 @@ function favoredLandChainEntries(config) {
     ...(config.baseCulture === "Atlantean" ? [] : FAVORED_LAND_CHAINABLE_BUILDINGS.sharedExceptAtlantean),
     ...(FAVORED_LAND_CHAINABLE_BUILDINGS[config.baseCulture] || []),
   ];
+  const hasGodPower = (power) => config?.godPower === power || selectedMinorGodPower(config, power);
+  if (hasGodPower("ThePeachBlossomSpring")) entries.push({ unit: "ThePeachBlossomSpring", radius: 15.0 });
+  if (hasGodPower("PlentyVault")) entries.push({ unit: "PlentyVault", radius: 15.0 });
+  if (hasGodPower("HesperidesTree")) entries.push({ unit: "HesperidesTree", radius: 15.0 });
+  if (hasGodPower("Goshinboku")) entries.push({ unit: "Goshinboku", radius: 15.0 });
   if (selectedHasBonusId(config, ORANOS_SKY_PASSAGE_BONUS_ID)) entries.push({ unit: "SkyPassage", radius: 10.0 });
   if (selectedHasBonusId(config, THOR_DWARVEN_ARMORY_BONUS_ID)) entries.push({ unit: "DwarvenArmory", radius: 12.0 });
   if (shouldAddAsgardianHillFortFavoredLandChain(config)) entries.push({ unit: "AsgardianHillFort", radius: 25.0 });
@@ -9797,6 +10317,7 @@ function generateTechTreeMods(config) {
 ${useCustomMinorGods ? techStatusEffects([...customMinorAgeTechNamesForAge(config, "ClassicalAge"), c.classical], "obtainable") : techStatusEffects([...classical, c.classical])}
 ${useCustomMinorGods ? customMinorAgeTechCommandAddEffects(config, "ClassicalAge") : ""}
 ${useCustomMinorGods ? customMinorSecretsOfTheTitansCommandRemoveEffect(config) : ""}
+${useCustomMinorGods ? indentTabBlock(customMinorTempleFlareRemoveEffect(config), 3) : ""}
 ${indentTabBlock(greekArchaicExtraEffects(config), 3)}
 ${kronosExtraMythUnitStatusEffects(config, "ArchaicAge")}
 ${techStatusEffects(uniqueTechNames(config), "obtainable")}
@@ -10097,7 +10618,7 @@ function customMinorGodModsXml(config) {
   const rows = [];
   const seen = new Set();
   for (const card of customMinorAllCards(config)) {
-    if (!card.name || !card.godPower || !card.mythUnit) continue;
+    if (!card.name || !card.godPower) continue;
     const tag = customMinorAgeTechName(card).toLowerCase();
     if (seen.has(tag)) continue;
     seen.add(tag);
@@ -10291,12 +10812,12 @@ function indentBlock(block, level = 0) {
 function techTreeCustomMinorCardsForAge(config, age) {
   if (config?.minorGodCustomization?.mode !== "custom") return [];
   return customMinorAllCards(config)
-    .filter((card) => card.age === age && card.name && card.godPower && card.mythUnit);
+    .filter((card) => card.age === age && card.name && card.godPower);
 }
 
 function techTreeCustomMinorTokenNodesForCard(card) {
   const nodes = [];
-  if (card?.mythUnit) nodes.push({ type: "Unit", baseName: card.mythUnit, name: card.mythUnit, card });
+  for (const mythUnit of customMinorCardMythUnits(card)) nodes.push({ type: "Unit", baseName: mythUnit, name: mythUnit, card });
   for (const record of customMinorCardTechRecords(card)) {
     nodes.push({ type: "Tech", baseName: record.baseName, name: record.customName, record, card });
   }
@@ -10372,6 +10893,8 @@ function techTreePositionFromUiPosition(position, fallbackColumn = 1) {
 
 function customMinorTechTreeUiPlacementMap(config) {
   const allocator = makeTechUiSlotAllocator();
+  buildCustomMinorMythUnitUiPlacements(config, allocator);
+  reserveCustomMinorSpecialUiCommands(config, allocator);
   buildUniqueTechUiPlacements(config, allocator);
   const map = new Map();
   for (const placement of buildCustomMinorTechUiPlacements(config, allocator)) {
@@ -10430,8 +10953,25 @@ function customMinorRightSideNodesForAge(age, config, currentCultureFinder) {
       // pantheon's source tree. Fall back to any source tree, then to the actual
       // command UI placement data used by the generated tech.
       if (!found.length && token.type === "Unit") found = techTreeSourceNodesForTokenAcrossCultures(age, lookup);
-      if (found.length) nodes.push(...techTreeNodeCopiesWithName(found, token.name));
-      else nodes.push(...customMinorFallbackTechTreeNodesForToken(age, config, token, placementMap));
+      let generatedNodes = found.length
+        ? techTreeNodeCopiesWithName(found, token.name)
+        : customMinorFallbackTechTreeNodesForToken(age, config, token, placementMap);
+
+      // Preserve prerequisite chains for cloned custom-minor technologies.
+      // The source-tree lookup can legitimately fall back to the research
+      // building, which otherwise makes a child upgrade (for example
+      // Shoulder of Talos) look like an unrelated Temple technology.
+      if (token.type === "Tech") {
+        const definition = minorGodTechDefinitionByName(token.baseName);
+        const selectedTechs = new Set((card.techs || []).filter(Boolean));
+        const selectedPrereq = (definition?.prereqTechs || []).find((prereq) => selectedTechs.has(prereq));
+        if (selectedPrereq) {
+          const customMinorInternal = customMinorInternalName(card.name, card.age, card.slot);
+          const customPrereq = customMinorGeneratedTechName(selectedPrereq, customMinorInternal);
+          generatedNodes = generatedNodes.map((node) => ({ ...node, parent: customPrereq, uniqueParent: "" }));
+        }
+      }
+      nodes.push(...generatedNodes);
     }
   }
   return nodes;
@@ -10457,7 +10997,7 @@ function techTreeCustomMinorBonusTrack(card) {
   const techRecords = customMinorCardTechRecords(card);
   const nodes = [
     card.godPower ? `                        <local:TechTreeNode Power="${escapeXml(card.godPower)}" />` : "",
-    card.mythUnit ? `                        <local:TechTreeNode Unit="${escapeXml(card.mythUnit)}" />` : "",
+    ...customMinorCardMythUnits(card).map((mythUnit) => `                        <local:TechTreeNode Unit="${escapeXml(mythUnit)}" />`),
     ...techRecords.map((record) => `                        <local:TechTreeNode Tech="${escapeXml(record.customName)}" />`),
   ].filter(Boolean).join("\n");
   return `<local:TechTreeBonusTrack God="${escapeXml(customMinorAgeTechName(card))}">
@@ -10475,7 +11015,7 @@ function godPickerCustomMinorBonusTrack(card) {
   const techRecords = customMinorCardTechRecords(card);
   const nodes = [
     card.godPower ? `                        <techTree:TechTreeNode Power="${escapeXml(card.godPower)}" />` : "",
-    card.mythUnit ? `                        <techTree:TechTreeNode Unit="${escapeXml(card.mythUnit)}" />` : "",
+    ...customMinorCardMythUnits(card).map((mythUnit) => `                        <techTree:TechTreeNode Unit="${escapeXml(mythUnit)}" />`),
     ...techRecords.map((record) => `                        <techTree:TechTreeNode Tech="${escapeXml(record.customName)}" />`),
   ].filter(Boolean).join("\n");
   return `<techTree:TechTreeBonusTrack God="${escapeXml(customMinorAgeTechName(card))}">
@@ -10488,7 +11028,7 @@ ${nodes}
 function godPickerCustomMinorBonusTracksForAge(config, age) {
   if (config?.minorGodCustomization?.mode !== "custom") return [];
   return customMinorAllCards(config)
-    .filter((card) => card.age === age && card.name && card.godPower && card.mythUnit)
+    .filter((card) => card.age === age && card.name && card.godPower)
     .map(godPickerCustomMinorBonusTrack);
 }
 
@@ -18965,7 +19505,7 @@ async function customMinorImageFilesForExport(config) {
   if (config?.minorGodCustomization?.mode !== "custom") return out;
   const seen = new Set();
   for (const card of customMinorAllCards(config)) {
-    if (!card.name || !card.godPower || !card.mythUnit) continue;
+    if (!card.name || !card.godPower) continue;
     const portraitSource = selectedCustomMinorPortraitFile(card.age, card.slot);
     const iconSource = selectedCustomMinorIconFile(card.age, card.slot);
     if (portraitSource) {
@@ -19214,21 +19754,28 @@ function applyPreset(preset) {
   if (preset.aztecMythicArrival && els.aztecMythicArrival && Object.values(AZTEC_MYTHIC_ARRIVALS).includes(preset.aztecMythicArrival)) els.aztecMythicArrival.value = preset.aztecMythicArrival;
   initGodPowerSelect(false);
   if (preset.godPower && Array.from(els.godPower.options).some((o) => o.value === preset.godPower)) els.godPower.value = preset.godPower;
-  initUniqueTechSelects(false);
-  if (preset.uniqueTechs) {
-    const selects = [els.uniqueTech1];
-    for (const [index, value] of preset.uniqueTechs.entries()) {
+  const presetUniqueTechs = Array.isArray(preset.uniqueTechs)
+    ? preset.uniqueTechs.filter(Boolean).slice(0, MAX_UNIQUE_TECH_SLOTS)
+    : [];
+  setUniqueTechSlotCount(countFilledOrVisible(presetUniqueTechs, 1, MAX_UNIQUE_TECH_SLOTS), false);
+  if (presetUniqueTechs.length) {
+    const selects = uniqueTechSelects();
+    for (const [index, value] of presetUniqueTechs.entries()) {
       const select = selects[index];
-      if (select && value && Array.from(select.options).some((o) => o.value === value)) select.value = value;
+      if (select && Array.from(select.options).some((o) => o.value === value)) select.value = value;
     }
     enforceUniqueTechDifference();
   }
-  initBonusSelects(false);
-  if (preset.bonuses) {
+
+  const presetBonuses = Array.isArray(preset.bonuses)
+    ? preset.bonuses.filter(Boolean).slice(0, MAX_BONUS_SLOTS)
+    : [];
+  setBonusSlotCount(countFilledOrVisible(presetBonuses, 4, MAX_BONUS_SLOTS), false);
+  if (presetBonuses.length) {
     const selects = bonusSelects();
-    for (const [index, value] of preset.bonuses.entries()) {
+    for (const [index, value] of presetBonuses.entries()) {
       const select = selects[index];
-      if (select && value && Array.from(select.options).some((o) => o.value === value)) select.value = value;
+      if (select && Array.from(select.options).some((o) => o.value === value)) select.value = value;
     }
     enforceBonusDifference();
   }
@@ -21296,7 +21843,11 @@ function previewMinorGodData(tech, config = {}) {
   const god = getMinorByTech(tech);
   if (god) {
     const details = originalMinorDetails(tech);
-    const mythNames = (details?.mythUnits || []).map((entry) => techBrowserDisplayName(entry.internalName, entry.displayName)).filter(Boolean);
+    const previewMythUnits = (details?.mythUnits || []).map((entry) => {
+      const name = techBrowserDisplayName(entry.internalName, entry.displayName);
+      return name ? { name, icon: previewMythUnitIconPath(entry.internalName, entry.displayName) } : null;
+    }).filter(Boolean);
+    const mythNames = previewMythUnits.map((entry) => entry.name);
     const firstMythUnit = (details?.mythUnits || [])[0];
     const techEntries = (details?.techs || []).slice(0, 4).map((entry) => ({
       name: techBrowserDisplayName(entry.internalName, entry.displayName),
@@ -21307,6 +21858,7 @@ function previewMinorGodData(tech, config = {}) {
       icon: previewMinorGodIconPath(god),
       power: details?.power?.displayName || "",
       powerIcon: previewGodPowerIconPath(details?.power?.internalName, details?.power?.displayName),
+      mythUnits: previewMythUnits,
       mythUnit: mythNames.join(", "),
       mythUnitIcon: previewMythUnitIconPath(firstMythUnit?.internalName, firstMythUnit?.displayName),
       techs: techEntries,
@@ -21334,7 +21886,11 @@ function previewMiniEntry(label, value, iconSrc = "") {
 function previewMinorDetailEntries(minor) {
   const entries = [];
   if (minor?.power) entries.push({ label: "Power", value: minor.power, icon: minor.powerIcon || "" });
-  if (minor?.mythUnit) entries.push({ label: "Myth unit", value: minor.mythUnit, icon: minor.mythUnitIcon || "" });
+  if (Array.isArray(minor?.mythUnits) && minor.mythUnits.length) {
+    minor.mythUnits.forEach((unit, index) => entries.push({ label: minor.mythUnits.length > 1 ? `Myth unit ${index + 1}` : "Myth unit", value: unit.name, icon: unit.icon || "" }));
+  } else if (minor?.mythUnit) {
+    entries.push({ label: "Myth unit", value: minor.mythUnit, icon: minor.mythUnitIcon || "" });
+  }
   (minor?.techs || []).forEach((tech, index) => {
     if (tech?.name) entries.push({ label: `Tech ${index + 1}`, value: tech.name, icon: tech.icon || "" });
   });
@@ -21921,6 +22477,7 @@ async function exportGodPreviewImage() {
 function updatePreview() {
   const config = getConfig();
   updateBonusCombinationWarning(config);
+  updateCustomMinorSlotWarning(config);
   const root = els.configPreview;
   if (!root) return;
   root.replaceChildren();
@@ -22018,14 +22575,27 @@ function wireEvents() {
   if (els.portraitFile) els.portraitFile.addEventListener("change", updatePreview);
   els.iconFile.addEventListener("change", updatePreview);
   els.godPower.addEventListener("change", () => { initUniqueTechSelects(true); updatePreview(); });
+  if (els.addUniqueTech) els.addUniqueTech.addEventListener("click", () => setUniqueTechSlotCount(visibleUniqueTechSlotCount() + 1, true));
+  if (els.addBonus) els.addBonus.addEventListener("click", () => setBonusSlotCount(visibleBonusSlotCount() + 1, true));
   for (const select of [els.greekHeroArchaic, els.greekHeroClassical, els.greekHeroHeroic, els.greekUniqueUnit, els.chineseMythicHero, els.aztecClassicalForm, els.aztecMythicArrival]) {
     if (select) select.addEventListener("change", () => {
       if (select === els.greekUniqueUnit) refreshCustomMinorOptions(true);
       updatePreview();
     });
   }
-  els.uniqueTech1.addEventListener("change", (event) => { enforceUniqueTechDifference(event.target); enforceChannelsGaiaLushBonusLock(); updatePreview(); });
+  if (els.uniqueTech1) els.uniqueTech1.addEventListener("change", (event) => { enforceUniqueTechDifference(event.target); enforceChannelsGaiaLushBonusLock(); updatePreview(); });
   if (els.bonusPickers) els.bonusPickers.addEventListener("change", (event) => { enforceBonusDifference(event.target); enforceChannelsGaiaLushBonusLock(); updatePreview(); });
+  els.minorPickers.addEventListener("click", (event) => {
+    const button = event.target?.closest?.("[data-add-custom-minor-field]");
+    if (!button) return;
+    const age = button.dataset.age;
+    const slot = Number(button.dataset.slot || 0);
+    const kind = button.dataset.addCustomMinorField;
+    if (!age || !slot || !kind) return;
+    setCustomMinorFieldCount(age, slot, kind, customMinorVisibleFieldCount(age, slot, kind) + 1);
+    refreshCustomMinorOptions(true);
+    updatePreview();
+  });
   els.minorPickers.addEventListener("change", (event) => {
     if (event.target?.closest?.("#minorOriginalPanel")) enforceMinorDifference(event.target);
     if (event.target?.closest?.("#minorCustomPanel") && event.target?.tagName === "SELECT") {
@@ -22073,8 +22643,8 @@ initGreekSpecificSelects(false);
 initChineseSpecificSelects(false);
 initAztecSpecificSelects(false);
 initGodPowerSelect(false);
-initUniqueTechSelects(false);
-initBonusSelects(false);
+setUniqueTechSlotCount(1, false);
+setBonusSlotCount(4, false);
 initMinorPickers();
 wireEvents();
 updatePreview();
