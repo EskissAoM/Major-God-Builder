@@ -6184,6 +6184,18 @@ function techUiCommandRemoveEffect(techName, target) {
   return `<effect type="Data" amount="1.00" subtype="CommandRemove" tech="${escapeXml(techName)}" relativity="Assign">\n\t<target type="ProtoUnit">${escapeXml(target)}</target>\n</effect>`;
 }
 
+// Omniscience is a deliberate Temple UI exception. Remove the vanilla command
+// before allocating major/minor technologies, then add it back at 2,5 only
+// after every generated technology placement has been emitted. It may overlap
+// another technology there; Omniscience stays hidden behind it until revealed.
+function omniscienceTempleCommandRemoveEffect() {
+  return techUiCommandRemoveEffect("Omniscience", "Temple");
+}
+
+function omniscienceTempleLateCommandAddEffect() {
+  return techUiCommandAddEffect("Omniscience", "Temple", { row: 2, column: 5 });
+}
+
 function customMinorTechUiPlacementEffects(config) {
   if (config?.minorGodCustomization?.mode !== "custom") return "";
   const allocator = makeTechUiSlotAllocator();
@@ -10315,6 +10327,7 @@ function generateTechTreeMods(config) {
 		<effects>
 			<effect type="TechStatus" status="active">${escapeXml(cultureAgeTech("ArchaicAge", culture))}</effect>
 ${useCustomMinorGods ? techStatusEffects([...customMinorAgeTechNamesForAge(config, "ClassicalAge"), c.classical], "obtainable") : techStatusEffects([...classical, c.classical])}
+${indentTabBlock(omniscienceTempleCommandRemoveEffect(), 3)}
 ${useCustomMinorGods ? customMinorAgeTechCommandAddEffects(config, "ClassicalAge") : ""}
 ${useCustomMinorGods ? customMinorSecretsOfTheTitansCommandRemoveEffect(config) : ""}
 ${useCustomMinorGods ? indentTabBlock(customMinorTempleFlareRemoveEffect(config), 3) : ""}
@@ -10327,6 +10340,7 @@ ${useCustomMinorGods ? indentTabBlock(customMinorTechUiPlacementEffects(config),
 ${indentTabBlock(chineseCreationBuildingCommandEffects(config), 3)}
 ${indentTabBlock(originalAsgardianBastionCreationBuilderCommandEffects(config), 3)}
 ${indentTabBlock(bonusTechEffects(config), 3)}
+${indentTabBlock(omniscienceTempleLateCommandAddEffect(), 3)}
 			<effect type="TechStatus" status="active">ArchaicAgeWeakenUnits</effect>
 ${uniqueTechEntries(config).some((group) => group.extraArchaicEffect === "FreyrTechCostBonus") ? `			<effect type="SetOnTechResearchedTech" amount="1.00">FreyrTechCostBonus</effect>
 ` : ""}${godPowerEffect(config.godPower)}
