@@ -5541,6 +5541,9 @@ function minorCustomizationMythTechPairs(age = "") {
 function pairedMythUnitsForTech(techName, age = "") {
   const techId = minorCustomizationIdentifier(techName);
   if (!techId) return [];
+  // Crimson Linen is not exclusive to Scarab. Its Scarab-specific lifesteal
+  // effect and wording are stripped later when Scarab is not selected.
+  if (techId === minorCustomizationIdentifier("CrimsonLinen")) return [];
   return minorCustomizationMythTechPairs(age)
     .filter((entry) => minorCustomizationIdentifier(entry.tech) === techId)
     .map((entry) => entry.mythUnit)
@@ -7425,7 +7428,11 @@ function adjustedCustomMinorTechEffectsXml(definition, record) {
       break;
     case "CrimsonLinen":
       if (!customMinorCardUsesMythUnit(record?.card, "Scarab")) {
-        xml = removeXmlEffectBlocksContaining(xml, (block) => /<target[^>]*>Scarab<\/target>/i.test(block));
+        xml = removeXmlEffectBlocksContaining(xml, (block) =>
+          /subtype="OnHitEffect"/i.test(block)
+          && /effecttype="Lifesteal"/i.test(block)
+          && /<target[^>]*>Scarab<\/target>/i.test(block)
+        );
       }
       break;
     case "PoseidonsSecret":
